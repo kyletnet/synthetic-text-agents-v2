@@ -1,0 +1,50 @@
+{
+  "version": 2,
+  "name": "synthetic-text-agents-v2",
+  "builds": [
+    {
+      "src": "src/cli/main.ts",
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": [
+          "dist/**",
+          "src/**",
+          "package.json",
+          ".env.example"
+        ]
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/health",
+      "dest": "/dist/api/health.js"
+    },
+    {
+      "src": "/api/generate",
+      "dest": "/dist/api/generate.js"
+    }
+  ],
+  "env": {
+    "NODE_ENV": "production",
+    "DRY_RUN": "true",
+    "FEATURE_LLM_QA": "false"
+  },
+  "build": {
+    "env": {
+      "NODE_ENV": "production"
+    }
+  },
+  "functions": {
+    "dist/api/*.js": {
+      "runtime": "nodejs18.x",
+      "maxDuration": 30
+    }
+  },
+  "regions": ["iad1"],
+  "installCommand": "npm install && npm run build",
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "framework": null,
+  "devCommand": "npm run dev"
+}

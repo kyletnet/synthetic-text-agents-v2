@@ -1,0 +1,65 @@
+name: Auto Documentation Update
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'src/**'
+      - 'scripts/**'
+      - 'docs/**'
+      - 'CLAUDE.md'
+      - 'package.json'
+
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  update-docs:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Build project
+      run: npm run build
+
+    - name: Run documentation refresh
+      run: |
+        npm run docs:refresh
+        npm run docs:systemmap
+
+    - name: Check for changes
+      id: changes
+      run: |
+        git diff --quiet && echo "changes=false" >> $GITHUB_OUTPUT || echo "changes=true" >> $GITHUB_OUTPUT
+
+    - name: Commit documentation updates
+      if: steps.changes.outputs.changes == 'true'
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add docs/
+        git commit -m "docs: auto-update documentation from code changes
+
+        🤖 Generated with [Claude Code](https://claude.ai/code)
+
+        Co-Authored-By: GitHub Actions <action@github.com>" || exit 0
+
+    - name: Push changes
+      if: steps.changes.outputs.changes == 'true'
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: ${{ github.ref }}

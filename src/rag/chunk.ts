@@ -59,7 +59,7 @@ export function chunkText(input: string, options: ChunkOptions = {}): Chunk[] {
   // Second pass: if no paragraphs or all tiny → sliding on whole text
   if (chunks.length === 0 || chunks.every(c => c.text.length < cfg.minChars)) {
     const windows = sliding(text, cfg.maxChars, cfg.overlap);
-    let pos = 0;
+    const pos = 0;
     return windows.map((w, i) => ({
       id: `c${i}`,
       text: w,

@@ -281,7 +281,7 @@ export class CheckpointManager {
 
     // Determine recovery strategy
     let recoveryStrategy: 'resume' | 'restart' | 'partial_restart';
-    let recommendations: string[] = [];
+    const recommendations: string[] = [];
 
     if (!integrityPassed) {
       recoveryStrategy = 'restart';

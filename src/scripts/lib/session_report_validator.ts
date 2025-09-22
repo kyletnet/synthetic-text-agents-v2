@@ -209,7 +209,7 @@ export class SessionReportValidator {
 
     return warningKeywords.some(keyword =>
       error.keyword === keyword ||
-      (error.message && error.message.includes(keyword))
+      (error.message?.includes(keyword))
     );
   }
 

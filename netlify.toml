@@ -1,0 +1,47 @@
+[build]
+  command = "npm run build"
+  functions = "dist/functions"
+  publish = "dist"
+
+[build.environment]
+  NODE_ENV = "production"
+  DRY_RUN = "true"
+  FEATURE_LLM_QA = "false"
+
+[functions]
+  node_bundler = "esbuild"
+  external_node_modules = ["@anthropic-ai/sdk"]
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+[dev]
+  command = "npm run dev"
+  port = 3001
+  targetPort = 3001
+  publish = "dist"
+  autoLaunch = false
+
+[[headers]]
+  for = "/api/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+    Access-Control-Allow-Headers = "Content-Type, Authorization"
+    Access-Control-Allow-Methods = "GET, POST, PUT, DELETE, OPTIONS"
+
+[[redirects]]
+  from = "/health"
+  to = "/api/health"
+  status = 200
+
+[[redirects]]
+  from = "/generate"
+  to = "/api/generate"
+  status = 200
+
+[context.production.environment]
+  NODE_ENV = "production"
+
+[context.deploy-preview.environment]
+  NODE_ENV = "preview"
+  DRY_RUN = "true"

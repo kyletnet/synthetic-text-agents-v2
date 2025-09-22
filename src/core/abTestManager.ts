@@ -149,7 +149,7 @@ export class ABTestManager {
     testId?: string
   ): Promise<{ response: QAResponse; metrics: QualityMetrics }> {
     const variant = this.variants.get(variantId);
-    if (!variant || !variant.enabled) {
+    if (!variant?.enabled) {
       throw new Error(`Variant ${variantId} not found or disabled`);
     }
 

@@ -1110,7 +1110,7 @@ export async function generateBaselineReports(
   }
 
   // Schema validation
-  let schemaValidationResults: { valid: boolean; errors?: string[] }[] = [];
+  const schemaValidationResults: { valid: boolean; errors?: string[] }[] = [];
   if (enableSchemaValidation) {
     console.log(`📋 Performing schema validation...`);
     const schemaPath = join(process.cwd(), 'schema', 'baseline_report.schema.json');

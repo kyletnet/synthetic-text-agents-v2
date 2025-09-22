@@ -1,0 +1,105 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+# Synthetic Text Agents v2 - Pre-commit Hook
+# Enforces development standards automatically
+
+echo "🔍 Pre-commit: Enforcing development standards..."
+
+# Color helpers
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+# Check if we're in the right directory
+if [ ! -f "package.json" ]; then
+    echo -e "${RED}❌ Error: Not in project root directory${NC}"
+    exit 1
+fi
+
+# Function to print results
+print_result() {
+    if [ $1 -eq 0 ]; then
+        echo -e "${GREEN}✅ $2${NC}"
+    else
+        echo -e "${RED}❌ $2${NC}"
+        return 1
+    fi
+}
+
+# 1. TypeScript Standards Enforcement
+echo "📝 Checking TypeScript standards..."
+npm run typecheck > /dev/null 2>&1
+print_result $? "TypeScript compilation" || exit 1
+
+# 2. ESLint Standards Enforcement
+echo "🔧 Checking ESLint standards..."
+npm run lint > /dev/null 2>&1
+print_result $? "ESLint validation" || exit 1
+
+# 3. Code Style Enforcement
+echo "🎨 Checking code formatting..."
+npx prettier --check . > /dev/null 2>&1
+if [ $? -ne 0 ]; then
+    echo -e "${YELLOW}⚠️  Auto-fixing code formatting...${NC}"
+    npx prettier --write .
+    git add -A
+    echo -e "${GREEN}✅ Code formatting fixed${NC}"
+fi
+
+# 4. Import Standards Check
+echo "📦 Checking import standards..."
+RELATIVE_IMPORTS=$(find src -name "*.ts" -exec grep -l "import.*from '\.\./.*\.js'" {} \; | wc -l)
+if [ "$RELATIVE_IMPORTS" -eq 0 ]; then
+    echo -e "${RED}❌ Warning: No TypeScript files found with .js extensions in imports${NC}"
+    echo "This might indicate import path issues"
+fi
+
+# 5. Console.log Detection (except CLI files)
+echo "🚫 Checking for console.log usage..."
+CONSOLE_USAGE=$(find src -name "*.ts" -not -path "*/cli/*" -exec grep -l "console\." {} \; 2>/dev/null | wc -l)
+if [ "$CONSOLE_USAGE" -gt 0 ]; then
+    echo -e "${RED}❌ Found console.log usage outside CLI:${NC}"
+    find src -name "*.ts" -not -path "*/cli/*" -exec grep -l "console\." {} \; 2>/dev/null
+    echo "Use Logger instead of console.log"
+    exit 1
+fi
+
+# 6. Any Type Detection
+echo "🔍 Checking for 'any' type usage..."
+ANY_USAGE=$(find src -name "*.ts" -exec grep -c ": any\|<any>" {} \; 2>/dev/null | awk '{sum+=$1} END {print sum+0}')
+if [ "$ANY_USAGE" -gt 5 ]; then
+    echo -e "${YELLOW}⚠️  Warning: Found $ANY_USAGE 'any' type usages${NC}"
+    echo "Consider using proper TypeScript types"
+fi
+
+# 7. Shell Script Standards
+echo "📜 Checking shell script standards..."
+for script in $(find . -name "*.sh" -not -path "./node_modules/*"); do
+    # Check shebang
+    if ! head -1 "$script" | grep -q "#!/usr/bin/env bash"; then
+        echo -e "${RED}❌ Shell script $script missing proper shebang${NC}"
+        exit 1
+    fi
+
+    # Check error handling
+    if ! head -5 "$script" | grep -q "set -.*e"; then
+        echo -e "${YELLOW}⚠️  Shell script $script missing error handling${NC}"
+    fi
+done
+
+# 8. Environment Variables Check
+echo "🔐 Checking environment variables..."
+if [ ! -f ".env" ]; then
+    echo -e "${YELLOW}⚠️  .env file missing, creating from .env.example${NC}"
+    cp .env.example .env
+fi
+
+# 9. Security Check
+echo "🛡️  Running security checks..."
+npm run guard:git > /dev/null 2>&1
+print_result $? "Security scan (no exposed secrets)"
+
+echo -e "${GREEN}🎉 All development standards enforced successfully!${NC}"
+echo "Commit proceeding..."
