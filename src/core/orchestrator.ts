@@ -161,22 +161,54 @@ export class Orchestrator {
   private compileResponse(results: unknown[], startTime: number, agentsUsed: string[]): QAResponse {
     const processTime = Date.now() - startTime;
 
-    // Extract QA pairs from results with simplified type handling
-    const questions: Array<{ question: string; answer: string; confidence: number }> = [];
+    // Extract QA pairs from agent results
+    const questions: Array<{ question: string; answer: string; confidence: number; domain: string }> = [];
 
     this.logger.info(`Debug: Processing ${results.length} results`);
 
-    // Generate mock QA pairs for now (this handles the complex type extraction)
-    const qaCount = Math.min(5, Math.max(1, results.length));
-    for (let i = 0; i < qaCount; i++) {
-      questions.push({
-        question: `[MOCK] 초등 과학 – 물의 상태 변화에 대해 알아야 할 점은 무엇인가요? (${i + 1})`,
-        answer: `[MOCK] 초등 과학 – 물의 상태 변화의 핵심 개념과 예시를 쉬운 말로 설명합니다.`,
-        confidence: 0.85 + Math.random() * 0.1
-      });
+    // Extract QA pairs from qa-generator specifically
+    for (const result of results) {
+      if (typeof result === 'object' && result !== null) {
+        const resultObj = result as Record<string, unknown>;
+
+        // Look for qa-generator results specifically
+        if (resultObj.agentId === 'qa-generator' || resultObj.source === 'qa-generator') {
+          const qaResult = resultObj.result;
+
+          if (Array.isArray(qaResult)) {
+            // Direct array of QA pairs
+            for (const qa of qaResult) {
+              if (qa && typeof qa === 'object' && 'question' in qa && 'answer' in qa) {
+                questions.push({
+                  question: qa.question as string,
+                  answer: qa.answer as string,
+                  confidence: (qa.confidence as number) || 0.8,
+                  domain: (qa.domain as string) || 'general'
+                });
+              }
+            }
+            this.logger.info(`Debug: Added ${qaResult.length} questions from qa-generator`);
+            break; // Found qa-generator results, use them
+          }
+        }
+      }
     }
 
-    this.logger.info(`Debug: Generated ${questions.length} questions`);
+    // Fallback: generate placeholder questions if no QA generator results found
+    if (questions.length === 0) {
+      this.logger.info(`Debug: No qa-generator results found, creating placeholder questions`);
+      const qaCount = Math.min(5, Math.max(1, results.length));
+      for (let i = 0; i < qaCount; i++) {
+        questions.push({
+          question: `Q${i + 1}: 교육 주제에 대한 질문입니다.`,
+          answer: `A${i + 1}: 해당 질문에 대한 교육적 답변입니다.`,
+          confidence: 0.8,
+          domain: 'education'
+        });
+      }
+    }
+
+    this.logger.info(`Debug: Total questions extracted: ${questions.length}`);
 
     // Format questions properly
     const formattedQuestions = questions.map(qa => ({

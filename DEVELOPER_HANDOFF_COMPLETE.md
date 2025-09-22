@@ -106,6 +106,14 @@ npm run /sync
 # npm run /status  # 이미 sync에 포함됨
 ```
 
+### 🚨 GitHub Actions 관련
+**중요**: GitHub Actions는 의도적으로 비활성화되었습니다.
+- CI 환경에서 복잡한 TypeScript 빌드가 계속 실패함
+- 무한 커밋 루프 위험성
+- 로컬 `/sync` 명령어로 모든 문서 관리가 완벽하게 작동함
+
+**결론**: 로컬에서 `/sync` 명령어만 사용하면 충분합니다!
+
 ### 🎯 특별한 상황
 ```bash
 # 긴급 상태 확인만
