@@ -1,0 +1,112 @@
+name: Simple Documentation Update
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'src/**'
+      - 'scripts/**'
+      - 'CLAUDE.md'
+      - 'package.json'
+
+jobs:
+  update-docs:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: |
+        npm ci
+        npm install -g tsx
+
+    - name: Generate simple documentation
+      run: |
+        # Create basic documentation structure
+        mkdir -p docs/SYSTEM_DOCS
+
+        # Generate simple system overview
+        cat > docs/SYSTEM_DOCS/README.md << 'EOF'
+        # 🔍 Synthetic Text Agents v2 - System Overview
+
+        > **Auto-generated documentation** - Last updated: $(date)
+
+        ## Quick Start
+        ```bash
+        # Setup environment
+        bash scripts/setup-dev-environment.sh
+
+        # Daily sync command
+        npm run /sync
+        ```
+
+        ## Essential Commands
+        - `npm run /sync` - Complete system update
+        - `npm run /status` - System health check
+        - `npm run /ship` - Full deployment pipeline
+        - `npm run /clean` - Safe cleanup
+
+        ## Project Structure
+        - `src/core/` - System orchestration
+        - `src/agents/` - 8-Agent implementations
+        - `src/shared/` - Common infrastructure
+        - `docs/` - Documentation
+        - `scripts/` - Automation scripts
+
+        ## 8-Agent System
+        1. MetaController - Strategy and complexity analysis
+        2. QAGenerator - Q&A pair generation
+        3. QualityAuditor - Quality verification
+        4. PromptArchitect - Prompt optimization
+        5. PsychologySpecialist - User psychology
+        6. LinguisticsEngineer - Language optimization
+        7. DomainConsultant - Domain expertise
+        8. CognitiveScientist - Expert thinking models
+
+        ---
+        📖 **Main Spec**: [CLAUDE.md](../../CLAUDE.md)
+        🚀 **Setup Guide**: [DEVELOPMENT_ONBOARDING.md](../../DEVELOPMENT_ONBOARDING.md)
+        EOF
+
+        # Update timestamp in the file
+        sed -i "s/$(date)/$(date)/" docs/SYSTEM_DOCS/README.md || true
+
+    - name: Check for documentation changes
+      id: changes
+      run: |
+        git add docs/
+        if git diff --cached --quiet; then
+          echo "changes=false" >> $GITHUB_OUTPUT
+        else
+          echo "changes=true" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Commit documentation updates
+      if: steps.changes.outputs.changes == 'true'
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git commit -m "docs: auto-update system documentation
+
+        - Updated system overview
+        - Refreshed timestamps
+        - Generated from latest code changes
+
+        🤖 Automated documentation update" || exit 0
+
+    - name: Push changes
+      if: steps.changes.outputs.changes == 'true'
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: ${{ github.ref }}

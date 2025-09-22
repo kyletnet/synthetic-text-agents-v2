@@ -151,8 +151,20 @@ EOF
     print_success "Slash commands updated"
 }
 
-# Function to auto-commit and push
+# Function to auto-commit and push (with safety checks)
 auto_commit_push() {
+    # Skip auto-commit in CI environment to prevent loops
+    if [ "${CI:-}" = "true" ] || [ "${GITHUB_ACTIONS:-}" = "true" ]; then
+        print_warning "Skipping auto-commit in CI environment"
+        return 0
+    fi
+
+    # Skip if NO_AUTO_COMMIT is set
+    if [ "${NO_AUTO_COMMIT:-}" = "true" ]; then
+        print_warning "Auto-commit disabled by NO_AUTO_COMMIT flag"
+        return 0
+    fi
+
     print_status "Auto-committing documentation updates..."
 
     # Check if there are changes
@@ -175,12 +187,12 @@ auto_commit_push() {
 
 🤖 Generated with automated documentation system" || true
 
-    # Push if remote exists
-    if git remote get-url origin >/dev/null 2>&1; then
+    # Push if remote exists and not in headless mode
+    if git remote get-url origin >/dev/null 2>&1 && [ -t 1 ]; then
         print_status "Pushing to remote repository..."
         git push || print_warning "Push failed - check remote access"
     else
-        print_warning "No remote repository configured"
+        print_warning "Skipping push (no remote or headless mode)"
     fi
 
     print_success "Auto-commit completed"
