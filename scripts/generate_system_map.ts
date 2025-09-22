@@ -61,6 +61,9 @@ _Auto-generated: ${now}_
   return sysPath;
 }
 
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const repoRoot = path.resolve(__dirname, "..");
 const out = writeSystemMap(repoRoot);
 console.log("SYSTEM_MAP.md regenerated:", out);
