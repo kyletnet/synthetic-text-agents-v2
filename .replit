@@ -9,10 +9,6 @@ ignorePorts = false
 localPort = 3001
 externalPort = 80
 
-[[ports]]
-localPort = 3002
-externalPort = 3002
-
 [languages.typescript]
 pattern = "**/{*.ts,*.tsx}"
 
@@ -20,9 +16,10 @@ pattern = "**/{*.ts,*.tsx}"
 start = "typescript-language-server --stdio"
 
 [gitHubImport]
-requiredFiles = [".replit"]
+requiredFiles = [".replit", ".env"]
 
-run = "bash main.sh"
+run = "npm install && npm run build && npm run dev"
 
 [env]
 NODE_ENV = "development"
+DRY_RUN = "true"
