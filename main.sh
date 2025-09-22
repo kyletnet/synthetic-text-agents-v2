@@ -1,35 +1,32 @@
 #!/bin/bash
 
-echo "🚀 QA Generation System - Replit 배포"
-echo "====================================="
+# Synthetic Text Agents v2 - Replit Startup Script
+echo "🚀 Starting Synthetic Text Agents v2..."
 
-# 백엔드 의존성 설치 및 빌드
-echo "📡 백엔드 설치 중..."
-cd backend
-npm install
-npm run build
+# Check if we're in the root directory
+if [ ! -f "package.json" ]; then
+    echo "❌ Error: package.json not found. Make sure you're in the project root."
+    exit 1
+fi
 
-# 백엔드 시작 (백그라운드)
-echo "🔧 백엔드 시작..."
-npm start &
-BACKEND_PID=$!
-echo "✅ 백엔드: http://localhost:3002 (PID: $BACKEND_PID)"
+# Install dependencies if needed
+if [ ! -d "node_modules" ]; then
+    echo "📦 Installing dependencies..."
+    npm install || {
+        echo "❌ npm install failed"
+        exit 1
+    }
+fi
 
-# 프론트엔드 의존성 설치
-echo "🌐 프론트엔드 설치 중..."
-cd ../apps/fe-web
-npm install
+# Build TypeScript if needed
+if [ ! -d "dist" ] || [ "src" -nt "dist" ]; then
+    echo "🔨 Building TypeScript..."
+    npm run build || {
+        echo "❌ Build failed"
+        exit 1
+    }
+fi
 
-# 환경변수 설정
-echo "NEXT_PUBLIC_API_BASE=http://localhost:3002" > .env.local
-
-# 프론트엔드 빌드 및 시작
-echo "🏗️ 프론트엔드 빌드..."
-npm run build
-
-echo "🎉 QA 시스템 시작 완료!"
-echo "📱 웹사이트: http://localhost:3001"
-echo "🔧 API: http://localhost:3002"
-
-# 프론트엔드 시작 (메인 프로세스)
-npm start
+# Start the CLI demo
+echo "🎯 Starting CLI demo..."
+npm run dev

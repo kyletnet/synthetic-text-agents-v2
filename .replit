@@ -20,6 +20,9 @@ pattern = "**/{*.ts,*.tsx}"
 start = "typescript-language-server --stdio"
 
 [gitHubImport]
-requiredFiles = [".replit", "replit.nix"]
+requiredFiles = [".replit"]
 
-run = "npm run dev"
+run = "npm install && npm run build && npm run dev"
+
+[env]
+NODE_ENV = "development"
