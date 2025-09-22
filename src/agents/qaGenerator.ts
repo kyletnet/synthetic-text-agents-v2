@@ -52,20 +52,22 @@ export class QAGenerator extends BaseAgent {
                 reasoning = `Anthropic LLM generated ${result.length} Q/A for ${topic}`;
                 tokensUsed = (llmResponse.usage?.input_tokens || 0) + (llmResponse.usage?.output_tokens || 0);
               } else {
-                result = this.mock(topic, count);
-                reasoning = 'LLM returned non-array response, using mock data';
+                // If LLM returns non-array, try to extract Q&A from the response
+                this.logger.warn('LLM returned non-array, attempting to extract Q&A');
+                result = this.extractQAFromText(llmResponse.text, topic, count);
+                reasoning = 'Extracted Q&A from LLM text response';
               }
             } catch (parseError) {
-              result = this.mock(topic, count);
-              reasoning = `JSON parsing failed (${parseError}), using mock data`;
+              this.logger.warn(`JSON parsing failed: ${parseError}, attempting text extraction`);
+              result = this.extractQAFromText(llmResponse.text || '', topic, count);
+              reasoning = `Extracted Q&A from raw LLM response (parse error: ${parseError})`;
             }
           } else {
-            result = this.mock(topic, count);
-            reasoning = 'LLM returned empty response, using mock data';
+            throw new Error('LLM returned empty response - check API configuration');
           }
         } catch (error) {
-          result = this.mock(topic, count);
-          reasoning = `LLM call failed (${error}), using mock data`;
+          this.logger.error(`LLM call failed: ${error}`);
+          throw error; // Don't fallback to mock in real mode
         }
       } else {
         // dry-run preview
@@ -99,14 +101,75 @@ export class QAGenerator extends BaseAgent {
     };
   }
 
+  private extractQAFromText(text: string, topic: string, count: number): QAPair[] {
+    // Try to extract Q&A pairs from free-form text
+    const lines = text.split('\n').filter(line => line.trim());
+    const pairs: QAPair[] = [];
+
+    let currentQ = '';
+    let currentA = '';
+
+    for (const line of lines) {
+      const trimmed = line.trim();
+
+      // Look for question patterns
+      if (trimmed.match(/^[QqAa][:.]?\s*\d*[:.)]?\s*/)) {
+        if (trimmed.toLowerCase().startsWith('q') || trimmed.includes('?')) {
+          // Save previous pair if exists
+          if (currentQ && currentA) {
+            pairs.push({
+              question: currentQ.trim(),
+              answer: currentA.trim(),
+              confidence: 0.7,
+              domain: topic
+            });
+          }
+          currentQ = trimmed.replace(/^[QqAa][:.]?\s*\d*[:.)]?\s*/, '');
+          currentA = '';
+        } else if (trimmed.toLowerCase().startsWith('a')) {
+          currentA = trimmed.replace(/^[QqAa][:.]?\s*\d*[:.)]?\s*/, '');
+        }
+      } else if (currentQ && !currentA) {
+        // Continue question
+        currentQ += ' ' + trimmed;
+      } else if (currentQ && currentA) {
+        // Continue answer
+        currentA += ' ' + trimmed;
+      }
+    }
+
+    // Add final pair
+    if (currentQ && currentA) {
+      pairs.push({
+        question: currentQ.trim(),
+        answer: currentA.trim(),
+        confidence: 0.7,
+        domain: topic
+      });
+    }
+
+    // If extraction failed, generate at least one meaningful pair from the text
+    if (pairs.length === 0 && text.length > 0) {
+      pairs.push({
+        question: `${topic}에 대해 설명해주세요.`,
+        answer: text.substring(0, 500).trim() + (text.length > 500 ? '...' : ''),
+        confidence: 0.6,
+        domain: topic
+      });
+    }
+
+    return pairs.slice(0, count);
+  }
+
   private mock(topic:string, count:number): QAPair[] {
+    // Only used in dry-run mode
     const arr: QAPair[] = [];
     for (let i=0;i<count;i++) {
       arr.push({
-        question: `[MOCK] ${topic}에 대해 알아야 할 점은 무엇인가요? (${i+1})`,
-        answer: `[MOCK] ${topic}의 핵심 개념과 예시를 쉬운 말로 설명합니다.`,
-        confidence: 0.8 + (Math.random()*0.2),
-        domain: topic
+        question: `[DRY-RUN] ${topic}에 대해 알아야 할 점은 무엇인가요? (${i+1})`,
+        answer: `[DRY-RUN] 실제 API 키를 설정하면 진짜 AI가 ${topic}에 대한 상세한 답변을 생성합니다.`,
+        confidence: 0.5,
+        domain: 'dry-run'
       });
     }
     return arr;

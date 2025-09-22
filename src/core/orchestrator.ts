@@ -194,17 +194,24 @@ export class Orchestrator {
       }
     }
 
-    // Fallback: generate placeholder questions if no QA generator results found
+    // Emergency fallback: only if absolutely no QA generator results found AND in dry-run mode
     if (questions.length === 0) {
-      this.logger.info(`Debug: No qa-generator results found, creating placeholder questions`);
-      const qaCount = Math.min(5, Math.max(1, results.length));
-      for (let i = 0; i < qaCount; i++) {
-        questions.push({
-          question: `Q${i + 1}: 교육 주제에 대한 질문입니다.`,
-          answer: `A${i + 1}: 해당 질문에 대한 교육적 답변입니다.`,
-          confidence: 0.8,
-          domain: 'education'
-        });
+      this.logger.error(`CRITICAL: No qa-generator results found! This indicates a system failure.`);
+
+      if (process.env.DRY_RUN === 'true') {
+        this.logger.info(`Dry-run mode: creating demo questions`);
+        const qaCount = 3; // Minimal demo
+        for (let i = 0; i < qaCount; i++) {
+          questions.push({
+            question: `Demo Question ${i + 1}: This is a demonstration question in dry-run mode.`,
+            answer: `Demo Answer ${i + 1}: This is a demonstration answer. Enable real API to get actual AI-generated content.`,
+            confidence: 0.5,
+            domain: 'demo'
+          });
+        }
+      } else {
+        // In real mode, this is a critical error
+        throw new Error('QA Generator failed to produce results in real mode. Check API keys and agent configuration.');
       }
     }
 
