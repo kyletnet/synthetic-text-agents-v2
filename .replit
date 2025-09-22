@@ -22,7 +22,7 @@ start = "typescript-language-server --stdio"
 [gitHubImport]
 requiredFiles = [".replit"]
 
-run = "npm install && npm run build && npm run dev"
+run = "bash main.sh"
 
 [env]
 NODE_ENV = "development"
