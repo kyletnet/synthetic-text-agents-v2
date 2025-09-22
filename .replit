@@ -1,6 +1,9 @@
 # QA Generation System - Replit Configuration
 modules = ["nodejs-20"]
 
+[nix]
+channel = "stable-24_05"
+
 [deployment]
 deploymentTarget = "cloudrun"
 ignorePorts = false
@@ -12,3 +15,14 @@ externalPort = 80
 [[ports]]
 localPort = 3002
 externalPort = 3002
+
+[languages]
+
+[languages.typescript]
+pattern = "**/{*.ts,*.tsx}"
+
+[languages.typescript.languageServer]
+start = "typescript-language-server --stdio"
+
+[gitHubImport]
+requiredFiles = [".replit", "replit.nix"]
