@@ -97,6 +97,7 @@
     "/status": "bash scripts/slash-commands.sh status",
     "/ship": "bash scripts/slash-commands.sh ship",
     "/clean": "bash scripts/slash-commands.sh clean",
+    "/commit": "bash scripts/slash-commands.sh commit",
     "/help": "bash scripts/slash-commands.sh help"
   },
   "keywords": [

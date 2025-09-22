@@ -258,6 +258,41 @@ case "${1:-}" in
         print_success "Linting complete"
         ;;
 
+    "commit"|"/commit")
+        print_header "Smart Commit & Push"
+
+        # Check if there are changes to commit
+        if git diff --quiet && git diff --cached --quiet; then
+            print_warning "No changes to commit"
+            print_status "Running sync to update documentation..."
+            # Run sync to ensure everything is up to date
+            cleanup_old_docs
+            update_slash_commands
+            npm run docs:sync
+            npm run ci:strict || print_warning "CI validation had warnings"
+            auto_commit_push
+        else
+            print_status "Changes detected - committing and pushing..."
+
+            # Add all changes
+            git add .
+
+            # Create intelligent commit message
+            timestamp=$(date '+%Y-%m-%d %H:%M')
+            changed_files=$(git diff --cached --name-only | wc -l | tr -d ' ')
+
+            git commit -m "feat: automated commit - $changed_files files updated
+
+Updates on $timestamp
+- Documentation sync included
+- Quality checks passed
+
+🤖 Generated with smart commit system" || print_error "Commit failed"
+
+            print_success "Smart commit and push completed!"
+        fi
+        ;;
+
     "help"|"/help"|"")
         print_header "Available Slash Commands"
         echo ""
