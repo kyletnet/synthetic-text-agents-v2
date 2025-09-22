@@ -1,0 +1,14 @@
+# QA Generation System - Replit Configuration
+modules = ["nodejs-20"]
+
+[deployment]
+deploymentTarget = "cloudrun"
+ignorePorts = false
+
+[[ports]]
+localPort = 3001
+externalPort = 80
+
+[[ports]]
+localPort = 3002
+externalPort = 3002

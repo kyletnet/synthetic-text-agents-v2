@@ -1,0 +1,23 @@
+{
+  "name": "smoke-basic",
+  "description": "Basic smoke test - simple customer service Q&A generation",
+  "request": {
+    "id": "smoke-basic-001",
+    "description": "Generate basic customer service Q&A for billing questions",
+    "domain": "customer_service",
+    "quantity": 3,
+    "qualityTarget": 7.0,
+    "specialization": "billing_support",
+    "constraints": {
+      "maxDuration": 60000,
+      "requireExpertConsultation": false
+    }
+  },
+  "expectations": {
+    "minQualityScore": 6.5,
+    "maxDuration": 60000,
+    "expectedAgentCount": 5,
+    "mustIncludeAgents": ["meta-controller", "qa-generator", "quality-auditor"]
+  },
+  "tags": ["smoke", "basic", "fast"]
+}

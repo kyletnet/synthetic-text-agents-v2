@@ -1,0 +1,303 @@
+{
+  "version": "1.0.0",
+  "description": "Regression test seeds for Meta-Adaptive Expert Orchestration System",
+  "lastUpdated": "2024-01-15T00:00:00Z",
+  "testCategories": {
+    "complexity_analysis": [
+      {
+        "id": "simple_request",
+        "description": "Basic customer service FAQ generation",
+        "input": {
+          "description": "Generate basic customer service Q&A for common questions",
+          "domain": "customer_service",
+          "quantity": 5,
+          "qualityTarget": 7
+        },
+        "expectedComplexity": 3,
+        "expectedAgentCount": 5,
+        "expectedStrategy": "minimal"
+      },
+      {
+        "id": "moderate_request", 
+        "description": "Domain-specific technical support Q&A",
+        "input": {
+          "description": "Create technical support Q&A for SaaS billing and integration issues",
+          "domain": "customer_service",
+          "specialization": "technical_billing_support",
+          "quantity": 10,
+          "qualityTarget": 8.5
+        },
+        "expectedComplexity": 6,
+        "expectedAgentCount": 7,
+        "expectedStrategy": "standard"
+      },
+      {
+        "id": "complex_request",
+        "description": "Expert-level cross-domain consultation",
+        "input": {
+          "description": "Develop advanced B2B sales methodology for enterprise software with complex stakeholder dynamics",
+          "domain": "sales",
+          "specialization": "enterprise_b2b_complex_sales",
+          "quantity": 20,
+          "qualityTarget": 9.5
+        },
+        "expectedComplexity": 9,
+        "expectedAgentCount": 8,
+        "expectedStrategy": "full-council"
+      }
+    ],
+    "agent_collaboration": [
+      {
+        "id": "psychology_linguistics_integration",
+        "description": "Psychology and Linguistics agents working together",
+        "input": {
+          "description": "Customer service for upset customers requiring empathetic communication",
+          "domain": "customer_service",
+          "contextualFactors": {
+            "emotionalState": "frustrated",
+            "urgency": "high"
+          },
+          "qualityTarget": 8
+        },
+        "expectedPsychologyOutput": {
+          "communicationStrategy": "supportive",
+          "empathyLevel": "high"
+        },
+        "expectedLinguisticsOutput": {
+          "languageStyle": "conversational",
+          "structuralApproach": "step-by-step"
+        }
+      },
+      {
+        "id": "domain_cognitive_integration",
+        "description": "Domain Consultant and Cognitive Scientist modeling expert thinking",
+        "input": {
+          "description": "Advanced sales negotiation strategies for complex enterprise deals",
+          "domain": "sales",
+          "expertiseLevel": "expert",
+          "qualityTarget": 9
+        },
+        "expectedDomainOutput": {
+          "bestPractices": ["consultative selling", "value demonstration", "stakeholder mapping"],
+          "processFrameworks": ["enterprise sales methodology"]
+        },
+        "expectedCognitiveOutput": {
+          "reasoningPatterns": ["consultative reasoning", "stakeholder analysis"],
+          "decisionHeuristics": ["value-first positioning"]
+        }
+      }
+    ],
+    "quality_benchmarks": [
+      {
+        "id": "structural_quality_baseline",
+        "description": "Minimum structural quality requirements",
+        "benchmarks": {
+          "questionLength": {"min": 10, "max": 200},
+          "answerLength": {"min": 50, "max": 1000},
+          "formatCompliance": "Q: ... A: ...",
+          "punctuationCorrectness": true,
+          "capitalizationCorrectness": true
+        },
+        "passingScore": 7.0
+      },
+      {
+        "id": "expertise_quality_baseline", 
+        "description": "Domain expertise demonstration requirements",
+        "benchmarks": {
+          "domainTerminologyUsage": {"min": 2, "description": "Professional terms per answer"},
+          "practicalApplicability": true,
+          "industryStandardsReference": {"preferred": true},
+          "professionalContext": true
+        },
+        "passingScore": 6.5
+      },
+      {
+        "id": "practicality_quality_baseline",
+        "description": "Real-world applicability standards",
+        "benchmarks": {
+          "actionableGuidance": true,
+          "specificSteps": {"min": 1},
+          "contextConsideration": true,
+          "implementationFeasibility": true
+        },
+        "passingScore": 7.0
+      },
+      {
+        "id": "innovation_quality_baseline",
+        "description": "Value-added insights and uniqueness",
+        "benchmarks": {
+          "expertInsights": {"preferred": true},
+          "beyondBasicAdvice": true,
+          "professionalNuance": true,
+          "situationalAdaptation": true
+        },
+        "passingScore": 5.0
+      }
+    ],
+    "performance_targets": [
+      {
+        "id": "speed_benchmarks",
+        "description": "Processing speed expectations",
+        "targets": {
+          "simpleRequest": {
+            "maxDuration": 30000,
+            "description": "30 seconds for basic 5 Q&A generation"
+          },
+          "moderateRequest": {
+            "maxDuration": 120000,
+            "description": "2 minutes for standard 10 Q&A generation"
+          },
+          "complexRequest": {
+            "maxDuration": 300000,
+            "description": "5 minutes for complex 20 Q&A generation"
+          }
+        }
+      },
+      {
+        "id": "memory_benchmarks",
+        "description": "Memory usage expectations",
+        "targets": {
+          "maxMemoryUsage": 100,
+          "unit": "MB",
+          "description": "Peak memory usage during generation"
+        }
+      },
+      {
+        "id": "token_efficiency_benchmarks",
+        "description": "Token usage efficiency",
+        "targets": {
+          "tokensPerQA": {
+            "max": 300,
+            "description": "Maximum tokens per Q&A pair generation"
+          },
+          "promptEfficiency": {
+            "min": 0.7,
+            "description": "Minimum prompt efficiency score"
+          }
+        }
+      }
+    ],
+    "regression_scenarios": [
+      {
+        "id": "known_good_customer_service",
+        "description": "Validated high-quality customer service Q&A generation",
+        "input": {
+          "description": "Generate customer service Q&A for subscription billing issues",
+          "domain": "customer_service",
+          "quantity": 5,
+          "qualityTarget": 8
+        },
+        "expectedOutputSample": {
+          "question": "How should I handle a customer who wants to cancel their subscription immediately due to billing confusion?",
+          "answerElements": ["empathy", "process_explanation", "solution_steps", "follow_up"],
+          "qualityScore": {"min": 7.5}
+        },
+        "stabilityCriteria": {
+          "qualityConsistency": 0.9,
+          "outputVariation": {"max": 0.2}
+        }
+      },
+      {
+        "id": "known_good_sales_strategy",
+        "description": "Validated sales strategy Q&A generation",
+        "input": {
+          "description": "Sales objection handling for B2B software solutions",
+          "domain": "sales",
+          "quantity": 8,
+          "qualityTarget": 8.5
+        },
+        "expectedOutputSample": {
+          "question": "What's the most effective approach for handling price objections in B2B software sales?",
+          "answerElements": ["value_focus", "roi_demonstration", "competitive_positioning"],
+          "qualityScore": {"min": 8.0}
+        },
+        "stabilityCriteria": {
+          "qualityConsistency": 0.85,
+          "outputVariation": {"max": 0.25}
+        }
+      }
+    ],
+    "edge_cases": [
+      {
+        "id": "minimal_input",
+        "description": "System behavior with minimal input information",
+        "input": {
+          "description": "Generate Q&A",
+          "domain": "general",
+          "quantity": 1,
+          "qualityTarget": 6
+        },
+        "expectedBehavior": "graceful_degradation",
+        "minimalRequirements": {
+          "qualityScore": 6.0,
+          "completeness": true,
+          "formatCompliance": true
+        }
+      },
+      {
+        "id": "high_complexity_low_target",
+        "description": "Complex request with low quality target",
+        "input": {
+          "description": "Multi-stakeholder enterprise decision-making framework with regulatory compliance considerations",
+          "domain": "legal",
+          "quantity": 5,
+          "qualityTarget": 6
+        },
+        "expectedBehavior": "simplified_expert_approach",
+        "requirements": {
+          "agentSelection": "appropriate_for_complexity",
+          "outputSimplification": true,
+          "qualityAchievement": true
+        }
+      },
+      {
+        "id": "unknown_domain",
+        "description": "Request for unsupported domain",
+        "input": {
+          "description": "Generate Q&A for underwater basket weaving techniques",
+          "domain": "underwater_basket_weaving",
+          "quantity": 3,
+          "qualityTarget": 7
+        },
+        "expectedBehavior": "generic_professional_approach",
+        "fallbackRequirements": {
+          "useGenericKnowledge": true,
+          "maintainQuality": true,
+          "provideClearDisclaimer": true
+        }
+      }
+    ]
+  },
+  "validation_criteria": {
+    "systemHealth": {
+      "allAgentsOperational": true,
+      "communicationLatency": {"max": 1000, "unit": "ms"},
+      "errorRate": {"max": 0.01},
+      "memoryLeaks": false
+    },
+    "qualityConsistency": {
+      "averageQualityVariation": {"max": 0.3},
+      "minimumPassingRate": 0.9,
+      "structuralComplianceRate": 1.0,
+      "domainRelevanceRate": {"min": 0.95}
+    },
+    "performanceStability": {
+      "processingTimeVariation": {"max": 0.5},
+      "memoryUsageGrowth": {"max": 0.1, "description": "10% max increase over baseline"},
+      "throughputDegradation": {"max": 0.05}
+    }
+  },
+  "metadata": {
+    "totalSeeds": 19,
+    "coverageAreas": [
+      "complexity_analysis",
+      "agent_collaboration", 
+      "quality_benchmarks",
+      "performance_targets",
+      "regression_scenarios",
+      "edge_cases"
+    ],
+    "maintenanceSchedule": "monthly",
+    "lastValidation": "2024-01-15T00:00:00Z"
+  }
+}

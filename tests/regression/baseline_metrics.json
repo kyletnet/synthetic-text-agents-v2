@@ -1,0 +1,121 @@
+{
+  "version": "1.0.0",
+  "last_updated": "2025-09-17T01:26:43.489Z",
+  "baseline_metrics": {
+    "pass_rate": 1,
+    "mean_score": 0.878614166014436,
+    "p50_ms": 157.65874734079082,
+    "p95_ms": 196.32161524645355,
+    "cases_total": 25,
+    "cases_passed": 25,
+    "model": "claude-3-5-sonnet-latest"
+  },
+  "tolerance": {
+    "pass_rate": 0.05,
+    "mean_score": 0.05,
+    "p50_ms": 0.2,
+    "p95_ms": 0.2
+  },
+  "test_cases": {
+    "regression_001": {
+      "expected_score": 0.9673541530078472,
+      "tolerance": 0.05
+    },
+    "regression_002": {
+      "expected_score": 0.9086748549734247,
+      "tolerance": 0.05
+    },
+    "regression_003": {
+      "expected_score": 0.8666295919423411,
+      "tolerance": 0.05
+    },
+    "regression_004": {
+      "expected_score": 0.9591420783819954,
+      "tolerance": 0.05
+    },
+    "regression_005": {
+      "expected_score": 0.8893544514779153,
+      "tolerance": 0.05
+    },
+    "regression_006": {
+      "expected_score": 0.8957307086319211,
+      "tolerance": 0.05
+    },
+    "regression_007": {
+      "expected_score": 0.9210826083331474,
+      "tolerance": 0.05
+    },
+    "regression_008": {
+      "expected_score": 0.9323135047880443,
+      "tolerance": 0.05
+    },
+    "regression_009": {
+      "expected_score": 0.8353640965358724,
+      "tolerance": 0.05
+    },
+    "regression_010": {
+      "expected_score": 0.7950930003555163,
+      "tolerance": 0.05
+    },
+    "regression_011": {
+      "expected_score": 0.8541419393727314,
+      "tolerance": 0.05
+    },
+    "regression_012": {
+      "expected_score": 0.8740983465588075,
+      "tolerance": 0.05
+    },
+    "regression_013": {
+      "expected_score": 0.8347890321542057,
+      "tolerance": 0.05
+    },
+    "regression_014": {
+      "expected_score": 0.8894347658342081,
+      "tolerance": 0.05
+    },
+    "regression_015": {
+      "expected_score": 0.8910270953936626,
+      "tolerance": 0.05
+    },
+    "regression_016": {
+      "expected_score": 0.8402128428599898,
+      "tolerance": 0.05
+    },
+    "regression_017": {
+      "expected_score": 0.8736309560791481,
+      "tolerance": 0.05
+    },
+    "regression_018": {
+      "expected_score": 0.8739673135740185,
+      "tolerance": 0.05
+    },
+    "regression_019": {
+      "expected_score": 0.8588094763774103,
+      "tolerance": 0.05
+    },
+    "regression_020": {
+      "expected_score": 0.845730530588802,
+      "tolerance": 0.05
+    },
+    "regression_021": {
+      "expected_score": 0.9141551706260607,
+      "tolerance": 0.05
+    },
+    "regression_022": {
+      "expected_score": 0.9124932762069774,
+      "tolerance": 0.05
+    },
+    "regression_023": {
+      "expected_score": 0.8770667063667185,
+      "tolerance": 0.05
+    },
+    "regression_024": {
+      "expected_score": 0.8572137627588907,
+      "tolerance": 0.05
+    },
+    "regression_025": {
+      "expected_score": 0.7978438871812406,
+      "tolerance": 0.05
+    }
+  }
+}

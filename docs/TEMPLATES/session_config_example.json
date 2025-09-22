@@ -1,0 +1,12 @@
+{
+  "mode": "exploit",
+  "guardianProfileId": "default",
+  "searchLite": false,
+  "styleRulesPath": "docs/style_rules.yaml",
+  "strategyOverrides": {
+    "factuality": 1.0,
+    "format": 1.0,
+    "difficulty": 1.0,
+    "styleStrictness": 0.5
+  }
+}

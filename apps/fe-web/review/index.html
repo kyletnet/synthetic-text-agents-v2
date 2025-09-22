@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <title>QA 리뷰 뷰어 (정적 + 보강)</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>
+    body { font-family: system-ui, sans-serif; margin:0; display:flex; height:100vh; }
+    aside { width:340px; border-right:1px solid #ddd; padding:16px; overflow:auto; }
+    main { flex:1; display:flex; flex-direction:column; }
+    header { padding:12px 16px; border-bottom:1px solid #ddd; display:flex; gap:12px; align-items:center; flex-wrap:wrap;}
+    section { flex:1; display:flex; min-height:0; }
+    nav { width:240px; border-right:1px solid #eee; padding:12px; overflow:auto; }
+    article { flex:1; padding:16px; overflow:auto; }
+    .card { border:1px solid #eee; border-radius:8px; padding:12px; margin-bottom:8px; }
+    .row { display:flex; gap:8px; }
+    .row > div { flex:1; min-width:0; }
+    .badge { display:inline-block; padding:2px 8px; border-radius:999px; font-size:12px; background:#f4f4f4; margin-right:6px; }
+    .ok { background:#e6ffed; }
+    .warn { background:#fff5e6; }
+    .err { background:#ffecec; }
+    input[type=file] { width:100%; }
+    .mono { font-family: ui-monospace, Menlo, Consolas, monospace; white-space: pre-wrap; }
+    .diff ins { background:#e6ffed; text-decoration:none; }
+    .diff del { background:#ffecec; text-decoration:line-through; }
+    .muted { color:#666; }
+  </style>
+</head>
+<body>
+  <aside>
+    <h3>파일 로딩</h3>
+    <p>파일들을 드래그&드롭 또는 선택해서 불러오세요.</p>
+    <ul>
+      <li>baseline_*.jsonl</li>
+      <li>feedback.jsonl / <strong>feedback.csv</strong></li>
+      <li>apply_log.jsonl</li>
+      <li>rerun_*.jsonl</li>
+      <li>report.md</li>
+      <li>예제.json</li>
+      <li class="muted">(선택) RUN_LOGS/*.jsonl → KPI 집계</li>
+    </ul>
+    <input id="fileInput" type="file" multiple />
+    <div id="loadStatus" class="mono" style="margin-top:8px;"></div>
+  </aside>
+  <main>
+    <header>
+      <strong>QA 리뷰 뷰어</strong>
+      <span class="badge">정적</span>
+      <span class="badge">서버리스</span>
+      <div style="margin-left:auto"></div>
+      <span id="kpis"></span>
+    </header>
+    <section>
+      <nav id="list"></nav>
+      <article>
+        <div class="card">
+          <div><strong>탭</strong>:
+            <button onclick="showTab('result')">결과</button>
+            <button onclick="showTab('feedback')">피드백</button>
+            <button onclick="showTab('apply')">적용 전략</button>
+            <button onclick="showTab('diff')">Before/After</button>
+          </div>
+        </div>
+        <div id="panel-result" class="card"></div>
+        <div id="panel-feedback" class="card" style="display:none;"></div>
+        <div id="panel-apply" class="card" style="display:none;"></div>
+        <div id="panel-diff" class="card" style="display:none;"></div>
+      </article>
+    </section>
+  </main>
+<script>
+const state = { files:{}, baseline:[], rerun:[], feedback:[], apply:[], report:'', topics:{}, logs:[] };
+const $ = sel => document.querySelector(sel);
+
+function showTab(id){ ['result','feedback','apply','diff'].forEach(t=>{ $('#panel-'+t).style.display = (t===id?'block':'none'); }); }
+function readAsText(f){ return new Promise(res=>{ const r=new FileReader(); r.onload=()=>res(String(r.result)); r.readAsText(f); }); }
+function parseJSONL(text){ return text.trim().length? text.trim().split(/\n+/).map(l=>{ try{ return JSON.parse(l); } catch{ return null; } }).filter(Boolean): []; }
+
+function parseCSV(text){
+  const lines = text.split(/\r?\n/).filter(x=>x.trim().length);
+  if (!lines.length) return [];
+  const head = lines[0].split(',').map(h=>h.trim());
+  const idx = (k)=>head.indexOf(k);
+  return lines.slice(1).map(line=>{
+    const cols = line.split(',');
+    const rec = {};
+    head.forEach((h,i)=> rec[h]=cols[i]?.trim() ?? '');
+    // normalize to feedback.jsonl-like shape
+    return {
+      run_id: rec.run_id || null,
+      item_id: rec.item_id || null,
+      qa_index: Number(rec.qa_index ?? -1),
+      text: rec.text || '',
+      created_at: rec.created_at || new Date().toISOString()
+    };
+  });
+}
+
+function renderList(){
+  const nav = $('#list');
+  const items = state.baseline.map((x,i)=>({i, q: x.question, a: x.answer}));
+  nav.innerHTML = items.map(it=>`<div class="card" onclick="selectItem(${it.i})"><div><strong>#${it.i+1}</strong></div><div class="mono">${(it.q||'').slice(0,60)}</div></div>`).join('');
+  renderKPI();
+  if (state.baseline.length) selectItem(0);
+}
+
+function selectItem(idx){
+  const b = state.baseline[idx] || {};
+  const r = state.rerun[idx] || {};
+  const applies = state.apply.filter(a=>a.qa_index===idx);
+  const fbs = state.feedback.filter(f=>f.qa_index===idx);
+
+  $('#panel-result').innerHTML = [
+    `<h3>결과 보기</h3>`,
+    `<div><span class="badge">conf:${(b.confidence??'')}</span> <span class="badge">domain:${b.domain||''}</span></div>`,
+    `<div class="row"><div><strong>Question</strong><div class="mono">${b.question||''}</div></div><div><strong>Answer</strong><div class="mono">${b.answer||''}</div></div></div>`
+  ].join('');
+
+  $('#panel-feedback').innerHTML = `<h3>피드백</h3>` + (fbs.length? fbs.map(f=>`<div class="card"><div class="mono">${f.text}</div></div>`).join('') : '<em>없음</em>');
+
+  $('#panel-apply').innerHTML = `<h3>적용 전략 설명</h3>` + (applies.length? applies.map(a=>`<div class="card"><div class="mono">규칙: ${JSON.stringify(a.rules)}\n사유: ${a.reason||''}</div></div>`).join('') : '<em>없음</em>');
+
+  $('#panel-diff').innerHTML = [
+    `<h3>Before/After</h3>`,
+    `<div class="row"><div><strong>Before</strong><div class="mono">${b.answer||''}</div></div><div><strong>After</strong><div class="mono">${r?.after?.answer || r.answer || '(재생성 없음)'}</div></div></div>`
+  ].join('');
+}
+
+function classifyLogLine(o){
+  // treat ai adapter logs (llm.ok/llm.fail/llm.dry) as KPI sources
+  if (o && typeof o==='object' && typeof o.type==='string' && o.ts) return true;
+  return false;
+}
+
+function renderKPI(){
+  // Aggregate from logs if loaded, else show baseline/rerun counts
+  let ok=0, fail=0, dry=0, tok=0, calls=0, lat = [];
+  state.logs.forEach(o=>{
+    if (!classifyLogLine(o)) return;
+    if (o.type==='llm.ok'){ ok++; calls++; tok += (o.usage?.tokens || 0); }
+    else if (o.type==='llm.fail'){ fail++; calls++; }
+    else if (o.type==='llm.dry'){ dry++; }
+    if (typeof o.duration==='number'){ lat.push(o.duration); }
+  });
+  const avgTok = calls? (tok/calls).toFixed(1) : '0';
+  const avgLat = lat.length? (lat.reduce((a,b)=>a+b,0)/lat.length).toFixed(0) : '—';
+  const succ = calls? Math.round((ok/calls)*100) : (dry? 'DRY' : '—');
+
+  $('#kpis').innerHTML = [
+    `<span class="badge">baseline:${state.baseline.length}</span>`,
+    `<span class="badge">rerun:${state.rerun.length}</span>`,
+    `<span class="badge ${calls? 'ok':''}">성공률:${succ}${calls?'%':''}</span>`,
+    `<span class="badge">평균토큰/호출:${avgTok}</span>`,
+    `<span class="badge">평균지연(ms):${avgLat}</span>`,
+    `<span class="badge">dry:${dry}</span>`
+  ].join('');
+}
+
+function parseJSONLsmart(text){
+  const arr = parseJSONL(text);
+  // Split to targets
+  arr.forEach(o=>{
+    if (classifyLogLine(o)) state.logs.push(o);
+  });
+  return arr;
+}
+
+async function loadFiles(files){
+  const st = $('#loadStatus'); st.textContent = '로딩중...';
+  for (const f of files) {
+    const text = await readAsText(f);
+    state.files[f.name]=text;
+
+    if (/baseline_.*\.jsonl$/i.test(f.name)) state.baseline = parseJSONL(text);
+    else if (/rerun_.*\.jsonl$/i.test(f.name)) {
+      // rerun lines may be per qa_index with before/after
+      const lines = parseJSONL(text);
+      // normalize into index-addressable array for After panel
+      // take latest after snapshot if multiple lines per index
+      const byIdx = new Map();
+      lines.forEach(l=>{
+        if (typeof l.qa_index === 'number') byIdx.set(l.qa_index, l);
+      });
+      state.rerun = Array.from(byIdx.values()).sort((a,b)=>a.qa_index-b.qa_index);
+    }
+    else if (/feedback\.jsonl$/i.test(f.name)) state.feedback = parseJSONL(text);
+    else if (/apply_log\.jsonl$/i.test(f.name)) state.apply = parseJSONL(text);
+    else if (/\.md$/i.test(f.name)) state.report = text;
+    else if (/예제\.json$/i.test(f.name)) { try{ state.topics=JSON.parse(text); } catch{} }
+    else if (/\.csv$/i.test(f.name)) { state.feedback = parseCSV(text); }
+    else if (/\.jsonl$/i.test(f.name)) { parseJSONLsmart(text); } // treat as logs if possible
+  }
+  st.textContent = '로딩 완료';
+  renderList();
+}
+
+document.getElementById('fileInput').addEventListener('change', (e)=>loadFiles(e.target.files));
+</script>
+</body>
+</html>

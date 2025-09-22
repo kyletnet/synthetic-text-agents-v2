@@ -1,0 +1,25 @@
+{"id": "regression_001", "question": "What is the capital of France?", "answer": "Paris", "context": "Geography basics", "expected_score": 0.95}
+{"id": "regression_002", "question": "How do you calculate compound interest?", "answer": "A = P(1 + r/n)^(nt)", "context": "Basic finance", "expected_score": 0.90}
+{"id": "regression_003", "question": "What is photosynthesis?", "answer": "The process by which plants convert light energy into chemical energy", "context": "Biology fundamentals", "expected_score": 0.88}
+{"id": "regression_004", "question": "Name three programming paradigms", "answer": "Object-oriented, functional, and procedural programming", "context": "Computer science", "expected_score": 0.92}
+{"id": "regression_005", "question": "What causes seasons on Earth?", "answer": "The tilt of Earth's axis as it orbits the Sun", "context": "Earth science", "expected_score": 0.87}
+{"id": "regression_006", "question": "Define machine learning", "answer": "A subset of AI that enables computers to learn without explicit programming", "context": "Technology", "expected_score": 0.89}
+{"id": "regression_007", "question": "What is the speed of light?", "answer": "299,792,458 meters per second in vacuum", "context": "Physics constants", "expected_score": 0.93}
+{"id": "regression_008", "question": "How does TCP differ from UDP?", "answer": "TCP is connection-oriented and reliable, UDP is connectionless and faster", "context": "Networking protocols", "expected_score": 0.91}
+{"id": "regression_009", "question": "What is the water cycle?", "answer": "Evaporation, condensation, precipitation, and collection of water", "context": "Environmental science", "expected_score": 0.86}
+{"id": "regression_010", "question": "Explain supply and demand", "answer": "Economic principle where price is determined by availability and desire for goods", "context": "Economics basics", "expected_score": 0.84}
+{"id": "regression_011", "question": "What is DNA?", "answer": "Deoxyribonucleic acid, the hereditary material in most organisms", "context": "Molecular biology", "expected_score": 0.90}
+{"id": "regression_012", "question": "How do databases work?", "answer": "Structured systems for storing, organizing, and retrieving data efficiently", "context": "Information systems", "expected_score": 0.85}
+{"id": "regression_013", "question": "What is cryptocurrency?", "answer": "Digital currency using cryptographic protocols to secure transactions", "context": "Financial technology", "expected_score": 0.88}
+{"id": "regression_014", "question": "Explain cloud computing", "answer": "Delivery of computing services over the internet on-demand", "context": "Technology infrastructure", "expected_score": 0.87}
+{"id": "regression_015", "question": "What is artificial intelligence?", "answer": "Computer systems that can perform tasks requiring human intelligence", "context": "Technology definition", "expected_score": 0.91}
+{"id": "regression_016", "question": "How does encryption work?", "answer": "Converting data into coded format to prevent unauthorized access", "context": "Information security", "expected_score": 0.89}
+{"id": "regression_017", "question": "What is quantum physics?", "answer": "Branch of physics dealing with atomic and subatomic particle behavior", "context": "Advanced physics", "expected_score": 0.86}
+{"id": "regression_018", "question": "Explain renewable energy", "answer": "Energy from naturally replenishing sources like wind, solar, and water", "context": "Environmental technology", "expected_score": 0.85}
+{"id": "regression_019", "question": "What is cybersecurity?", "answer": "Protection of digital systems, networks, and data from threats", "context": "Information security", "expected_score": 0.90}
+{"id": "regression_020", "question": "How does the immune system work?", "answer": "Body's defense mechanism against infections and diseases", "context": "Human biology", "expected_score": 0.87}
+{"id": "regression_021", "question": "What is blockchain technology?", "answer": "Distributed ledger technology for secure, transparent transactions", "context": "Technology innovation", "expected_score": 0.88}
+{"id": "regression_022", "question": "Explain natural selection", "answer": "Process where organisms with favorable traits survive and reproduce", "context": "Evolution biology", "expected_score": 0.89}
+{"id": "regression_023", "question": "What is climate change?", "answer": "Long-term shifts in global temperatures and weather patterns", "context": "Environmental science", "expected_score": 0.86}
+{"id": "regression_024", "question": "How do APIs work?", "answer": "Interface allowing different software applications to communicate", "context": "Software development", "expected_score": 0.90}
+{"id": "regression_025", "question": "What is project management?", "answer": "Planning, organizing, and overseeing work to achieve specific goals", "context": "Business operations", "expected_score": 0.83}

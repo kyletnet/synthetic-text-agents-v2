@@ -1,0 +1,463 @@
+/**
+ * Seed Manager
+ * Provides consistent randomization across all system components
+ * Ensures reproducible results for baseline runs
+ */
+
+export interface SeedState {
+  global_seed: number;
+  component_seeds: {
+    [component: string]: number;
+  };
+  random_state: {
+    call_count: number;
+    last_value: number;
+  };
+  created_timestamp: string;
+  run_id?: string;
+}
+
+export interface SeededRandomOptions {
+  min?: number;
+  max?: number;
+  integer?: boolean;
+}
+
+export class SeedManager {
+  private seedState: SeedState;
+  private componentCounters: { [component: string]: number } = {};
+  private componentSeeds: { [component: string]: number } = {};
+
+  constructor(globalSeed?: number, runId?: string) {
+    const seed = globalSeed ?? this.generateSeed();
+
+    this.seedState = {
+      global_seed: seed,
+      component_seeds: {},
+      random_state: {
+        call_count: 0,
+        last_value: seed
+      },
+      created_timestamp: new Date().toISOString(),
+      run_id: runId
+    };
+
+    // Initialize common component seeds
+    this.initializeComponentSeeds();
+  }
+
+  /**
+   * Initialize seeds for common system components
+   */
+  private initializeComponentSeeds(): void {
+    const components = [
+      'batch_sampling',        // For selecting items from batches
+      'diversity_sampling',    // For diversity planner agent
+      'retriever_tiebreak',   // For breaking ties in retrieval
+      'agent_selection',      // For selecting agents in MA orchestration
+      'question_generation',  // For QA generation randomness
+      'answer_generation',    // For answer generation randomness
+      'evaluation_sampling',  // For sampling evaluation items
+      'llm_temperature'       // For LLM temperature/randomness seeding
+    ];
+
+    for (const component of components) {
+      this.componentSeeds[component] = this.deriveComponentSeed(component);
+    }
+  }
+
+  /**
+   * Derive deterministic seed for a component
+   */
+  private deriveComponentSeed(component: string): number {
+    // Use component name + global seed to derive deterministic component seed
+    let hash = 0;
+    const input = component + this.seedState.global_seed.toString();
+
+    for (let i = 0; i < input.length; i++) {
+      const char = input.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash; // Convert to 32-bit integer
+    }
+
+    return Math.abs(hash) % 1000000;
+  }
+
+  /**
+   * Get seed for a specific component
+   */
+  getSeedForComponent(component: string): number {
+    if (!this.seedState.component_seeds[component]) {
+      this.seedState.component_seeds[component] = this.deriveComponentSeed(component);
+    }
+
+    return this.seedState.component_seeds[component];
+  }
+
+  /**
+   * Get seeded random number generator for a component
+   */
+  getSeededRandom(component: string): SeededRandom {
+    const seed = this.getSeedForComponent(component);
+    const counter = this.componentCounters[component] || 0;
+
+    // Advance counter for this component
+    this.componentCounters[component] = counter + 1;
+
+    return new SeededRandom(seed + counter);
+  }
+
+  /**
+   * Generate global random value (advances global state)
+   */
+  random(options: SeededRandomOptions = {}): number {
+    this.seedState.random_state.call_count++;
+
+    // Linear congruential generator for reproducible randomness
+    const a = 1664525;
+    const c = 1013904223;
+    const m = Math.pow(2, 32);
+
+    this.seedState.random_state.last_value =
+      (a * this.seedState.random_state.last_value + c) % m;
+
+    let value = this.seedState.random_state.last_value / m;
+
+    // Apply options
+    if (options.min !== undefined || options.max !== undefined) {
+      const min = options.min ?? 0;
+      const max = options.max ?? 1;
+      value = min + (value * (max - min));
+    }
+
+    if (options.integer) {
+      value = Math.floor(value);
+    }
+
+    return value;
+  }
+
+  /**
+   * Shuffle array deterministically
+   */
+  shuffle<T>(array: T[], component: string = 'default'): T[] {
+    const shuffled = [...array];
+    const random = this.getSeededRandom(component);
+
+    // Fisher-Yates shuffle with seeded random
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(random.next() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+
+    return shuffled;
+  }
+
+  /**
+   * Sample items deterministically
+   */
+  sample<T>(array: T[], count: number, component: string = 'default'): T[] {
+    if (count >= array.length) return [...array];
+
+    const shuffled = this.shuffle(array, component);
+    return shuffled.slice(0, count);
+  }
+
+  /**
+   * Choose random item deterministically
+   */
+  choice<T>(array: T[], component: string = 'default'): T | undefined {
+    if (array.length === 0) return undefined;
+
+    const random = this.getSeededRandom(component);
+    const index = Math.floor(random.next() * array.length);
+    return array[index];
+  }
+
+  /**
+   * Generate random integer in range
+   */
+  randomInt(min: number, max: number, component: string = 'default'): number {
+    const random = this.getSeededRandom(component);
+    return Math.floor(random.next() * (max - min + 1)) + min;
+  }
+
+  /**
+   * Get current seed state for serialization
+   */
+  getSeedState(): SeedState {
+    return { ...this.seedState };
+  }
+
+  /**
+   * Restore from seed state
+   */
+  static fromSeedState(seedState: SeedState): SeedManager {
+    const manager = new SeedManager(seedState.global_seed, seedState.run_id);
+    manager.seedState = { ...seedState };
+    return manager;
+  }
+
+  /**
+   * Create deterministic environment variable setup
+   */
+  getEnvironmentSeeds(): { [key: string]: string } {
+    return {
+      SEED_GLOBAL: this.seedState.global_seed.toString(),
+      SEED_BATCH_SAMPLING: this.getSeedForComponent('batch_sampling').toString(),
+      SEED_DIVERSITY: this.getSeedForComponent('diversity_sampling').toString(),
+      SEED_RETRIEVER: this.getSeedForComponent('retriever_tiebreak').toString(),
+      SEED_AGENT_SELECTION: this.getSeedForComponent('agent_selection').toString(),
+      SEED_QA_GENERATION: this.getSeedForComponent('question_generation').toString(),
+      SEED_LLM_TEMPERATURE: this.getSeedForComponent('llm_temperature').toString(),
+    };
+  }
+
+  /**
+   * Apply seeds to process environment
+   */
+  applyToEnvironment(): void {
+    const envSeeds = this.getEnvironmentSeeds();
+
+    for (const [key, value] of Object.entries(envSeeds)) {
+      process.env[key] = value;
+    }
+
+    console.log(`🎲 Applied seeds to environment: global=${this.seedState.global_seed}`);
+  }
+
+  /**
+   * Generate a new random seed
+   */
+  private generateSeed(): number {
+    return Math.floor(Math.random() * 1000000);
+  }
+
+  /**
+   * Create a seeded random configuration for LLM calls
+   */
+  getLLMRandomConfig(component: string = 'llm_temperature'): any {
+    const seed = this.getSeedForComponent(component);
+
+    // Derive temperature and other random parameters from seed
+    const baseTemp = 0.1 + (seed % 100) / 1000; // 0.1 to 0.199
+
+    return {
+      temperature: Math.round(baseTemp * 1000) / 1000, // Round to 3 decimal places
+      seed: seed,
+      // Note: Different LLM providers handle seeding differently
+      // This provides a consistent interface regardless of provider
+    };
+  }
+
+  /**
+   * Get consistent retry delays for exponential backoff
+   */
+  getRetryDelay(attempt: number, baseMs: number = 1000, component: string = 'retry_delay'): number {
+    const random = this.getSeededRandom(component);
+    const jitter = 0.1 + (random.next() * 0.1); // 10% to 20% jitter
+
+    return Math.floor(baseMs * Math.pow(2, attempt) * jitter);
+  }
+}
+
+/**
+ * Seeded Random Number Generator
+ * Provides deterministic random sequences for specific components
+ */
+export class SeededRandom {
+  private seed: number;
+  private current: number;
+
+  constructor(seed: number) {
+    this.seed = seed;
+    this.current = seed;
+  }
+
+  /**
+   * Get next random value [0, 1)
+   */
+  next(): number {
+    // Linear congruential generator
+    const a = 1664525;
+    const c = 1013904223;
+    const m = Math.pow(2, 32);
+
+    this.current = (a * this.current + c) % m;
+    return this.current / m;
+  }
+
+  /**
+   * Get random integer in range [min, max]
+   */
+  nextInt(min: number, max: number): number {
+    return Math.floor(this.next() * (max - min + 1)) + min;
+  }
+
+  /**
+   * Get random float in range [min, max)
+   */
+  nextFloat(min: number = 0, max: number = 1): number {
+    return min + (this.next() * (max - min));
+  }
+
+  /**
+   * Get random boolean with given probability
+   */
+  nextBoolean(probability: number = 0.5): boolean {
+    return this.next() < probability;
+  }
+
+  /**
+   * Reset to original seed
+   */
+  reset(): void {
+    this.current = this.seed;
+  }
+
+  /**
+   * Get current seed value
+   */
+  getSeed(): number {
+    return this.seed;
+  }
+}
+
+/**
+ * Global seed manager instance
+ */
+let globalSeedManager: SeedManager | null = null;
+
+/**
+ * Initialize global seed manager
+ */
+export function initializeSeedManager(seed?: number, runId?: string): SeedManager {
+  globalSeedManager = new SeedManager(seed, runId);
+  globalSeedManager.applyToEnvironment();
+  return globalSeedManager;
+}
+
+/**
+ * Get global seed manager (throws if not initialized)
+ */
+export function getSeedManager(): SeedManager {
+  if (!globalSeedManager) {
+    throw new Error('Seed manager not initialized. Call initializeSeedManager() first.');
+  }
+  return globalSeedManager;
+}
+
+/**
+ * Get seeded random for a component (convenience function)
+ */
+export function getSeededRandom(component: string): SeededRandom {
+  return getSeedManager().getSeededRandom(component);
+}
+
+/**
+ * Deterministic sampling utilities
+ */
+export const SeededUtils = {
+  /**
+   * Deterministic shuffle
+   */
+  shuffle: <T>(array: T[], component: string = 'default'): T[] => {
+    return getSeedManager().shuffle(array, component);
+  },
+
+  /**
+   * Deterministic sample
+   */
+  sample: <T>(array: T[], count: number, component: string = 'default'): T[] => {
+    return getSeedManager().sample(array, count, component);
+  },
+
+  /**
+   * Deterministic choice
+   */
+  choice: <T>(array: T[], component: string = 'default'): T | undefined => {
+    return getSeedManager().choice(array, component);
+  },
+
+  /**
+   * Deterministic random integer
+   */
+  randomInt: (min: number, max: number, component: string = 'default'): number => {
+    return getSeedManager().randomInt(min, max, component);
+  },
+
+  /**
+   * Create diversity sampling strategy
+   */
+  createDiversitySampler: (items: any[], targetDistribution: any, component: string = 'diversity_sampling') => {
+    const random = getSeededRandom(component);
+
+    return {
+      sample: (count: number) => {
+        // Implement weighted sampling based on target distribution
+        const shuffled = [...items].sort(() => random.next() - 0.5);
+
+        // Apply distribution weights (simplified implementation)
+        const weighted = shuffled.slice(0, count);
+
+        return weighted;
+      }
+    };
+  }
+};
+
+/**
+ * Integration helpers for existing codebase
+ */
+export const SeedIntegration = {
+  /**
+   * Patch Math.random for specific scopes (use carefully)
+   */
+  patchMathRandom: (component: string, fn: () => any): any => {
+    const originalRandom = Math.random;
+    const seededRandom = getSeededRandom(component);
+
+    try {
+      Math.random = () => seededRandom.next();
+      return fn();
+    } finally {
+      Math.random = originalRandom;
+    }
+  },
+
+  /**
+   * Get deterministic Array.prototype.sort comparator
+   */
+  createDeterministicSort: (component: string = 'array_sort') => {
+    const random = getSeededRandom(component);
+
+    return (a: any, b: any) => {
+      // For equal items, use deterministic tiebreaker
+      if (a === b) return 0;
+
+      // Use hash of stringified values for consistent ordering
+      const hashA = SeedIntegration.hashString(JSON.stringify(a));
+      const hashB = SeedIntegration.hashString(JSON.stringify(b));
+
+      if (hashA === hashB) {
+        // Final tiebreaker using seeded random
+        return random.next() - 0.5;
+      }
+
+      return hashA - hashB;
+    };
+  },
+
+  /**
+   * Simple string hash function
+   */
+  hashString: (str: string): number => {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      const char = str.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash; // Convert to 32-bit integer
+    }
+    return hash;
+  }
+};

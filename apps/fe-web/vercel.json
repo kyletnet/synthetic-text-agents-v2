@@ -1,0 +1,21 @@
+{
+  "name": "qa-generation-frontend",
+  "version": 2,
+  "buildCommand": "npm run build",
+  "installCommand": "npm install",
+  "framework": "nextjs",
+  "regions": ["iad1"],
+  "env": {
+    "NEXT_PUBLIC_API_BASE": "@next_public_api_base"
+  },
+  "build": {
+    "env": {
+      "NEXT_PUBLIC_API_BASE": "@next_public_api_base"
+    }
+  },
+  "functions": {
+    "app/api/**/*.ts": {
+      "runtime": "nodejs18.x"
+    }
+  }
+}

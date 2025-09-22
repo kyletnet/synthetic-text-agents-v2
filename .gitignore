@@ -1,0 +1,90 @@
+
+.backup_quarantine/
+.cache/.keys/
+.DS_Store
+.env
+.env.*
+.env.development.local
+.env.local
+.env.production.local
+.env.test.local
+.idea/
+.keys/
+.npm-cache/
+.vscode/
+*_backup.*
+*.backup
+*.backup.*
+*.bak
+*.env
+*.env.*
+*.key
+*.keys
+*.log
+*.old
+*.orig
+*.swo
+*.swp
+*.temp
+*.tmp
+*.tsbuildinfo
+*~
+# ===== SECURITY & SECRET HARDENING =====
+
+# Additional build/runtime patterns
+# Additional secrets & env patterns
+# Backup/temp files that often contain secrets
+*_backup
+*_backup.*
+*-backup
+*-backup.*
+*_original
+*_original.*
+*-original
+*-original.*
+*.copy
+*.cp
+*.save
+*.temp
+
+# Sensitive file patterns
+*.key
+*.keys
+secret.*
+secrets.*
+credentials.*
+*.pem
+*.p12
+*.pfx
+*.jks
+id_rsa*
+id_dsa*
+id_ecdsa*
+id_ed25519*
+
+# Build outputs
+# Dependencies
+# Environment variables
+# IDE
+# OS
+# Reports/cache that may contain sensitive data
+# Runtime files
+# Temporary files
+# Test coverage
+build/
+coverage/
+credentials.*
+dist/
+exports/*
+logs/
+node_modules/
+npm-debug.log*
+outputs/*.keys
+reports/history/*
+RUN_LOGS/*
+secret.*
+secrets.*
+Thumbs.db
+yarn-debug.log*
+yarn-error.log*
+.npm-cache/

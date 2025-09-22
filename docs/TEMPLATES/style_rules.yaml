@@ -1,0 +1,12 @@
+tone: "친절하고 명료하게"
+forbidden_terms:
+  - "금칙어_예시1"
+  - "금칙어_예시2"
+glossary:
+  "용어A": "공식 정의"
+  "용어B": "공식 정의"
+format:
+  bullet_min: 0
+  bullet_max: 5
+citation:
+  required: false

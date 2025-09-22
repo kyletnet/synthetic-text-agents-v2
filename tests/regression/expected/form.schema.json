@@ -1,0 +1,42 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Regression Test Output Format",
+  "description": "Expected format for regression test case results",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Test case identifier"
+    },
+    "score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Quality score between 0 and 1"
+    },
+    "comment": {
+      "type": "string",
+      "description": "Quality assessment comment"
+    },
+    "duration_ms": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Processing time in milliseconds"
+    },
+    "model": {
+      "type": "string",
+      "description": "Model used for evaluation"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["PASS", "FAIL", "ERROR"],
+      "description": "Test case execution status"
+    },
+    "error": {
+      "type": "string",
+      "description": "Error message if status is ERROR"
+    }
+  },
+  "required": ["id", "score", "comment", "duration_ms", "model", "status"],
+  "additionalProperties": false
+}

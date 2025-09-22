@@ -1,0 +1,73 @@
+# FE Web MVP
+
+Next.js 14 frontend for the synthetic text agents system with 3-panel UI.
+
+## Installation
+
+From the root directory:
+```bash
+# Using pnpm (preferred)
+pnpm --filter fe-web install
+
+# Using npm workspaces
+npm --workspace apps/fe-web install
+```
+
+## Development
+
+```bash
+# Using pnpm
+pnpm --filter fe-web dev
+
+# Using npm workspaces
+npm --workspace apps/fe-web run dev
+
+# Or from fe-web directory
+cd apps/fe-web && npm run dev
+```
+
+The app runs on http://localhost:3001
+
+## Environment Variables
+
+Set `RUN_PROVIDER` to control how the run API behaves:
+
+- `MOCK` (default): Returns mock data from templates
+- `CLI`: Spawns engine CLI process 
+- `ENGINE_HTTP`: Placeholder for future HTTP backend
+
+```bash
+RUN_PROVIDER=CLI pnpm --filter fe-web dev
+```
+
+## Features
+
+- 3-panel UI: Inputs, Results, Inspector
+- Feature flags: A~F with proper exposure (B/E/F visible, C/D internal, A toggle)
+- Session persistence in localStorage
+- Provider switching for different backend modes
+- Request logging to outputs/fe_requests.log
+
+## UI Components
+
+- File/text upload
+- Guidelines textarea
+- Preset selection (Strict/Default/Fast)
+- Guardian Profile selector
+- Mode tabs (explore/exploit)
+- Style Guard toggle + file picker
+- SearchLite toggle (beta)
+- Results table with metrics and sample data
+- Auto-tagging suggestions (max 2)
+- Feedback input with change impact summary
+
+## Test IDs
+
+Key test IDs for E2E testing:
+- `btn-run`: Run button
+- `btn-rerun`: Rerun button  
+- `btn-rollback`: Rollback button
+- `toggle-style-guard`: Style Guard toggle
+- `select-guardian`: Guardian Profile selector
+- `tab-mode-explore`: Explore mode tab
+- `chip-tag-hallucination`: Hallucination tag chip

@@ -1,0 +1,13 @@
+{
+  "inputs": { "text": "샘플 원문 텍스트", "guidelines": "친절/명료/인용 우선" },
+  "flags": {
+    "feature.searchLite": false,
+    "feature.guardianProfiles": true,
+    "feature.autoTagging": true,
+    "feature.difficultyDistribution": true,
+    "feature.styleGuard": true,
+    "feature.mode": "exploit"
+  },
+  "constraints": { "minScore": 7.0, "maxLatency": 2000 },
+  "session": { "guardianProfileId": "default", "seed": 42 }
+}

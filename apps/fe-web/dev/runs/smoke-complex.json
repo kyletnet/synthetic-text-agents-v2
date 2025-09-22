@@ -1,0 +1,25 @@
+{
+  "name": "smoke-complex",
+  "description": "Complex smoke test - full 8-agent orchestration",
+  "request": {
+    "id": "smoke-complex-001",
+    "description": "Generate expert-level technical support Q&A with psychological considerations",
+    "domain": "technical_support",
+    "quantity": 2,
+    "complexity": 8,
+    "qualityTarget": 9.0,
+    "specialization": "advanced_troubleshooting",
+    "constraints": {
+      "maxDuration": 180000,
+      "requireExpertConsultation": true,
+      "expertiseLevel": "advanced"
+    }
+  },
+  "expectations": {
+    "minQualityScore": 8.5,
+    "maxDuration": 180000,
+    "expectedAgentCount": 8,
+    "mustIncludeAgents": ["meta-controller", "psychology-specialist", "cognitive-scientist", "quality-auditor"]
+  },
+  "tags": ["smoke", "complex", "full-orchestration"]
+}

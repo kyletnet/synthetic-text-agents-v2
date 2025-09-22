@@ -1,0 +1,9 @@
+[
+  "src/agents/",
+  "src/core/",
+  "src/rag/",
+  "src/augmentation/",
+  "src/shared/types.ts",
+  "apps/fe-web/app/api/run/route.ts",
+  "apps/fe-web/app/api/docs/"
+]
