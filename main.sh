@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -Eeuo pipefail
 
 # Synthetic Text Agents v2 - Replit Startup Script
 echo "🚀 Starting Synthetic Text Agents v2..."

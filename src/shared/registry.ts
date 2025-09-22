@@ -7,7 +7,7 @@ import { PsychologySpecialist } from '../agents/psychologySpecialist.js';
 import { LinguisticsEngineer } from '../agents/linguisticsEngineer.js';
 import { DomainConsultant } from '../agents/domainConsultant.js';
 import { CognitiveScientist } from '../agents/cognitiveScientist.js';
-import { MetaController } from '../agents/metaController.js';
+import { MetaController } from '../core/metaController.js';
 
 // Re-export BaseAgent for convenience
 export { BaseAgent };
@@ -27,12 +27,12 @@ export class AgentRegistry {
     this.register(new DomainConsultant(new Logger()));
     this.register(new CognitiveScientist(new Logger()));
 
-    // Register meta-controller as a lightweight agent
-    this.register(new MetaController());
+    // Register meta-controller as a comprehensive orchestrator
+    this.register(new MetaController(new Logger()));
   }
 
   register(agent: BaseAgent) {
-    this.agents.set((agent as any).id, agent);
+    this.agents.set(agent.id, agent);
   }
 
   getAgent(id: string): BaseAgent | undefined {
