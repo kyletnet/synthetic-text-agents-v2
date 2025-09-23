@@ -32,12 +32,12 @@ export interface APMProviderConfig {
  */
 export class DatadogProvider implements APMProvider {
   name = 'datadog';
-  private config: APMProviderConfig;
+  private config!: APMProviderConfig;
   private logger: Logger;
   private dd: any;
 
   constructor() {
-    this.logger = new Logger('DatadogProvider');
+    this.logger = new Logger({ level: 'info' });
   }
 
   async initialize(config: APMProviderConfig): Promise<void> {
@@ -154,12 +154,12 @@ export class DatadogProvider implements APMProvider {
  */
 export class NewRelicProvider implements APMProvider {
   name = 'newrelic';
-  private config: APMProviderConfig;
+  private config!: APMProviderConfig;
   private logger: Logger;
   private newrelic: any;
 
   constructor() {
-    this.logger = new Logger('NewRelicProvider');
+    this.logger = new Logger({ level: 'info' });
   }
 
   async initialize(config: APMProviderConfig): Promise<void> {
@@ -245,13 +245,13 @@ export class NewRelicProvider implements APMProvider {
  */
 export class PrometheusProvider implements APMProvider {
   name = 'prometheus';
-  private config: APMProviderConfig;
+  private config!: APMProviderConfig;
   private logger: Logger;
   private prom: any;
   private metrics: Map<string, any> = new Map();
 
   constructor() {
-    this.logger = new Logger('PrometheusProvider');
+    this.logger = new Logger({ level: 'info' });
   }
 
   async initialize(config: APMProviderConfig): Promise<void> {
@@ -387,7 +387,7 @@ export class APMIntegration {
   constructor(config: APMConfig, performanceMonitor: PerformanceMonitor) {
     this.config = config;
     this.performanceMonitor = performanceMonitor;
-    this.logger = new Logger('APMIntegration');
+    this.logger = new Logger({ level: 'info' });
   }
 
   async initialize(): Promise<void> {

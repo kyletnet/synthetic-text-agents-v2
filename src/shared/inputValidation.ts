@@ -98,7 +98,7 @@ export class InputValidator {
         field: err.path.join('.') || 'root',
         message: err.message,
         code: err.code,
-        value: err.input
+        value: (err as any).input
       }));
 
       return {

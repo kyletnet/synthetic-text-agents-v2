@@ -154,7 +154,7 @@ export class BackupSystem extends EventEmitter {
   constructor(config: BackupConfig) {
     super();
     this.config = config;
-    this.logger = new Logger('BackupSystem');
+    this.logger = new Logger({ level: 'info' });
 
     if (config.enabled) {
       this.loadExistingBackups();

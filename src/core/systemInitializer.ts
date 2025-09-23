@@ -38,7 +38,7 @@ export class SystemInitializer {
   private config: SystemConfig;
 
   constructor() {
-    this.logger = new Logger('SystemInitializer');
+    this.logger = new Logger({ level: 'info' });
     this.config = this.loadConfiguration();
   }
 
@@ -155,21 +155,7 @@ export class SystemInitializer {
 
     try {
       const errorTracker = initializeErrorTracking({
-        enabled: true,
-        serviceName: this.config.serviceName,
-        environment: this.config.environment,
-        version: this.config.version,
-        sampleRate: this.config.environment === 'production' ? 0.1 : 1.0,
-        integrations: {
-          sentry: {
-            enabled: !!process.env.SENTRY_DSN,
-            dsn: process.env.SENTRY_DSN
-          },
-          datadog: {
-            enabled: !!process.env.DATADOG_API_KEY,
-            apiKey: process.env.DATADOG_API_KEY
-          }
-        }
+        sampleRate: this.config.environment === 'production' ? 0.1 : 1.0
       });
 
       this.logger.info('✅ Error tracking initialized');
@@ -185,7 +171,7 @@ export class SystemInitializer {
     }
 
     try {
-      const performanceMonitor = initializePerformanceMonitoring({
+      initializePerformanceMonitoring({
         provider: this.config.apmProvider || 'custom',
         enabled: true,
         samplingRate: this.config.environment === 'production' ? 0.1 : 1.0,
@@ -221,8 +207,8 @@ export class SystemInitializer {
         samplingRate: this.config.environment === 'production' ? 0.1 : 1.0,
         flushInterval: 30000,
         batchSize: 100,
-        apiKey: process.env.APM_API_KEY,
-        endpoint: process.env.APM_ENDPOINT,
+        apiKey: process.env.APM_API_KEY || '',
+        endpoint: process.env.APM_ENDPOINT || '',
         serviceName: this.config.serviceName,
         environment: this.config.environment,
         version: this.config.version
@@ -242,7 +228,7 @@ export class SystemInitializer {
     }
 
     try {
-      const logAggregator = initializeLogAggregation({
+      initializeLogAggregation({
         enabled: true,
         bufferSize: 1000,
         flushInterval: 30000, // 30 seconds
@@ -251,7 +237,7 @@ export class SystemInitializer {
         indexingEnabled: true,
         storageBackend: this.config.logStorageBackend || 'file',
         storagePath: process.env.LOG_STORAGE_PATH || '/tmp/logs',
-        elasticsearchUrl: process.env.ELASTICSEARCH_URL,
+        elasticsearchUrl: process.env.ELASTICSEARCH_URL || '',
         maxLogSize: 64 * 1024, // 64KB
         enableSampling: this.config.environment === 'production',
         samplingRate: this.config.environment === 'production' ? 0.1 : 1.0
@@ -270,7 +256,7 @@ export class SystemInitializer {
     }
 
     try {
-      const logForwarder = initializeLogForwarder({
+      initializeLogForwarder({
         enabled: true,
         targets: this.getLogForwardingTargets(),
         batchSize: 100,
@@ -294,7 +280,7 @@ export class SystemInitializer {
     }
 
     try {
-      const backupSystem = initializeBackupSystem({
+      initializeBackupSystem({
         enabled: true,
         strategies: [
           {
@@ -355,7 +341,7 @@ export class SystemInitializer {
         return;
       }
 
-      const dashboard = initializePerformanceDashboard(performanceMonitor, {
+      initializePerformanceDashboard(performanceMonitor, {
         responseTimeWarning: 1000,
         responseTimeCritical: 5000,
         errorRateWarning: 0.05,
@@ -390,7 +376,7 @@ export class SystemInitializer {
 
     // Unhandled rejection handler
     process.on('unhandledRejection', (reason, promise) => {
-      this.logger.error('Unhandled Rejection at:', promise, 'reason:', reason);
+      this.logger.error(`Unhandled Rejection at: ${promise}, reason: ${reason}`);
 
       // Report to error tracking
       if (this.config.enableErrorTracking) {

@@ -53,12 +53,7 @@ export const DEFAULT_MASKING_RULES: MaskingRule[] = [
   // Email Addresses (partial masking)
   {
     pattern: /\b([a-zA-Z0-9._%+-]+)@([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})\b/g,
-    replacement: (match, username, domain) => {
-      const maskedUsername = username.length > 3
-        ? username.substring(0, 2) + '***' + username.substring(username.length - 1)
-        : '***';
-      return `${maskedUsername}@${domain}`;
-    },
+    replacement: '***@$2',
     description: 'Email Addresses'
   },
 

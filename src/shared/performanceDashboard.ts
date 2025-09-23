@@ -74,7 +74,7 @@ export class PerformanceDashboard {
 
   constructor(performanceMonitor: PerformanceMonitor, alertThresholds?: Partial<AlertThresholds>) {
     this.performanceMonitor = performanceMonitor;
-    this.logger = new Logger('PerformanceDashboard');
+    this.logger = new Logger({ level: 'info' });
     this.alertThresholds = {
       responseTimeWarning: 1000,
       responseTimeCritical: 5000,

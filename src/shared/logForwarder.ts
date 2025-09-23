@@ -67,7 +67,7 @@ export class LogForwarder extends EventEmitter {
   constructor(config: LogForwarderConfig) {
     super();
     this.config = config;
-    this.logger = new Logger('LogForwarder');
+    this.logger = new Logger({ level: 'info' });
 
     if (config.enabled) {
       this.initializeTargets();

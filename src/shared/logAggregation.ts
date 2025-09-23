@@ -131,7 +131,7 @@ export class LogAggregator extends EventEmitter {
   constructor(config: LogAggregationConfig) {
     super();
     this.config = config;
-    this.logger = new Logger('LogAggregator');
+    this.logger = new Logger({ level: 'info' });
 
     if (config.enabled) {
       this.startFlushTimer();

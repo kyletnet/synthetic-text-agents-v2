@@ -225,7 +225,7 @@ export class RateLimiter {
 
     const remainingPoints = Math.max(0, this.config.maxRequests - result.totalHits);
     const isBlocked = result.totalHits > this.config.maxRequests;
-    const msBeforeNext = result.resetTime.getTime() - Date.now();
+    const msBeforeNext = result.resetTime ? result.resetTime.getTime() - Date.now() : 0;
 
     return {
       totalHits: result.totalHits,

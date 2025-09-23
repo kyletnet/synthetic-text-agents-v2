@@ -143,15 +143,15 @@ export class ErrorTracker {
     };
 
     // Store breadcrumbs in context for next error
-    if (!globalThis.__errorTrackingBreadcrumbs) {
-      globalThis.__errorTrackingBreadcrumbs = [];
+    if (!(globalThis as any).__errorTrackingBreadcrumbs) {
+      (globalThis as any).__errorTrackingBreadcrumbs = [];
     }
 
-    globalThis.__errorTrackingBreadcrumbs.push(breadcrumb);
+    (globalThis as any).__errorTrackingBreadcrumbs.push(breadcrumb);
 
     // Keep only last 20 breadcrumbs
-    if (globalThis.__errorTrackingBreadcrumbs.length > 20) {
-      globalThis.__errorTrackingBreadcrumbs.shift();
+    if ((globalThis as any).__errorTrackingBreadcrumbs.length > 20) {
+      (globalThis as any).__errorTrackingBreadcrumbs.shift();
     }
   }
 
@@ -159,7 +159,7 @@ export class ErrorTracker {
    * Set user context for error tracking
    */
   setUserContext(context: Pick<ErrorContext, 'userId' | 'sessionId'>): void {
-    globalThis.__errorTrackingUserContext = context;
+    (globalThis as any).__errorTrackingUserContext = context;
   }
 
   /**
@@ -219,8 +219,8 @@ export class ErrorTracker {
     }
 
     // Handle browser errors
-    if (typeof window !== 'undefined') {
-      window.addEventListener('error', (event) => {
+    if (typeof globalThis !== 'undefined' && (globalThis as any).window) {
+      ((globalThis as any).window).addEventListener('error', (event: any) => {
         this.trackError(
           new Error(event.message),
           {
@@ -234,7 +234,7 @@ export class ErrorTracker {
         );
       });
 
-      window.addEventListener('unhandledrejection', (event) => {
+      ((globalThis as any).window).addEventListener('unhandledrejection', (event: any) => {
         this.trackCriticalError(
           event.reason instanceof Error ? event.reason : new Error(String(event.reason)),
           {
