@@ -7,6 +7,7 @@
 ## Quick Start (Two-Button Execution)
 
 ### 🧪 Smoke Test (Dry Run)
+
 ```bash
 # Basic smoke test (offline, no costs)
 ./run_v3.sh <target> --smoke --offline
@@ -17,6 +18,7 @@
 ```
 
 ### 🚀 Production Run
+
 ```bash
 # Production execution (requires budget)
 ./run_v3.sh <target> --full --budget <USD> --profile prod
@@ -27,6 +29,7 @@
 ```
 
 ### 📊 Baseline v1.5 Metrics Analysis
+
 ```bash
 # Smoke test baseline metrics (small dataset)
 ./run_v3.sh baseline --smoke --budget 0.50
@@ -54,12 +57,14 @@
 The baseline reporting system now includes several enhanced features for operational clarity:
 
 **Threshold Summary Table**
+
 - Current vs previous threshold comparison with delta calculations
 - Visual status badges (PASS=✅, WARN=⚠️, FAIL=❌) for quick assessment
 - P0 thresholds marked as "FIXED" (cannot be auto-calibrated)
 - P1/P2 thresholds show auto-calibration source when applicable
 
 **KPI Trend Analysis**
+
 - Mini-sparklines for last 10 runs showing trends for key metrics:
   - Accuracy score (mean_score)
   - Cost per item (cost_per_item)
@@ -68,23 +73,27 @@ The baseline reporting system now includes several enhanced features for operati
 - Graceful degradation when insufficient historical data
 
 **Cross-linking & Navigation**
+
 - Direct links between baseline_report.md ↔ session_report.md
 - RUN_ID anchors for precise navigation
 - Related reports section for operational reviews
 
 **DLQ (Dead Letter Queue) Visibility**
+
 - Current DLQ count prominently displayed
 - Recent failed run IDs listed (up to 5)
 - One-click reprocess command hint: `npm run dev -- --reprocess-dlq`
 - Green status indicator when no DLQ items present
 
 **BI Export Integration**
+
 - Automatic CSV/JSON export to `reports/export/baseline_latest.{csv,json}`
 - Flat record structure optimized for business intelligence tools
 - Schema validation against `schema/baseline_export.schema.json`
 - Excel-compatible CSV formatting with proper quoting
 
 **Gate Mapping Policy Banner**
+
 - Clear policy display: "P0→FAIL, many P1→WARN/PARTIAL, P2-only small→PASS"
 - Current profile (dev/stage/prod) and auto-calibration status
 - Threshold source-of-truth indication (profile overrides vs defaults)
@@ -140,6 +149,7 @@ The baseline pipeline follows a **mandatory 9-step execution order** for consist
 **Atomic Writing:** All session reports use tmp→rename pattern to prevent corruption
 **DLQ Integration:** Failed runs automatically added to Dead Letter Queue with full metadata
 **Standardized Exit Codes (AC-4):**
+
 - `0`: Normal completion
 - `2`: Toolchain/environment failures (nvm_bootstrap, version validation)
 - `3`: Schema validation failures (tools/validate_schema.mjs)
@@ -147,17 +157,20 @@ The baseline pipeline follows a **mandatory 9-step execution order** for consist
 - `5`: Signal interruption or unexpected termination (SIGTERM, SIGINT)
 
 **Additional Session Report Fields (AC-2):**
+
 - `DLQ_COUNT`: Total number of failed runs in DLQ
 - `LAST_DLQ_RUN_ID`: Most recent failed run identifier
 - `RUN_STATE`: Pipeline execution state (QUEUED→RUNNING→SUCCESS/FAIL)
 - `CASES_TOTAL`: Must be >0 even in smoke mode (enforced by AC-2)
 
 ### Sharing Session Reports
+
 1. **For Reviews:** Copy the Summary Block from session_report.md
 2. **For Incidents:** Include full report + logs path
 3. **For Stakeholders:** Share RESULT, DURATION_MS, COST_USD only
 
 ### Required Checks After Each Run
+
 - [ ] `RESULT: PASS` (not FAIL)
 - [ ] `WARNINGS: 0` (or review warnings)
 - [ ] `COST_USD` within budget expectations
@@ -179,6 +192,7 @@ The baseline pipeline follows a **mandatory 9-step execution order** for consist
 6. **Secure communication**: Use encrypted channels for coordination
 
 **Post-Incident (within 30 minutes):**
+
 - Document: Record what was exposed, when discovered, impact scope
 - Audit: Review all systems that used the compromised credentials
 - Notify: Alert security team and relevant stakeholders
@@ -195,6 +209,7 @@ The baseline pipeline follows a **mandatory 9-step execution order** for consist
 5. **Rollback if needed**: Revert to last known good state if system compromised
 
 **Budget Exceed Rollback Procedure:**
+
 ```bash
 # Stop all processes
 killall run_v3.sh node tsx || true
@@ -223,6 +238,7 @@ grep -r "BUDGET_EXCEEDED" RUN_LOGS/ | tail -10
 5. **RESTORE FROM BACKUP**: Use last known clean state
 
 **System Recovery Checklist:**
+
 - [ ] All API keys rotated and verified
 - [ ] Git repository state verified clean
 - [ ] Recent changes audited and approved
@@ -236,6 +252,7 @@ grep -r "BUDGET_EXCEEDED" RUN_LOGS/ | tail -10
 1. **Generate new keys**: Create new API keys from provider console
 2. **Test new keys**: Verify with `./run_v3.sh quick_api_check --smoke`
 3. **Update configuration**:
+
    ```bash
    # Update .env.local (never .env)
    echo "ANTHROPIC_API_KEY=sk-ant-api03-new-key-here" > .env.local
@@ -243,6 +260,7 @@ grep -r "BUDGET_EXCEEDED" RUN_LOGS/ | tail -10
    # Or for multi-key setup
    echo "ANTHROPIC_API_KEYS=key1,key2,key3" > .env.local
    ```
+
 4. **Verify functionality**: Run full smoke test
 5. **Deactivate old keys**: Wait 24h, then revoke old keys
 6. **Document rotation**: Log date, reason, who performed
@@ -261,12 +279,14 @@ grep -r "BUDGET_EXCEEDED" RUN_LOGS/ | tail -10
 **Pipeline Gate Failures:**
 
 1. **guard:env failure**: Check environment loading and secret patterns
+
    ```bash
    npm run guard:env
    npm run guard:git
    ```
 
 2. **schema validation failure**: Fix data format issues
+
    ```bash
    npm run schema --verbose
    ```
@@ -278,6 +298,7 @@ grep -r "BUDGET_EXCEEDED" RUN_LOGS/ | tail -10
    ```
 
 **Recovery Actions:**
+
 - Fix issues identified by specific gate failures
 - Re-run individual gates: `npm run guard:all`
 - For urgent fixes: Use feature flags to bypass temporarily
@@ -288,23 +309,27 @@ grep -r "BUDGET_EXCEEDED" RUN_LOGS/ | tail -10
 ### "TypeError (fetch failed)" Diagnosis & Resolution
 
 **Immediate Steps:**
+
 1. **Check connectivity**: Network diagnostics run automatically during preflight
 2. **Review diagnostic report**: Check `reports/net_diag_last.md` for detailed analysis
 3. **Apply hotfixes**: IPv4 preference and proxy bypass are automatic in run_v3.sh
 
 **Root Cause Analysis:**
+
 - **IPv6/IPv4 dual-stack issues**: Node.js may prefer IPv6 connections that fail
-- **Corporate proxy interference**: HTTP(S)_PROXY variables can block API calls
+- **Corporate proxy interference**: HTTP(S)\_PROXY variables can block API calls
 - **DNS resolution delays**: Slow DNS lookups cause connection timeouts
 - **SSL/TLS handshake failures**: Network or proxy configuration issues
 
 **Automatic Remediation (in run_v3.sh):**
+
 - `NODE_OPTIONS="--dns-result-order=ipv4first"` forces IPv4 preference
 - `unset HTTPS_PROXY HTTP_PROXY NO_PROXY` during execution context only
 - Preflight connectivity check with detailed diagnostics
 - Conservative timeouts (connect: 5s, total: 30s)
 
 **Manual Troubleshooting:**
+
 ```bash
 # Run preflight check only
 ./run_v3.sh guards
@@ -323,12 +348,14 @@ env -u HTTPS_PROXY -u HTTP_PROXY curl -sS -I https://api.anthropic.com
 ```
 
 **If Issues Persist:**
+
 1. **Network Configuration**: Check WiFi, VPN, or firewall settings
 2. **DNS Issues**: Try alternative DNS servers (8.8.8.8, 1.1.1.1)
 3. **Corporate Network**: Contact IT for API endpoint allowlist
 4. **API Key Issues**: Verify ANTHROPIC_API_KEY is valid and not expired
 
 **Emergency Bypass (Offline Mode):**
+
 ```bash
 # Run in offline mode with mock responses
 ./run_v3.sh step4_2 --smoke --offline
@@ -337,30 +364,38 @@ env -u HTTPS_PROXY -u HTTP_PROXY curl -sS -I https://api.anthropic.com
 ## Troubleshooting
 
 ### 401 Authentication Error
+
 **Cause:** Invalid or missing API key
 **Fix:**
+
 1. Check: `ls -la .env .env.local`
 2. Verify: `ANTHROPIC_API_KEY` or `ANTHROPIC_API_KEYS` set
 3. Test: `./run_v3.sh quick_api_check --smoke`
 4. If broken: Update key via secure channel
 
 ### 429 Rate Limit
+
 **Cause:** Too many requests per minute
 **Fix:**
+
 1. Wait 60 seconds, retry with `--smoke` first
 2. Check for concurrent runs: `ps aux | grep run_v3`
 3. Reduce load: Use smaller `--budget` amounts
 
 ### 529 Server Overload
+
 **Cause:** Anthropic API unavailable
 **Fix:**
+
 1. Retry after 5-10 minutes
 2. Use `--offline` mode for testing
 3. Check status: https://status.anthropic.com
 
 ### Budget Exceeded (guard:prod)
+
 **Cause:** Budget validation failed
 **Fix:**
+
 1. Check: `./run_v3.sh __validate_prod_guard --check-only`
 2. Increase: `--budget <higher_amount>`
 3. For production: Minimum budget 0.10 USD required
@@ -370,6 +405,7 @@ env -u HTTPS_PROXY -u HTTP_PROXY curl -sS -I https://api.anthropic.com
 **Check All Gates:** `npm run guard:all`
 
 ### Required Gates
+
 - ✅ `guard:env` - Environment loading coverage
 - ✅ `guard:no-direct-http` - Single API client enforcement
 - ✅ `guard:prod` - Production profile validation
@@ -378,6 +414,7 @@ env -u HTTPS_PROXY -u HTTP_PROXY curl -sS -I https://api.anthropic.com
 - ✅ `regression:mini` - Regression test mini-set
 
 ### Gate Failure Actions
+
 1. **guard:env fail:** Run `npm run guard:env` for details
 2. **guard:no-direct-http fail:** Check `npm run guard:no-direct-http`
 3. **schema fail:** Run `npm run schema` for validation errors
@@ -386,9 +423,11 @@ env -u HTTPS_PROXY -u HTTP_PROXY curl -sS -I https://api.anthropic.com
 ## Single API Client Architecture
 
 ### Mandatory API Client Rule
+
 **All LLM calls must go through `tools/anthropic_client.sh`**. Direct API calls (fetch, axios, curl to api.anthropic.com) are prohibited.
 
 **Benefits:**
+
 - **Unified cost tracking** - All API costs flow through one client with budget enforcement
 - **Consistent retry logic** - Standardized backoff, timeout, and error handling
 - **Secret masking** - API keys automatically masked in logs and telemetry
@@ -396,26 +435,31 @@ env -u HTTPS_PROXY -u HTTP_PROXY curl -sS -I https://api.anthropic.com
 - **Governance** - Single point of control for API policy enforcement
 
 ### Adapter Implementation
+
 For TypeScript/Node.js code, use the provided adapter:
 
 ```typescript
-import { callAnthropic } from '../scripts/clients/anthropic_adapter';
+import { callAnthropic } from "../scripts/clients/anthropic_adapter";
 
 // Replace direct API calls with adapter
-const result = await callAnthropic({
-  model: 'claude-3-5-sonnet-latest',
-  max_tokens: 1000,
-  system: 'You are a helpful assistant',
-  messages: [{ role: 'user', content: 'Hello' }]
-}, {
-  budgetCents: 500,  // 5 USD budget cap
-  timeoutMs: 30000,
-  runId: 'my-run-123',
-  agentRole: 'qa-generator'
-});
+const result = await callAnthropic(
+  {
+    model: "claude-3-5-sonnet-latest",
+    max_tokens: 1000,
+    system: "You are a helpful assistant",
+    messages: [{ role: "user", content: "Hello" }],
+  },
+  {
+    budgetCents: 500, // 5 USD budget cap
+    timeoutMs: 30000,
+    runId: "my-run-123",
+    agentRole: "qa-generator",
+  },
+);
 ```
 
 ### Shell Script Integration
+
 For shell scripts, call the client directly:
 
 ```bash
@@ -431,6 +475,7 @@ result=$(echo "$payload" | bash tools/anthropic_client.sh --chat)
 ```
 
 ### Adding New API Clients
+
 When adding support for new LLM providers:
 
 1. **Create wrapper script** - Follow `tools/anthropic_client.sh` pattern
@@ -440,7 +485,9 @@ When adding support for new LLM providers:
 5. **Document usage** - Add examples to this operations guide
 
 ### Enforcement
+
 The `guard:no-direct-http` gate automatically scans for violations:
+
 - **Allowed:** Client scripts in `tools/`, adapters in `scripts/clients/`
 - **Forbidden:** Direct fetch/curl to api.anthropic.com in other locations
 - **Exceptions:** Network diagnostics, documentation examples
@@ -449,6 +496,7 @@ The `guard:no-direct-http` gate automatically scans for violations:
 ## Session Report Access
 
 ### Standalone Session Report Command
+
 Access session reports without full pipeline bootstrap:
 
 ```bash
@@ -466,13 +514,16 @@ Access session reports without full pipeline bootstrap:
 ```
 
 ### Session Report Fields
+
 Standard fields always available for grep:
+
 - `SESSION_ID`, `RUN_ID`, `TARGET`, `PROFILE`, `MODE`
 - `DRY_RUN`, `OFFLINE_MODE`, `BUDGET_USD`, `COST_USD`
 - `CASES_TOTAL`, `CASES_PASSED`, `PASS_RATE`, `MEAN_SCORE`
 - `DURATION_MS`, `TIMESTAMP`, `STATUS`
 
 ### Integration Examples
+
 ```bash
 # Check if last run passed
 if ./run_v3.sh session-report | grep -q "STATUS: SUCCESS"; then
@@ -514,6 +565,7 @@ The baseline pipeline now enforces a **mandatory 9-step execution order** to ens
 **Individual Runs:** `reports/dlq/<run_id>/`
 
 **DLQ Operations:**
+
 ```bash
 # View DLQ statistics
 node scripts/lib/dlq.ts --stats
@@ -529,6 +581,7 @@ node scripts/lib/dlq.ts --to-dlq test_run_123 "manual_test" 4 --target baseline 
 ```
 
 **DLQ Entry Structure (AC-3):**
+
 - `run_id`: Unique identifier for the failed run
 - `timestamp`: ISO 8601 timestamp when failure occurred
 - `target`: What was being executed (baseline, step4_2, etc.)
@@ -541,6 +594,7 @@ node scripts/lib/dlq.ts --to-dlq test_run_123 "manual_test" 4 --target baseline 
 - `session_id`: Session identifier for correlation
 
 **DLQ Directory Structure:**
+
 ```
 reports/dlq/
 ├── index.jsonl                    # Master index of all DLQ entries
@@ -556,6 +610,7 @@ reports/dlq/
 ### Export and Handoff Hooks (AC-5)
 
 **Export Formats:**
+
 ```bash
 # Generate CSV export
 ./run_v3.sh baseline --full --budget 2.00 --export csv
@@ -571,6 +626,7 @@ reports/dlq/
 ```
 
 **Handoff Package:**
+
 ```bash
 # Generate handoff package
 ./run_v3.sh baseline --full --budget 2.00 --handoff
@@ -579,6 +635,7 @@ reports/dlq/
 ```
 
 **Export CLI (scripts/export_cli.ts):**
+
 ```bash
 # Manual export from existing baseline report
 npx ts-node scripts/export_cli.ts --in reports/baseline_report.jsonl --out reports/export/baseline.csv --format csv
@@ -590,6 +647,7 @@ npx ts-node scripts/export_cli.ts --in reports/baseline_report.jsonl --out repor
 ### Error Handling and Exit Codes
 
 **Standardized Exit Codes:**
+
 - `0`: Success
 - `2`: Toolchain/environment failures (nvm, versions)
 - `3`: Schema validation failures
@@ -597,6 +655,7 @@ npx ts-node scripts/export_cli.ts --in reports/baseline_report.jsonl --out repor
 - `5`: Signal interruption or unexpected termination
 
 **Trap Handling:** The system installs comprehensive error traps that:
+
 - Capture failed commands with line numbers
 - Write partial session reports before exit
 - Add failed runs to DLQ automatically
@@ -606,12 +665,14 @@ npx ts-node scripts/export_cli.ts --in reports/baseline_report.jsonl --out repor
 ### Atomic Operations
 
 **Session Report Writing:**
+
 - All session reports written atomically using tmp→rename pattern
 - Prevents corruption from interrupted writes
 - Single final write per execution (no duplicates)
 - Includes DLQ count and last DLQ run ID
 
 **Case Total Enforcement:**
+
 - `CASES_TOTAL=0` triggers automatic RESULT=FAIL (even in smoke mode)
 - Prevents false positives from empty runs
 - Ensures quality metrics are based on actual data
@@ -619,47 +680,61 @@ npx ts-node scripts/export_cli.ts --in reports/baseline_report.jsonl --out repor
 ## FAQ
 
 ### Q: What do GNU tool warnings mean?
+
 **A:** macOS compatibility warnings. Install via: `brew install coreutils gnu-sed grep gnu-tar` or ignore (BSD fallback works).
 
 ### Q: How does offline mode work?
+
 **A:** Offline mode (`--offline`) uses mock responses, costs $0.00, safe for testing. All API calls return realistic simulated data.
 
 ### Q: What are the key masking rules?
+
 **A:** API keys masked to `sk-****` in logs. Full keys never appear in session reports or git commits.
 
 ### Q: How to add new targets?
+
 **A:** Add entry to `scripts/entrypoints.jsonl` with required fields: `name`, `script`, `env_required`, `smoke_args`, `full_args`.
 
 ### Q: Session report shows ERROR_CLASS?
+
 **A:** Check RUN_LOGS path in report. Common classes: `auth_error`, `rate_limit`, `budget_exceeded`, `network_timeout`.
 
 ### Q: How to run regression tests?
+
 **A:** `npm run regression:mini` - runs offline, generates `reports/regression_summary.md`. Should pass with ±5% tolerance.
 
 ### Q: What are baseline v1.5 metrics?
+
 **A:** Human-perceptible quality indicators: duplication rate, question type distribution, coverage analysis, evidence quality, hallucination detection, and PII/license compliance. Results in `reports/baseline_report.md`.
 
 ### Q: When should I run baseline metrics?
+
 **A:** Before major releases, after significant changes to QA generation, or when quality issues are suspected. Use `--smoke` for quick checks, `--full` for comprehensive analysis.
 
 ### Q: How does the fixed pipeline order work?
+
 **A:** Every baseline run follows the exact same 9-step sequence for reproducibility. Steps 8-9 (export/handoff) are non-blocking and won't fail the main pipeline.
 
 ### Q: What is the DLQ system?
+
 **A:** Dead Letter Queue automatically captures failed runs with metadata, artifacts, and failure reasons. Check `reports/dlq/index.jsonl` for entries. Use `node scripts/lib/dlq.ts --stats` for analysis.
 
 ### Q: Why does CASES_TOTAL=0 cause failure?
+
 **A:** Even smoke tests should process some cases if they actually execute. Zero cases usually indicates a pipeline error, not successful execution.
 
 ### Q: How do export hooks work?
+
 **A:** Export hooks run after the main pipeline and convert baseline_report.jsonl to CSV/JSON formats. Failures are logged as warnings but don't affect the main result.
 
 ### Q: What are standardized exit codes?
+
 **A:** `0`=success, `2`=toolchain, `3`=schema, `4`=runtime/API, `5`=signals. This allows automated systems to respond appropriately to different failure types.
 
 ## Testing the Hardened Pipeline (AC-6)
 
 ### T1: Smoke Mode Pipeline Consistency Test
+
 ```bash
 # Test smoke mode with budget (should complete with CASES_TOTAL>0)
 ./run_v3.sh baseline --smoke --budget 0.5 --profile dev
@@ -675,6 +750,7 @@ ls reports/*.tmp 2>/dev/null && echo "ERROR: tmp files found" || echo "OK: atomi
 ```
 
 ### T2: DLQ Handling with Forced Failures
+
 ```bash
 # Force schema validation failure (create invalid JSON)
 echo '{"invalid": json}' > baseline_config_invalid.json
@@ -694,6 +770,7 @@ rm baseline_config_invalid.json
 ```
 
 ### T3: Reproducibility Test (±5% tolerance)
+
 ```bash
 # Run baseline twice with same inputs and check consistency
 BASELINE_DATA="apps/fe-web/dev/runs/baseline_2025-09-09_run1.jsonl"
@@ -712,6 +789,7 @@ echo "Compare the two runs manually or with custom comparison script"
 ```
 
 ### T4: Export/Handoff Non-blocking Test
+
 ```bash
 # Run with export flags and force export failure
 ./run_v3.sh baseline --full --budget 2.00 --export csv,json --handoff
@@ -734,6 +812,7 @@ mv reports/baseline_report.jsonl.backup reports/baseline_report.jsonl
 ### Health Check Commands
 
 **Daily Health Check:**
+
 ```bash
 # Run all guards
 npm run guard:all
@@ -752,6 +831,7 @@ npm run guard:git
 ```
 
 **Weekly Quality Assessment:**
+
 ```bash
 # Comprehensive baseline metrics analysis with exports
 ./run_v3.sh baseline --full --budget 2.00 --export csv,json --handoff
@@ -767,6 +847,7 @@ node scripts/lib/dlq.ts --stats | jq '.totalEntries, .topFailReasons[0:3]'
 ```
 
 **Cost Monitoring:**
+
 ```bash
 # Check recent spending
 find reports/history -name "session_report.md" -mtime -7 -exec grep "COST_USD:" {} \;
@@ -779,6 +860,7 @@ node scripts/lib/dlq.ts --stats | jq '.topFailReasons[] | select(.reason | conta
 ```
 
 **Performance Monitoring:**
+
 ```bash
 # Check recent performance metrics
 find reports/history -name "session_report.md" -mtime -1 -exec grep -E "(P50_MS|P95_MS|DURATION_MS):" {} \;
@@ -790,11 +872,13 @@ ls -la reports/regression_summary.*
 ### Alerting Setup
 
 **CI/CD Slack Integration:**
+
 - Set `SLACK_WEBHOOK_URL` secret in GitHub repository settings
 - Notifications sent for all CI pipeline results
 - Includes build status, commit info, and gate results
 
 **Critical Alert Conditions:**
+
 - Secret detected in code
 - Budget exceeded threshold
 - Regression tests failing
@@ -804,12 +888,14 @@ ls -la reports/regression_summary.*
 ### Logging and Audit Trail
 
 **Log Locations:**
+
 - Session reports: `reports/session_report.md` and `reports/history/`
 - Runtime logs: `RUN_LOGS/session_*.log`
 - Regression reports: `reports/regression_summary.*`
 - Git activity: Standard git log
 
 **Audit Requirements:**
+
 - All API key rotations must be documented
 - Budget exceeds require incident reports
 - Secret exposures require full audit trail
@@ -820,25 +906,30 @@ ls -la reports/regression_summary.*
 ### Escalation Path
 
 **Level 1 - Development Team:**
+
 - For: Normal operations, troubleshooting, feature issues
 - Response: 2-4 hours during business hours
 
 **Level 2 - Security Team:**
+
 - For: Secret exposures, security incidents, compliance issues
 - Response: 30 minutes for critical, 2 hours for high
 
 **Level 3 - Executive:**
+
 - For: Major system compromise, significant budget exceed, compliance violation
 - Response: Immediate for critical security issues
 
 ### Communication Channels
 
 **Normal Operations:**
+
 - Slack: Development team channel
 - Email: Team mailing list
 - Documentation: This operations guide
 
 **Emergency Situations:**
+
 - Slack: Security incident channel
 - Phone: Emergency contact list
 - Encrypted chat: For sensitive coordination

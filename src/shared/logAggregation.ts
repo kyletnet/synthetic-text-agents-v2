@@ -3,15 +3,15 @@
  * Provides centralized log collection, processing, and analysis
  */
 
-import { EventEmitter } from 'events';
-import { Logger } from './logger';
-import * as fs from 'fs/promises';
-import * as path from 'path';
+import { EventEmitter } from "events";
+import { Logger } from "./logger";
+import * as fs from "fs/promises";
+import * as path from "path";
 
 export interface LogEntry {
   id: string;
   timestamp: Date;
-  level: 'trace' | 'debug' | 'info' | 'warn' | 'error' | 'fatal';
+  level: "trace" | "debug" | "info" | "warn" | "error" | "fatal";
   message: string;
   service: string;
   component: string;
@@ -28,7 +28,7 @@ export interface LogEntry {
 }
 
 export interface LogFilter {
-  levels?: LogEntry['level'][];
+  levels?: LogEntry["level"][];
   services?: string[];
   components?: string[];
   timeRange?: {
@@ -49,7 +49,7 @@ export interface LogAggregationConfig {
   retentionDays: number;
   compressionEnabled: boolean;
   indexingEnabled: boolean;
-  storageBackend: 'file' | 'elasticsearch' | 'splunk' | 'datadog';
+  storageBackend: "file" | "elasticsearch" | "splunk" | "datadog";
   storagePath?: string;
   elasticsearchUrl?: string;
   maxLogSize: number;
@@ -59,7 +59,7 @@ export interface LogAggregationConfig {
 
 export interface LogMetrics {
   totalLogs: number;
-  logsByLevel: Record<LogEntry['level'], number>;
+  logsByLevel: Record<LogEntry["level"], number>;
   logsByService: Record<string, number>;
   errorRate: number;
   averageLogSize: number;
@@ -74,7 +74,7 @@ export interface LogAnalysis {
     timeRange: { start: Date; end: Date };
     topServices: Array<{ service: string; count: number }>;
     topComponents: Array<{ component: string; count: number }>;
-    errorDistribution: Record<LogEntry['level'], number>;
+    errorDistribution: Record<LogEntry["level"], number>;
   };
   patterns: {
     frequentErrors: Array<{
@@ -95,8 +95,8 @@ export interface LogAnalysis {
     }>;
   };
   anomalies: Array<{
-    type: 'error_spike' | 'slow_response' | 'volume_anomaly' | 'new_error';
-    severity: 'low' | 'medium' | 'high' | 'critical';
+    type: "error_spike" | "slow_response" | "volume_anomaly" | "new_error";
+    severity: "low" | "medium" | "high" | "critical";
     timestamp: Date;
     description: string;
     affectedServices: string[];
@@ -118,20 +118,20 @@ export class LogAggregator extends EventEmitter {
       info: 0,
       warn: 0,
       error: 0,
-      fatal: 0
+      fatal: 0,
     },
     logsByService: {},
     errorRate: 0,
     averageLogSize: 0,
     indexSize: 0,
     oldestLog: null,
-    newestLog: null
+    newestLog: null,
   };
 
   constructor(config: LogAggregationConfig) {
     super();
     this.config = config;
-    this.logger = new Logger({ level: 'info' });
+    this.logger = new Logger({ level: "info" });
 
     if (config.enabled) {
       this.startFlushTimer();
@@ -142,25 +142,32 @@ export class LogAggregator extends EventEmitter {
   /**
    * Add a log entry to the aggregation system
    */
-  addLog(entry: Omit<LogEntry, 'id' | 'timestamp'>): void {
+  addLog(entry: Omit<LogEntry, "id" | "timestamp">): void {
     if (!this.config.enabled) return;
 
     // Apply sampling if enabled
-    if (this.config.enableSampling && Math.random() > this.config.samplingRate) {
+    if (
+      this.config.enableSampling &&
+      Math.random() > this.config.samplingRate
+    ) {
       return;
     }
 
     const logEntry: LogEntry = {
       id: this.generateLogId(),
       timestamp: new Date(),
-      ...entry
+      ...entry,
     };
 
     // Check log size limit
     const logSize = JSON.stringify(logEntry).length;
     if (logSize > this.config.maxLogSize) {
-      this.logger.warn(`Log entry exceeds max size (${logSize} > ${this.config.maxLogSize}), truncating`);
-      logEntry.message = logEntry.message.substring(0, this.config.maxLogSize - 1000) + '... [TRUNCATED]';
+      this.logger.warn(
+        `Log entry exceeds max size (${logSize} > ${this.config.maxLogSize}), truncating`,
+      );
+      logEntry.message =
+        logEntry.message.substring(0, this.config.maxLogSize - 1000) +
+        "... [TRUNCATED]";
     }
 
     this.buffer.push(logEntry);
@@ -176,13 +183,17 @@ export class LogAggregator extends EventEmitter {
       this.flush();
     }
 
-    this.emit('log:added', logEntry);
+    this.emit("log:added", logEntry);
   }
 
   /**
    * Query logs with filters
    */
-  async queryLogs(filter: LogFilter, limit: number = 1000, offset: number = 0): Promise<{
+  async queryLogs(
+    filter: LogFilter,
+    limit: number = 1000,
+    offset: number = 0,
+  ): Promise<{
     logs: LogEntry[];
     total: number;
     hasMore: boolean;
@@ -207,14 +218,17 @@ export class LogAggregator extends EventEmitter {
     return {
       logs: paginatedLogs,
       total,
-      hasMore: offset + limit < total
+      hasMore: offset + limit < total,
     };
   }
 
   /**
    * Analyze logs for patterns and anomalies
    */
-  async analyzeLogs(timeRange?: { start: Date; end: Date }): Promise<LogAnalysis> {
+  async analyzeLogs(timeRange?: {
+    start: Date;
+    end: Date;
+  }): Promise<LogAnalysis> {
     const filter: LogFilter = timeRange ? { timeRange } : {};
     const queryResult = await this.queryLogs(filter, 10000); // Analyze up to 10k logs
     const logs = queryResult.logs;
@@ -226,7 +240,7 @@ export class LogAggregator extends EventEmitter {
     return {
       summary: this.generateSummary(logs),
       patterns: this.detectPatterns(logs),
-      anomalies: this.detectAnomalies(logs)
+      anomalies: this.detectAnomalies(logs),
     };
   }
 
@@ -260,19 +274,19 @@ export class LogAggregator extends EventEmitter {
    */
   async exportLogs(
     filter: LogFilter,
-    format: 'json' | 'csv' | 'jsonl' = 'json'
+    format: "json" | "csv" | "jsonl" = "json",
   ): Promise<string> {
     const result = await this.queryLogs(filter, 50000); // Max 50k for export
     const logs = result.logs;
 
     switch (format) {
-      case 'json':
+      case "json":
         return JSON.stringify(logs, null, 2);
 
-      case 'jsonl':
-        return logs.map(log => JSON.stringify(log)).join('\n');
+      case "jsonl":
+        return logs.map((log) => JSON.stringify(log)).join("\n");
 
-      case 'csv':
+      case "csv":
         return this.convertToCSV(logs);
 
       default:
@@ -292,23 +306,25 @@ export class LogAggregator extends EventEmitter {
 
     // Clean buffer
     const originalBufferSize = this.buffer.length;
-    this.buffer = this.buffer.filter(log => log.timestamp > cutoff);
+    this.buffer = this.buffer.filter((log) => log.timestamp > cutoff);
     deletedCount += originalBufferSize - this.buffer.length;
 
     // Clean index
     for (const [key, logs] of this.logIndex.entries()) {
       const originalSize = logs.length;
-      const filtered = logs.filter(log => log.timestamp > cutoff);
+      const filtered = logs.filter((log) => log.timestamp > cutoff);
       this.logIndex.set(key, filtered);
       deletedCount += originalSize - filtered.length;
     }
 
     // Clean storage backend
-    if (this.config.storageBackend === 'file' && this.config.storagePath) {
+    if (this.config.storageBackend === "file" && this.config.storagePath) {
       sizeFreed = await this.cleanupFileStorage(cutoff);
     }
 
-    this.logger.info(`Cleanup completed: ${deletedCount} logs deleted, ${sizeFreed} bytes freed`);
+    this.logger.info(
+      `Cleanup completed: ${deletedCount} logs deleted, ${sizeFreed} bytes freed`,
+    );
 
     return { deletedCount, sizeFreed };
   }
@@ -324,9 +340,9 @@ export class LogAggregator extends EventEmitter {
 
     try {
       await this.writeToStorage(logsToFlush);
-      this.emit('logs:flushed', { count: logsToFlush.length });
+      this.emit("logs:flushed", { count: logsToFlush.length });
     } catch (error) {
-      this.logger.error('Failed to flush logs to storage:', error);
+      this.logger.error("Failed to flush logs to storage:", error);
       // Return logs to buffer for retry
       this.buffer.unshift(...logsToFlush);
       throw error;
@@ -344,34 +360,34 @@ export class LogAggregator extends EventEmitter {
     // Flush remaining logs
     await this.flush();
 
-    this.emit('shutdown');
+    this.emit("shutdown");
   }
 
   private startFlushTimer(): void {
     this.flushTimer = setInterval(() => {
-      this.flush().catch(error => {
-        this.logger.error('Scheduled flush failed:', error);
+      this.flush().catch((error) => {
+        this.logger.error("Scheduled flush failed:", error);
       });
     }, this.config.flushInterval);
   }
 
   private async setupStorageBackend(): Promise<void> {
     switch (this.config.storageBackend) {
-      case 'file':
+      case "file":
         if (this.config.storagePath) {
           await fs.mkdir(this.config.storagePath, { recursive: true });
         }
         break;
 
-      case 'elasticsearch':
+      case "elasticsearch":
         await this.setupElasticsearch();
         break;
 
-      case 'splunk':
+      case "splunk":
         await this.setupSplunk();
         break;
 
-      case 'datadog':
+      case "datadog":
         await this.setupDatadog();
         break;
     }
@@ -379,34 +395,35 @@ export class LogAggregator extends EventEmitter {
 
   private async writeToStorage(logs: LogEntry[]): Promise<void> {
     switch (this.config.storageBackend) {
-      case 'file':
+      case "file":
         await this.writeToFileStorage(logs);
         break;
 
-      case 'elasticsearch':
+      case "elasticsearch":
         await this.writeToElasticsearch(logs);
         break;
 
-      case 'splunk':
+      case "splunk":
         await this.writeToSplunk(logs);
         break;
 
-      case 'datadog':
+      case "datadog":
         await this.writeToDatadog(logs);
         break;
     }
   }
 
   private async writeToFileStorage(logs: LogEntry[]): Promise<void> {
-    if (!this.config.storagePath) throw new Error('Storage path not configured');
+    if (!this.config.storagePath)
+      throw new Error("Storage path not configured");
 
-    const today = new Date().toISOString().split('T')[0];
+    const today = new Date().toISOString().split("T")[0];
     const filename = `logs-${today}.jsonl`;
     const filepath = path.join(this.config.storagePath, filename);
 
-    const logLines = logs.map(log => JSON.stringify(log)).join('\n') + '\n';
+    const logLines = logs.map((log) => JSON.stringify(log)).join("\n") + "\n";
 
-    await fs.appendFile(filepath, logLines, 'utf-8');
+    await fs.appendFile(filepath, logLines, "utf-8");
 
     // Compress old files if enabled
     if (this.config.compressionEnabled) {
@@ -415,28 +432,29 @@ export class LogAggregator extends EventEmitter {
   }
 
   private async writeToElasticsearch(logs: LogEntry[]): Promise<void> {
-    if (!this.config.elasticsearchUrl) throw new Error('Elasticsearch URL not configured');
+    if (!this.config.elasticsearchUrl)
+      throw new Error("Elasticsearch URL not configured");
 
-    const bulkBody = logs.flatMap(log => [
-      { index: { _index: `logs-${new Date().toISOString().split('T')[0]}` } },
-      log
+    const bulkBody = logs.flatMap((log) => [
+      { index: { _index: `logs-${new Date().toISOString().split("T")[0]}` } },
+      log,
     ]);
 
     await fetch(`${this.config.elasticsearchUrl}/_bulk`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: bulkBody.map(item => JSON.stringify(item)).join('\n') + '\n'
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: bulkBody.map((item) => JSON.stringify(item)).join("\n") + "\n",
     });
   }
 
   private async writeToSplunk(logs: LogEntry[]): Promise<void> {
     // Splunk HEC implementation would go here
-    this.logger.warn('Splunk integration not yet implemented');
+    this.logger.warn("Splunk integration not yet implemented");
   }
 
   private async writeToDatadog(logs: LogEntry[]): Promise<void> {
     // Datadog Logs API implementation would go here
-    this.logger.warn('Datadog Logs integration not yet implemented');
+    this.logger.warn("Datadog Logs integration not yet implemented");
   }
 
   private updateMetrics(logEntry: LogEntry): void {
@@ -448,21 +466,30 @@ export class LogAggregator extends EventEmitter {
     }
     this.metrics.logsByService[logEntry.service]++;
 
-    if (!this.metrics.oldestLog || logEntry.timestamp < this.metrics.oldestLog) {
+    if (
+      !this.metrics.oldestLog ||
+      logEntry.timestamp < this.metrics.oldestLog
+    ) {
       this.metrics.oldestLog = logEntry.timestamp;
     }
 
-    if (!this.metrics.newestLog || logEntry.timestamp > this.metrics.newestLog) {
+    if (
+      !this.metrics.newestLog ||
+      logEntry.timestamp > this.metrics.newestLog
+    ) {
       this.metrics.newestLog = logEntry.timestamp;
     }
 
     // Calculate error rate
-    const errorLogs = this.metrics.logsByLevel.error + this.metrics.logsByLevel.fatal;
+    const errorLogs =
+      this.metrics.logsByLevel.error + this.metrics.logsByLevel.fatal;
     this.metrics.errorRate = errorLogs / this.metrics.totalLogs;
 
     // Estimate average log size
     const logSize = JSON.stringify(logEntry).length;
-    this.metrics.averageLogSize = (this.metrics.averageLogSize * (this.metrics.totalLogs - 1) + logSize) / this.metrics.totalLogs;
+    this.metrics.averageLogSize =
+      (this.metrics.averageLogSize * (this.metrics.totalLogs - 1) + logSize) /
+      this.metrics.totalLogs;
   }
 
   private indexLog(logEntry: LogEntry): void {
@@ -533,7 +560,7 @@ export class LogAggregator extends EventEmitter {
   }
 
   private applyFilters(logs: LogEntry[], filter: LogFilter): LogEntry[] {
-    return logs.filter(log => {
+    return logs.filter((log) => {
       // Level filter
       if (filter.levels && !filter.levels.includes(log.level)) {
         return false;
@@ -541,7 +568,10 @@ export class LogAggregator extends EventEmitter {
 
       // Time range filter
       if (filter.timeRange) {
-        if (log.timestamp < filter.timeRange.start || log.timestamp > filter.timeRange.end) {
+        if (
+          log.timestamp < filter.timeRange.start ||
+          log.timestamp > filter.timeRange.end
+        ) {
           return false;
         }
       }
@@ -577,11 +607,16 @@ export class LogAggregator extends EventEmitter {
     });
   }
 
-  private generateSummary(logs: LogEntry[]): LogAnalysis['summary'] {
+  private generateSummary(logs: LogEntry[]): LogAnalysis["summary"] {
     const services = new Map<string, number>();
     const components = new Map<string, number>();
-    const errorDistribution: Record<LogEntry['level'], number> = {
-      trace: 0, debug: 0, info: 0, warn: 0, error: 0, fatal: 0
+    const errorDistribution: Record<LogEntry["level"], number> = {
+      trace: 0,
+      debug: 0,
+      info: 0,
+      warn: 0,
+      error: 0,
+      fatal: 0,
     };
 
     let earliest = logs[0]?.timestamp;
@@ -607,32 +642,38 @@ export class LogAggregator extends EventEmitter {
         .map(([component, count]) => ({ component, count }))
         .sort((a, b) => b.count - a.count)
         .slice(0, 10),
-      errorDistribution
+      errorDistribution,
     };
   }
 
-  private detectPatterns(logs: LogEntry[]): LogAnalysis['patterns'] {
+  private detectPatterns(logs: LogEntry[]): LogAnalysis["patterns"] {
     // Detect frequent errors
-    const errorMessages = new Map<string, {
-      count: number;
-      services: Set<string>;
-      lastOccurrence: Date;
-    }>();
+    const errorMessages = new Map<
+      string,
+      {
+        count: number;
+        services: Set<string>;
+        lastOccurrence: Date;
+      }
+    >();
 
     // Detect slow operations
-    const slowOperations = new Map<string, {
-      totalDuration: number;
-      count: number;
-    }>();
+    const slowOperations = new Map<
+      string,
+      {
+        totalDuration: number;
+        count: number;
+      }
+    >();
 
     for (const log of logs) {
-      if (log.level === 'error' || log.level === 'fatal') {
+      if (log.level === "error" || log.level === "fatal") {
         const key = log.message;
         if (!errorMessages.has(key)) {
           errorMessages.set(key, {
             count: 0,
             services: new Set(),
-            lastOccurrence: log.timestamp
+            lastOccurrence: log.timestamp,
           });
         }
         const errorData = errorMessages.get(key);
@@ -644,7 +685,8 @@ export class LogAggregator extends EventEmitter {
         }
       }
 
-      if (log.duration && log.duration > 1000) { // Slow operations > 1s
+      if (log.duration && log.duration > 1000) {
+        // Slow operations > 1s
         const key = log.component;
         if (!slowOperations.has(key)) {
           slowOperations.set(key, { totalDuration: 0, count: 0 });
@@ -662,7 +704,7 @@ export class LogAggregator extends EventEmitter {
           message,
           count: data.count,
           services: Array.from(data.services),
-          lastOccurrence: data.lastOccurrence
+          lastOccurrence: data.lastOccurrence,
         }))
         .sort((a, b) => b.count - a.count)
         .slice(0, 10),
@@ -671,37 +713,40 @@ export class LogAggregator extends EventEmitter {
         .map(([component, data]) => ({
           component,
           averageDuration: data.totalDuration / data.count,
-          count: data.count
+          count: data.count,
         }))
         .sort((a, b) => b.averageDuration - a.averageDuration)
         .slice(0, 10),
 
-      volumeSpikes: [] // Would implement volume spike detection
+      volumeSpikes: [], // Would implement volume spike detection
     };
   }
 
-  private detectAnomalies(logs: LogEntry[]): LogAnalysis['anomalies'] {
-    const anomalies: LogAnalysis['anomalies'] = [];
+  private detectAnomalies(logs: LogEntry[]): LogAnalysis["anomalies"] {
+    const anomalies: LogAnalysis["anomalies"] = [];
 
     // Detect error spikes
     const hourlyErrors = new Map<string, number>();
     for (const log of logs) {
-      if (log.level === 'error' || log.level === 'fatal') {
+      if (log.level === "error" || log.level === "fatal") {
         const hour = new Date(log.timestamp).toISOString().substring(0, 13);
         hourlyErrors.set(hour, (hourlyErrors.get(hour) || 0) + 1);
       }
     }
 
-    const avgErrorsPerHour = Array.from(hourlyErrors.values()).reduce((a, b) => a + b, 0) / hourlyErrors.size || 0;
+    const avgErrorsPerHour =
+      Array.from(hourlyErrors.values()).reduce((a, b) => a + b, 0) /
+        hourlyErrors.size || 0;
     for (const [hour, count] of hourlyErrors.entries()) {
-      if (count > avgErrorsPerHour * 3) { // 3x average
+      if (count > avgErrorsPerHour * 3) {
+        // 3x average
         anomalies.push({
-          type: 'error_spike',
-          severity: count > avgErrorsPerHour * 10 ? 'critical' : 'high',
-          timestamp: new Date(hour + ':00:00.000Z'),
+          type: "error_spike",
+          severity: count > avgErrorsPerHour * 10 ? "critical" : "high",
+          timestamp: new Date(hour + ":00:00.000Z"),
           description: `Error spike detected: ${count} errors (${(count / avgErrorsPerHour).toFixed(1)}x average)`,
           affectedServices: [],
-          suggestion: 'Review error logs and check for system issues'
+          suggestion: "Review error logs and check for system issues",
         });
       }
     }
@@ -716,30 +761,47 @@ export class LogAggregator extends EventEmitter {
         timeRange: { start: new Date(), end: new Date() },
         topServices: [],
         topComponents: [],
-        errorDistribution: { trace: 0, debug: 0, info: 0, warn: 0, error: 0, fatal: 0 }
+        errorDistribution: {
+          trace: 0,
+          debug: 0,
+          info: 0,
+          warn: 0,
+          error: 0,
+          fatal: 0,
+        },
       },
       patterns: {
         frequentErrors: [],
         slowOperations: [],
-        volumeSpikes: []
+        volumeSpikes: [],
       },
-      anomalies: []
+      anomalies: [],
     };
   }
 
   private convertToCSV(logs: LogEntry[]): string {
-    const headers = ['timestamp', 'level', 'service', 'component', 'message', 'traceId', 'userId'];
-    const rows = logs.map(log => [
+    const headers = [
+      "timestamp",
+      "level",
+      "service",
+      "component",
+      "message",
+      "traceId",
+      "userId",
+    ];
+    const rows = logs.map((log) => [
       log.timestamp.toISOString(),
       log.level,
       log.service,
       log.component,
       log.message.replace(/"/g, '""'), // Escape quotes
-      log.traceId || '',
-      log.userId || ''
+      log.traceId || "",
+      log.userId || "",
     ]);
 
-    return [headers, ...rows].map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
+    return [headers, ...rows]
+      .map((row) => row.map((cell) => `"${cell}"`).join(","))
+      .join("\n");
   }
 
   private async compressOldFiles(): Promise<void> {
@@ -761,7 +823,7 @@ export class LogAggregator extends EventEmitter {
         }
       }
     } catch (error) {
-      this.logger.error('Error cleaning up file storage:', error);
+      this.logger.error("Error cleaning up file storage:", error);
     }
 
     return sizeFreed;
@@ -787,7 +849,9 @@ export class LogAggregator extends EventEmitter {
 // Global log aggregator instance
 let globalAggregator: LogAggregator | null = null;
 
-export function initializeLogAggregation(config: LogAggregationConfig): LogAggregator {
+export function initializeLogAggregation(
+  config: LogAggregationConfig,
+): LogAggregator {
   if (globalAggregator) {
     globalAggregator.shutdown();
   }

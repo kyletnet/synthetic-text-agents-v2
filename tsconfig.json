@@ -1,15 +1,11 @@
 {
   "compilerOptions": {
-    "types": [
-      "vitest/globals"
-    ],
+    "types": ["vitest/globals"],
     // NOTE: target, module, moduleResolution are overridden in tsconfig.build.json for CommonJS builds
     "target": "ES2022",
     "module": "ESNext",
     "moduleResolution": "Node",
-    "lib": [
-      "ES2022"
-    ],
+    "lib": ["ES2022"],
     "outDir": "./dist",
     "rootDir": "./src",
     "strict": true,
@@ -31,12 +27,6 @@
     "noUncheckedIndexedAccess": false,
     "noImplicitOverride": false
   },
-  "include": [
-    "src/**/*"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "**/*.test.ts"
-  ]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "**/*.test.ts"]
 }

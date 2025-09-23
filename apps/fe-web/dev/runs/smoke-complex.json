@@ -19,7 +19,12 @@
     "minQualityScore": 8.5,
     "maxDuration": 180000,
     "expectedAgentCount": 8,
-    "mustIncludeAgents": ["meta-controller", "psychology-specialist", "cognitive-scientist", "quality-auditor"]
+    "mustIncludeAgents": [
+      "meta-controller",
+      "psychology-specialist",
+      "cognitive-scientist",
+      "quality-auditor"
+    ]
   },
   "tags": ["smoke", "complex", "full-orchestration"]
 }

@@ -1,7 +1,7 @@
 cohorts:
   - name: internal
     size: 10
-    owners: ["pm@example.com","engine@example.com"]
+    owners: ["pm@example.com", "engine@example.com"]
   - name: dogfood
     size: 30
   - name: beta_optin

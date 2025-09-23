@@ -3,13 +3,13 @@
  * Provides automated backup, recovery, and disaster recovery capabilities
  */
 
-import { EventEmitter } from 'events';
-import { Logger } from './logger';
-import * as fs from 'fs/promises';
-import * as path from 'path';
-import { createReadStream, createWriteStream } from 'fs';
-import { createGzip, createGunzip } from 'zlib';
-import { pipeline } from 'stream/promises';
+import { EventEmitter } from "events";
+import { Logger } from "./logger";
+import * as fs from "fs/promises";
+import * as path from "path";
+import { createReadStream, createWriteStream } from "fs";
+import { createGzip, createGunzip } from "zlib";
+import { pipeline } from "stream/promises";
 
 export interface BackupConfig {
   enabled: boolean;
@@ -17,12 +17,12 @@ export interface BackupConfig {
   retention: RetentionPolicy;
   compression: {
     enabled: boolean;
-    algorithm: 'gzip' | 'brotli' | 'lz4';
+    algorithm: "gzip" | "brotli" | "lz4";
     level: number;
   };
   encryption: {
     enabled: boolean;
-    algorithm: 'aes-256-gcm' | 'chacha20-poly1305';
+    algorithm: "aes-256-gcm" | "chacha20-poly1305";
     keyId: string;
   };
   scheduling: {
@@ -32,14 +32,14 @@ export interface BackupConfig {
   };
   verification: {
     enabled: boolean;
-    checksumAlgorithm: 'sha256' | 'sha512' | 'blake3';
+    checksumAlgorithm: "sha256" | "sha512" | "blake3";
     testRestore: boolean;
   };
 }
 
 export interface BackupStrategy {
   name: string;
-  type: 'full' | 'incremental' | 'differential';
+  type: "full" | "incremental" | "differential";
   source: BackupSource;
   destination: BackupDestination;
   enabled: boolean;
@@ -52,13 +52,13 @@ export interface BackupStrategy {
 }
 
 export interface BackupSource {
-  type: 'filesystem' | 'database' | 'application_data' | 'configuration';
+  type: "filesystem" | "database" | "application_data" | "configuration";
   paths: string[];
   metadata?: Record<string, unknown>;
 }
 
 export interface BackupDestination {
-  type: 'local' | 's3' | 'azure' | 'gcp' | 'sftp' | 'rsync';
+  type: "local" | "s3" | "azure" | "gcp" | "sftp" | "rsync";
   location: string;
   credentials?: Record<string, string>;
   options?: Record<string, unknown>;
@@ -74,18 +74,18 @@ export interface RetentionPolicy {
 export interface BackupMetadata {
   id: string;
   strategy: string;
-  type: 'full' | 'incremental' | 'differential';
+  type: "full" | "incremental" | "differential";
   timestamp: Date;
   startTime: Date;
   endTime?: Date;
-  status: 'pending' | 'running' | 'completed' | 'failed' | 'cancelled';
+  status: "pending" | "running" | "completed" | "failed" | "cancelled";
   size: number;
   compressedSize?: number;
   checksums: Record<string, string>;
   files: BackupFileInfo[];
   parentBackupId?: string; // For incremental/differential
   errorMessage?: string;
-  verificationStatus?: 'pending' | 'passed' | 'failed';
+  verificationStatus?: "pending" | "passed" | "failed";
 }
 
 export interface BackupFileInfo {
@@ -119,7 +119,7 @@ export interface DisasterRecoveryPlan {
   id: string;
   name: string;
   description: string;
-  priority: 'critical' | 'high' | 'medium' | 'low';
+  priority: "critical" | "high" | "medium" | "low";
   triggers: DisasterTrigger[];
   steps: RecoveryStep[];
   estimatedRTO: number; // Recovery Time Objective (minutes)
@@ -128,7 +128,12 @@ export interface DisasterRecoveryPlan {
 }
 
 export interface DisasterTrigger {
-  type: 'manual' | 'health_check_failure' | 'data_corruption' | 'security_breach' | 'system_failure';
+  type:
+    | "manual"
+    | "health_check_failure"
+    | "data_corruption"
+    | "security_breach"
+    | "system_failure";
   conditions: Record<string, unknown>;
 }
 
@@ -136,7 +141,12 @@ export interface RecoveryStep {
   id: string;
   name: string;
   description: string;
-  type: 'backup_restore' | 'service_restart' | 'database_recovery' | 'configuration_update' | 'custom_script';
+  type:
+    | "backup_restore"
+    | "service_restart"
+    | "database_recovery"
+    | "configuration_update"
+    | "custom_script";
   configuration: Record<string, unknown>;
   timeout: number;
   retryAttempts: number;
@@ -154,7 +164,7 @@ export class BackupSystem extends EventEmitter {
   constructor(config: BackupConfig) {
     super();
     this.config = config;
-    this.logger = new Logger({ level: 'info' });
+    this.logger = new Logger({ level: "info" });
 
     if (config.enabled) {
       this.loadExistingBackups();
@@ -165,8 +175,13 @@ export class BackupSystem extends EventEmitter {
   /**
    * Create a backup using specified strategy
    */
-  async createBackup(strategyName: string, manual: boolean = false): Promise<string> {
-    const strategy = this.config.strategies.find(s => s.name === strategyName);
+  async createBackup(
+    strategyName: string,
+    manual: boolean = false,
+  ): Promise<string> {
+    const strategy = this.config.strategies.find(
+      (s) => s.name === strategyName,
+    );
     if (!strategy) {
       throw new Error(`Backup strategy '${strategyName}' not found`);
     }
@@ -178,7 +193,9 @@ export class BackupSystem extends EventEmitter {
     const backupId = this.generateBackupId(strategy);
 
     if (this.activeBackups.has(strategyName)) {
-      throw new Error(`Backup for strategy '${strategyName}' is already running`);
+      throw new Error(
+        `Backup for strategy '${strategyName}' is already running`,
+      );
     }
 
     const metadata: BackupMetadata = {
@@ -187,14 +204,17 @@ export class BackupSystem extends EventEmitter {
       type: strategy.type,
       timestamp: new Date(),
       startTime: new Date(),
-      status: 'pending',
+      status: "pending",
       size: 0,
       checksums: {},
-      files: []
+      files: [],
     };
 
-    if (strategy.type === 'incremental' || strategy.type === 'differential') {
-      metadata.parentBackupId = await this.findLastBackup(strategyName, strategy.type);
+    if (strategy.type === "incremental" || strategy.type === "differential") {
+      metadata.parentBackupId = await this.findLastBackup(
+        strategyName,
+        strategy.type,
+      );
     }
 
     this.backups.set(backupId, metadata);
@@ -207,16 +227,20 @@ export class BackupSystem extends EventEmitter {
         await this.verifyBackup(backupId);
       }
 
-      this.emit('backup:completed', { backupId, strategy: strategyName, manual });
+      this.emit("backup:completed", {
+        backupId,
+        strategy: strategyName,
+        manual,
+      });
       this.logger.info(`Backup completed successfully: ${backupId}`);
 
       return backupId;
     } catch (error) {
-      metadata.status = 'failed';
+      metadata.status = "failed";
       metadata.errorMessage = (error as Error).message;
       metadata.endTime = new Date();
 
-      this.emit('backup:failed', { backupId, strategy: strategyName, error });
+      this.emit("backup:failed", { backupId, strategy: strategyName, error });
       this.logger.error(`Backup failed: ${backupId}`, error);
 
       throw error;
@@ -234,7 +258,7 @@ export class BackupSystem extends EventEmitter {
       throw new Error(`Backup ${request.backupId} not found`);
     }
 
-    if (backup.status !== 'completed') {
+    if (backup.status !== "completed") {
       throw new Error(`Backup ${request.backupId} is not in completed state`);
     }
 
@@ -244,12 +268,12 @@ export class BackupSystem extends EventEmitter {
     try {
       const result = await this.executeRestore(backup, request);
 
-      this.emit('restore:completed', { backupId: request.backupId, result });
+      this.emit("restore:completed", { backupId: request.backupId, result });
       this.logger.info(`Restore completed: ${request.backupId}`);
 
       return result;
     } catch (error) {
-      this.emit('restore:failed', { backupId: request.backupId, error });
+      this.emit("restore:failed", { backupId: request.backupId, error });
       this.logger.error(`Restore failed: ${request.backupId}`, error);
       throw error;
     }
@@ -262,10 +286,12 @@ export class BackupSystem extends EventEmitter {
     let backups = Array.from(this.backups.values());
 
     if (strategyName) {
-      backups = backups.filter(b => b.strategy === strategyName);
+      backups = backups.filter((b) => b.strategy === strategyName);
     }
 
-    return backups.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+    return backups.sort(
+      (a, b) => b.timestamp.getTime() - a.timestamp.getTime(),
+    );
   }
 
   /**
@@ -288,7 +314,7 @@ export class BackupSystem extends EventEmitter {
       await this.deleteBackupFiles(backup);
       this.backups.delete(backupId);
 
-      this.emit('backup:deleted', { backupId });
+      this.emit("backup:deleted", { backupId });
       this.logger.info(`Backup deleted: ${backupId}`);
     } catch (error) {
       this.logger.error(`Failed to delete backup: ${backupId}`, error);
@@ -309,14 +335,22 @@ export class BackupSystem extends EventEmitter {
           await this.deleteBackup(backup.id);
           deletedBackups.push(backup.id);
         } catch (error) {
-          this.logger.error(`Failed to delete backup during retention: ${backup.id}`, error);
+          this.logger.error(
+            `Failed to delete backup during retention: ${backup.id}`,
+            error,
+          );
         }
       }
     }
 
     if (deletedBackups.length > 0) {
-      this.logger.info(`Retention policy applied: ${deletedBackups.length} backups deleted`);
-      this.emit('retention:applied', { deletedCount: deletedBackups.length, deletedBackups });
+      this.logger.info(
+        `Retention policy applied: ${deletedBackups.length} backups deleted`,
+      );
+      this.emit("retention:applied", {
+        deletedCount: deletedBackups.length,
+        deletedBackups,
+      });
     }
   }
 
@@ -331,14 +365,17 @@ export class BackupSystem extends EventEmitter {
   /**
    * Execute disaster recovery plan
    */
-  async executeDisasterRecovery(planId: string, context?: Record<string, unknown>): Promise<void> {
+  async executeDisasterRecovery(
+    planId: string,
+    context?: Record<string, unknown>,
+  ): Promise<void> {
     const plan = this.disasterRecoveryPlans.get(planId);
     if (!plan) {
       throw new Error(`Disaster recovery plan '${planId}' not found`);
     }
 
     this.logger.warn(`Executing disaster recovery plan: ${planId}`);
-    this.emit('disaster_recovery:started', { planId, plan });
+    this.emit("disaster_recovery:started", { planId, plan });
 
     try {
       // Execute dependencies first
@@ -351,10 +388,10 @@ export class BackupSystem extends EventEmitter {
         await this.executeRecoveryStep(step, context);
       }
 
-      this.emit('disaster_recovery:completed', { planId });
+      this.emit("disaster_recovery:completed", { planId });
       this.logger.info(`Disaster recovery plan completed: ${planId}`);
     } catch (error) {
-      this.emit('disaster_recovery:failed', { planId, error });
+      this.emit("disaster_recovery:failed", { planId, error });
       this.logger.error(`Disaster recovery plan failed: ${planId}`, error);
       throw error;
     }
@@ -374,16 +411,20 @@ export class BackupSystem extends EventEmitter {
   } {
     const backups = Array.from(this.backups.values());
     const totalSize = backups.reduce((sum, b) => sum + b.size, 0);
-    const failedBackups = backups.filter(b => b.status === 'failed').length;
+    const failedBackups = backups.filter((b) => b.status === "failed").length;
 
-    const lastBackup = backups.length > 0
-      ? new Date(Math.max(...backups.map(b => b.timestamp.getTime())))
-      : null;
+    const lastBackup =
+      backups.length > 0
+        ? new Date(Math.max(...backups.map((b) => b.timestamp.getTime())))
+        : null;
 
-    const successfulBackups = backups.filter(b => b.status === 'completed');
-    const lastSuccessfulBackup = successfulBackups.length > 0
-      ? new Date(Math.max(...successfulBackups.map(b => b.timestamp.getTime())))
-      : null;
+    const successfulBackups = backups.filter((b) => b.status === "completed");
+    const lastSuccessfulBackup =
+      successfulBackups.length > 0
+        ? new Date(
+            Math.max(...successfulBackups.map((b) => b.timestamp.getTime())),
+          )
+        : null;
 
     return {
       enabled: this.config.enabled,
@@ -392,7 +433,7 @@ export class BackupSystem extends EventEmitter {
       totalSize,
       lastBackup,
       lastSuccessfulBackup,
-      failedBackups
+      failedBackups,
     };
   }
 
@@ -408,15 +449,21 @@ export class BackupSystem extends EventEmitter {
 
     // Cancel active backups (if any)
     for (const strategyName of this.activeBackups) {
-      this.emit('backup:cancelled', { strategy: strategyName });
+      this.emit("backup:cancelled", { strategy: strategyName });
     }
 
-    this.emit('shutdown');
+    this.emit("shutdown");
   }
 
-  private async executeBackup(strategy: BackupStrategy, metadata: BackupMetadata): Promise<void> {
-    metadata.status = 'running';
-    this.emit('backup:started', { backupId: metadata.id, strategy: strategy.name });
+  private async executeBackup(
+    strategy: BackupStrategy,
+    metadata: BackupMetadata,
+  ): Promise<void> {
+    metadata.status = "running";
+    this.emit("backup:started", {
+      backupId: metadata.id,
+      strategy: strategy.name,
+    });
 
     const backupPath = await this.createBackupPath(metadata);
     let totalSize = 0;
@@ -431,15 +478,19 @@ export class BackupSystem extends EventEmitter {
 
       // Process each file
       for (const sourceFile of filesToBackup) {
-        const fileInfo = await this.backupFile(sourceFile, backupPath, strategy);
+        const fileInfo = await this.backupFile(
+          sourceFile,
+          backupPath,
+          strategy,
+        );
         files.push(fileInfo);
         totalSize += fileInfo.size;
 
-        this.emit('backup:progress', {
+        this.emit("backup:progress", {
           backupId: metadata.id,
           processed: files.length,
           total: filesToBackup.length,
-          currentFile: sourceFile
+          currentFile: sourceFile,
         });
       }
 
@@ -447,41 +498,45 @@ export class BackupSystem extends EventEmitter {
       metadata.checksums.backup = await this.calculateChecksum(backupPath);
       metadata.size = totalSize;
       metadata.files = files;
-      metadata.status = 'completed';
+      metadata.status = "completed";
       metadata.endTime = new Date();
 
       // Save metadata
       await this.saveBackupMetadata(metadata);
-
     } catch (error) {
-      metadata.status = 'failed';
+      metadata.status = "failed";
       metadata.errorMessage = (error as Error).message;
       metadata.endTime = new Date();
       throw error;
     }
   }
 
-  private async executeRestore(backup: BackupMetadata, request: RestoreRequest): Promise<RestoreResult> {
+  private async executeRestore(
+    backup: BackupMetadata,
+    request: RestoreRequest,
+  ): Promise<RestoreResult> {
     const result: RestoreResult = {
       success: false,
       restoredFiles: 0,
       totalFiles: 0,
       skippedFiles: 0,
       errors: [],
-      duration: 0
+      duration: 0,
     };
 
     const startTime = Date.now();
 
     try {
       const filesToRestore = request.files
-        ? backup.files.filter(f => request.files?.includes(f.path) ?? false)
+        ? backup.files.filter((f) => request.files?.includes(f.path) ?? false)
         : backup.files;
 
       result.totalFiles = filesToRestore.length;
 
       if (request.dryRun) {
-        this.logger.info(`Dry run restore: would restore ${filesToRestore.length} files`);
+        this.logger.info(
+          `Dry run restore: would restore ${filesToRestore.length} files`,
+        );
         result.success = true;
         return result;
       }
@@ -512,9 +567,10 @@ export class BackupSystem extends EventEmitter {
           // Restore file
           await this.restoreFile(backup, fileInfo, targetFile);
           result.restoredFiles++;
-
         } catch (error) {
-          result.errors.push(`Failed to restore ${fileInfo.path}: ${(error as Error).message}`);
+          result.errors.push(
+            `Failed to restore ${fileInfo.path}: ${(error as Error).message}`,
+          );
         }
       }
 
@@ -529,16 +585,25 @@ export class BackupSystem extends EventEmitter {
     }
   }
 
-  private async collectFiles(strategy: BackupStrategy, metadata: BackupMetadata): Promise<string[]> {
+  private async collectFiles(
+    strategy: BackupStrategy,
+    metadata: BackupMetadata,
+  ): Promise<string[]> {
     const files: string[] = [];
 
     for (const sourcePath of strategy.source.paths) {
-      const pathFiles = await this.collectFilesFromPath(sourcePath, strategy.filters);
+      const pathFiles = await this.collectFilesFromPath(
+        sourcePath,
+        strategy.filters,
+      );
       files.push(...pathFiles);
     }
 
     // For incremental/differential backups, filter based on last backup
-    if (metadata.parentBackupId && (strategy.type === 'incremental' || strategy.type === 'differential')) {
+    if (
+      metadata.parentBackupId &&
+      (strategy.type === "incremental" || strategy.type === "differential")
+    ) {
       const parentBackup = this.backups.get(metadata.parentBackupId);
       if (parentBackup) {
         return this.filterChangedFiles(files, parentBackup, strategy.type);
@@ -548,7 +613,10 @@ export class BackupSystem extends EventEmitter {
     return files;
   }
 
-  private async collectFilesFromPath(sourcePath: string, filters?: BackupStrategy['filters']): Promise<string[]> {
+  private async collectFilesFromPath(
+    sourcePath: string,
+    filters?: BackupStrategy["filters"],
+  ): Promise<string[]> {
     const files: string[] = [];
 
     try {
@@ -567,7 +635,10 @@ export class BackupSystem extends EventEmitter {
           if (entry.isDirectory()) {
             const subFiles = await this.collectFilesFromPath(fullPath, filters);
             files.push(...subFiles);
-          } else if (entry.isFile() && this.shouldIncludeFile(fullPath, filters)) {
+          } else if (
+            entry.isFile() &&
+            this.shouldIncludeFile(fullPath, filters)
+          ) {
             files.push(fullPath);
           }
         }
@@ -579,7 +650,10 @@ export class BackupSystem extends EventEmitter {
     return files;
   }
 
-  private shouldIncludeFile(filePath: string, filters?: BackupStrategy['filters']): boolean {
+  private shouldIncludeFile(
+    filePath: string,
+    filters?: BackupStrategy["filters"],
+  ): boolean {
     if (!filters) return true;
 
     // Check exclude patterns
@@ -606,15 +680,17 @@ export class BackupSystem extends EventEmitter {
 
   private matchesPattern(filePath: string, pattern: string): boolean {
     // Simple glob-like pattern matching
-    const regex = pattern
-      .replace(/\*/g, '.*')
-      .replace(/\?/g, '.');
+    const regex = pattern.replace(/\*/g, ".*").replace(/\?/g, ".");
     return new RegExp(regex).test(filePath);
   }
 
-  private async filterChangedFiles(files: string[], parentBackup: BackupMetadata, type: 'incremental' | 'differential'): Promise<string[]> {
+  private async filterChangedFiles(
+    files: string[],
+    parentBackup: BackupMetadata,
+    type: "incremental" | "differential",
+  ): Promise<string[]> {
     const changedFiles: string[] = [];
-    const parentFileMap = new Map(parentBackup.files.map(f => [f.path, f]));
+    const parentFileMap = new Map(parentBackup.files.map((f) => [f.path, f]));
 
     for (const file of files) {
       try {
@@ -633,7 +709,11 @@ export class BackupSystem extends EventEmitter {
     return changedFiles;
   }
 
-  private async backupFile(sourceFile: string, backupPath: string, strategy: BackupStrategy): Promise<BackupFileInfo> {
+  private async backupFile(
+    sourceFile: string,
+    backupPath: string,
+    strategy: BackupStrategy,
+  ): Promise<BackupFileInfo> {
     const stats = await fs.stat(sourceFile);
     const checksum = await this.calculateChecksum(sourceFile);
 
@@ -643,11 +723,15 @@ export class BackupSystem extends EventEmitter {
       modifiedTime: stats.mtime,
       checksum,
       compressed: this.config.compression.enabled,
-      encrypted: this.config.encryption.enabled
+      encrypted: this.config.encryption.enabled,
     };
 
     // For now, just copy the file (compression and encryption would be implemented here)
-    const targetFile = path.join(backupPath, 'files', this.encodeFilePath(sourceFile));
+    const targetFile = path.join(
+      backupPath,
+      "files",
+      this.encodeFilePath(sourceFile),
+    );
     await fs.mkdir(path.dirname(targetFile), { recursive: true });
 
     if (this.config.compression.enabled) {
@@ -659,9 +743,17 @@ export class BackupSystem extends EventEmitter {
     return fileInfo;
   }
 
-  private async restoreFile(backup: BackupMetadata, fileInfo: BackupFileInfo, targetFile: string): Promise<void> {
+  private async restoreFile(
+    backup: BackupMetadata,
+    fileInfo: BackupFileInfo,
+    targetFile: string,
+  ): Promise<void> {
     const backupPath = await this.getBackupPath(backup);
-    const sourceFile = path.join(backupPath, 'files', this.encodeFilePath(fileInfo.path));
+    const sourceFile = path.join(
+      backupPath,
+      "files",
+      this.encodeFilePath(fileInfo.path),
+    );
 
     if (fileInfo.compressed) {
       await this.decompressFile(sourceFile, targetFile);
@@ -670,7 +762,10 @@ export class BackupSystem extends EventEmitter {
     }
   }
 
-  private async compressFile(sourceFile: string, targetFile: string): Promise<void> {
+  private async compressFile(
+    sourceFile: string,
+    targetFile: string,
+  ): Promise<void> {
     const readStream = createReadStream(sourceFile);
     const writeStream = createWriteStream(targetFile);
     const gzipStream = createGzip();
@@ -678,7 +773,10 @@ export class BackupSystem extends EventEmitter {
     await pipeline(readStream, gzipStream, writeStream);
   }
 
-  private async decompressFile(sourceFile: string, targetFile: string): Promise<void> {
+  private async decompressFile(
+    sourceFile: string,
+    targetFile: string,
+  ): Promise<void> {
     const readStream = createReadStream(sourceFile);
     const writeStream = createWriteStream(targetFile);
     const gunzipStream = createGunzip();
@@ -687,7 +785,7 @@ export class BackupSystem extends EventEmitter {
   }
 
   private async calculateChecksum(filePath: string): Promise<string> {
-    const crypto = require('crypto');
+    const crypto = require("crypto");
     const hash = crypto.createHash(this.config.verification.checksumAlgorithm);
     const stream = createReadStream(filePath);
 
@@ -695,14 +793,14 @@ export class BackupSystem extends EventEmitter {
       hash.update(chunk);
     }
 
-    return hash.digest('hex');
+    return hash.digest("hex");
   }
 
   private async verifyBackup(backupId: string): Promise<void> {
     const backup = this.backups.get(backupId);
     if (!backup) return;
 
-    backup.verificationStatus = 'pending';
+    backup.verificationStatus = "pending";
 
     try {
       // Verify checksums of backup files
@@ -710,40 +808,44 @@ export class BackupSystem extends EventEmitter {
       const actualChecksum = await this.calculateChecksum(backupPath);
 
       if (actualChecksum === backup.checksums.backup) {
-        backup.verificationStatus = 'passed';
+        backup.verificationStatus = "passed";
         this.logger.info(`Backup verification passed: ${backupId}`);
       } else {
-        backup.verificationStatus = 'failed';
-        this.logger.error(`Backup verification failed: ${backupId} (checksum mismatch)`);
+        backup.verificationStatus = "failed";
+        this.logger.error(
+          `Backup verification failed: ${backupId} (checksum mismatch)`,
+        );
       }
-
     } catch (error) {
-      backup.verificationStatus = 'failed';
+      backup.verificationStatus = "failed";
       this.logger.error(`Backup verification failed: ${backupId}`, error);
     }
   }
 
-  private async executeRecoveryStep(step: RecoveryStep, context?: Record<string, unknown>): Promise<void> {
+  private async executeRecoveryStep(
+    step: RecoveryStep,
+    context?: Record<string, unknown>,
+  ): Promise<void> {
     this.logger.info(`Executing recovery step: ${step.name}`);
 
     switch (step.type) {
-      case 'backup_restore':
+      case "backup_restore":
         await this.executeBackupRestoreStep(step, context);
         break;
 
-      case 'service_restart':
+      case "service_restart":
         await this.executeServiceRestartStep(step, context);
         break;
 
-      case 'database_recovery':
+      case "database_recovery":
         await this.executeDatabaseRecoveryStep(step, context);
         break;
 
-      case 'configuration_update':
+      case "configuration_update":
         await this.executeConfigurationUpdateStep(step, context);
         break;
 
-      case 'custom_script':
+      case "custom_script":
         await this.executeCustomScriptStep(step, context);
         break;
 
@@ -754,7 +856,10 @@ export class BackupSystem extends EventEmitter {
     this.logger.info(`Recovery step completed: ${step.name}`);
   }
 
-  private async executeBackupRestoreStep(step: RecoveryStep, context?: Record<string, unknown>): Promise<void> {
+  private async executeBackupRestoreStep(
+    step: RecoveryStep,
+    context?: Record<string, unknown>,
+  ): Promise<void> {
     const config = step.configuration;
     const backupId = config.backupId as string;
     const targetPath = config.targetPath as string;
@@ -762,34 +867,47 @@ export class BackupSystem extends EventEmitter {
     await this.restore({
       backupId,
       targetPath,
-      overwrite: config.overwrite as boolean || true,
-      preservePermissions: config.preservePermissions as boolean || true,
-      dryRun: false
+      overwrite: (config.overwrite as boolean) || true,
+      preservePermissions: (config.preservePermissions as boolean) || true,
+      dryRun: false,
     });
   }
 
-  private async executeServiceRestartStep(step: RecoveryStep, context?: Record<string, unknown>): Promise<void> {
+  private async executeServiceRestartStep(
+    step: RecoveryStep,
+    context?: Record<string, unknown>,
+  ): Promise<void> {
     // Service restart implementation would go here
     this.logger.info(`Service restart step: ${step.name}`);
   }
 
-  private async executeDatabaseRecoveryStep(step: RecoveryStep, context?: Record<string, unknown>): Promise<void> {
+  private async executeDatabaseRecoveryStep(
+    step: RecoveryStep,
+    context?: Record<string, unknown>,
+  ): Promise<void> {
     // Database recovery implementation would go here
     this.logger.info(`Database recovery step: ${step.name}`);
   }
 
-  private async executeConfigurationUpdateStep(step: RecoveryStep, context?: Record<string, unknown>): Promise<void> {
+  private async executeConfigurationUpdateStep(
+    step: RecoveryStep,
+    context?: Record<string, unknown>,
+  ): Promise<void> {
     // Configuration update implementation would go here
     this.logger.info(`Configuration update step: ${step.name}`);
   }
 
-  private async executeCustomScriptStep(step: RecoveryStep, context?: Record<string, unknown>): Promise<void> {
+  private async executeCustomScriptStep(
+    step: RecoveryStep,
+    context?: Record<string, unknown>,
+  ): Promise<void> {
     // Custom script execution implementation would go here
     this.logger.info(`Custom script step: ${step.name}`);
   }
 
   private shouldDeleteBackup(backup: BackupMetadata, now: Date): boolean {
-    const ageInDays = (now.getTime() - backup.timestamp.getTime()) / (1000 * 60 * 60 * 24);
+    const ageInDays =
+      (now.getTime() - backup.timestamp.getTime()) / (1000 * 60 * 60 * 24);
 
     // Apply retention policy based on backup age and type
     if (ageInDays <= this.config.retention.daily) {
@@ -802,45 +920,56 @@ export class BackupSystem extends EventEmitter {
 
   private scheduleBackups(): void {
     // Backup scheduling implementation would go here
-    this.logger.info('Backup scheduling initialized');
+    this.logger.info("Backup scheduling initialized");
   }
 
   private async loadExistingBackups(): Promise<void> {
     // Load existing backup metadata from storage
-    this.logger.info('Loading existing backup metadata');
+    this.logger.info("Loading existing backup metadata");
   }
 
   private async createBackupPath(metadata: BackupMetadata): Promise<string> {
-    const timestamp = metadata.timestamp.toISOString().replace(/[:.]/g, '-');
-    return path.join('/tmp/backups', metadata.strategy, `${metadata.type}-${timestamp}-${metadata.id}`);
+    const timestamp = metadata.timestamp.toISOString().replace(/[:.]/g, "-");
+    return path.join(
+      "/tmp/backups",
+      metadata.strategy,
+      `${metadata.type}-${timestamp}-${metadata.id}`,
+    );
   }
 
   private async getBackupPath(backup: BackupMetadata): Promise<string> {
-    const timestamp = backup.timestamp.toISOString().replace(/[:.]/g, '-');
-    return path.join('/tmp/backups', backup.strategy, `${backup.type}-${timestamp}-${backup.id}`);
+    const timestamp = backup.timestamp.toISOString().replace(/[:.]/g, "-");
+    return path.join(
+      "/tmp/backups",
+      backup.strategy,
+      `${backup.type}-${timestamp}-${backup.id}`,
+    );
   }
 
   private encodeFilePath(filePath: string): string {
-    return filePath.replace(/[/\\]/g, '_');
+    return filePath.replace(/[/\\]/g, "_");
   }
 
   private async saveBackupMetadata(metadata: BackupMetadata): Promise<void> {
     const backupPath = await this.getBackupPath(metadata);
-    const metadataPath = path.join(backupPath, 'metadata.json');
+    const metadataPath = path.join(backupPath, "metadata.json");
     await fs.writeFile(metadataPath, JSON.stringify(metadata, null, 2));
   }
 
-  private async findLastBackup(strategyName: string, type: 'incremental' | 'differential'): Promise<string | undefined> {
+  private async findLastBackup(
+    strategyName: string,
+    type: "incremental" | "differential",
+  ): Promise<string | undefined> {
     const strategyBackups = Array.from(this.backups.values())
-      .filter(b => b.strategy === strategyName && b.status === 'completed')
+      .filter((b) => b.strategy === strategyName && b.status === "completed")
       .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
 
-    if (type === 'incremental') {
+    if (type === "incremental") {
       // Find last backup of any type
       return strategyBackups[0]?.id;
     } else {
       // Find last full backup for differential
-      const lastFull = strategyBackups.find(b => b.type === 'full');
+      const lastFull = strategyBackups.find((b) => b.type === "full");
       return lastFull?.id;
     }
   }

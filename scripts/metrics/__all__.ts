@@ -1,11 +1,11 @@
-import { readFileSync, writeFileSync, existsSync } from 'fs';
-import { join } from 'path';
-import { calculateDuplicationMetrics } from './duplication_metrics';
-import { analyzeQuestionTypeDistribution } from './qtype_distribution';
-import { calculateCoverageMetrics } from './coverage_metrics';
-import { calculateEvidenceQuality } from './evidence_quality';
-import { detectHallucinations } from './hallucination_rules';
-import { scanPiiAndLicense } from './pii_license_scan';
+import { readFileSync, writeFileSync, existsSync } from "fs";
+import { join } from "path";
+import { calculateDuplicationMetrics } from "./duplication_metrics";
+import { analyzeQuestionTypeDistribution } from "./qtype_distribution";
+import { calculateCoverageMetrics } from "./coverage_metrics";
+import { calculateEvidenceQuality } from "./evidence_quality";
+import { detectHallucinations } from "./hallucination_rules";
+import { scanPiiAndLicense } from "./pii_license_scan";
 
 interface BaselineMetricsRecord {
   // Metadata
@@ -51,7 +51,7 @@ interface BaselineMetricsRecord {
 
   hallucination: {
     flagged: boolean;
-    risk_level: 'low' | 'medium' | 'high' | null;
+    risk_level: "low" | "medium" | "high" | null;
     similarity_to_evidence: number;
     unsupported_claims: string[];
   };
@@ -140,7 +140,7 @@ interface BaselineMetricsSummary {
     deviations: Record<string, number>;
   };
   total_alerts: number;
-  recommendation_level: 'green' | 'yellow' | 'red';
+  recommendation_level: "green" | "yellow" | "red";
 }
 
 interface QAItem {
@@ -192,16 +192,16 @@ function calculateOverallQualityScore(
   hallucinationRate: number,
   piiViolations: number,
   qtypeBalance: number,
-  coverageScore: number
+  coverageScore: number,
 ): number {
   // Weighted scoring (0-1 scale)
   const weights = {
-    duplication: 0.15,    // Lower duplication is better
-    evidence: 0.25,       // Higher evidence presence is better
-    hallucination: 0.25,  // Lower hallucination is better
-    pii: 0.15,           // No PII violations is better
-    qtype: 0.10,         // Balanced question types is better
-    coverage: 0.10       // Higher coverage is better
+    duplication: 0.15, // Lower duplication is better
+    evidence: 0.25, // Higher evidence presence is better
+    hallucination: 0.25, // Lower hallucination is better
+    pii: 0.15, // No PII violations is better
+    qtype: 0.1, // Balanced question types is better
+    coverage: 0.1, // Higher coverage is better
   };
 
   const duplicationScore = Math.max(0, 1 - duplicateRate * 2); // Penalize >50% duplication heavily
@@ -227,32 +227,47 @@ function calculateOverallQualityScore(
  */
 function checkReproducibility(
   currentMetrics: BaselineMetricsSummary,
-  tolerancePct: number = 5
+  tolerancePct: number = 5,
 ): { passed: boolean; deviations: Record<string, number> } {
   const deviations: Record<string, number> = {};
 
   // Try to load previous baseline
-  const previousBaselinePath = 'tests/regression/baseline_metrics.json';
+  const previousBaselinePath = "tests/regression/baseline_metrics.json";
   if (!existsSync(previousBaselinePath)) {
     return { passed: true, deviations: {} };
   }
 
   try {
-    const previousData = JSON.parse(readFileSync(previousBaselinePath, 'utf-8'));
+    const previousData = JSON.parse(
+      readFileSync(previousBaselinePath, "utf-8"),
+    );
     const previous = previousData.baseline_metrics;
 
     // Check key metrics for reproducibility
     const keyMetrics = [
-      { name: 'duplication_rate', current: currentMetrics.duplication.rate, previous: previous.pass_rate },
-      { name: 'evidence_presence_rate', current: currentMetrics.evidence_quality.presence_rate, previous: previous.mean_score },
-      { name: 'overall_quality_score', current: currentMetrics.overall_quality_score, previous: previous.mean_score }
+      {
+        name: "duplication_rate",
+        current: currentMetrics.duplication.rate,
+        previous: previous.pass_rate,
+      },
+      {
+        name: "evidence_presence_rate",
+        current: currentMetrics.evidence_quality.presence_rate,
+        previous: previous.mean_score,
+      },
+      {
+        name: "overall_quality_score",
+        current: currentMetrics.overall_quality_score,
+        previous: previous.mean_score,
+      },
     ];
 
     let allPassed = true;
 
     for (const metric of keyMetrics) {
       if (metric.previous !== undefined && metric.previous !== 0) {
-        const deviation = Math.abs(metric.current - metric.previous) / metric.previous * 100;
+        const deviation =
+          (Math.abs(metric.current - metric.previous) / metric.previous) * 100;
         deviations[metric.name] = deviation;
 
         if (deviation > tolerancePct) {
@@ -263,7 +278,7 @@ function checkReproducibility(
 
     return { passed: allPassed, deviations };
   } catch (error) {
-    console.warn('Could not check reproducibility:', error);
+    console.warn("Could not check reproducibility:", error);
     return { passed: true, deviations: {} };
   }
 }
@@ -273,42 +288,51 @@ function checkReproducibility(
  */
 export async function calculateAllBaselineMetrics(
   qaItems: QAItem[],
-  options: CalculateOptions = {}
+  options: CalculateOptions = {},
 ): Promise<{
   records: BaselineMetricsRecord[];
   summary: BaselineMetricsSummary;
 }> {
   const {
-    configPath = 'baseline_config.json',
+    configPath = "baseline_config.json",
     sessionId = `baseline_${Date.now()}`,
     budgetLimit = 0,
-    sourceTexts = []
+    sourceTexts = [],
   } = options;
 
-  console.log(`\n🔍 Calculating baseline v1.5 metrics for ${qaItems.length} items...`);
+  console.log(
+    `\n🔍 Calculating baseline v1.5 metrics for ${qaItems.length} items...`,
+  );
 
   // Calculate component metrics
-  console.log('📊 Calculating duplication metrics...');
-  const duplicationMetrics = await calculateDuplicationMetrics(qaItems, configPath);
+  console.log("📊 Calculating duplication metrics...");
+  const duplicationMetrics = await calculateDuplicationMetrics(
+    qaItems,
+    configPath,
+  );
 
-  console.log('📊 Calculating question type distribution...');
+  console.log("📊 Calculating question type distribution...");
   const qtypeMetrics = analyzeQuestionTypeDistribution(qaItems, configPath);
 
-  console.log('📊 Calculating coverage metrics...');
-  const coverageMetrics = calculateCoverageMetrics(qaItems, sourceTexts, configPath);
+  console.log("📊 Calculating coverage metrics...");
+  const coverageMetrics = calculateCoverageMetrics(
+    qaItems,
+    sourceTexts,
+    configPath,
+  );
 
-  console.log('📊 Calculating evidence quality...');
+  console.log("📊 Calculating evidence quality...");
   const evidenceMetrics = calculateEvidenceQuality(qaItems, configPath);
 
-  console.log('📊 Detecting hallucinations...');
+  console.log("📊 Detecting hallucinations...");
   const hallucinationMetrics = detectHallucinations(qaItems, configPath);
 
-  console.log('📊 Scanning for PII and license violations...');
+  console.log("📊 Scanning for PII and license violations...");
   const piiLicenseMetrics = scanPiiAndLicense(qaItems, configPath);
 
   // Calculate cost and performance metrics
-  const costs = qaItems.map(item => item.cost_usd || 0);
-  const latencies = qaItems.map(item => item.latency_ms || 0);
+  const costs = qaItems.map((item) => item.cost_usd || 0);
+  const latencies = qaItems.map((item) => item.latency_ms || 0);
 
   const totalCost = costs.reduce((sum, cost) => sum + cost, 0);
   const costPerItem = qaItems.length > 0 ? totalCost / qaItems.length : 0;
@@ -320,12 +344,14 @@ export async function calculateAllBaselineMetrics(
   const records: BaselineMetricsRecord[] = qaItems.map((item, index) => {
     // Find if this item is flagged in various metrics
     const duplicateFlag = duplicationMetrics.top_duplicate_pairs.some(
-      pair => pair.index1 === index || pair.index2 === index
+      (pair) => pair.index1 === index || pair.index2 === index,
     );
 
-    const hallucinationFlag = hallucinationMetrics.flags.find(flag => flag.index === index);
+    const hallucinationFlag = hallucinationMetrics.flags.find(
+      (flag) => flag.index === index,
+    );
     const piiLicenseViolations = piiLicenseMetrics.matches.filter(
-      match => match.location.index === index
+      (match) => match.location.index === index,
     );
 
     // Calculate individual quality score
@@ -335,14 +361,14 @@ export async function calculateAllBaselineMetrics(
       hallucinationFlag ? 1 : 0,
       piiLicenseViolations.length,
       qtypeMetrics.imbalance_score,
-      coverageMetrics.coverage_summary.overall_score
+      coverageMetrics.coverage_summary.overall_score,
     );
 
     const alertFlags: string[] = [];
-    if (duplicateFlag) alertFlags.push('duplication');
-    if (hallucinationFlag) alertFlags.push('hallucination');
-    if (piiLicenseViolations.length > 0) alertFlags.push('pii_license');
-    if (!item.evidence) alertFlags.push('missing_evidence');
+    if (duplicateFlag) alertFlags.push("duplication");
+    if (hallucinationFlag) alertFlags.push("hallucination");
+    if (piiLicenseViolations.length > 0) alertFlags.push("pii_license");
+    if (!item.evidence) alertFlags.push("missing_evidence");
 
     return {
       timestamp: new Date().toISOString(),
@@ -357,47 +383,63 @@ export async function calculateAllBaselineMetrics(
 
       duplication: {
         is_duplicate: duplicateFlag,
-        max_similarity: duplicateFlag ?
-          Math.max(...duplicationMetrics.top_duplicate_pairs
-            .filter(pair => pair.index1 === index || pair.index2 === index)
-            .map(pair => pair.jaccard_similarity)) : 0,
+        max_similarity: duplicateFlag
+          ? Math.max(
+              ...duplicationMetrics.top_duplicate_pairs
+                .filter(
+                  (pair) => pair.index1 === index || pair.index2 === index,
+                )
+                .map((pair) => pair.jaccard_similarity),
+            )
+          : 0,
         similar_to_indices: duplicationMetrics.top_duplicate_pairs
-          .filter(pair => pair.index1 === index || pair.index2 === index)
-          .map(pair => pair.index1 === index ? pair.index2 : pair.index1)
+          .filter((pair) => pair.index1 === index || pair.index2 === index)
+          .map((pair) => (pair.index1 === index ? pair.index2 : pair.index1)),
       },
 
       qtype: {
-        classified_type: qtypeMetrics.distributions[Object.keys(qtypeMetrics.distributions)[0]]?.examples.includes(item.qa.q) ?
-          Object.keys(qtypeMetrics.distributions)[0] : null,
+        classified_type: qtypeMetrics.distributions[
+          Object.keys(qtypeMetrics.distributions)[0]
+        ]?.examples.includes(item.qa.q)
+          ? Object.keys(qtypeMetrics.distributions)[0]
+          : null,
         confidence: 0.8, // Mock confidence
-        unclassified: false // Will be properly calculated
+        unclassified: false, // Will be properly calculated
       },
 
       coverage: {
         entity_coverage_score: coverageMetrics.entity_coverage.coverage_rate,
         section_coverage_score: coverageMetrics.section_coverage.coverage_rate,
         covered_entities: [], // Would need more detailed analysis
-        missing_entities: coverageMetrics.entity_coverage.missed_entities.slice(0, 3)
+        missing_entities: coverageMetrics.entity_coverage.missed_entities.slice(
+          0,
+          3,
+        ),
       },
 
       evidence_quality: {
         has_evidence: !!item.evidence,
         alignment_score: evidenceMetrics.snippet_alignment.scores[index] || 0,
-        evidence_complete: !!item.evidence
+        evidence_complete: !!item.evidence,
       },
 
       hallucination: {
         flagged: !!hallucinationFlag,
         risk_level: hallucinationFlag?.risk_level || null,
         similarity_to_evidence: hallucinationFlag?.similarity_score || 1.0,
-        unsupported_claims: hallucinationFlag?.missing_support || []
+        unsupported_claims: hallucinationFlag?.missing_support || [],
       },
 
       pii_license: {
-        pii_violations: piiLicenseViolations.filter(v => v.type === 'pii').length,
-        license_violations: piiLicenseViolations.filter(v => v.type === 'license').length,
+        pii_violations: piiLicenseViolations.filter((v) => v.type === "pii")
+          .length,
+        license_violations: piiLicenseViolations.filter(
+          (v) => v.type === "license",
+        ).length,
         clean: piiLicenseViolations.length === 0,
-        violation_types: [...new Set(piiLicenseViolations.map(v => v.pattern))]
+        violation_types: [
+          ...new Set(piiLicenseViolations.map((v) => v.pattern)),
+        ],
       },
 
       cost_usd: item.cost_usd || 0,
@@ -406,7 +448,7 @@ export async function calculateAllBaselineMetrics(
       tokens_out: item.tokens_out,
 
       quality_score: itemQualityScore,
-      alert_flags: alertFlags
+      alert_flags: alertFlags,
     };
   });
 
@@ -417,7 +459,7 @@ export async function calculateAllBaselineMetrics(
     hallucinationMetrics.hallucination_rate,
     piiLicenseMetrics.pii_hits,
     qtypeMetrics.imbalance_score,
-    coverageMetrics.coverage_summary.overall_score
+    coverageMetrics.coverage_summary.overall_score,
   );
 
   // Create summary
@@ -425,25 +467,26 @@ export async function calculateAllBaselineMetrics(
     timestamp: new Date().toISOString(),
     session_id: sessionId,
     total_items: qaItems.length,
-    config_version: '1.5.0',
+    config_version: "1.5.0",
 
     duplication: {
       rate: duplicationMetrics.duplication_rate,
       high_similarity_pairs: duplicationMetrics.high_similarity_pairs,
       semantic_duplication_rate: duplicationMetrics.semantic_duplication_rate,
-      alert_triggered: duplicationMetrics.alert_triggered
+      alert_triggered: duplicationMetrics.alert_triggered,
     },
 
     qtype_distribution: {
       distributions: Object.fromEntries(
         Object.entries(qtypeMetrics.distributions).map(([key, value]) => [
-          key, { count: value.count, ratio: value.ratio }
-        ])
+          key,
+          { count: value.count, ratio: value.ratio },
+        ]),
       ),
       imbalance_score: qtypeMetrics.imbalance_score,
       entropy: qtypeMetrics.entropy,
       missing_categories: qtypeMetrics.missing_categories,
-      alert_triggered: qtypeMetrics.alert_triggered
+      alert_triggered: qtypeMetrics.alert_triggered,
     },
 
     coverage: {
@@ -451,28 +494,28 @@ export async function calculateAllBaselineMetrics(
       section_coverage_rate: coverageMetrics.section_coverage.coverage_rate,
       overall_score: coverageMetrics.coverage_summary.overall_score,
       critical_gaps: coverageMetrics.coverage_summary.critical_gaps,
-      alert_triggered: coverageMetrics.alert_triggered
+      alert_triggered: coverageMetrics.alert_triggered,
     },
 
     evidence_quality: {
       presence_rate: evidenceMetrics.evidence_presence_rate,
       alignment_mean: evidenceMetrics.snippet_alignment.mean,
       alignment_p95: evidenceMetrics.snippet_alignment.p95,
-      alert_triggered: evidenceMetrics.alert_triggered
+      alert_triggered: evidenceMetrics.alert_triggered,
     },
 
     hallucination: {
       rate: hallucinationMetrics.hallucination_rate,
       high_risk_count: hallucinationMetrics.high_risk_count,
       risk_distribution: hallucinationMetrics.risk_distribution,
-      alert_triggered: hallucinationMetrics.alert_triggered
+      alert_triggered: hallucinationMetrics.alert_triggered,
     },
 
     pii_license: {
       pii_hits: piiLicenseMetrics.pii_hits,
       license_hits: piiLicenseMetrics.license_risk_hits,
       total_violations: piiLicenseMetrics.total_violations,
-      alert_triggered: piiLicenseMetrics.alert_triggered
+      alert_triggered: piiLicenseMetrics.alert_triggered,
     },
 
     cost_total_usd: totalCost,
@@ -489,16 +532,23 @@ export async function calculateAllBaselineMetrics(
       coverageMetrics.alert_triggered,
       evidenceMetrics.alert_triggered,
       hallucinationMetrics.alert_triggered,
-      piiLicenseMetrics.alert_triggered
+      piiLicenseMetrics.alert_triggered,
     ].filter(Boolean).length,
-    recommendation_level: overallQualityScore > 0.8 ? 'green' : overallQualityScore > 0.6 ? 'yellow' : 'red'
+    recommendation_level:
+      overallQualityScore > 0.8
+        ? "green"
+        : overallQualityScore > 0.6
+          ? "yellow"
+          : "red",
   };
 
   // Add reproducibility check with actual summary
   summary.reproducibility_check = checkReproducibility(summary);
 
   console.log(`✅ Baseline metrics calculation complete!`);
-  console.log(`📈 Overall Quality Score: ${(overallQualityScore * 100).toFixed(1)}%`);
+  console.log(
+    `📈 Overall Quality Score: ${(overallQualityScore * 100).toFixed(1)}%`,
+  );
   console.log(`⚠️  Total Alerts: ${summary.total_alerts}`);
   console.log(`💰 Total Cost: $${totalCost.toFixed(4)}`);
 
@@ -512,32 +562,39 @@ if (require.main === module) {
   // Test with sample data
   const sampleQA: QAItem[] = [
     {
-      qa: { q: "물이 어떤 상태로 존재하나요?", a: "물은 고체, 액체, 기체 상태로 존재합니다." },
-      evidence: "물은 세 가지 상태로 존재할 수 있습니다. 고체 상태인 얼음, 액체 상태인 물, 그리고 기체 상태인 수증기입니다.",
+      qa: {
+        q: "물이 어떤 상태로 존재하나요?",
+        a: "물은 고체, 액체, 기체 상태로 존재합니다.",
+      },
+      evidence:
+        "물은 세 가지 상태로 존재할 수 있습니다. 고체 상태인 얼음, 액체 상태인 물, 그리고 기체 상태인 수증기입니다.",
       cost_usd: 0.01,
       latency_ms: 150,
-      index: 0
+      index: 0,
     },
     {
-      qa: { q: "식물은 어떻게 자라나요?", a: "식물은 뿌리로 물을 흡수하고 잎으로 광합성을 합니다." },
+      qa: {
+        q: "식물은 어떻게 자라나요?",
+        a: "식물은 뿌리로 물을 흡수하고 잎으로 광합성을 합니다.",
+      },
       evidence: "식물은 뿌리로 물을 흡수하고 잎으로 광합성을 합니다.",
       cost_usd: 0.01,
       latency_ms: 200,
-      index: 1
-    }
+      index: 1,
+    },
   ];
 
   const sourceTexts = [
     "물은 세 가지 상태로 존재할 수 있습니다. 고체 상태인 얼음, 액체 상태인 물, 그리고 기체 상태인 수증기입니다.",
-    "식물은 뿌리로 물을 흡수하고 잎으로 광합성을 합니다."
+    "식물은 뿌리로 물을 흡수하고 잎으로 광합성을 합니다.",
   ];
 
   calculateAllBaselineMetrics(sampleQA, { sourceTexts })
     .then(({ records, summary }) => {
-      console.log('\n=== BASELINE METRICS SUMMARY ===');
+      console.log("\n=== BASELINE METRICS SUMMARY ===");
       console.log(JSON.stringify(summary, null, 2));
 
-      console.log('\n=== SAMPLE RECORDS ===');
+      console.log("\n=== SAMPLE RECORDS ===");
       console.log(JSON.stringify(records[0], null, 2));
     })
     .catch(console.error);

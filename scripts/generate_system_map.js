@@ -6,21 +6,29 @@ var __getOwnPropNames = Object.getOwnPropertyNames;
 var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
+  if ((from && typeof from === "object") || typeof from === "function") {
     for (let key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
-  // If the importer is in node compatibility mode or this is not an ESM
-  // file that has been converted to a CommonJS file using a Babel-
-  // compatible transform (i.e. "__esModule" has not been set), then set
-  // "default" to the CommonJS "module.exports" for node compatibility.
-  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
-  mod
-));
+var __toESM = (mod, isNodeMode, target) => (
+  (target = mod != null ? __create(__getProtoOf(mod)) : {}),
+  __copyProps(
+    // If the importer is in node compatibility mode or this is not an ESM
+    // file that has been converted to a CommonJS file using a Babel-
+    // compatible transform (i.e. "__esModule" has not been set), then set
+    // "default" to the CommonJS "module.exports" for node compatibility.
+    isNodeMode || !mod || !mod.__esModule
+      ? __defProp(target, "default", { value: mod, enumerable: true })
+      : target,
+    mod,
+  )
+);
 var import_fs = __toESM(require("fs"), 1);
 var import_path = __toESM(require("path"), 1);
 function has(patterns, root) {
@@ -41,11 +49,25 @@ function has(patterns, root) {
 }
 function writeSystemMap(repoRoot2) {
   const sysPath = import_path.default.join(repoRoot2, "SYSTEM_MAP.md");
-  const now = (/* @__PURE__ */ new Date()).toISOString();
-  const rag = has(["src/rag/chunk\\.ts", "src/rag/retriever\\.ts"], repoRoot2) ? "ok" : "missing";
-  const augParaphrase = has(["src/augmentation/"], repoRoot2) ? "partial" : "missing";
-  const docPath = has(["seed_doc_path"], import_path.default.join(repoRoot2, "src")) ? "partial" : "missing";
-  const pairsPath = has(["gold_pairs_path"], import_path.default.join(repoRoot2, "src")) ? "partial" : "missing";
+  const now = /* @__PURE__ */ new Date().toISOString();
+  const rag = has(["src/rag/chunk\\.ts", "src/rag/retriever\\.ts"], repoRoot2)
+    ? "ok"
+    : "missing";
+  const augParaphrase = has(["src/augmentation/"], repoRoot2)
+    ? "partial"
+    : "missing";
+  const docPath = has(
+    ["seed_doc_path"],
+    import_path.default.join(repoRoot2, "src"),
+  )
+    ? "partial"
+    : "missing";
+  const pairsPath = has(
+    ["gold_pairs_path"],
+    import_path.default.join(repoRoot2, "src"),
+  )
+    ? "partial"
+    : "missing";
   const md = `# System Map
 
 _Auto-generated: ${now}_

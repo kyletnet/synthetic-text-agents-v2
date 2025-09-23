@@ -4,24 +4,24 @@
 
 export enum ErrorCode {
   // Agent errors
-  AGENT_NOT_FOUND = 'AGENT_NOT_FOUND',
-  AGENT_EXECUTION_FAILED = 'AGENT_EXECUTION_FAILED',
-  AGENT_TIMEOUT = 'AGENT_TIMEOUT',
+  AGENT_NOT_FOUND = "AGENT_NOT_FOUND",
+  AGENT_EXECUTION_FAILED = "AGENT_EXECUTION_FAILED",
+  AGENT_TIMEOUT = "AGENT_TIMEOUT",
 
   // System errors
-  INITIALIZATION_FAILED = 'INITIALIZATION_FAILED',
-  CONFIGURATION_ERROR = 'CONFIGURATION_ERROR',
-  RESOURCE_EXHAUSTED = 'RESOURCE_EXHAUSTED',
+  INITIALIZATION_FAILED = "INITIALIZATION_FAILED",
+  CONFIGURATION_ERROR = "CONFIGURATION_ERROR",
+  RESOURCE_EXHAUSTED = "RESOURCE_EXHAUSTED",
 
   // Input/Output errors
-  INVALID_INPUT = 'INVALID_INPUT',
-  VALIDATION_FAILED = 'VALIDATION_FAILED',
-  OUTPUT_GENERATION_FAILED = 'OUTPUT_GENERATION_FAILED',
+  INVALID_INPUT = "INVALID_INPUT",
+  VALIDATION_FAILED = "VALIDATION_FAILED",
+  OUTPUT_GENERATION_FAILED = "OUTPUT_GENERATION_FAILED",
 
   // External service errors
-  API_ERROR = 'API_ERROR',
-  NETWORK_ERROR = 'NETWORK_ERROR',
-  RATE_LIMIT_EXCEEDED = 'RATE_LIMIT_EXCEEDED',
+  API_ERROR = "API_ERROR",
+  NETWORK_ERROR = "NETWORK_ERROR",
+  RATE_LIMIT_EXCEEDED = "RATE_LIMIT_EXCEEDED",
 }
 
 export class AgentSystemError extends Error {
@@ -37,10 +37,10 @@ export class AgentSystemError extends Error {
       agentId?: string;
       context?: Record<string, unknown>;
       cause?: Error;
-    }
+    },
   ) {
     super(message);
-    this.name = 'AgentSystemError';
+    this.name = "AgentSystemError";
     this.code = code;
     this.agentId = options?.agentId;
     this.context = options?.context;
@@ -77,13 +77,13 @@ export class AgentExecutionError extends AgentSystemError {
     options?: {
       context?: Record<string, unknown>;
       cause?: Error;
-    }
+    },
   ) {
     super(ErrorCode.AGENT_EXECUTION_FAILED, message, {
       ...options,
       agentId,
     });
-    this.name = 'AgentExecutionError';
+    this.name = "AgentExecutionError";
   }
 }
 
@@ -94,10 +94,14 @@ export class ValidationError extends AgentSystemError {
     options?: {
       context?: Record<string, unknown>;
       cause?: Error;
-    }
+    },
   ) {
-    super(ErrorCode.VALIDATION_FAILED, `Validation failed for ${field}: ${message}`, options);
-    this.name = 'ValidationError';
+    super(
+      ErrorCode.VALIDATION_FAILED,
+      `Validation failed for ${field}: ${message}`,
+      options,
+    );
+    this.name = "ValidationError";
   }
 }
 
@@ -108,7 +112,9 @@ export function isAgentSystemError(error: unknown): error is AgentSystemError {
   return error instanceof AgentSystemError;
 }
 
-export function createErrorContext(data: Record<string, unknown>): Record<string, unknown> {
+export function createErrorContext(
+  data: Record<string, unknown>,
+): Record<string, unknown> {
   return {
     ...data,
     timestamp: new Date().toISOString(),
@@ -122,10 +128,10 @@ export function getErrorMessage(error: unknown): string {
   if (error instanceof Error) {
     return error.message;
   }
-  if (typeof error === 'string') {
+  if (typeof error === "string") {
     return error;
   }
-  return 'Unknown error occurred';
+  return "Unknown error occurred";
 }
 
 /**
@@ -138,7 +144,7 @@ export async function withRetry<T>(
     baseDelay?: number;
     maxDelay?: number;
     shouldRetry?: (error: unknown) => boolean;
-  } = {}
+  } = {},
 ): Promise<T> {
   const {
     maxRetries = 3,
@@ -160,7 +166,7 @@ export async function withRetry<T>(
       }
 
       const delay = Math.min(baseDelay * Math.pow(2, attempt), maxDelay);
-      await new Promise(resolve => setTimeout(resolve, delay));
+      await new Promise((resolve) => setTimeout(resolve, delay));
     }
   }
 

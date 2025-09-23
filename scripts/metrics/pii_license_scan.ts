@@ -1,4 +1,4 @@
-import { readFileSync } from 'fs';
+import { readFileSync } from "fs";
 
 interface PiiLicenseConfig {
   pii_patterns: string[];
@@ -10,7 +10,7 @@ interface PiiLicenseConfig {
 }
 
 interface PiiMatch {
-  type: 'pii' | 'license';
+  type: "pii" | "license";
   pattern: string;
   match: string;
   context: string;
@@ -18,7 +18,7 @@ interface PiiMatch {
     field: string;
     index: number;
   };
-  risk_level: 'low' | 'medium' | 'high';
+  risk_level: "low" | "medium" | "high";
 }
 
 interface PiiLicenseMetrics {
@@ -54,28 +54,48 @@ interface QAItem {
  */
 const ENHANCED_PII_PATTERNS = [
   // Korean social security number (주민등록번호)
-  { pattern: /\b\d{6}-\d{7}\b/g, type: 'social_security', risk: 'high' },
+  { pattern: /\b\d{6}-\d{7}\b/g, type: "social_security", risk: "high" },
 
   // US social security number
-  { pattern: /\b\d{3}-\d{2}-\d{4}\b/g, type: 'social_security', risk: 'high' },
+  { pattern: /\b\d{3}-\d{2}-\d{4}\b/g, type: "social_security", risk: "high" },
 
   // Email addresses
-  { pattern: /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g, type: 'email', risk: 'medium' },
+  {
+    pattern: /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g,
+    type: "email",
+    risk: "medium",
+  },
 
   // Credit card numbers
-  { pattern: /\b\d{4}[\s-]?\d{4}[\s-]?\d{4}[\s-]?\d{4}\b/g, type: 'credit_card', risk: 'high' },
+  {
+    pattern: /\b\d{4}[\s-]?\d{4}[\s-]?\d{4}[\s-]?\d{4}\b/g,
+    type: "credit_card",
+    risk: "high",
+  },
 
   // Phone numbers (various formats)
-  { pattern: /\b(\+?1[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b/g, type: 'phone', risk: 'medium' },
+  {
+    pattern: /\b(\+?1[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b/g,
+    type: "phone",
+    risk: "medium",
+  },
 
   // Korean phone numbers
-  { pattern: /\b01[0-9]-\d{4}-\d{4}\b/g, type: 'phone', risk: 'medium' },
+  { pattern: /\b01[0-9]-\d{4}-\d{4}\b/g, type: "phone", risk: "medium" },
 
   // IP addresses (could be sensitive)
-  { pattern: /\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b/g, type: 'ip_address', risk: 'low' },
+  {
+    pattern: /\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b/g,
+    type: "ip_address",
+    risk: "low",
+  },
 
   // URLs with personal paths
-  { pattern: /https?:\/\/[^\s]+\/users\/[^\s]+/g, type: 'personal_url', risk: 'medium' }
+  {
+    pattern: /https?:\/\/[^\s]+\/users\/[^\s]+/g,
+    type: "personal_url",
+    risk: "medium",
+  },
 ];
 
 /**
@@ -83,44 +103,49 @@ const ENHANCED_PII_PATTERNS = [
  */
 const ENHANCED_LICENSE_KEYWORDS = [
   // Copyright notices
-  { keyword: 'copyright', risk: 'medium' },
-  { keyword: '©', risk: 'medium' },
-  { keyword: 'all rights reserved', risk: 'high' },
-  { keyword: '저작권', risk: 'medium' },
+  { keyword: "copyright", risk: "medium" },
+  { keyword: "©", risk: "medium" },
+  { keyword: "all rights reserved", risk: "high" },
+  { keyword: "저작권", risk: "medium" },
 
   // License terms
-  { keyword: 'licensed under', risk: 'high' },
-  { keyword: 'proprietary', risk: 'high' },
-  { keyword: 'confidential', risk: 'high' },
-  { keyword: 'trade secret', risk: 'high' },
-  { keyword: 'patent pending', risk: 'medium' },
+  { keyword: "licensed under", risk: "high" },
+  { keyword: "proprietary", risk: "high" },
+  { keyword: "confidential", risk: "high" },
+  { keyword: "trade secret", risk: "high" },
+  { keyword: "patent pending", risk: "medium" },
 
   // Specific licenses
-  { keyword: 'MIT license', risk: 'medium' },
-  { keyword: 'GPL', risk: 'medium' },
-  { keyword: 'Apache license', risk: 'medium' },
-  { keyword: 'BSD license', risk: 'medium' },
+  { keyword: "MIT license", risk: "medium" },
+  { keyword: "GPL", risk: "medium" },
+  { keyword: "Apache license", risk: "medium" },
+  { keyword: "BSD license", risk: "medium" },
 
   // Korean legal terms
-  { keyword: '영업비밀', risk: 'high' },
-  { keyword: '기밀', risk: 'high' },
-  { keyword: '라이선스', risk: 'medium' }
+  { keyword: "영업비밀", risk: "high" },
+  { keyword: "기밀", risk: "high" },
+  { keyword: "라이선스", risk: "medium" },
 ];
 
 /**
  * Extract context around a match
  */
-function extractContext(text: string, matchIndex: number, matchLength: number, contextLength: number = 50): string {
+function extractContext(
+  text: string,
+  matchIndex: number,
+  matchLength: number,
+  contextLength: number = 50,
+): string {
   const start = Math.max(0, matchIndex - contextLength);
   const end = Math.min(text.length, matchIndex + matchLength + contextLength);
 
   let context = text.substring(start, end);
 
   // Add ellipsis if truncated
-  if (start > 0) context = '...' + context;
-  if (end < text.length) context = context + '...';
+  if (start > 0) context = "..." + context;
+  if (end < text.length) context = context + "...";
 
-  return context.replace(/\s+/g, ' ').trim();
+  return context.replace(/\s+/g, " ").trim();
 }
 
 /**
@@ -129,7 +154,7 @@ function extractContext(text: string, matchIndex: number, matchLength: number, c
 function scanForPii(
   text: string,
   fieldName: string,
-  itemIndex: number
+  itemIndex: number,
 ): PiiMatch[] {
   const matches: PiiMatch[] = [];
 
@@ -139,15 +164,15 @@ function scanForPii(
 
     while ((match = regex.exec(text)) !== null) {
       matches.push({
-        type: 'pii',
+        type: "pii",
         pattern: pattern.source,
         match: match[0],
         context: extractContext(text, match.index, match[0].length),
         location: {
           field: fieldName,
-          index: itemIndex
+          index: itemIndex,
         },
-        risk_level: risk as 'low' | 'medium' | 'high'
+        risk_level: risk as "low" | "medium" | "high",
       });
     }
   }
@@ -161,7 +186,7 @@ function scanForPii(
 function scanForLicense(
   text: string,
   fieldName: string,
-  itemIndex: number
+  itemIndex: number,
 ): PiiMatch[] {
   const matches: PiiMatch[] = [];
   const textLower = text.toLowerCase();
@@ -175,15 +200,15 @@ function scanForLicense(
       if (matchIndex === -1) break;
 
       matches.push({
-        type: 'license',
+        type: "license",
         pattern: keyword,
         match: text.substring(matchIndex, matchIndex + keyword.length),
         context: extractContext(text, matchIndex, keyword.length),
         location: {
           field: fieldName,
-          index: itemIndex
+          index: itemIndex,
         },
-        risk_level: risk as 'low' | 'medium' | 'high'
+        risk_level: risk as "low" | "medium" | "high",
       });
 
       searchStart = matchIndex + keyword.length;
@@ -198,11 +223,10 @@ function scanForLicense(
  */
 export function scanPiiAndLicense(
   qaItems: QAItem[],
-  configPath: string = 'baseline_config.json'
+  configPath: string = "baseline_config.json",
 ): PiiLicenseMetrics {
-
   // Load configuration
-  const configText = readFileSync(configPath, 'utf-8');
+  const configText = readFileSync(configPath, "utf-8");
   const fullConfig = JSON.parse(configText);
   const config: PiiLicenseConfig = fullConfig.pii_license_scan;
 
@@ -213,19 +237,19 @@ export function scanPiiAndLicense(
     credit_cards: 0,
     social_security: 0,
     copyright_notices: 0,
-    license_terms: 0
+    license_terms: 0,
   };
 
   for (let i = 0; i < qaItems.length; i++) {
     const item = qaItems[i];
 
     // Scan question
-    const questionPiiMatches = scanForPii(item.qa.q, 'question', i);
-    const questionLicenseMatches = scanForLicense(item.qa.q, 'question', i);
+    const questionPiiMatches = scanForPii(item.qa.q, "question", i);
+    const questionLicenseMatches = scanForLicense(item.qa.q, "question", i);
 
     // Scan answer
-    const answerPiiMatches = scanForPii(item.qa.a, 'answer', i);
-    const answerLicenseMatches = scanForLicense(item.qa.a, 'answer', i);
+    const answerPiiMatches = scanForPii(item.qa.a, "answer", i);
+    const answerLicenseMatches = scanForLicense(item.qa.a, "answer", i);
 
     // Scan evidence if available
     let evidencePiiMatches: PiiMatch[] = [];
@@ -233,8 +257,8 @@ export function scanPiiAndLicense(
 
     const evidence = item.evidence || item.evidence_text || item.source_text;
     if (evidence) {
-      evidencePiiMatches = scanForPii(evidence, 'evidence', i);
-      evidenceLicenseMatches = scanForLicense(evidence, 'evidence', i);
+      evidencePiiMatches = scanForPii(evidence, "evidence", i);
+      evidenceLicenseMatches = scanForLicense(evidence, "evidence", i);
     }
 
     // Combine all matches
@@ -244,20 +268,33 @@ export function scanPiiAndLicense(
       ...answerPiiMatches,
       ...answerLicenseMatches,
       ...evidencePiiMatches,
-      ...evidenceLicenseMatches
+      ...evidenceLicenseMatches,
     ];
 
     allMatches.push(...itemMatches);
 
     // Update summary counts
     for (const match of itemMatches) {
-      if (match.type === 'pii') {
-        if (match.pattern.includes('@')) summary.email_addresses++;
-        else if (match.pattern.includes('01[0-9]') || match.pattern.includes('\\(\\d{3}\\)')) summary.phone_numbers++;
-        else if (match.pattern.includes('\\d{4}[\\s-]?\\d{4}')) summary.credit_cards++;
-        else if (match.pattern.includes('\\d{6}-\\d{7}') || match.pattern.includes('\\d{3}-\\d{2}-\\d{4}')) summary.social_security++;
-      } else if (match.type === 'license') {
-        if (match.pattern.includes('copyright') || match.pattern.includes('©') || match.pattern.includes('저작권')) {
+      if (match.type === "pii") {
+        if (match.pattern.includes("@")) summary.email_addresses++;
+        else if (
+          match.pattern.includes("01[0-9]") ||
+          match.pattern.includes("\\(\\d{3}\\)")
+        )
+          summary.phone_numbers++;
+        else if (match.pattern.includes("\\d{4}[\\s-]?\\d{4}"))
+          summary.credit_cards++;
+        else if (
+          match.pattern.includes("\\d{6}-\\d{7}") ||
+          match.pattern.includes("\\d{3}-\\d{2}-\\d{4}")
+        )
+          summary.social_security++;
+      } else if (match.type === "license") {
+        if (
+          match.pattern.includes("copyright") ||
+          match.pattern.includes("©") ||
+          match.pattern.includes("저작권")
+        ) {
           summary.copyright_notices++;
         } else {
           summary.license_terms++;
@@ -267,8 +304,8 @@ export function scanPiiAndLicense(
   }
 
   // Calculate metrics
-  const piiHits = allMatches.filter(m => m.type === 'pii').length;
-  const licenseRiskHits = allMatches.filter(m => m.type === 'license').length;
+  const piiHits = allMatches.filter((m) => m.type === "pii").length;
+  const licenseRiskHits = allMatches.filter((m) => m.type === "license").length;
   const totalViolations = allMatches.length;
 
   // Check alert conditions
@@ -283,7 +320,7 @@ export function scanPiiAndLicense(
     total_violations: totalViolations,
     matches: allMatches.slice(0, 20), // Limit for reporting
     summary,
-    alert_triggered: alertTriggered
+    alert_triggered: alertTriggered,
   };
 }
 
@@ -293,62 +330,73 @@ export function scanPiiAndLicense(
 export function generatePiiLicenseReport(metrics: PiiLicenseMetrics): string {
   const lines: string[] = [];
 
-  lines.push('## PII and License Scanning');
-  lines.push('');
+  lines.push("## PII and License Scanning");
+  lines.push("");
 
   // Summary metrics
-  lines.push('### Scan Summary');
+  lines.push("### Scan Summary");
   lines.push(`- **Items Scanned**: ${metrics.total_items_scanned}`);
   lines.push(`- **PII Violations**: ${metrics.pii_hits}`);
   lines.push(`- **License Risk Items**: ${metrics.license_risk_hits}`);
   lines.push(`- **Total Violations**: ${metrics.total_violations}`);
-  lines.push(`- **Alert Status**: ${metrics.alert_triggered ? '🚨 VIOLATIONS DETECTED' : '✅ CLEAN'}`);
-  lines.push('');
+  lines.push(
+    `- **Alert Status**: ${metrics.alert_triggered ? "🚨 VIOLATIONS DETECTED" : "✅ CLEAN"}`,
+  );
+  lines.push("");
 
   // Detailed breakdown
-  lines.push('### Violation Breakdown');
-  lines.push('| Category | Count |');
-  lines.push('|----------|-------|');
+  lines.push("### Violation Breakdown");
+  lines.push("| Category | Count |");
+  lines.push("|----------|-------|");
   lines.push(`| Email Addresses | ${metrics.summary.email_addresses} |`);
   lines.push(`| Phone Numbers | ${metrics.summary.phone_numbers} |`);
   lines.push(`| Credit Cards | ${metrics.summary.credit_cards} |`);
   lines.push(`| Social Security | ${metrics.summary.social_security} |`);
   lines.push(`| Copyright Notices | ${metrics.summary.copyright_notices} |`);
   lines.push(`| License Terms | ${metrics.summary.license_terms} |`);
-  lines.push('');
+  lines.push("");
 
   // Show specific violations if any
   if (metrics.matches.length > 0) {
-    lines.push('### Detected Violations');
-    lines.push('| Type | Risk | Match | Context | Location |');
-    lines.push('|------|------|-------|---------|----------|');
+    lines.push("### Detected Violations");
+    lines.push("| Type | Risk | Match | Context | Location |");
+    lines.push("|------|------|-------|---------|----------|");
 
     for (const match of metrics.matches.slice(0, 10)) {
-      const riskIcon = match.risk_level === 'high' ? '🔴' : match.risk_level === 'medium' ? '🟡' : '🟢';
-      const maskedMatch = match.type === 'pii' ? '***REDACTED***' : match.match;
+      const riskIcon =
+        match.risk_level === "high"
+          ? "🔴"
+          : match.risk_level === "medium"
+            ? "🟡"
+            : "🟢";
+      const maskedMatch = match.type === "pii" ? "***REDACTED***" : match.match;
       const location = `${match.location.field}[${match.location.index}]`;
 
-      lines.push(`| ${match.type.toUpperCase()} | ${riskIcon} ${match.risk_level} | ${maskedMatch} | ${match.context.substring(0, 50)}... | ${location} |`);
+      lines.push(
+        `| ${match.type.toUpperCase()} | ${riskIcon} ${match.risk_level} | ${maskedMatch} | ${match.context.substring(0, 50)}... | ${location} |`,
+      );
     }
-    lines.push('');
+    lines.push("");
   }
 
   // Recommendations
   if (metrics.alert_triggered) {
-    lines.push('### Recommendations');
+    lines.push("### Recommendations");
     if (metrics.pii_hits > 0) {
-      lines.push('- 🚨 **Immediate Action Required**: Remove or mask all PII before deployment');
-      lines.push('- 📋 Review data sources for PII contamination');
+      lines.push(
+        "- 🚨 **Immediate Action Required**: Remove or mask all PII before deployment",
+      );
+      lines.push("- 📋 Review data sources for PII contamination");
     }
     if (metrics.license_risk_hits > 0) {
-      lines.push('- ⚠️ Review license terms and copyright notices');
-      lines.push('- 📄 Ensure compliance with intellectual property rights');
+      lines.push("- ⚠️ Review license terms and copyright notices");
+      lines.push("- 📄 Ensure compliance with intellectual property rights");
     }
-    lines.push('- 🔄 Re-scan after cleanup to verify compliance');
-    lines.push('');
+    lines.push("- 🔄 Re-scan after cleanup to verify compliance");
+    lines.push("");
   }
 
-  return lines.join('\n');
+  return lines.join("\n");
 }
 
 /**
@@ -360,36 +408,36 @@ if (require.main === module) {
     {
       qa: {
         q: "연락처를 알려주세요",
-        a: "제 이메일은 test@example.com이고 전화번호는 010-1234-5678입니다."
+        a: "제 이메일은 test@example.com이고 전화번호는 010-1234-5678입니다.",
       },
       evidence: "개인정보보호를 위해 연락처는 공개하지 않습니다.",
-      index: 0
+      index: 0,
     },
     {
       qa: {
         q: "저작권은 무엇인가요?",
-        a: "저작권은 창작물을 보호하는 권리입니다. © 2024 All rights reserved."
+        a: "저작권은 창작물을 보호하는 권리입니다. © 2024 All rights reserved.",
       },
       evidence: "저작권법에 따라 창작물은 보호받습니다.",
-      index: 1
+      index: 1,
     },
     {
       qa: {
         q: "물의 상태는 무엇인가요?",
-        a: "물은 고체, 액체, 기체 상태로 존재합니다."
+        a: "물은 고체, 액체, 기체 상태로 존재합니다.",
       },
       evidence: "물은 세 가지 상태로 존재할 수 있습니다.",
-      index: 2
-    }
+      index: 2,
+    },
   ];
 
   try {
     const metrics = scanPiiAndLicense(sampleQA);
-    console.log('PII and License Scan Metrics:');
+    console.log("PII and License Scan Metrics:");
     console.log(JSON.stringify(metrics, null, 2));
-    console.log('\nReport:');
+    console.log("\nReport:");
     console.log(generatePiiLicenseReport(metrics));
   } catch (error) {
-    console.error('Error scanning for PII and license violations:', error);
+    console.error("Error scanning for PII and license violations:", error);
   }
 }

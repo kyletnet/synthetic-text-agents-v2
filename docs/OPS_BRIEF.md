@@ -11,6 +11,7 @@ Single-source operations brief for Meta-Adaptive Expert Orchestration System.
 All code generators, validators, and reports MUST use these exact canonical terms. No custom severity levels or stage names are permitted.
 
 ### Severities (P0/P1/P2)
+
 - **P0 - Critical**: System broken, blocking all progress
   - Action: Immediate fix required before any proceeding
   - Examples: Build completely fails, core API unavailable, data corruption
@@ -22,6 +23,7 @@ All code generators, validators, and reports MUST use these exact canonical term
   - Examples: Edge case failures, minor performance issues, non-critical feature gaps
 
 ### Stages (STEP_1~7)
+
 1. **STEP_1_TYPESCRIPT** - TypeScript validation and type checking
 2. **STEP_2_LINT** - Code linting and style validation
 3. **STEP_3_SANITY** - Basic sanity checks and configuration validation
@@ -37,21 +39,25 @@ All code generators, validators, and reports MUST use these exact canonical term
 Quick reference for standard execution patterns:
 
 ### Smoke Test (Stage, $0.50 budget)
+
 ```bash
 bash run_v3.sh baseline --smoke --profile stage --budget 0.50
 ```
 
 ### Baseline Mini Run (Stage, sample data)
+
 ```bash
 bash run_v3.sh baseline --smoke --profile stage --budget 0.50 --data data/inputs/sample.jsonl
 ```
 
 ### Full Production Run (Prod, $50.00 budget)
+
 ```bash
 bash run_v3.sh baseline --full --profile prod --budget 50.00
 ```
 
 ### Preflight & Verification
+
 ```bash
 npm run preflight
 npm run verify:obs
@@ -62,7 +68,9 @@ npm run verify:export
 ## 3. Required Artifacts Matrix
 
 ### Handoff Bundle (Internal Transfer)
+
 **Must include:**
+
 - `reports/session_report.md` - Session summary and metrics
 - `reports/baseline_report.jsonl` - Core baseline metrics data
 - `reports/observability/*/index.html` - Observability dashboards + trace JSON
@@ -77,7 +85,9 @@ npm run verify:export
 - `docs/OPS_BRIEF.md` - This operations brief
 
 ### Export Bundle (Full Code + Artifacts)
+
 **Includes handoff bundle PLUS:**
+
 - `src/` - Complete source code
 - `scripts/` - Automation and utility scripts
 - `validators/` - Validation schemas and tools
@@ -114,34 +124,45 @@ Key directories and their purposes:
 All gates must be GREEN before proceeding:
 
 ### TypeScript Validation (STEP_1)
+
 ```bash
 npm run typecheck
 ```
+
 **Gate criteria:** Zero TypeScript compilation errors
 
 ### Linting (STEP_2)
+
 ```bash
 npm run lint
 ```
+
 **Gate criteria:** Zero linting errors, warnings acceptable
 
 ### Sanity Checks (STEP_3)
+
 ```bash
 npm run sanity
 ```
+
 **Gate criteria:** All sanity checks pass
 
 ### Manifest Presence
+
 **Gate criteria:** `reports/manifest_current.json` exists and valid
 
 ### Smoke Resolution (STEP_4)
+
 **Gate criteria:** Smoke tests pass within budget constraints
 
 ### Gating Policy (STEP_5)
+
 **Gate criteria:** RESULT ∈ {PASS, PARTIAL}, no P0 violations
 
 ### Observability (STEP_6)
+
 **Gate criteria:**
+
 - `run_id` present and valid
 - `cost` tracking functional
 - `duration` metrics recorded
@@ -150,6 +171,7 @@ npm run sanity
 ## 6. Update Rules
 
 ### When to Update This Brief
+
 - Changes to `scripts/metrics/taxonomy.ts` (canonical definitions)
 - Changes to `baseline_config.json` (run configuration)
 - Changes to `run_v3.sh` (execution scripts)
@@ -157,6 +179,7 @@ npm run sanity
 - Changes to `docs/PRODUCT_PLAN.md` (roadmap updates)
 
 ### Ownership & Process
+
 - **Owner:** Kyle
 - **Update trigger:** Any of the above files change
 - **Process:** Update "Last synced commit" to current `git rev-parse HEAD`
@@ -164,8 +187,9 @@ npm run sanity
 - **Verification:** Ensure `npm run verify:ops` passes after updates
 
 ### Version Control
+
 This file is tracked in git and included in both handoff and export bundles. Changes should be committed with clear descriptions of what operational aspects changed.
 
 ---
 
-*This operations brief serves as the single source of truth for operational procedures, terminology, and artifact requirements.*
+_This operations brief serves as the single source of truth for operational procedures, terminology, and artifact requirements._

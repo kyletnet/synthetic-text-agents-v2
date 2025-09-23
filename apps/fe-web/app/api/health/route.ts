@@ -1,14 +1,14 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from "next/server";
 
 export interface HealthCheckResult {
-  status: 'healthy' | 'unhealthy' | 'degraded';
+  status: "healthy" | "unhealthy" | "degraded";
   timestamp: string;
   uptime: number;
   version: string;
   environment: string;
   checks: {
     [key: string]: {
-      status: 'pass' | 'fail' | 'warn';
+      status: "pass" | "fail" | "warn";
       responseTime?: number;
       details?: string;
       lastChecked: string;
@@ -42,12 +42,13 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     // Get system information
     const uptime = process.uptime();
     const memoryUsage = process.memoryUsage();
-    const version = process.env.npm_package_version || '1.0.0';
-    const environment = process.env.ENVIRONMENT || process.env.NODE_ENV || 'development';
+    const version = process.env.npm_package_version || "1.0.0";
+    const environment =
+      process.env.ENVIRONMENT || process.env.NODE_ENV || "development";
 
     // Initialize health check result
     const healthCheck: HealthCheckResult = {
-      status: 'healthy',
+      status: "healthy",
       timestamp: new Date().toISOString(),
       uptime: uptime,
       version: version,
@@ -57,17 +58,19 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
         memory: {
           used: memoryUsage.heapUsed,
           total: memoryUsage.heapTotal,
-          percentage: Math.round((memoryUsage.heapUsed / memoryUsage.heapTotal) * 100)
+          percentage: Math.round(
+            (memoryUsage.heapUsed / memoryUsage.heapTotal) * 100,
+          ),
         },
         cpu: {
-          usage: 0 // Will be calculated below
+          usage: 0, // Will be calculated below
         },
         disk: {
           used: 0,
           total: 0,
-          percentage: 0
-        }
-      }
+          percentage: 0,
+        },
+      },
     };
 
     // Check API key availability
@@ -85,51 +88,59 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     // Check disk space
     const diskCheck = await checkDiskSpace();
     healthCheck.checks.diskSpace = diskCheck;
-    healthCheck.system.disk = diskCheck.details as any || healthCheck.system.disk;
+    healthCheck.system.disk =
+      (diskCheck.details as any) || healthCheck.system.disk;
 
     // Calculate CPU usage (simple approximation)
     const cpuUsage = await getCpuUsage();
     healthCheck.system.cpu.usage = cpuUsage;
 
     // Determine overall health status
-    const failedChecks = Object.values(healthCheck.checks).filter(check => check.status === 'fail');
-    const warnChecks = Object.values(healthCheck.checks).filter(check => check.status === 'warn');
+    const failedChecks = Object.values(healthCheck.checks).filter(
+      (check) => check.status === "fail",
+    );
+    const warnChecks = Object.values(healthCheck.checks).filter(
+      (check) => check.status === "warn",
+    );
 
     if (failedChecks.length > 0) {
-      healthCheck.status = 'unhealthy';
+      healthCheck.status = "unhealthy";
     } else if (warnChecks.length > 0) {
-      healthCheck.status = 'degraded';
+      healthCheck.status = "degraded";
     } else {
-      healthCheck.status = 'healthy';
+      healthCheck.status = "healthy";
     }
 
     // Add response time
     const responseTime = Date.now() - startTime;
 
     // Return appropriate status code
-    const statusCode = healthCheck.status === 'healthy' ? 200 :
-                      healthCheck.status === 'degraded' ? 200 : 503;
+    const statusCode =
+      healthCheck.status === "healthy"
+        ? 200
+        : healthCheck.status === "degraded"
+          ? 200
+          : 503;
 
     return NextResponse.json(
       {
         ...healthCheck,
-        responseTime: responseTime
+        responseTime: responseTime,
       },
-      { status: statusCode }
+      { status: statusCode },
     );
-
   } catch (error) {
-    console.error('Health check failed:', error);
+    console.error("Health check failed:", error);
 
     return NextResponse.json(
       {
-        status: 'unhealthy',
+        status: "unhealthy",
         timestamp: new Date().toISOString(),
-        error: 'Health check failed',
-        details: error instanceof Error ? error.message : 'Unknown error',
-        responseTime: Date.now() - startTime
+        error: "Health check failed",
+        details: error instanceof Error ? error.message : "Unknown error",
+        responseTime: Date.now() - startTime,
       },
-      { status: 503 }
+      { status: 503 },
     );
   }
 }
@@ -143,38 +154,41 @@ async function checkApiKeyAvailability() {
   try {
     const anthropicKey = process.env.ANTHROPIC_API_KEY;
 
-    if (!anthropicKey || anthropicKey.includes('your_') || anthropicKey.includes('placeholder')) {
+    if (
+      !anthropicKey ||
+      anthropicKey.includes("your_") ||
+      anthropicKey.includes("placeholder")
+    ) {
       return {
-        status: 'fail' as const,
+        status: "fail" as const,
         responseTime: Date.now() - checkStart,
-        details: 'ANTHROPIC_API_KEY not configured or invalid',
-        lastChecked: new Date().toISOString()
+        details: "ANTHROPIC_API_KEY not configured or invalid",
+        lastChecked: new Date().toISOString(),
       };
     }
 
     // Basic key format validation
-    if (!anthropicKey.startsWith('sk-ant-')) {
+    if (!anthropicKey.startsWith("sk-ant-")) {
       return {
-        status: 'warn' as const,
+        status: "warn" as const,
         responseTime: Date.now() - checkStart,
-        details: 'API key format may be invalid',
-        lastChecked: new Date().toISOString()
+        details: "API key format may be invalid",
+        lastChecked: new Date().toISOString(),
       };
     }
 
     return {
-      status: 'pass' as const,
+      status: "pass" as const,
       responseTime: Date.now() - checkStart,
-      details: 'API key is configured',
-      lastChecked: new Date().toISOString()
+      details: "API key is configured",
+      lastChecked: new Date().toISOString(),
     };
-
   } catch (error) {
     return {
-      status: 'fail' as const,
+      status: "fail" as const,
       responseTime: Date.now() - checkStart,
-      details: `API key check failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
-      lastChecked: new Date().toISOString()
+      details: `API key check failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+      lastChecked: new Date().toISOString(),
     };
   }
 }
@@ -192,27 +206,26 @@ async function checkDatabaseConnectivity() {
 
     if (!dbHost && !dbPassword) {
       return {
-        status: 'warn' as const,
+        status: "warn" as const,
         responseTime: Date.now() - checkStart,
-        details: 'Database not configured (using in-memory storage)',
-        lastChecked: new Date().toISOString()
+        details: "Database not configured (using in-memory storage)",
+        lastChecked: new Date().toISOString(),
       };
     }
 
     // TODO: Add actual database connection test
     return {
-      status: 'pass' as const,
+      status: "pass" as const,
       responseTime: Date.now() - checkStart,
-      details: 'Database configuration present',
-      lastChecked: new Date().toISOString()
+      details: "Database configuration present",
+      lastChecked: new Date().toISOString(),
     };
-
   } catch (error) {
     return {
-      status: 'fail' as const,
+      status: "fail" as const,
       responseTime: Date.now() - checkStart,
-      details: `Database check failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
-      lastChecked: new Date().toISOString()
+      details: `Database check failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+      lastChecked: new Date().toISOString(),
     };
   }
 }
@@ -225,30 +238,31 @@ async function checkExternalServices() {
 
   try {
     // Check if we can resolve DNS
-    const anthropicReachable = await checkServiceReachability('https://api.anthropic.com');
+    const anthropicReachable = await checkServiceReachability(
+      "https://api.anthropic.com",
+    );
 
     if (!anthropicReachable) {
       return {
-        status: 'warn' as const,
+        status: "warn" as const,
         responseTime: Date.now() - checkStart,
-        details: 'External services may not be reachable',
-        lastChecked: new Date().toISOString()
+        details: "External services may not be reachable",
+        lastChecked: new Date().toISOString(),
       };
     }
 
     return {
-      status: 'pass' as const,
+      status: "pass" as const,
       responseTime: Date.now() - checkStart,
-      details: 'External services reachable',
-      lastChecked: new Date().toISOString()
+      details: "External services reachable",
+      lastChecked: new Date().toISOString(),
     };
-
   } catch (error) {
     return {
-      status: 'warn' as const,
+      status: "warn" as const,
       responseTime: Date.now() - checkStart,
-      details: `External services check failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
-      lastChecked: new Date().toISOString()
+      details: `External services check failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+      lastChecked: new Date().toISOString(),
     };
   }
 }
@@ -263,40 +277,39 @@ async function checkDiskSpace() {
     // For Node.js environment, we'll use a simple approximation
     // In a real production environment, you'd want to use actual disk space monitoring
 
-    const tmpDir = process.env.TMPDIR || '/tmp';
+    const tmpDir = process.env.TMPDIR || "/tmp";
     const freeSpacePercent = 85; // Simulated - replace with actual disk space check
 
     if (freeSpacePercent > 90) {
       return {
-        status: 'fail' as const,
+        status: "fail" as const,
         responseTime: Date.now() - checkStart,
         details: `Disk space critical: ${freeSpacePercent}% used`,
-        lastChecked: new Date().toISOString()
+        lastChecked: new Date().toISOString(),
       };
     }
 
     if (freeSpacePercent > 80) {
       return {
-        status: 'warn' as const,
+        status: "warn" as const,
         responseTime: Date.now() - checkStart,
         details: `Disk space warning: ${freeSpacePercent}% used`,
-        lastChecked: new Date().toISOString()
+        lastChecked: new Date().toISOString(),
       };
     }
 
     return {
-      status: 'pass' as const,
+      status: "pass" as const,
       responseTime: Date.now() - checkStart,
       details: `Disk space OK: ${freeSpacePercent}% used`,
-      lastChecked: new Date().toISOString()
+      lastChecked: new Date().toISOString(),
     };
-
   } catch (error) {
     return {
-      status: 'warn' as const,
+      status: "warn" as const,
       responseTime: Date.now() - checkStart,
-      details: `Disk space check failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
-      lastChecked: new Date().toISOString()
+      details: `Disk space check failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+      lastChecked: new Date().toISOString(),
     };
   }
 }
@@ -309,11 +322,14 @@ async function getCpuUsage(): Promise<number> {
     // Simple CPU usage approximation
     // In production, you'd want to use a proper CPU monitoring library
     const start = process.hrtime();
-    await new Promise(resolve => setTimeout(resolve, 100));
+    await new Promise((resolve) => setTimeout(resolve, 100));
     const end = process.hrtime(start);
 
     // This is a very rough approximation
-    const cpuUsage = Math.min(100, Math.max(0, (end[0] * 1000 + end[1] / 1000000) / 10));
+    const cpuUsage = Math.min(
+      100,
+      Math.max(0, (end[0] * 1000 + end[1] / 1000000) / 10),
+    );
     return Math.round(cpuUsage);
   } catch {
     return 0;
@@ -323,14 +339,17 @@ async function getCpuUsage(): Promise<number> {
 /**
  * Check if a service is reachable
  */
-async function checkServiceReachability(url: string, timeout: number = 5000): Promise<boolean> {
+async function checkServiceReachability(
+  url: string,
+  timeout: number = 5000,
+): Promise<boolean> {
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeout);
 
     const response = await fetch(url, {
-      method: 'HEAD',
-      signal: controller.signal
+      method: "HEAD",
+      signal: controller.signal,
     });
 
     clearTimeout(timeoutId);

@@ -7,8 +7,8 @@
  * - Granular budget tracking with predictive enforcement
  */
 
-import * as fs from 'fs';
-import * as path from 'path';
+import * as fs from "fs";
+import * as path from "path";
 
 export interface BudgetLimits {
   run_max_usd: number;
@@ -34,12 +34,12 @@ export interface BudgetUsage {
 }
 
 export interface BudgetViolation {
-  type: 'run_limit' | 'item_limit' | 'agent_limit' | 'projection_exceeded';
+  type: "run_limit" | "item_limit" | "agent_limit" | "projection_exceeded";
   current_value: number;
   limit_value: number;
   agent_role?: string;
-  severity: 'warning' | 'critical';
-  action: 'continue' | 'abort' | 'fallback';
+  severity: "warning" | "critical";
+  action: "continue" | "abort" | "fallback";
   message: string;
 }
 
@@ -59,9 +59,9 @@ export class BudgetGuard {
   private killSwitchStatus!: KillSwitchStatus;
 
   constructor(
-    configPath: string = 'baseline_config.json',
-    profile: string = 'dev',
-    runId: string = 'unknown'
+    configPath: string = "baseline_config.json",
+    profile: string = "dev",
+    runId: string = "unknown",
   ) {
     this.configPath = configPath;
     this.usageLogPath = `reports/budget_usage_${runId}.jsonl`;
@@ -76,7 +76,7 @@ export class BudgetGuard {
 
   private loadBudgetConfiguration(profile: string): void {
     try {
-      const config = JSON.parse(fs.readFileSync(this.configPath, 'utf8'));
+      const config = JSON.parse(fs.readFileSync(this.configPath, "utf8"));
       const profileConfig = config.dxloop?.profiles?.[profile];
 
       if (!profileConfig) {
@@ -85,20 +85,22 @@ export class BudgetGuard {
 
       this.budgetLimits = {
         run_max_usd: profileConfig.budget_max_usd || 1.0,
-        item_max_usd: config.cost_latency?.alert_thresholds?.cost_per_item_max || 0.10,
+        item_max_usd:
+          config.cost_latency?.alert_thresholds?.cost_per_item_max || 0.1,
         agent_limits: {
-          answer_max_usd: profileConfig.per_agent_limits?.answer_max_usd || 0.05,
+          answer_max_usd:
+            profileConfig.per_agent_limits?.answer_max_usd || 0.05,
           audit_max_ms: profileConfig.per_agent_limits?.audit_max_ms || 6000,
           evidence_max_usd: 0.03, // Default limit for evidence agent
-          ...profileConfig.per_agent_limits
+          ...profileConfig.per_agent_limits,
         },
-        buffer_percentage: 0.10 // 10% safety buffer
+        buffer_percentage: 0.1, // 10% safety buffer
       };
 
       console.log(`[BUDGET] Loaded limits for profile ${profile}:`, {
         run_max: this.budgetLimits.run_max_usd,
         item_max: this.budgetLimits.item_max_usd,
-        agent_limits: this.budgetLimits.agent_limits
+        agent_limits: this.budgetLimits.agent_limits,
       });
     } catch (error) {
       throw new Error(`Failed to load budget configuration: ${error}`);
@@ -114,7 +116,7 @@ export class BudgetGuard {
       average_cost_per_item: 0,
       projected_final_cost: 0,
       agent_spending: {},
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
 
     // Try to load existing usage from log file
@@ -124,14 +126,19 @@ export class BudgetGuard {
   private loadExistingUsage(): void {
     if (fs.existsSync(this.usageLogPath)) {
       try {
-        const content = fs.readFileSync(this.usageLogPath, 'utf8');
-        const lines = content.trim().split('\n').filter(line => line);
+        const content = fs.readFileSync(this.usageLogPath, "utf8");
+        const lines = content
+          .trim()
+          .split("\n")
+          .filter((line) => line);
 
         if (lines.length > 0) {
           // Get the latest usage entry
           const latestUsage = JSON.parse(lines[lines.length - 1]);
           this.currentUsage = { ...this.currentUsage, ...latestUsage };
-          console.log(`[BUDGET] Loaded existing usage: $${this.currentUsage.total_spent_usd.toFixed(4)}`);
+          console.log(
+            `[BUDGET] Loaded existing usage: $${this.currentUsage.total_spent_usd.toFixed(4)}`,
+          );
         }
       } catch (error) {
         console.warn(`[BUDGET] Could not load existing usage log: ${error}`);
@@ -141,13 +148,13 @@ export class BudgetGuard {
 
   private checkKillSwitch(): void {
     this.killSwitchStatus = {
-      hard_stop_enabled: process.env.HARD_STOP === '1',
-      budget_enforcement_enabled: process.env.BUDGET_ENFORCEMENT !== '0',
-      emergency_stop_triggered: false
+      hard_stop_enabled: process.env.HARD_STOP === "1",
+      budget_enforcement_enabled: process.env.BUDGET_ENFORCEMENT !== "0",
+      emergency_stop_triggered: false,
     };
 
     if (this.killSwitchStatus.hard_stop_enabled) {
-      console.log('🚨 [BUDGET] HARD_STOP kill switch is ENABLED');
+      console.log("🚨 [BUDGET] HARD_STOP kill switch is ENABLED");
     }
   }
 
@@ -159,7 +166,7 @@ export class BudgetGuard {
 
       // If kill switch was just enabled, trigger emergency stop
       if (!previousState && this.killSwitchStatus.hard_stop_enabled) {
-        this.triggerEmergencyStop('HARD_STOP environment variable set to 1');
+        this.triggerEmergencyStop("HARD_STOP environment variable set to 1");
       }
     }, 5000);
   }
@@ -178,8 +185,9 @@ export class BudgetGuard {
 
     // Update usage tracking
     this.currentUsage.total_spent_usd += params.cost_usd;
-    this.currentUsage.remaining_budget_usd = Math.max(0,
-      this.budgetLimits.run_max_usd - this.currentUsage.total_spent_usd
+    this.currentUsage.remaining_budget_usd = Math.max(
+      0,
+      this.budgetLimits.run_max_usd - this.currentUsage.total_spent_usd,
     );
 
     // Track agent-specific spending
@@ -209,10 +217,12 @@ export class BudgetGuard {
     this.logUsageUpdate(params);
 
     // Handle critical violations
-    const criticalViolations = violations.filter(v => v.severity === 'critical');
+    const criticalViolations = violations.filter(
+      (v) => v.severity === "critical",
+    );
     if (criticalViolations.length > 0) {
       for (const violation of criticalViolations) {
-        if (violation.action === 'abort') {
+        if (violation.action === "abort") {
           this.triggerEmergencyStop(`Budget violation: ${violation.message}`);
         }
       }
@@ -221,67 +231,78 @@ export class BudgetGuard {
     return violations;
   }
 
-  private checkBudgetLimits(params: { agent_role: string; item_id: string; cost_usd: number }): BudgetViolation[] {
+  private checkBudgetLimits(params: {
+    agent_role: string;
+    item_id: string;
+    cost_usd: number;
+  }): BudgetViolation[] {
     const violations: BudgetViolation[] = [];
 
     // Check run-level budget
     if (this.currentUsage.total_spent_usd >= this.budgetLimits.run_max_usd) {
       violations.push({
-        type: 'run_limit',
+        type: "run_limit",
         current_value: this.currentUsage.total_spent_usd,
         limit_value: this.budgetLimits.run_max_usd,
-        severity: 'critical',
-        action: 'abort',
-        message: `Run budget exceeded: $${this.currentUsage.total_spent_usd.toFixed(4)} >= $${this.budgetLimits.run_max_usd.toFixed(2)}`
+        severity: "critical",
+        action: "abort",
+        message: `Run budget exceeded: $${this.currentUsage.total_spent_usd.toFixed(4)} >= $${this.budgetLimits.run_max_usd.toFixed(2)}`,
       });
-    } else if (this.currentUsage.total_spent_usd >= this.budgetLimits.run_max_usd * (1 - this.budgetLimits.buffer_percentage)) {
+    } else if (
+      this.currentUsage.total_spent_usd >=
+      this.budgetLimits.run_max_usd * (1 - this.budgetLimits.buffer_percentage)
+    ) {
       violations.push({
-        type: 'run_limit',
+        type: "run_limit",
         current_value: this.currentUsage.total_spent_usd,
         limit_value: this.budgetLimits.run_max_usd,
-        severity: 'warning',
-        action: 'continue',
-        message: `Run budget warning: $${this.currentUsage.total_spent_usd.toFixed(4)} approaching limit $${this.budgetLimits.run_max_usd.toFixed(2)}`
+        severity: "warning",
+        action: "continue",
+        message: `Run budget warning: $${this.currentUsage.total_spent_usd.toFixed(4)} approaching limit $${this.budgetLimits.run_max_usd.toFixed(2)}`,
       });
     }
 
     // Check item-level budget
     if (params.cost_usd > this.budgetLimits.item_max_usd) {
       violations.push({
-        type: 'item_limit',
+        type: "item_limit",
         current_value: params.cost_usd,
         limit_value: this.budgetLimits.item_max_usd,
-        severity: 'warning',
-        action: 'fallback',
-        message: `Item cost exceeded: $${params.cost_usd.toFixed(4)} > $${this.budgetLimits.item_max_usd.toFixed(4)} for ${params.item_id}`
+        severity: "warning",
+        action: "fallback",
+        message: `Item cost exceeded: $${params.cost_usd.toFixed(4)} > $${this.budgetLimits.item_max_usd.toFixed(4)} for ${params.item_id}`,
       });
     }
 
     // Check agent-specific limits
-    const agentSpending = this.currentUsage.agent_spending[params.agent_role] || 0;
+    const agentSpending =
+      this.currentUsage.agent_spending[params.agent_role] || 0;
     const agentLimit = this.budgetLimits.agent_limits[params.agent_role];
 
     if (agentLimit && agentSpending > agentLimit) {
       violations.push({
-        type: 'agent_limit',
+        type: "agent_limit",
         current_value: agentSpending,
         limit_value: agentLimit,
         agent_role: params.agent_role,
-        severity: 'warning',
-        action: 'fallback',
-        message: `Agent budget exceeded: ${params.agent_role} spent $${agentSpending.toFixed(4)} > $${agentLimit.toFixed(4)}`
+        severity: "warning",
+        action: "fallback",
+        message: `Agent budget exceeded: ${params.agent_role} spent $${agentSpending.toFixed(4)} > $${agentLimit.toFixed(4)}`,
       });
     }
 
     // Check projected budget overrun
-    if (this.currentUsage.projected_final_cost > this.budgetLimits.run_max_usd * 1.2) {
+    if (
+      this.currentUsage.projected_final_cost >
+      this.budgetLimits.run_max_usd * 1.2
+    ) {
       violations.push({
-        type: 'projection_exceeded',
+        type: "projection_exceeded",
         current_value: this.currentUsage.projected_final_cost,
         limit_value: this.budgetLimits.run_max_usd,
-        severity: 'warning',
-        action: 'continue',
-        message: `Projected final cost $${this.currentUsage.projected_final_cost.toFixed(4)} may exceed budget $${this.budgetLimits.run_max_usd.toFixed(2)}`
+        severity: "warning",
+        action: "continue",
+        message: `Projected final cost $${this.currentUsage.projected_final_cost.toFixed(4)} may exceed budget $${this.budgetLimits.run_max_usd.toFixed(2)}`,
       });
     }
 
@@ -294,7 +315,7 @@ export class BudgetGuard {
     const baseEstimate = Math.max(10, this.currentUsage.items_processed * 2);
 
     // Factor in any available metadata about expected item counts
-    const envItemCount = parseInt(process.env.EXPECTED_ITEMS || '0');
+    const envItemCount = parseInt(process.env.EXPECTED_ITEMS || "0");
     if (envItemCount > 0) {
       return envItemCount;
     }
@@ -302,15 +323,20 @@ export class BudgetGuard {
     return baseEstimate;
   }
 
-  private logUsageUpdate(params: { agent_role: string; item_id: string; cost_usd: number; metadata?: Record<string, any> }): void {
+  private logUsageUpdate(params: {
+    agent_role: string;
+    item_id: string;
+    cost_usd: number;
+    metadata?: Record<string, any>;
+  }): void {
     const logEntry = {
       ...this.currentUsage,
       last_operation: {
         agent_role: params.agent_role,
         item_id: params.item_id,
         cost_usd: params.cost_usd,
-        metadata: params.metadata || {}
-      }
+        metadata: params.metadata || {},
+      },
     };
 
     try {
@@ -318,7 +344,7 @@ export class BudgetGuard {
       fs.mkdirSync(path.dirname(this.usageLogPath), { recursive: true });
 
       // Append to usage log
-      fs.appendFileSync(this.usageLogPath, JSON.stringify(logEntry) + '\n');
+      fs.appendFileSync(this.usageLogPath, JSON.stringify(logEntry) + "\n");
     } catch (error) {
       console.error(`[BUDGET] Failed to log usage update: ${error}`);
     }
@@ -333,22 +359,28 @@ export class BudgetGuard {
     this.killSwitchStatus.timestamp = new Date().toISOString();
 
     console.error(`🚨 [BUDGET] EMERGENCY STOP TRIGGERED: ${reason}`);
-    console.error(`🚨 [BUDGET] Current usage: $${this.currentUsage.total_spent_usd.toFixed(4)}`);
-    console.error(`🚨 [BUDGET] Budget limit: $${this.budgetLimits.run_max_usd.toFixed(2)}`);
+    console.error(
+      `🚨 [BUDGET] Current usage: $${this.currentUsage.total_spent_usd.toFixed(4)}`,
+    );
+    console.error(
+      `🚨 [BUDGET] Budget limit: $${this.budgetLimits.run_max_usd.toFixed(2)}`,
+    );
 
     // Log emergency stop
     const emergencyLog = {
-      event: 'emergency_stop',
+      event: "emergency_stop",
       reason,
       timestamp: this.killSwitchStatus.timestamp,
       usage_at_stop: this.currentUsage,
-      budget_limits: this.budgetLimits
+      budget_limits: this.budgetLimits,
     };
 
     try {
       const emergencyLogPath = `reports/emergency_stop_${this.currentUsage.run_id}.json`;
       fs.writeFileSync(emergencyLogPath, JSON.stringify(emergencyLog, null, 2));
-      console.error(`🚨 [BUDGET] Emergency stop logged to: ${emergencyLogPath}`);
+      console.error(
+        `🚨 [BUDGET] Emergency stop logged to: ${emergencyLogPath}`,
+      );
     } catch (error) {
       console.error(`[BUDGET] Failed to log emergency stop: ${error}`);
     }
@@ -361,7 +393,10 @@ export class BudgetGuard {
    * Check if operation should proceed based on kill switch status
    */
   public shouldProceed(): boolean {
-    if (this.killSwitchStatus.hard_stop_enabled || this.killSwitchStatus.emergency_stop_triggered) {
+    if (
+      this.killSwitchStatus.hard_stop_enabled ||
+      this.killSwitchStatus.emergency_stop_triggered
+    ) {
       return false;
     }
 
@@ -378,12 +413,14 @@ export class BudgetGuard {
     utilization_percentage: number;
     estimated_remaining_items: number;
   } {
-    const utilizationPercentage = (this.currentUsage.total_spent_usd / this.budgetLimits.run_max_usd) * 100;
+    const utilizationPercentage =
+      (this.currentUsage.total_spent_usd / this.budgetLimits.run_max_usd) * 100;
 
     let estimatedRemainingItems = 0;
     if (this.currentUsage.average_cost_per_item > 0) {
       estimatedRemainingItems = Math.floor(
-        this.currentUsage.remaining_budget_usd / this.currentUsage.average_cost_per_item
+        this.currentUsage.remaining_budget_usd /
+          this.currentUsage.average_cost_per_item,
       );
     }
 
@@ -392,7 +429,7 @@ export class BudgetGuard {
       limits: this.budgetLimits,
       kill_switch: this.killSwitchStatus,
       utilization_percentage: utilizationPercentage,
-      estimated_remaining_items: estimatedRemainingItems
+      estimated_remaining_items: estimatedRemainingItems,
     };
   }
 
@@ -421,16 +458,17 @@ export class BudgetGuard {
     if (!this.shouldProceed()) {
       return {
         allowed: false,
-        reason: this.killSwitchStatus.stop_reason || 'Kill switch activated'
+        reason: this.killSwitchStatus.stop_reason || "Kill switch activated",
       };
     }
 
     // Check if estimated cost would exceed run budget
-    const projectedTotal = this.currentUsage.total_spent_usd + params.estimated_cost_usd;
+    const projectedTotal =
+      this.currentUsage.total_spent_usd + params.estimated_cost_usd;
     if (projectedTotal > this.budgetLimits.run_max_usd) {
       return {
         allowed: false,
-        reason: `Operation would exceed run budget: $${projectedTotal.toFixed(4)} > $${this.budgetLimits.run_max_usd.toFixed(2)}`
+        reason: `Operation would exceed run budget: $${projectedTotal.toFixed(4)} > $${this.budgetLimits.run_max_usd.toFixed(2)}`,
       };
     }
 
@@ -439,7 +477,7 @@ export class BudgetGuard {
       return {
         allowed: true,
         use_fallback: true,
-        reason: `Agent ${params.agent_role} approaching budget limit, using fallback mode`
+        reason: `Agent ${params.agent_role} approaching budget limit, using fallback mode`,
       };
     }
 
@@ -452,42 +490,44 @@ if (require.main === module) {
   const args = process.argv.slice(2);
   const command = args[0];
 
-  if (command === 'status') {
-    const runId = args[1] || 'test_run';
-    const profile = args[2] || 'dev';
+  if (command === "status") {
+    const runId = args[1] || "test_run";
+    const profile = args[2] || "dev";
 
-    const guard = new BudgetGuard('baseline_config.json', profile, runId);
+    const guard = new BudgetGuard("baseline_config.json", profile, runId);
     const status = guard.getBudgetStatus();
 
     console.log(JSON.stringify(status, null, 2));
-  } else if (command === 'test-violation') {
-    const runId = args[1] || 'test_run';
-    const profile = args[2] || 'dev';
+  } else if (command === "test-violation") {
+    const runId = args[1] || "test_run";
+    const profile = args[2] || "dev";
 
-    const guard = new BudgetGuard('baseline_config.json', profile, runId);
+    const guard = new BudgetGuard("baseline_config.json", profile, runId);
 
     // Simulate high cost operations
-    console.log('Testing budget violations...');
+    console.log("Testing budget violations...");
 
     const violations1 = guard.recordCost({
-      agent_role: 'answer',
-      item_id: 'test_item_1',
-      cost_usd: 0.08
+      agent_role: "answer",
+      item_id: "test_item_1",
+      cost_usd: 0.08,
     });
 
-    console.log('Violations after item 1:', violations1);
+    console.log("Violations after item 1:", violations1);
 
     const violations2 = guard.recordCost({
-      agent_role: 'answer',
-      item_id: 'test_item_2',
-      cost_usd: 1.00
+      agent_role: "answer",
+      item_id: "test_item_2",
+      cost_usd: 1.0,
     });
 
-    console.log('Violations after item 2 (should trigger stop):', violations2);
+    console.log("Violations after item 2 (should trigger stop):", violations2);
   } else {
-    console.log('Budget Guard CLI');
-    console.log('Commands:');
-    console.log('  status [run_id] [profile] - Show budget status');
-    console.log('  test-violation [run_id] [profile] - Test budget violation handling');
+    console.log("Budget Guard CLI");
+    console.log("Commands:");
+    console.log("  status [run_id] [profile] - Show budget status");
+    console.log(
+      "  test-violation [run_id] [profile] - Test budget violation handling",
+    );
   }
 }

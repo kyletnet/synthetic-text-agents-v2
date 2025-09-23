@@ -1,20 +1,28 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 export const AgentMessageSchema = z.object({
   id: z.string(),
   sender: z.string(),
   receiver: z.string(),
-  type: z.enum(['request', 'response', 'broadcast', 'collaboration']),
+  type: z.enum(["request", "response", "broadcast", "collaboration"]),
   content: z.unknown(),
   timestamp: z.date(),
-  priority: z.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4), z.literal(5)]),
-  context: z.optional(z.object({
-    taskId: z.string(),
-    phase: z.string(),
-    sharedMemory: z.record(z.unknown()),
-    qualityTarget: z.number(),
-    domainContext: z.string(),
-  })),
+  priority: z.union([
+    z.literal(1),
+    z.literal(2),
+    z.literal(3),
+    z.literal(4),
+    z.literal(5),
+  ]),
+  context: z.optional(
+    z.object({
+      taskId: z.string(),
+      phase: z.string(),
+      sharedMemory: z.record(z.unknown()),
+      qualityTarget: z.number(),
+      domainContext: z.string(),
+    }),
+  ),
 });
 
 export type AgentMessage = z.infer<typeof AgentMessageSchema>;
@@ -46,7 +54,7 @@ export type AgentResult = z.infer<typeof AgentResultSchema>;
 export const TraceLogSchema = z.object({
   id: z.string(),
   timestamp: z.date(),
-  level: z.enum(['debug', 'info', 'warn', 'error']),
+  level: z.enum(["debug", "info", "warn", "error"]),
   agentId: z.string(),
   action: z.string(),
   data: z.unknown(),
@@ -97,12 +105,14 @@ export const QARequestSchema = z.object({
 export type QARequest = z.infer<typeof QARequestSchema>;
 
 export const QAResponseSchema = z.object({
-  questions: z.array(z.object({
-    question: z.string(),
-    answer: z.string(),
-    confidence: z.number().min(0).max(1),
-    domain: z.string(),
-  })),
+  questions: z.array(
+    z.object({
+      question: z.string(),
+      answer: z.string(),
+      confidence: z.number().min(0).max(1),
+      domain: z.string(),
+    }),
+  ),
   metadata: z.object({
     processTime: z.number(),
     agentsUsed: z.array(z.string()),
@@ -115,7 +125,7 @@ export type QAResponse = z.infer<typeof QAResponseSchema>;
 export interface AgentCommunication {
   send(message: AgentMessage): Promise<void>;
   receive(agentId: string): Promise<AgentMessage[]>;
-  broadcast(message: Omit<AgentMessage, 'receiver'>): Promise<void>;
+  broadcast(message: Omit<AgentMessage, "receiver">): Promise<void>;
   subscribe(agentId: string, callback: (message: AgentMessage) => void): void;
   unsubscribe(agentId: string): void;
 }

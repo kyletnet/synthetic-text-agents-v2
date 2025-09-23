@@ -4,7 +4,12 @@
  */
 
 export interface SecretConfig {
-  provider: 'env' | 'github-secrets' | 'aws-secrets' | 'azure-keyvault' | 'hashicorp-vault';
+  provider:
+    | "env"
+    | "github-secrets"
+    | "aws-secrets"
+    | "azure-keyvault"
+    | "hashicorp-vault";
   region?: string;
   vaultUrl?: string;
   authToken?: string;
@@ -39,19 +44,19 @@ export class SecretsManager {
     let value: string;
 
     switch (this.config.provider) {
-      case 'env':
+      case "env":
         value = this.getFromEnvironment(key);
         break;
-      case 'github-secrets':
+      case "github-secrets":
         value = this.getFromGitHubSecrets(key);
         break;
-      case 'aws-secrets':
+      case "aws-secrets":
         value = await this.getFromAWSSecrets(key);
         break;
-      case 'azure-keyvault':
+      case "azure-keyvault":
         value = await this.getFromAzureKeyVault(key);
         break;
-      case 'hashicorp-vault':
+      case "hashicorp-vault":
         value = await this.getFromHashiCorpVault(key);
         break;
       default:
@@ -65,7 +70,7 @@ export class SecretsManager {
     // Cache the secret
     this.cache.set(key, {
       value,
-      expiresAt: new Date(Date.now() + 5 * 60 * 1000) // 5 minutes cache
+      expiresAt: new Date(Date.now() + 5 * 60 * 1000), // 5 minutes cache
     });
 
     return value;
@@ -76,7 +81,7 @@ export class SecretsManager {
    */
   private maskSecretInLogs(secret: string): string {
     if (secret.length <= 8) {
-      return '***MASKED***';
+      return "***MASKED***";
     }
 
     // Show first 3 and last 3 characters for debugging
@@ -87,7 +92,7 @@ export class SecretsManager {
    * Get secret from environment variables
    */
   private getFromEnvironment(key: string): string {
-    return process.env[key] || '';
+    return process.env[key] || "";
   }
 
   /**
@@ -95,7 +100,7 @@ export class SecretsManager {
    */
   private getFromGitHubSecrets(key: string): string {
     // In GitHub Actions, secrets are available as environment variables
-    return process.env[key] || '';
+    return process.env[key] || "";
   }
 
   /**
@@ -107,7 +112,10 @@ export class SecretsManager {
       // For now, fallback to environment
       return this.getFromEnvironment(key);
     } catch (error) {
-      console.error(`Failed to fetch secret from AWS Secrets Manager: ${key}`, error);
+      console.error(
+        `Failed to fetch secret from AWS Secrets Manager: ${key}`,
+        error,
+      );
       throw error;
     }
   }
@@ -121,7 +129,10 @@ export class SecretsManager {
       // For now, fallback to environment
       return this.getFromEnvironment(key);
     } catch (error) {
-      console.error(`Failed to fetch secret from Azure Key Vault: ${key}`, error);
+      console.error(
+        `Failed to fetch secret from Azure Key Vault: ${key}`,
+        error,
+      );
       throw error;
     }
   }
@@ -135,7 +146,10 @@ export class SecretsManager {
       // For now, fallback to environment
       return this.getFromEnvironment(key);
     } catch (error) {
-      console.error(`Failed to fetch secret from HashiCorp Vault: ${key}`, error);
+      console.error(
+        `Failed to fetch secret from HashiCorp Vault: ${key}`,
+        error,
+      );
       throw error;
     }
   }
@@ -154,13 +168,19 @@ export class SecretsManager {
   /**
    * Validate that all required secrets are available
    */
-  async validateSecrets(requiredKeys: string[]): Promise<{ valid: boolean; missing: string[] }> {
+  async validateSecrets(
+    requiredKeys: string[],
+  ): Promise<{ valid: boolean; missing: string[] }> {
     const missing: string[] = [];
 
     for (const key of requiredKeys) {
       try {
         const value = await this.getSecret(key);
-        if (!value || value.includes('your_') || value.includes('placeholder')) {
+        if (
+          !value ||
+          value.includes("your_") ||
+          value.includes("placeholder")
+        ) {
           missing.push(key);
         }
       } catch (error) {
@@ -170,7 +190,7 @@ export class SecretsManager {
 
     return {
       valid: missing.length === 0,
-      missing
+      missing,
     };
   }
 
@@ -184,13 +204,17 @@ export class SecretsManager {
   /**
    * Get secret metadata (without value)
    */
-  getSecretMetadata(key: string): { exists: boolean; cached: boolean; expiresAt?: Date } {
+  getSecretMetadata(key: string): {
+    exists: boolean;
+    cached: boolean;
+    expiresAt?: Date;
+  } {
     const cached = this.cache.get(key);
 
     return {
       exists: Boolean(this.getFromEnvironment(key)),
       cached: Boolean(cached),
-      expiresAt: cached?.expiresAt
+      expiresAt: cached?.expiresAt,
     };
   }
 }
@@ -203,13 +227,15 @@ let secretsManager: SecretsManager;
 /**
  * Initialize secrets manager with configuration
  */
-export function initializeSecretsManager(config?: SecretConfig): SecretsManager {
+export function initializeSecretsManager(
+  config?: SecretConfig,
+): SecretsManager {
   if (!secretsManager) {
     const defaultConfig: SecretConfig = {
-      provider: process.env.SECRETS_PROVIDER as any || 'env',
-      region: process.env.AWS_REGION || 'us-east-1',
+      provider: (process.env.SECRETS_PROVIDER as any) || "env",
+      region: process.env.AWS_REGION || "us-east-1",
       vaultUrl: process.env.VAULT_URL,
-      authToken: process.env.VAULT_TOKEN
+      authToken: process.env.VAULT_TOKEN,
     };
 
     secretsManager = new SecretsManager(config || defaultConfig);
@@ -223,7 +249,9 @@ export function initializeSecretsManager(config?: SecretConfig): SecretsManager 
  */
 export function getSecretsManager(): SecretsManager {
   if (!secretsManager) {
-    throw new Error('Secrets manager not initialized. Call initializeSecretsManager() first.');
+    throw new Error(
+      "Secrets manager not initialized. Call initializeSecretsManager() first.",
+    );
   }
 
   return secretsManager;
@@ -245,7 +273,9 @@ export async function validateRequiredSecrets(keys: string[]): Promise<void> {
   const validation = await manager.validateSecrets(keys);
 
   if (!validation.valid) {
-    throw new Error(`Missing required secrets: ${validation.missing.join(', ')}`);
+    throw new Error(
+      `Missing required secrets: ${validation.missing.join(", ")}`,
+    );
   }
 }
 
@@ -254,39 +284,37 @@ export async function validateRequiredSecrets(keys: string[]): Promise<void> {
  */
 export const SECRET_KEYS = {
   // AI Services
-  ANTHROPIC_API_KEY: 'ANTHROPIC_API_KEY',
-  OPENAI_API_KEY: 'OPENAI_API_KEY',
+  ANTHROPIC_API_KEY: "ANTHROPIC_API_KEY",
+  OPENAI_API_KEY: "OPENAI_API_KEY",
 
   // Database
-  DB_PASSWORD: 'DB_PASSWORD',
-  DB_USER: 'DB_USER',
+  DB_PASSWORD: "DB_PASSWORD",
+  DB_USER: "DB_USER",
 
   // Security
-  JWT_SECRET: 'JWT_SECRET',
-  ENCRYPTION_KEY: 'ENCRYPTION_KEY',
+  JWT_SECRET: "JWT_SECRET",
+  ENCRYPTION_KEY: "ENCRYPTION_KEY",
 
   // External Services
-  SENTRY_DSN: 'SENTRY_DSN',
-  DATADOG_API_KEY: 'DATADOG_API_KEY',
+  SENTRY_DSN: "SENTRY_DSN",
+  DATADOG_API_KEY: "DATADOG_API_KEY",
 
   // Infrastructure
-  REDIS_PASSWORD: 'REDIS_PASSWORD',
-  AWS_ACCESS_KEY_ID: 'AWS_ACCESS_KEY_ID',
-  AWS_SECRET_ACCESS_KEY: 'AWS_SECRET_ACCESS_KEY'
+  REDIS_PASSWORD: "REDIS_PASSWORD",
+  AWS_ACCESS_KEY_ID: "AWS_ACCESS_KEY_ID",
+  AWS_SECRET_ACCESS_KEY: "AWS_SECRET_ACCESS_KEY",
 } as const;
 
 /**
  * Required secrets for each environment
  */
 export const REQUIRED_SECRETS = {
-  development: [
-    SECRET_KEYS.ANTHROPIC_API_KEY
-  ],
+  development: [SECRET_KEYS.ANTHROPIC_API_KEY],
   staging: [
     SECRET_KEYS.ANTHROPIC_API_KEY,
     SECRET_KEYS.DB_PASSWORD,
     SECRET_KEYS.JWT_SECRET,
-    SECRET_KEYS.SENTRY_DSN
+    SECRET_KEYS.SENTRY_DSN,
   ],
   production: [
     SECRET_KEYS.ANTHROPIC_API_KEY,
@@ -294,6 +322,6 @@ export const REQUIRED_SECRETS = {
     SECRET_KEYS.JWT_SECRET,
     SECRET_KEYS.ENCRYPTION_KEY,
     SECRET_KEYS.SENTRY_DSN,
-    SECRET_KEYS.DATADOG_API_KEY
-  ]
+    SECRET_KEYS.DATADOG_API_KEY,
+  ],
 } as const;

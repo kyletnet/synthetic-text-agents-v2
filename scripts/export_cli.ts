@@ -1,5 +1,5 @@
-import * as fs from 'fs';
-import * as path from 'path';
+import * as fs from "fs";
+import * as path from "path";
 
 interface BaselineRecord {
   id: string;
@@ -28,11 +28,14 @@ export class BaselineExporter {
       throw new Error(`Input file not found: ${inputPath}`);
     }
 
-    const content = fs.readFileSync(inputPath, 'utf-8');
-    const lines = content.trim().split('\n').filter(line => line.trim());
+    const content = fs.readFileSync(inputPath, "utf-8");
+    const lines = content
+      .trim()
+      .split("\n")
+      .filter((line) => line.trim());
 
     if (lines.length === 0) {
-      throw new Error('Input file is empty');
+      throw new Error("Input file is empty");
     }
 
     const records: BaselineRecord[] = [];
@@ -41,57 +44,70 @@ export class BaselineExporter {
         const record = JSON.parse(line);
         records.push(record);
       } catch (e) {
-        console.warn(`Skipping malformed JSON line: ${line.substring(0, 100)}...`);
+        console.warn(
+          `Skipping malformed JSON line: ${line.substring(0, 100)}...`,
+        );
       }
     }
 
     if (records.length === 0) {
-      throw new Error('No valid records found in input file');
+      throw new Error("No valid records found in input file");
     }
 
     // Extract all possible columns
     const allKeys = new Set<string>();
     for (const record of records) {
-      Object.keys(record).forEach(key => allKeys.add(key));
+      Object.keys(record).forEach((key) => allKeys.add(key));
     }
 
     // Define column order (important fields first)
     const priorityColumns = [
-      'id', 'timestamp', 'quality_score', 'recommendation',
-      'duplication_rate', 'entity_coverage_rate', 'evidence_presence_rate',
-      'hallucination_rate', 'pii_violations', 'license_risks',
-      'cost_per_item', 'latency_p95', 'alert_flags'
+      "id",
+      "timestamp",
+      "quality_score",
+      "recommendation",
+      "duplication_rate",
+      "entity_coverage_rate",
+      "evidence_presence_rate",
+      "hallucination_rate",
+      "pii_violations",
+      "license_risks",
+      "cost_per_item",
+      "latency_p95",
+      "alert_flags",
     ];
 
     const columns = [
-      ...priorityColumns.filter(col => allKeys.has(col)),
-      ...Array.from(allKeys).filter(col => !priorityColumns.includes(col)).sort()
+      ...priorityColumns.filter((col) => allKeys.has(col)),
+      ...Array.from(allKeys)
+        .filter((col) => !priorityColumns.includes(col))
+        .sort(),
     ];
 
     // Generate CSV
     const csvLines: string[] = [];
 
     // Header
-    csvLines.push(columns.map(col => this.escapeCsvValue(col)).join(','));
+    csvLines.push(columns.map((col) => this.escapeCsvValue(col)).join(","));
 
     // Data rows
     for (const record of records) {
-      const values = columns.map(col => {
+      const values = columns.map((col) => {
         const value = record[col];
         if (value === undefined || value === null) {
-          return '';
+          return "";
         }
-        if (typeof value === 'object') {
+        if (typeof value === "object") {
           return this.escapeCsvValue(JSON.stringify(value));
         }
         return this.escapeCsvValue(String(value));
       });
-      csvLines.push(values.join(','));
+      csvLines.push(values.join(","));
     }
 
     // Write CSV
-    const csvContent = csvLines.join('\n') + '\n';
-    fs.writeFileSync(outputPath, csvContent, 'utf-8');
+    const csvContent = csvLines.join("\n") + "\n";
+    fs.writeFileSync(outputPath, csvContent, "utf-8");
 
     console.log(`Exported ${records.length} records to CSV: ${outputPath}`);
   }
@@ -104,11 +120,14 @@ export class BaselineExporter {
       throw new Error(`Input file not found: ${inputPath}`);
     }
 
-    const content = fs.readFileSync(inputPath, 'utf-8');
-    const lines = content.trim().split('\n').filter(line => line.trim());
+    const content = fs.readFileSync(inputPath, "utf-8");
+    const lines = content
+      .trim()
+      .split("\n")
+      .filter((line) => line.trim());
 
     if (lines.length === 0) {
-      throw new Error('Input file is empty');
+      throw new Error("Input file is empty");
     }
 
     const records: BaselineRecord[] = [];
@@ -117,12 +136,14 @@ export class BaselineExporter {
         const record = JSON.parse(line);
         records.push(record);
       } catch (e) {
-        console.warn(`Skipping malformed JSON line: ${line.substring(0, 100)}...`);
+        console.warn(
+          `Skipping malformed JSON line: ${line.substring(0, 100)}...`,
+        );
       }
     }
 
     if (records.length === 0) {
-      throw new Error('No valid records found in input file');
+      throw new Error("No valid records found in input file");
     }
 
     // Create structured export with metadata
@@ -131,15 +152,15 @@ export class BaselineExporter {
         source_file: inputPath,
         export_timestamp: new Date().toISOString(),
         total_records: records.length,
-        format_version: '1.0'
+        format_version: "1.0",
       },
       summary_stats: this.calculateSummaryStats(records),
-      records: records
+      records: records,
     };
 
     // Write JSON
     const jsonContent = JSON.stringify(exportData, null, 2);
-    fs.writeFileSync(outputPath, jsonContent, 'utf-8');
+    fs.writeFileSync(outputPath, jsonContent, "utf-8");
 
     console.log(`Exported ${records.length} records to JSON: ${outputPath}`);
   }
@@ -153,18 +174,23 @@ export class BaselineExporter {
     }
 
     const numericFields = [
-      'quality_score', 'duplication_rate', 'entity_coverage_rate',
-      'evidence_presence_rate', 'hallucination_rate', 'cost_per_item', 'latency_p95'
+      "quality_score",
+      "duplication_rate",
+      "entity_coverage_rate",
+      "evidence_presence_rate",
+      "hallucination_rate",
+      "cost_per_item",
+      "latency_p95",
     ];
 
     const stats: any = {
-      total_records: records.length
+      total_records: records.length,
     };
 
     for (const field of numericFields) {
       const values = records
-        .map(r => r[field])
-        .filter(v => typeof v === 'number' && !isNaN(v));
+        .map((r) => r[field])
+        .filter((v) => typeof v === "number" && !isNaN(v));
 
       if (values.length > 0) {
         values.sort((a, b) => a - b);
@@ -175,13 +201,13 @@ export class BaselineExporter {
           max: values[values.length - 1],
           mean: values.reduce((sum, v) => sum + v, 0) / values.length,
           median: values[Math.floor(values.length / 2)],
-          p95: values[Math.floor(values.length * 0.95)]
+          p95: values[Math.floor(values.length * 0.95)],
         };
       }
     }
 
     // Alert flag analysis
-    const allAlerts = records.flatMap(r => r.alert_flags || []);
+    const allAlerts = records.flatMap((r) => r.alert_flags || []);
     const alertCounts: Record<string, number> = {};
     for (const alert of allAlerts) {
       alertCounts[alert] = (alertCounts[alert] || 0) + 1;
@@ -191,15 +217,15 @@ export class BaselineExporter {
       total_alerts: allAlerts.length,
       unique_alert_types: Object.keys(alertCounts).length,
       top_alerts: Object.entries(alertCounts)
-        .sort(([,a], [,b]) => b - a)
+        .sort(([, a], [, b]) => b - a)
         .slice(0, 10)
-        .map(([alert, count]) => ({ alert, count }))
+        .map(([alert, count]) => ({ alert, count })),
     };
 
     // Recommendation distribution
     const recommendations: Record<string, number> = {};
     for (const record of records) {
-      const rec = record.recommendation || 'unknown';
+      const rec = record.recommendation || "unknown";
       recommendations[rec] = (recommendations[rec] || 0) + 1;
     }
 
@@ -212,7 +238,12 @@ export class BaselineExporter {
    * Escape CSV values (handle quotes, commas, newlines)
    */
   private static escapeCsvValue(value: string): string {
-    if (value.includes(',') || value.includes('"') || value.includes('\n') || value.includes('\r')) {
+    if (
+      value.includes(",") ||
+      value.includes('"') ||
+      value.includes("\n") ||
+      value.includes("\r")
+    ) {
       return '"' + value.replace(/"/g, '""') + '"';
     }
     return value;
@@ -226,11 +257,14 @@ export class BaselineExporter {
       throw new Error(`Input file not found: ${inputPath}`);
     }
 
-    const content = fs.readFileSync(inputPath, 'utf-8');
-    const lines = content.trim().split('\n').filter(line => line.trim());
+    const content = fs.readFileSync(inputPath, "utf-8");
+    const lines = content
+      .trim()
+      .split("\n")
+      .filter((line) => line.trim());
 
     if (lines.length === 0) {
-      throw new Error('Input file is empty');
+      throw new Error("Input file is empty");
     }
 
     // Validate first few lines are proper JSON
@@ -245,45 +279,53 @@ export class BaselineExporter {
     }
 
     if (validCount === 0) {
-      throw new Error('Input file does not contain valid JSON lines');
+      throw new Error("Input file does not contain valid JSON lines");
     }
 
-    console.log(`Input validation passed: ${validCount}/${Math.min(3, lines.length)} sample lines are valid JSON`);
+    console.log(
+      `Input validation passed: ${validCount}/${Math.min(3, lines.length)} sample lines are valid JSON`,
+    );
   }
 }
 
 // CLI interface
-if (typeof require !== 'undefined' && require.main === module) {
+if (typeof require !== "undefined" && require.main === module) {
   const args = process.argv.slice(2);
 
   if (args.length < 6) {
-    console.error('Usage: node export_cli.js --in <input.jsonl> --out <output> --format <csv|json>');
-    console.error('');
-    console.error('Examples:');
-    console.error('  node export_cli.js --in reports/baseline_report.jsonl --out reports/export/baseline.csv --format csv');
-    console.error('  node export_cli.js --in reports/baseline_report.jsonl --out reports/export/baseline.json --format json');
+    console.error(
+      "Usage: node export_cli.js --in <input.jsonl> --out <output> --format <csv|json>",
+    );
+    console.error("");
+    console.error("Examples:");
+    console.error(
+      "  node export_cli.js --in reports/baseline_report.jsonl --out reports/export/baseline.csv --format csv",
+    );
+    console.error(
+      "  node export_cli.js --in reports/baseline_report.jsonl --out reports/export/baseline.json --format json",
+    );
     process.exit(1);
   }
 
-  let inputPath = '';
-  let outputPath = '';
-  let format = '';
+  let inputPath = "";
+  let outputPath = "";
+  let format = "";
 
   for (let i = 0; i < args.length; i += 2) {
     const key = args[i];
     const value = args[i + 1];
 
-    if (key === '--in') inputPath = value;
-    else if (key === '--out') outputPath = value;
-    else if (key === '--format') format = value;
+    if (key === "--in") inputPath = value;
+    else if (key === "--out") outputPath = value;
+    else if (key === "--format") format = value;
   }
 
   if (!inputPath || !outputPath || !format) {
-    console.error('Missing required arguments: --in, --out, --format');
+    console.error("Missing required arguments: --in, --out, --format");
     process.exit(1);
   }
 
-  if (!['csv', 'json'].includes(format)) {
+  if (!["csv", "json"].includes(format)) {
     console.error('Format must be "csv" or "json"');
     process.exit(1);
   }
@@ -299,15 +341,15 @@ if (typeof require !== 'undefined' && require.main === module) {
     }
 
     // Perform export
-    if (format === 'csv') {
+    if (format === "csv") {
       BaselineExporter.jsonlToCsv(inputPath, outputPath);
-    } else if (format === 'json') {
+    } else if (format === "json") {
       BaselineExporter.jsonlToJson(inputPath, outputPath);
     }
 
-    console.log('Export completed successfully');
+    console.log("Export completed successfully");
   } catch (error) {
-    console.error('Export failed:', error);
+    console.error("Export failed:", error);
     process.exit(1);
   }
 }

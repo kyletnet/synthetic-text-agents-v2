@@ -44,6 +44,7 @@ DxLoop (Diagnostic Loop) v1 is an automated quality and stability guard system t
 ## Threshold System
 
 ### P0 Thresholds (Critical - Fixed)
+
 - **PII Hits**: Must be 0
 - **License Violations**: Max 2
 - **Evidence Missing Rate**: Max 20%
@@ -52,6 +53,7 @@ DxLoop (Diagnostic Loop) v1 is an automated quality and stability guard system t
 **Violation = FAIL (blocks run)**
 
 ### P1 Thresholds (Performance - Auto-calibratable)
+
 - **Cost per Item**: Warn/Fail levels
 - **P95 Latency**: Performance targets
 - **Failure Rate**: Reliability thresholds
@@ -59,6 +61,7 @@ DxLoop (Diagnostic Loop) v1 is an automated quality and stability guard system t
 **Multiple violations = PARTIAL (proceed with caution)**
 
 ### P2 Thresholds (Quality - Auto-calibratable)
+
 - **Duplication Rate**: Content redundancy
 - **Coverage Rate**: Comprehensiveness
 - **Quality Score**: Overall assessment
@@ -68,6 +71,7 @@ DxLoop (Diagnostic Loop) v1 is an automated quality and stability guard system t
 ## Auto-Calibration
 
 ### Process
+
     1. Load last N runs from reports/history/
     2. Calculate percentile-based thresholds
     3. Apply drift guard (max ±20% change)
@@ -75,6 +79,7 @@ DxLoop (Diagnostic Loop) v1 is an automated quality and stability guard system t
     5. Apply if approved (--approve flag)
 
 ### Configuration
+
     baseline_config.json → dxloop.autocalibration:
     - enabled: true/false
     - lookback_runs: 10
@@ -110,18 +115,21 @@ DxLoop (Diagnostic Loop) v1 is an automated quality and stability guard system t
 ## Profiles
 
 ### Development (dev)
+
 - **Budget**: $1.00 max
 - **Timeout**: 30s
 - **Agent Limits**: Answer $0.05, Audit 6s
 - **Use Case**: Local development, feature testing
 
 ### Staging (stage)
+
 - **Budget**: $2.00 max
 - **Timeout**: 45s
 - **Agent Limits**: Answer $0.10, Audit 10s
 - **Use Case**: Pre-production validation, integration testing
 
 ### Production (prod)
+
 - **Budget**: $5.00 max
 - **Timeout**: 60s
 - **Agent Limits**: Answer $0.20, Audit 15s
@@ -130,6 +138,7 @@ DxLoop (Diagnostic Loop) v1 is an automated quality and stability guard system t
 ## Output Files
 
 ### Generated Reports
+
     reports/
     ├── dxloop_report.jsonl    # Machine-readable diagnostic data
     ├── dxloop_report.md       # Human-readable dashboard
@@ -139,6 +148,7 @@ DxLoop (Diagnostic Loop) v1 is an automated quality and stability guard system t
             └── dxloop_report.md
 
 ### Report Sections
+
 1. **Executive Summary** - Status, top issues, recommendations
 2. **Gating Decision** - PASS/WARN/PARTIAL/FAIL with reasoning
 3. **Consistency Check** - Report alignment validation
@@ -151,6 +161,7 @@ DxLoop (Diagnostic Loop) v1 is an automated quality and stability guard system t
 ## Gating Logic
 
 ### Decision Matrix
+
     Status    | P0 Violations | P1 Warnings | P2 Issues | Action
     ----------|---------------|--------------|-----------|------------------
     FAIL      | Any           | -            | -         | Block run
@@ -159,6 +170,7 @@ DxLoop (Diagnostic Loop) v1 is an automated quality and stability guard system t
     PASS      | None          | <3           | <2        | Proceed normally
 
 ### Exit Codes
+
     0: PASS/WARN - Safe to proceed
     1: FAIL - Critical issues, block run
     2: PARTIAL - Warnings, proceed with caution
@@ -166,12 +178,14 @@ DxLoop (Diagnostic Loop) v1 is an automated quality and stability guard system t
 ## Anomaly Detection
 
 ### Methods
+
 - **Z-Score**: Statistical outliers (>2σ = medium, >3σ = high)
 - **IQR**: Robust outliers using quartile ranges
 - **Trend Analysis**: Recent vs historical comparisons
 - **Spike Detection**: Sudden increases in cost/latency/failures
 
 ### Historical Data
+
 - Sources: `reports/history/*/session_report.md`
 - Lookback: 7 days default
 - Minimum: 3 runs for statistical significance
@@ -179,6 +193,7 @@ DxLoop (Diagnostic Loop) v1 is an automated quality and stability guard system t
 ## Action Recommendations
 
 ### Categories
+
 - **Data**: Input quality, coverage, diversity
 - **Prompt**: LLM instruction optimization
 - **Cache**: Caching strategy improvements
@@ -187,12 +202,14 @@ DxLoop (Diagnostic Loop) v1 is an automated quality and stability guard system t
 - **System**: Infrastructure and performance
 
 ### Severity Levels
+
 - **Critical**: Immediate action required
 - **High**: Address before next run
 - **Medium**: Important but not blocking
 - **Low**: Nice-to-have improvements
 
 ### Effort Estimates
+
 - **Low**: < 1 day implementation
 - **Medium**: 1-3 days implementation
 - **High**: > 3 days implementation
@@ -200,16 +217,19 @@ DxLoop (Diagnostic Loop) v1 is an automated quality and stability guard system t
 ## Integration Points
 
 ### With Baseline Metrics
+
 - Reads: `reports/baseline_report.jsonl`
 - Analyzes: v1.5 quality indicators
 - Maps: Existing thresholds to P0/P1/P2 levels
 
 ### With Session Reports
+
 - Reads: `reports/session_report.md`
 - Extracts: Cost, latency, case counts
 - Validates: Consistency with actual execution
 
 ### With LLM Analysis
+
 - Reads: `reports/LLM_ANALYSIS_*.json`
 - Uses: Panel scores, confidence metrics
 - Cross-validates: Against session data
@@ -217,33 +237,39 @@ DxLoop (Diagnostic Loop) v1 is an automated quality and stability guard system t
 ## Configuration Management
 
 ### Profile Selection
+
     baseline_config.json → dxloop.profiles:
     - dev: Development settings
     - stage: Pre-production settings
     - prod: Production settings
 
 ### Threshold Overrides
+
     # Manual threshold adjustment
     baseline_config.json → dxloop.thresholds.p1.cost_per_item_warn: 0.08
 
 ### Feature Flags
+
     # Enable/disable auto-calibration
     baseline_config.json → dxloop.autocalibration.enabled: true
 
 ## Development Safety
 
 ### Feature Flag First
+
 All new DxLoop features use environment-based flags:
 
     FEATURE_DXLOOP_ENABLED=true    # Master toggle
     FEATURE_AUTOCALIB_ENABLED=true # Auto-calibration toggle
 
 ### Backward Compatibility
+
 - DxLoop is additive - doesn't break existing flows
 - Graceful degradation when components unavailable
 - Fall-back to manual thresholds if auto-calibration fails
 
 ### Testing Strategy
+
     # Unit tests for individual modules
     npm test scripts/dx/
 
@@ -258,22 +284,23 @@ All new DxLoop features use environment-based flags:
 ### Common Issues
 
 **"No session report found"**
-    Solution: Run a baseline execution first
-    Command: ./run_v3.sh baseline --smoke --budget 0.50
+Solution: Run a baseline execution first
+Command: ./run_v3.sh baseline --smoke --budget 0.50
 
 **"Schema validation failed"**
-    Solution: Check report format compatibility
-    Command: npm run schema
+Solution: Check report format compatibility
+Command: npm run schema
 
 **"Auto-calibration disabled"**
-    Solution: Enable in configuration
-    Edit: baseline_config.json → dxloop.autocalibration.enabled: true
+Solution: Enable in configuration
+Edit: baseline_config.json → dxloop.autocalibration.enabled: true
 
 **"Budget exceeded profile limits"**
-    Solution: Adjust budget or profile
-    Command: --profile stage --budget 2.00
+Solution: Adjust budget or profile
+Command: --profile stage --budget 2.00
 
 ### Debug Mode
+
     # Enable verbose logging
     DEBUG=dx:* npx tsx scripts/dx/cli.ts run
 
@@ -282,6 +309,7 @@ All new DxLoop features use environment-based flags:
     npx tsx scripts/dx/check_consistency.ts check
 
 ### Manual Report Review
+
     # Generated markdown report
     open reports/dxloop_report.md
 
@@ -291,6 +319,7 @@ All new DxLoop features use environment-based flags:
 ## Future Enhancements
 
 ### v1.1 Planned Features
+
 - Real-time monitoring dashboard
 - Slack/email alerting integration
 - Custom threshold policies per target
@@ -298,6 +327,7 @@ All new DxLoop features use environment-based flags:
 - Automated remediation workflows
 
 ### v2.0 Vision
+
 - Machine learning-based anomaly detection
 - Predictive failure analysis
 - Auto-scaling recommendations

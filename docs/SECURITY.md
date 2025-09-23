@@ -30,6 +30,7 @@ git push && git push --tags
 ```
 
 **EMERGENCY CONTACTS**:
+
 - Security Team: [Add your security contact information]
 - Project Lead: [Add project lead contact]
 
@@ -46,6 +47,7 @@ The repository includes multiple layers of secret detection:
 ### Detected Patterns
 
 Our scanners detect:
+
 - Anthropic API keys: `sk-ant-*`, `sk-ant-api03-*`
 - OpenAI API keys: `sk-*`, `sk-proj-*`
 - Generic API tokens and secrets
@@ -56,6 +58,7 @@ Our scanners detect:
 When API keys are compromised or need rotation:
 
 ### 1. Immediate Revocation
+
 ```bash
 # Log into provider console and revoke old key immediately
 # Anthropic: https://console.anthropic.com/
@@ -63,12 +66,14 @@ When API keys are compromised or need rotation:
 ```
 
 ### 2. Issue New Credentials
+
 ```bash
 # Generate new API key from provider console
 # Save securely in password manager
 ```
 
 ### 3. Update Environment
+
 ```bash
 # Update .env file with new key (never commit .env)
 cp .env .env.backup.$(date +%Y%m%d_%H%M%S)
@@ -79,6 +84,7 @@ grep -q "\.env" .gitignore || echo ".env" >> .gitignore
 ```
 
 ### 4. Test & Validate
+
 ```bash
 # Run smoke tests with new credentials
 npm run smoke
@@ -88,6 +94,7 @@ scripts/scan_secrets.sh
 ```
 
 ### 5. Secure Cleanup
+
 ```bash
 # Securely delete backup files
 rm -P .env.backup.* # macOS
@@ -256,16 +263,19 @@ git ls-files | grep "\.env"
 ### Security Incident Levels
 
 **Level 1 - Secret Detected in Working Tree**
+
 - Run automated cleanup scripts
 - Rotate affected credentials
 - Document in security log
 
 **Level 2 - Secret Committed to Repository**
+
 - Immediate credential rotation
 - History scrubbing evaluation
 - Team notification required
 
 **Level 3 - Secret Pushed to Remote**
+
 - Emergency credential revocation
 - Mandatory history scrubbing
 - Security team escalation
@@ -283,11 +293,13 @@ For all security incidents:
 ## Security Tools Reference
 
 ### Scripts Location
+
 - `scripts/scan_secrets.sh` - Comprehensive secret detection
 - `scripts/git_hygiene.sh` - Backup file quarantine
 - `.git/hooks/pre-commit` - Commit-time secret blocking
 
 ### Package.json Commands
+
 ```bash
 npm run guard:git           # Run secret scanner
 npm run guard:all          # Comprehensive security checks
@@ -295,10 +307,11 @@ npm run smoke              # Offline functionality test
 ```
 
 ### CI/CD Integration
+
 - `.github/workflows/ci-required-gates.yml` - Required security gates
 - All PRs must pass secret scanning and git hygiene checks
 
 ---
 
-*Last updated: 2024-09-16*
-*Security contact: [Your security team contact]*
+_Last updated: 2024-09-16_
+_Security contact: [Your security team contact]_

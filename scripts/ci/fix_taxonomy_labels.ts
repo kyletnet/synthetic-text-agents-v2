@@ -1,14 +1,14 @@
 #!/usr/bin/env node
-import { readFileSync, writeFileSync, statSync } from 'fs';
-import { globSync } from 'glob';
-import { parseArgs } from 'util';
+import { readFileSync, writeFileSync, statSync } from "fs";
+import { globSync } from "glob";
+import { parseArgs } from "util";
 
 interface FixCandidate {
   file: string;
   line: number;
   original: string;
   fixed: string;
-  category: 'severity' | 'stage';
+  category: "severity" | "stage";
 }
 
 interface FixReport {
@@ -20,18 +20,18 @@ interface FixReport {
 
 // Stage alias mappings for auto-fix
 const STAGE_REPLACEMENTS = new Map([
-  ['typescript-validation', 'STEP_1_TYPESCRIPT'],
-  ['typescript validate', 'STEP_1_TYPESCRIPT'],
-  ['lint', 'STEP_2_LINT'],
-  ['sanity', 'STEP_3_SANITY'],
-  ['smoke-run', 'STEP_4_SMOKE_PAID'],
-  ['paid smoke', 'STEP_4_SMOKE_PAID'],
-  ['gating-validation', 'STEP_5_GATING'],
-  ['gating', 'STEP_5_GATING'],
-  ['observability export', 'STEP_6_OBSERVABILITY'],
-  ['observability', 'STEP_6_OBSERVABILITY'],
-  ['full run', 'STEP_7_FULL_RUN'],
-  ['full', 'STEP_7_FULL_RUN']
+  ["typescript-validation", "STEP_1_TYPESCRIPT"],
+  ["typescript validate", "STEP_1_TYPESCRIPT"],
+  ["lint", "STEP_2_LINT"],
+  ["sanity", "STEP_3_SANITY"],
+  ["smoke-run", "STEP_4_SMOKE_PAID"],
+  ["paid smoke", "STEP_4_SMOKE_PAID"],
+  ["gating-validation", "STEP_5_GATING"],
+  ["gating", "STEP_5_GATING"],
+  ["observability export", "STEP_6_OBSERVABILITY"],
+  ["observability", "STEP_6_OBSERVABILITY"],
+  ["full run", "STEP_7_FULL_RUN"],
+  ["full", "STEP_7_FULL_RUN"],
 ]);
 
 class TaxonomyFixer {
@@ -39,20 +39,35 @@ class TaxonomyFixer {
     candidates: [],
     total_files_processed: 0,
     total_fixes: 0,
-    dry_run: true
+    dry_run: true,
   };
 
-  async fixProject(roots: string[], dryRun: boolean = true): Promise<FixReport> {
+  async fixProject(
+    roots: string[],
+    dryRun: boolean = true,
+  ): Promise<FixReport> {
     this.report.dry_run = dryRun;
 
     const fileGlobs = [
-      '**/*.ts', '**/*.tsx', '**/*.md', '**/*.mdx',
-      '**/*.json', '**/*.yml', '**/*.yaml'
+      "**/*.ts",
+      "**/*.tsx",
+      "**/*.md",
+      "**/*.mdx",
+      "**/*.json",
+      "**/*.yml",
+      "**/*.yaml",
     ];
 
     const excludePatterns = [
-      'node_modules/**', 'dist/**', 'build/**', 'experimental/**',
-      'legacy/**', 'tests/**', 'test/**', '**/*.min.*', 'reports/EXPORT/**'
+      "node_modules/**",
+      "dist/**",
+      "build/**",
+      "experimental/**",
+      "legacy/**",
+      "tests/**",
+      "test/**",
+      "**/*.min.*",
+      "reports/EXPORT/**",
     ];
 
     for (const root of roots) {
@@ -74,8 +89,8 @@ class TaxonomyFixer {
       const stats = statSync(filePath);
       if (!stats.isFile()) return;
 
-      const content = readFileSync(filePath, 'utf-8');
-      const lines = content.split('\n');
+      const content = readFileSync(filePath, "utf-8");
+      const lines = content.split("\n");
       this.report.total_files_processed++;
 
       let modified = false;
@@ -95,16 +110,21 @@ class TaxonomyFixer {
 
       // Write back if not dry run and modifications made
       if (!this.report.dry_run && modified) {
-        writeFileSync(filePath, newLines.join('\n'));
-        this.report.total_fixes += this.report.candidates.filter(c => c.file === filePath).length;
+        writeFileSync(filePath, newLines.join("\n"));
+        this.report.total_fixes += this.report.candidates.filter(
+          (c) => c.file === filePath,
+        ).length;
       }
-
     } catch (error) {
       // Skip files that can't be processed
     }
   }
 
-  private findFixesInLine(file: string, lineNum: number, line: string): FixCandidate[] {
+  private findFixesInLine(
+    file: string,
+    lineNum: number,
+    line: string,
+  ): FixCandidate[] {
     const fixes: FixCandidate[] = [];
 
     // Skip certain contexts
@@ -114,14 +134,14 @@ class TaxonomyFixer {
 
     // Look for stage replacements
     for (const [alias, canonical] of STAGE_REPLACEMENTS) {
-      const quotedPattern = new RegExp(`"${alias}"`, 'gi');
+      const quotedPattern = new RegExp(`"${alias}"`, "gi");
       if (quotedPattern.test(line)) {
         fixes.push({
           file,
           line: lineNum,
           original: `"${alias}"`,
           fixed: `"${canonical}"`,
-          category: 'stage'
+          category: "stage",
         });
       }
     }
@@ -141,7 +161,7 @@ class TaxonomyFixer {
     }
 
     // Skip Zod enum contexts
-    if (line.includes('z.enum(')) {
+    if (line.includes("z.enum(")) {
       return true;
     }
 
@@ -158,12 +178,15 @@ async function main(): Promise<void> {
   const { values } = parseArgs({
     args: process.argv.slice(2),
     options: {
-      roots: { type: 'string', default: 'src,scripts,.claude/commands,reports,docs' },
-      dry: { type: 'boolean', default: true }
-    }
+      roots: {
+        type: "string",
+        default: "src,scripts,.claude/commands,reports,docs",
+      },
+      dry: { type: "boolean", default: true },
+    },
   });
 
-  const roots = values.roots?.split(',') || [];
+  const roots = values.roots?.split(",") || [];
   const fixer = new TaxonomyFixer();
   const report = await fixer.fixProject(roots, values.dry);
 
@@ -174,18 +197,21 @@ async function main(): Promise<void> {
     total_files_processed: report.total_files_processed,
     total_fixes_applied: report.total_fixes,
     sample_fixes: report.candidates.slice(0, 10),
-    fix_summary: report.candidates.reduce((acc, fix) => {
-      const key = `${fix.original} → ${fix.fixed}`;
-      acc[key] = (acc[key] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>)
+    fix_summary: report.candidates.reduce(
+      (acc, fix) => {
+        const key = `${fix.original} → ${fix.fixed}`;
+        acc[key] = (acc[key] || 0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>,
+    ),
   };
 
   console.log(JSON.stringify(summary, null, 2));
 
   if (report.dry_run && report.candidates.length > 0) {
-    console.log('\n📝 DRY RUN COMPLETE - No changes applied');
-    console.log('To apply fixes, run with --dry=false');
+    console.log("\n📝 DRY RUN COMPLETE - No changes applied");
+    console.log("To apply fixes, run with --dry=false");
   }
 
   process.exit(0);

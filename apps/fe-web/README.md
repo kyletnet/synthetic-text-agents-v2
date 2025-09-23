@@ -5,6 +5,7 @@ Next.js 14 frontend for the synthetic text agents system with 3-panel UI.
 ## Installation
 
 From the root directory:
+
 ```bash
 # Using pnpm (preferred)
 pnpm --filter fe-web install
@@ -33,7 +34,7 @@ The app runs on http://localhost:3001
 Set `RUN_PROVIDER` to control how the run API behaves:
 
 - `MOCK` (default): Returns mock data from templates
-- `CLI`: Spawns engine CLI process 
+- `CLI`: Spawns engine CLI process
 - `ENGINE_HTTP`: Placeholder for future HTTP backend
 
 ```bash
@@ -64,8 +65,9 @@ RUN_PROVIDER=CLI pnpm --filter fe-web dev
 ## Test IDs
 
 Key test IDs for E2E testing:
+
 - `btn-run`: Run button
-- `btn-rerun`: Rerun button  
+- `btn-rerun`: Rerun button
 - `btn-rollback`: Rollback button
 - `toggle-style-guard`: Style Guard toggle
 - `select-guardian`: Guardian Profile selector

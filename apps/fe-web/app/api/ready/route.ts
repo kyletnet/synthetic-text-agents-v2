@@ -1,11 +1,11 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from "next/server";
 
 export interface ReadinessCheckResult {
-  status: 'ready' | 'not-ready';
+  status: "ready" | "not-ready";
   timestamp: string;
   checks: {
     [key: string]: {
-      status: 'ready' | 'not-ready';
+      status: "ready" | "not-ready";
       details?: string;
       lastChecked: string;
     };
@@ -22,9 +22,9 @@ export interface ReadinessCheckResult {
 export async function GET(request: NextRequest): Promise<NextResponse> {
   try {
     const readinessCheck: ReadinessCheckResult = {
-      status: 'ready',
+      status: "ready",
       timestamp: new Date().toISOString(),
-      checks: {}
+      checks: {},
     };
 
     // Check critical dependencies for readiness
@@ -47,29 +47,28 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
     // Determine overall readiness
     const notReadyChecks = Object.values(readinessCheck.checks).filter(
-      check => check.status === 'not-ready'
+      (check) => check.status === "not-ready",
     );
 
     if (notReadyChecks.length > 0) {
-      readinessCheck.status = 'not-ready';
+      readinessCheck.status = "not-ready";
 
       return NextResponse.json(readinessCheck, { status: 503 });
     }
 
-    readinessCheck.status = 'ready';
+    readinessCheck.status = "ready";
     return NextResponse.json(readinessCheck, { status: 200 });
-
   } catch (error) {
-    console.error('Readiness check failed:', error);
+    console.error("Readiness check failed:", error);
 
     return NextResponse.json(
       {
-        status: 'not-ready',
+        status: "not-ready",
         timestamp: new Date().toISOString(),
-        error: 'Readiness check failed',
-        details: error instanceof Error ? error.message : 'Unknown error'
+        error: "Readiness check failed",
+        details: error instanceof Error ? error.message : "Unknown error",
       },
-      { status: 503 }
+      { status: 503 },
     );
   }
 }
@@ -82,28 +81,29 @@ async function checkApiKeyReadiness() {
     const anthropicKey = process.env.ANTHROPIC_API_KEY;
 
     // API key is required for readiness
-    if (!anthropicKey ||
-        anthropicKey.includes('your_') ||
-        anthropicKey.includes('placeholder') ||
-        !anthropicKey.startsWith('sk-ant-')) {
+    if (
+      !anthropicKey ||
+      anthropicKey.includes("your_") ||
+      anthropicKey.includes("placeholder") ||
+      !anthropicKey.startsWith("sk-ant-")
+    ) {
       return {
-        status: 'not-ready' as const,
-        details: 'ANTHROPIC_API_KEY not properly configured',
-        lastChecked: new Date().toISOString()
+        status: "not-ready" as const,
+        details: "ANTHROPIC_API_KEY not properly configured",
+        lastChecked: new Date().toISOString(),
       };
     }
 
     return {
-      status: 'ready' as const,
-      details: 'API key is configured and valid',
-      lastChecked: new Date().toISOString()
+      status: "ready" as const,
+      details: "API key is configured and valid",
+      lastChecked: new Date().toISOString(),
     };
-
   } catch (error) {
     return {
-      status: 'not-ready' as const,
-      details: `API key check failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
-      lastChecked: new Date().toISOString()
+      status: "not-ready" as const,
+      details: `API key check failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+      lastChecked: new Date().toISOString(),
     };
   }
 }
@@ -114,40 +114,41 @@ async function checkApiKeyReadiness() {
 async function checkEssentialServices() {
   try {
     // Check if essential environment variables are set
-    const requiredEnvVars = ['NODE_ENV'];
-    const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
+    const requiredEnvVars = ["NODE_ENV"];
+    const missingVars = requiredEnvVars.filter(
+      (varName) => !process.env[varName],
+    );
 
     if (missingVars.length > 0) {
       return {
-        status: 'not-ready' as const,
-        details: `Missing required environment variables: ${missingVars.join(', ')}`,
-        lastChecked: new Date().toISOString()
+        status: "not-ready" as const,
+        details: `Missing required environment variables: ${missingVars.join(", ")}`,
+        lastChecked: new Date().toISOString(),
       };
     }
 
     // Check if we can perform basic operations
     try {
-      JSON.stringify({ test: 'readiness' });
+      JSON.stringify({ test: "readiness" });
       new Date().toISOString();
     } catch {
       return {
-        status: 'not-ready' as const,
-        details: 'Basic JavaScript operations failing',
-        lastChecked: new Date().toISOString()
+        status: "not-ready" as const,
+        details: "Basic JavaScript operations failing",
+        lastChecked: new Date().toISOString(),
       };
     }
 
     return {
-      status: 'ready' as const,
-      details: 'Essential services are operational',
-      lastChecked: new Date().toISOString()
+      status: "ready" as const,
+      details: "Essential services are operational",
+      lastChecked: new Date().toISOString(),
     };
-
   } catch (error) {
     return {
-      status: 'not-ready' as const,
-      details: `Essential services check failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
-      lastChecked: new Date().toISOString()
+      status: "not-ready" as const,
+      details: `Essential services check failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+      lastChecked: new Date().toISOString(),
     };
   }
 }
@@ -160,38 +161,35 @@ async function checkConfigurationReadiness() {
     const environment = process.env.ENVIRONMENT || process.env.NODE_ENV;
 
     // Validate environment-specific configurations
-    if (environment === 'production') {
-      const requiredProdVars = [
-        'ANTHROPIC_API_KEY',
-        'NODE_ENV'
-      ];
+    if (environment === "production") {
+      const requiredProdVars = ["ANTHROPIC_API_KEY", "NODE_ENV"];
 
       const missingProdVars = requiredProdVars.filter(
-        varName => !process.env[varName] ||
-                  process.env[varName]?.includes('your_') ||
-                  process.env[varName]?.includes('placeholder')
+        (varName) =>
+          !process.env[varName] ||
+          process.env[varName]?.includes("your_") ||
+          process.env[varName]?.includes("placeholder"),
       );
 
       if (missingProdVars.length > 0) {
         return {
-          status: 'not-ready' as const,
-          details: `Missing production configuration: ${missingProdVars.join(', ')}`,
-          lastChecked: new Date().toISOString()
+          status: "not-ready" as const,
+          details: `Missing production configuration: ${missingProdVars.join(", ")}`,
+          lastChecked: new Date().toISOString(),
         };
       }
     }
 
     return {
-      status: 'ready' as const,
+      status: "ready" as const,
       details: `Configuration is valid for ${environment} environment`,
-      lastChecked: new Date().toISOString()
+      lastChecked: new Date().toISOString(),
     };
-
   } catch (error) {
     return {
-      status: 'not-ready' as const,
-      details: `Configuration check failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
-      lastChecked: new Date().toISOString()
+      status: "not-ready" as const,
+      details: `Configuration check failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+      lastChecked: new Date().toISOString(),
     };
   }
 }
@@ -206,20 +204,20 @@ async function checkDatabaseReadiness() {
     const environment = process.env.ENVIRONMENT || process.env.NODE_ENV;
 
     // In production, database is required
-    if (environment === 'production' && (!dbHost || !dbPassword)) {
+    if (environment === "production" && (!dbHost || !dbPassword)) {
       return {
-        status: 'not-ready' as const,
-        details: 'Database configuration required for production',
-        lastChecked: new Date().toISOString()
+        status: "not-ready" as const,
+        details: "Database configuration required for production",
+        lastChecked: new Date().toISOString(),
       };
     }
 
     // For development/staging, database is optional
     if (!dbHost && !dbPassword) {
       return {
-        status: 'ready' as const,
-        details: 'Database not configured (using in-memory storage)',
-        lastChecked: new Date().toISOString()
+        status: "ready" as const,
+        details: "Database not configured (using in-memory storage)",
+        lastChecked: new Date().toISOString(),
       };
     }
 
@@ -230,16 +228,15 @@ async function checkDatabaseReadiness() {
     // - Migration status check
 
     return {
-      status: 'ready' as const,
-      details: 'Database is ready',
-      lastChecked: new Date().toISOString()
+      status: "ready" as const,
+      details: "Database is ready",
+      lastChecked: new Date().toISOString(),
     };
-
   } catch (error) {
     return {
-      status: 'not-ready' as const,
-      details: `Database readiness check failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
-      lastChecked: new Date().toISOString()
+      status: "not-ready" as const,
+      details: `Database readiness check failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+      lastChecked: new Date().toISOString(),
     };
   }
 }

@@ -1,101 +1,114 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { Upload, FileText, File } from "lucide-react"
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Upload, FileText, File } from "lucide-react";
 
-import { Button } from "@/components/ui/button"
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Label } from "@/components/ui/label"
+import { Button } from "@/components/ui/button";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
 
 export default function UploadPage() {
-  const router = useRouter()
-  const [file, setFile] = useState<File | null>(null)
-  const [inputType, setInputType] = useState<string>("document")
-  const [uploading, setUploading] = useState(false)
-  const [uploadStatus, setUploadStatus] = useState<string>("")
+  const router = useRouter();
+  const [file, setFile] = useState<File | null>(null);
+  const [inputType, setInputType] = useState<string>("document");
+  const [uploading, setUploading] = useState(false);
+  const [uploadStatus, setUploadStatus] = useState<string>("");
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = e.target.files?.[0]
+    const selectedFile = e.target.files?.[0];
     if (selectedFile) {
       // Validate file type
-      const allowedTypes = ['.txt', '.rtf', '.jsonl']
-      const fileExt = '.' + selectedFile.name.split('.').pop()?.toLowerCase()
+      const allowedTypes = [".txt", ".rtf", ".jsonl"];
+      const fileExt = "." + selectedFile.name.split(".").pop()?.toLowerCase();
 
       if (!allowedTypes.includes(fileExt)) {
-        setUploadStatus(`Error: Only ${allowedTypes.join(', ')} files are supported`)
-        return
+        setUploadStatus(
+          `Error: Only ${allowedTypes.join(", ")} files are supported`,
+        );
+        return;
       }
 
-      setFile(selectedFile)
-      setUploadStatus("")
+      setFile(selectedFile);
+      setUploadStatus("");
     }
-  }
+  };
 
   const handleUpload = async () => {
     if (!file) {
-      setUploadStatus("Please select a file")
-      return
+      setUploadStatus("Please select a file");
+      return;
     }
 
-    setUploading(true)
-    setUploadStatus("Uploading...")
+    setUploading(true);
+    setUploadStatus("Uploading...");
 
     try {
-      const formData = new FormData()
-      formData.append('file', file)
-      formData.append('input_type', inputType)
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("input_type", inputType);
 
-      const apiBase = process.env.NEXT_PUBLIC_API_BASE || '/api'
+      const apiBase = process.env.NEXT_PUBLIC_API_BASE || "/api";
       const response = await fetch(`${apiBase}/upload`, {
-        method: 'POST',
+        method: "POST",
         body: formData,
-      })
+      });
 
       if (response.ok) {
-        const result = await response.json()
-        setUploadStatus(`Upload successful! File ID: ${result.fileId}`)
+        const result = await response.json();
+        setUploadStatus(`Upload successful! File ID: ${result.fileId}`);
 
         // Store file info for later use
-        localStorage.setItem('lastUpload', JSON.stringify({
-          fileId: result.fileId,
-          fileName: file.name,
-          inputType: inputType,
-          uploadedAt: new Date().toISOString()
-        }))
+        localStorage.setItem(
+          "lastUpload",
+          JSON.stringify({
+            fileId: result.fileId,
+            fileName: file.name,
+            inputType: inputType,
+            uploadedAt: new Date().toISOString(),
+          }),
+        );
 
         // Redirect to run page after successful upload
         setTimeout(() => {
-          router.push('/run')
-        }, 1500)
+          router.push("/run");
+        }, 1500);
       } else {
-        const error = await response.json()
-        setUploadStatus(`Upload failed: ${error.message || 'Unknown error'}`)
+        const error = await response.json();
+        setUploadStatus(`Upload failed: ${error.message || "Unknown error"}`);
       }
     } catch (error) {
-      setUploadStatus(`Upload failed: ${error instanceof Error ? error.message : 'Network error'}`)
+      setUploadStatus(
+        `Upload failed: ${error instanceof Error ? error.message : "Network error"}`,
+      );
     } finally {
-      setUploading(false)
+      setUploading(false);
     }
-  }
+  };
 
   const getFileIcon = () => {
-    if (!file) return <File className="w-8 h-8 text-gray-400" />
+    if (!file) return <File className="w-8 h-8 text-gray-400" />;
 
-    const ext = file.name.split('.').pop()?.toLowerCase()
+    const ext = file.name.split(".").pop()?.toLowerCase();
     switch (ext) {
-      case 'txt':
-        return <FileText className="w-8 h-8 text-blue-500" />
-      case 'rtf':
-        return <FileText className="w-8 h-8 text-purple-500" />
-      case 'jsonl':
-        return <File className="w-8 h-8 text-green-500" />
+      case "txt":
+        return <FileText className="w-8 h-8 text-blue-500" />;
+      case "rtf":
+        return <FileText className="w-8 h-8 text-purple-500" />;
+      case "jsonl":
+        return <File className="w-8 h-8 text-green-500" />;
       default:
-        return <File className="w-8 h-8 text-gray-400" />
+        return <File className="w-8 h-8 text-gray-400" />;
     }
-  }
+  };
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-2xl">
@@ -124,13 +137,18 @@ export default function UploadPage() {
               <SelectContent>
                 <SelectItem value="document">Document</SelectItem>
                 <SelectItem value="gold">Gold QA Pairs</SelectItem>
-                <SelectItem value="mixed">Mixed (Document + Examples)</SelectItem>
+                <SelectItem value="mixed">
+                  Mixed (Document + Examples)
+                </SelectItem>
               </SelectContent>
             </Select>
             <p className="text-sm text-gray-500">
-              {inputType === 'document' && 'Upload a text document to generate QA pairs from'}
-              {inputType === 'gold' && 'Upload existing QA pairs in JSONL format for evaluation'}
-              {inputType === 'mixed' && 'Upload both document and example QA pairs'}
+              {inputType === "document" &&
+                "Upload a text document to generate QA pairs from"}
+              {inputType === "gold" &&
+                "Upload existing QA pairs in JSONL format for evaluation"}
+              {inputType === "mixed" &&
+                "Upload both document and example QA pairs"}
             </p>
           </div>
 
@@ -158,7 +176,9 @@ export default function UploadPage() {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => document.getElementById('file-upload')?.click()}
+                    onClick={() =>
+                      document.getElementById("file-upload")?.click()
+                    }
                   >
                     Change File
                   </Button>
@@ -169,7 +189,9 @@ export default function UploadPage() {
                   <div>
                     <Button
                       variant="outline"
-                      onClick={() => document.getElementById('file-upload')?.click()}
+                      onClick={() =>
+                        document.getElementById("file-upload")?.click()
+                      }
                     >
                       Choose File
                     </Button>
@@ -184,13 +206,16 @@ export default function UploadPage() {
 
           {/* Upload Status */}
           {uploadStatus && (
-            <div className={`p-3 rounded-md ${
-              uploadStatus.includes('Error') || uploadStatus.includes('failed')
-                ? 'bg-red-50 text-red-700 border border-red-200'
-                : uploadStatus.includes('successful')
-                ? 'bg-green-50 text-green-700 border border-green-200'
-                : 'bg-blue-50 text-blue-700 border border-blue-200'
-            }`}>
+            <div
+              className={`p-3 rounded-md ${
+                uploadStatus.includes("Error") ||
+                uploadStatus.includes("failed")
+                  ? "bg-red-50 text-red-700 border border-red-200"
+                  : uploadStatus.includes("successful")
+                    ? "bg-green-50 text-green-700 border border-green-200"
+                    : "bg-blue-50 text-blue-700 border border-blue-200"
+              }`}
+            >
               {uploadStatus}
             </div>
           )}
@@ -202,20 +227,28 @@ export default function UploadPage() {
             className="w-full"
             size="lg"
           >
-            {uploading ? 'Uploading...' : 'Upload File'}
+            {uploading ? "Uploading..." : "Upload File"}
           </Button>
 
           {/* Help Text */}
           <div className="text-sm text-gray-500 space-y-1">
-            <p><strong>File Types:</strong></p>
+            <p>
+              <strong>File Types:</strong>
+            </p>
             <ul className="list-disc list-inside space-y-1 ml-2">
-              <li><strong>.txt</strong> - Plain text documents</li>
-              <li><strong>.rtf</strong> - Rich text format documents</li>
-              <li><strong>.jsonl</strong> - JSON Lines format for QA pairs</li>
+              <li>
+                <strong>.txt</strong> - Plain text documents
+              </li>
+              <li>
+                <strong>.rtf</strong> - Rich text format documents
+              </li>
+              <li>
+                <strong>.jsonl</strong> - JSON Lines format for QA pairs
+              </li>
             </ul>
           </div>
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

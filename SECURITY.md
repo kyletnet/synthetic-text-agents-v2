@@ -26,17 +26,20 @@ We take security vulnerabilities seriously. If you discover a security vulnerabi
 ## Security Measures
 
 ### API Key Management
+
 - Never commit API keys to version control
 - Use environment variables for all secrets
 - Rotate API keys regularly
 - Use least-privilege access principles
 
 ### Dependencies
+
 - Automated security scanning via Dependabot
 - Regular dependency updates
 - Security audit on every CI run
 
 ### Code Security
+
 - No hardcoded secrets or credentials
 - Input validation and sanitization
 - Secure logging (no sensitive data in logs)

@@ -1,9 +1,9 @@
-import { Orchestrator } from './orchestrator.js';
-import { AgentRegistry } from '../shared/registry.js';
-import { MessageBus } from '../shared/bus.js';
-import { Logger } from '../shared/logger.js';
-import { RAGService } from '../rag/service.js';
-import { ConfigService } from '../shared/config.js';
+import { Orchestrator } from "./orchestrator.js";
+import { AgentRegistry } from "../shared/registry.js";
+import { MessageBus } from "../shared/bus.js";
+import { Logger } from "../shared/logger.js";
+import { RAGService } from "../rag/service.js";
+import { ConfigService } from "../shared/config.js";
 
 export interface OrchestrationServiceOptions {
   configPath?: string;
@@ -16,9 +16,9 @@ export class OrchestrationService {
   private configService: ConfigService;
 
   private constructor(
-    orchestrator: Orchestrator, 
+    orchestrator: Orchestrator,
     ragService: RAGService | undefined,
-    configService: ConfigService
+    configService: ConfigService,
   ) {
     this.orchestrator = orchestrator;
     this.ragService = ragService || undefined;
@@ -26,10 +26,10 @@ export class OrchestrationService {
   }
 
   static async create(
-    registry: AgentRegistry, 
-    messageBus: MessageBus, 
+    registry: AgentRegistry,
+    messageBus: MessageBus,
     logger: Logger,
-    options: OrchestrationServiceOptions = {}
+    options: OrchestrationServiceOptions = {},
   ): Promise<OrchestrationService> {
     // Initialize configuration
     const configService = await ConfigService.initialize(options.configPath);
@@ -40,19 +40,22 @@ export class OrchestrationService {
     if (ragConfig.enabled || options.enableRAG) {
       ragService = new RAGService(ragConfig, logger);
       await ragService.initialize();
-      
+
       await logger.trace({
-        level: 'info',
-        agentId: 'orchestration-service',
-        action: 'rag_initialized',
+        level: "info",
+        agentId: "orchestration-service",
+        action: "rag_initialized",
         data: ragService.getStats(),
       });
     } else {
       await logger.trace({
-        level: 'info',
-        agentId: 'orchestration-service',
-        action: 'rag_disabled',
-        data: { configEnabled: ragConfig.enabled, optionEnabled: options.enableRAG },
+        level: "info",
+        agentId: "orchestration-service",
+        action: "rag_disabled",
+        data: {
+          configEnabled: ragConfig.enabled,
+          optionEnabled: options.enableRAG,
+        },
       });
     }
 
@@ -87,11 +90,13 @@ export class OrchestrationService {
   }
 
   getRAGStats() {
-    return this.ragService?.getStats() ?? {
-      enabled: false,
-      documentsCount: 0,
-      chunksCount: 0,
-      config: null,
-    };
+    return (
+      this.ragService?.getStats() ?? {
+        enabled: false,
+        documentsCount: 0,
+        chunksCount: 0,
+        config: null,
+      }
+    );
   }
 }

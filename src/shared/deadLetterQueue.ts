@@ -31,7 +31,12 @@ export interface DLQConfig {
 }
 
 export interface DLQEvent {
-  type: 'message_added' | 'message_retried' | 'message_failed' | 'message_recovered' | 'queue_full';
+  type:
+    | "message_added"
+    | "message_retried"
+    | "message_failed"
+    | "message_recovered"
+    | "queue_full";
   message: DLQMessage;
   timestamp: Date;
   details?: string;
@@ -58,7 +63,7 @@ export class DeadLetterQueue {
 
   constructor(private config: DLQConfig) {
     if (config.persistToDisk) {
-      this.diskPersistence = new DLQDiskPersistence(config.diskPath || './dlq');
+      this.diskPersistence = new DLQDiskPersistence(config.diskPath || "./dlq");
       this.loadFromDisk();
     }
 
@@ -74,15 +79,15 @@ export class DeadLetterQueue {
     failureReason: string,
     context?: Record<string, unknown>,
     priority: number = 5,
-    maxRetries?: number
+    maxRetries?: number,
   ): Promise<string> {
     // Check queue size limit
     if (this.messages.size >= this.config.maxQueueSize) {
       this.emitEvent({
-        type: 'queue_full',
+        type: "queue_full",
         message: {} as DLQMessage,
         timestamp: new Date(),
-        details: `Queue size limit reached: ${this.config.maxQueueSize}`
+        details: `Queue size limit reached: ${this.config.maxQueueSize}`,
       });
 
       // Remove oldest message to make space
@@ -107,16 +112,16 @@ export class DeadLetterQueue {
       maxRetries: maxRetries ?? this.config.maxRetries,
       priority,
       tags: this.generateTags(originalQueue, failureReason),
-      context
+      context,
     };
 
     this.messages.set(messageId, message);
 
     this.emitEvent({
-      type: 'message_added',
+      type: "message_added",
       message,
       timestamp: now,
-      details: `Message added to DLQ from ${originalQueue}`
+      details: `Message added to DLQ from ${originalQueue}`,
     });
 
     await this.persistToDisk();
@@ -129,7 +134,7 @@ export class DeadLetterQueue {
    */
   async incrementFailure(
     messageId: string,
-    newFailureReason?: string
+    newFailureReason?: string,
   ): Promise<void> {
     const message = this.messages.get(messageId);
     if (!message) {
@@ -151,10 +156,10 @@ export class DeadLetterQueue {
     }
 
     this.emitEvent({
-      type: 'message_failed',
+      type: "message_failed",
       message,
       timestamp: new Date(),
-      details: `Failure count incremented to ${message.failureCount}`
+      details: `Failure count incremented to ${message.failureCount}`,
     });
 
     await this.persistToDisk();
@@ -167,17 +172,20 @@ export class DeadLetterQueue {
     const now = new Date();
 
     return Array.from(this.messages.values())
-      .filter(message =>
-        message.failureCount <= message.maxRetries &&
-        message.nextRetryTime &&
-        message.nextRetryTime <= now
+      .filter(
+        (message) =>
+          message.failureCount <= message.maxRetries &&
+          message.nextRetryTime &&
+          message.nextRetryTime <= now,
       )
       .sort((a, b) => {
         // Sort by priority first, then by next retry time
         if (a.priority !== b.priority) {
           return a.priority - b.priority; // Lower number = higher priority
         }
-        return ((a.nextRetryTime?.getTime() ?? 0) - (b.nextRetryTime?.getTime() ?? 0));
+        return (
+          (a.nextRetryTime?.getTime() ?? 0) - (b.nextRetryTime?.getTime() ?? 0)
+        );
       });
   }
 
@@ -185,14 +193,18 @@ export class DeadLetterQueue {
    * Get permanently failed messages (exceeded max retries)
    */
   getPermanentlyFailedMessages(): DLQMessage[] {
-    return Array.from(this.messages.values())
-      .filter(message => message.failureCount > message.maxRetries);
+    return Array.from(this.messages.values()).filter(
+      (message) => message.failureCount > message.maxRetries,
+    );
   }
 
   /**
    * Remove a message from the DLQ (after successful retry or manual intervention)
    */
-  async removeMessage(messageId: string, reason: 'recovered' | 'manual' = 'recovered'): Promise<boolean> {
+  async removeMessage(
+    messageId: string,
+    reason: "recovered" | "manual" = "recovered",
+  ): Promise<boolean> {
     const message = this.messages.get(messageId);
     if (!message) {
       return false;
@@ -201,10 +213,10 @@ export class DeadLetterQueue {
     this.messages.delete(messageId);
 
     this.emitEvent({
-      type: 'message_recovered',
+      type: "message_recovered",
       message,
       timestamp: new Date(),
-      details: `Message removed: ${reason}`
+      details: `Message removed: ${reason}`,
     });
 
     await this.persistToDisk();
@@ -222,24 +234,27 @@ export class DeadLetterQueue {
    * Get all messages for a specific queue
    */
   getMessagesByQueue(queueName: string): DLQMessage[] {
-    return Array.from(this.messages.values())
-      .filter(message => message.originalQueue === queueName);
+    return Array.from(this.messages.values()).filter(
+      (message) => message.originalQueue === queueName,
+    );
   }
 
   /**
    * Get messages by failure reason
    */
   getMessagesByFailureReason(reason: string): DLQMessage[] {
-    return Array.from(this.messages.values())
-      .filter(message => message.failureReason.includes(reason));
+    return Array.from(this.messages.values()).filter((message) =>
+      message.failureReason.includes(reason),
+    );
   }
 
   /**
    * Search messages by tags
    */
   getMessagesByTag(tag: string): DLQMessage[] {
-    return Array.from(this.messages.values())
-      .filter(message => message.tags.includes(tag));
+    return Array.from(this.messages.values()).filter((message) =>
+      message.tags.includes(tag),
+    );
   }
 
   /**
@@ -255,34 +270,45 @@ export class DeadLetterQueue {
         messagesByFailureReason: {},
         averageFailureCount: 0,
         readyForRetry: 0,
-        permanentlyFailed: 0
+        permanentlyFailed: 0,
       };
     }
 
-    const messagesByQueue = messages.reduce((acc, msg) => {
-      acc[msg.originalQueue] = (acc[msg.originalQueue] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
+    const messagesByQueue = messages.reduce(
+      (acc, msg) => {
+        acc[msg.originalQueue] = (acc[msg.originalQueue] || 0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>,
+    );
 
-    const messagesByFailureReason = messages.reduce((acc, msg) => {
-      acc[msg.failureReason] = (acc[msg.failureReason] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
+    const messagesByFailureReason = messages.reduce(
+      (acc, msg) => {
+        acc[msg.failureReason] = (acc[msg.failureReason] || 0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>,
+    );
 
     const now = new Date();
-    const readyForRetry = messages.filter(msg =>
-      msg.failureCount <= msg.maxRetries &&
-      msg.nextRetryTime &&
-      msg.nextRetryTime <= now
+    const readyForRetry = messages.filter(
+      (msg) =>
+        msg.failureCount <= msg.maxRetries &&
+        msg.nextRetryTime &&
+        msg.nextRetryTime <= now,
     ).length;
 
-    const permanentlyFailed = messages.filter(msg =>
-      msg.failureCount > msg.maxRetries
+    const permanentlyFailed = messages.filter(
+      (msg) => msg.failureCount > msg.maxRetries,
     ).length;
 
-    const averageFailureCount = messages.reduce((sum, msg) => sum + msg.failureCount, 0) / messages.length;
+    const averageFailureCount =
+      messages.reduce((sum, msg) => sum + msg.failureCount, 0) /
+      messages.length;
 
-    const sortedByTime = messages.sort((a, b) => a.firstFailureTime.getTime() - b.firstFailureTime.getTime());
+    const sortedByTime = messages.sort(
+      (a, b) => a.firstFailureTime.getTime() - b.firstFailureTime.getTime(),
+    );
 
     return {
       totalMessages: messages.length,
@@ -292,7 +318,7 @@ export class DeadLetterQueue {
       newestMessage: sortedByTime[sortedByTime.length - 1]?.firstFailureTime,
       averageFailureCount,
       readyForRetry,
-      permanentlyFailed
+      permanentlyFailed,
     };
   }
 
@@ -310,7 +336,7 @@ export class DeadLetterQueue {
   async clearPermanentlyFailed(): Promise<number> {
     const permanentlyFailed = this.getPermanentlyFailedMessages();
 
-    permanentlyFailed.forEach(message => {
+    permanentlyFailed.forEach((message) => {
       this.messages.delete(message.id);
     });
 
@@ -321,7 +347,9 @@ export class DeadLetterQueue {
   /**
    * Process retry queue
    */
-  async processRetries(processor: (message: DLQMessage) => Promise<boolean>): Promise<void> {
+  async processRetries(
+    processor: (message: DLQMessage) => Promise<boolean>,
+  ): Promise<void> {
     const readyMessages = this.getMessagesReadyForRetry();
 
     for (const message of readyMessages) {
@@ -329,19 +357,20 @@ export class DeadLetterQueue {
         const success = await processor(message);
 
         if (success) {
-          await this.removeMessage(message.id, 'recovered');
+          await this.removeMessage(message.id, "recovered");
 
           this.emitEvent({
-            type: 'message_retried',
+            type: "message_retried",
             message,
             timestamp: new Date(),
-            details: 'Message successfully retried and recovered'
+            details: "Message successfully retried and recovered",
           });
         } else {
-          await this.incrementFailure(message.id, 'Retry failed');
+          await this.incrementFailure(message.id, "Retry failed");
         }
       } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+        const errorMessage =
+          error instanceof Error ? error.message : "Unknown error";
         await this.incrementFailure(message.id, `Retry error: ${errorMessage}`);
       }
     }
@@ -361,7 +390,7 @@ export class DeadLetterQueue {
           console.log(`[DLQ] ${readyMessages.length} messages ready for retry`);
         }
       } catch (error) {
-        console.error('[DLQ] Error in retry processor:', error);
+        console.error("[DLQ] Error in retry processor:", error);
       }
     }, processInterval);
   }
@@ -379,7 +408,9 @@ export class DeadLetterQueue {
    * Calculate next retry time with exponential backoff
    */
   private calculateNextRetryTime(failureCount: number): Date {
-    let delay = this.config.initialRetryDelay * Math.pow(this.config.backoffMultiplier, failureCount - 1);
+    let delay =
+      this.config.initialRetryDelay *
+      Math.pow(this.config.backoffMultiplier, failureCount - 1);
 
     // Cap the delay
     delay = Math.min(delay, this.config.maxRetryDelay);
@@ -407,14 +438,14 @@ export class DeadLetterQueue {
     const tags = [`queue:${originalQueue}`];
 
     // Add tags based on failure reason
-    if (failureReason.toLowerCase().includes('timeout')) {
-      tags.push('failure:timeout');
+    if (failureReason.toLowerCase().includes("timeout")) {
+      tags.push("failure:timeout");
     }
-    if (failureReason.toLowerCase().includes('network')) {
-      tags.push('failure:network');
+    if (failureReason.toLowerCase().includes("network")) {
+      tags.push("failure:network");
     }
-    if (failureReason.toLowerCase().includes('auth')) {
-      tags.push('failure:auth');
+    if (failureReason.toLowerCase().includes("auth")) {
+      tags.push("failure:auth");
     }
 
     return tags;
@@ -425,7 +456,9 @@ export class DeadLetterQueue {
    */
   private getOldestMessage(): DLQMessage | undefined {
     const messages = Array.from(this.messages.values());
-    return messages.sort((a, b) => a.firstFailureTime.getTime() - b.firstFailureTime.getTime())[0];
+    return messages.sort(
+      (a, b) => a.firstFailureTime.getTime() - b.firstFailureTime.getTime(),
+    )[0];
   }
 
   /**
@@ -436,7 +469,7 @@ export class DeadLetterQueue {
       try {
         this.config.monitor(event);
       } catch (error) {
-        console.error('DLQ monitor error:', error);
+        console.error("DLQ monitor error:", error);
       }
     }
   }
@@ -456,7 +489,7 @@ export class DeadLetterQueue {
   private async loadFromDisk(): Promise<void> {
     if (this.diskPersistence) {
       const messages = await this.diskPersistence.load();
-      messages.forEach(message => {
+      messages.forEach((message) => {
         this.messages.set(message.id, message);
       });
     }
@@ -471,36 +504,38 @@ class DLQDiskPersistence {
 
   async save(messages: DLQMessage[]): Promise<void> {
     try {
-      const fs = await import('fs/promises');
-      const path = await import('path');
+      const fs = await import("fs/promises");
+      const path = await import("path");
 
       await fs.mkdir(this.basePath, { recursive: true });
 
-      const filePath = path.join(this.basePath, 'dlq_messages.json');
+      const filePath = path.join(this.basePath, "dlq_messages.json");
       const data = JSON.stringify(messages, null, 2);
 
       await fs.writeFile(filePath, data);
     } catch (error) {
-      console.error('Failed to persist DLQ messages to disk:', error);
+      console.error("Failed to persist DLQ messages to disk:", error);
     }
   }
 
   async load(): Promise<DLQMessage[]> {
     try {
-      const fs = await import('fs/promises');
-      const path = await import('path');
+      const fs = await import("fs/promises");
+      const path = await import("path");
 
-      const filePath = path.join(this.basePath, 'dlq_messages.json');
-      const data = await fs.readFile(filePath, 'utf-8');
+      const filePath = path.join(this.basePath, "dlq_messages.json");
+      const data = await fs.readFile(filePath, "utf-8");
 
       const messages = JSON.parse(data) as DLQMessage[];
 
       // Convert date strings back to Date objects
-      return messages.map(message => ({
+      return messages.map((message) => ({
         ...message,
         firstFailureTime: new Date(message.firstFailureTime),
         lastFailureTime: new Date(message.lastFailureTime),
-        nextRetryTime: message.nextRetryTime ? new Date(message.nextRetryTime) : undefined
+        nextRetryTime: message.nextRetryTime
+          ? new Date(message.nextRetryTime)
+          : undefined,
       }));
     } catch (error) {
       // File doesn't exist or other error, return empty array
@@ -517,16 +552,18 @@ let globalDLQ: DeadLetterQueue;
 /**
  * Initialize global DLQ
  */
-export function initializeDeadLetterQueue(config?: Partial<DLQConfig>): DeadLetterQueue {
+export function initializeDeadLetterQueue(
+  config?: Partial<DLQConfig>,
+): DeadLetterQueue {
   const defaultConfig: DLQConfig = {
     maxRetries: 3,
-    initialRetryDelay: 5000,      // 5 seconds
-    maxRetryDelay: 300000,        // 5 minutes
+    initialRetryDelay: 5000, // 5 seconds
+    maxRetryDelay: 300000, // 5 minutes
     backoffMultiplier: 2,
     enableJitter: true,
     persistToDisk: true,
     maxQueueSize: 10000,
-    ...config
+    ...config,
   };
 
   globalDLQ = new DeadLetterQueue(defaultConfig);

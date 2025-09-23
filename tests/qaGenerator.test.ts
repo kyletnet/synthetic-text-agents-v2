@@ -6,7 +6,7 @@ const mockLogger = {
   trace: vi.fn(),
   info: vi.fn(),
   warn: vi.fn(),
-  error: vi.fn()
+  error: vi.fn(),
 } as any;
 
 // We call the protected handle via 'any' to keep the scaffold simple.

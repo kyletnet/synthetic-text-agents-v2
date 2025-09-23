@@ -3,12 +3,12 @@
  * Provides comprehensive application performance monitoring with multiple provider support
  */
 
-import { EventEmitter } from 'events';
+import { EventEmitter } from "events";
 
 export interface PerformanceMetric {
   name: string;
   value: number;
-  unit: 'ms' | 'bytes' | 'count' | 'percent' | 'ops/sec';
+  unit: "ms" | "bytes" | "count" | "percent" | "ops/sec";
   timestamp: Date;
   tags?: Record<string, string>;
   labels?: Record<string, string>;
@@ -17,11 +17,11 @@ export interface PerformanceMetric {
 export interface TransactionContext {
   id: string;
   name: string;
-  type: 'agent_execution' | 'api_request' | 'database_query' | 'external_call';
+  type: "agent_execution" | "api_request" | "database_query" | "external_call";
   startTime: Date;
   endTime?: Date;
   duration?: number;
-  status: 'pending' | 'success' | 'error' | 'timeout';
+  status: "pending" | "success" | "error" | "timeout";
   metadata?: Record<string, unknown>;
   errors?: Error[];
   spans?: Span[];
@@ -40,13 +40,13 @@ export interface Span {
 
 export interface LogEntry {
   timestamp: Date;
-  level: 'debug' | 'info' | 'warn' | 'error';
+  level: "debug" | "info" | "warn" | "error";
   message: string;
   fields?: Record<string, unknown>;
 }
 
 export interface APMConfig {
-  provider: 'datadog' | 'newrelic' | 'prometheus' | 'custom';
+  provider: "datadog" | "newrelic" | "prometheus" | "custom";
   enabled: boolean;
   samplingRate: number;
   flushInterval: number;
@@ -102,20 +102,24 @@ export class PerformanceMonitor extends EventEmitter {
   /**
    * Start a new transaction for tracking
    */
-  startTransaction(name: string, type: TransactionContext['type'], metadata?: Record<string, unknown>): string {
+  startTransaction(
+    name: string,
+    type: TransactionContext["type"],
+    metadata?: Record<string, unknown>,
+  ): string {
     const transactionId = this.generateId();
     const transaction: TransactionContext = {
       id: transactionId,
       name,
       type,
       startTime: new Date(),
-      status: 'pending',
+      status: "pending",
       metadata,
-      spans: []
+      spans: [],
     };
 
     this.activeTransactions.set(transactionId, transaction);
-    this.emit('transaction:start', transaction);
+    this.emit("transaction:start", transaction);
 
     return transactionId;
   }
@@ -123,7 +127,11 @@ export class PerformanceMonitor extends EventEmitter {
   /**
    * End a transaction
    */
-  endTransaction(transactionId: string, status: TransactionContext['status'] = 'success', error?: Error): void {
+  endTransaction(
+    transactionId: string,
+    status: TransactionContext["status"] = "success",
+    error?: Error,
+  ): void {
     const transaction = this.activeTransactions.get(transactionId);
     if (!transaction) {
       console.warn(`Transaction ${transactionId} not found`);
@@ -131,7 +139,8 @@ export class PerformanceMonitor extends EventEmitter {
     }
 
     transaction.endTime = new Date();
-    transaction.duration = transaction.endTime.getTime() - transaction.startTime.getTime();
+    transaction.duration =
+      transaction.endTime.getTime() - transaction.startTime.getTime();
     transaction.status = status;
 
     if (error) {
@@ -142,23 +151,27 @@ export class PerformanceMonitor extends EventEmitter {
     this.recordMetric({
       name: `transaction.duration`,
       value: transaction.duration,
-      unit: 'ms',
+      unit: "ms",
       timestamp: transaction.endTime,
       tags: {
         transaction_name: transaction.name,
         transaction_type: transaction.type,
-        status: transaction.status
-      }
+        status: transaction.status,
+      },
     });
 
     this.activeTransactions.delete(transactionId);
-    this.emit('transaction:end', transaction);
+    this.emit("transaction:end", transaction);
   }
 
   /**
    * Start a span within a transaction
    */
-  startSpan(transactionId: string, name: string, parentSpanId?: string): string {
+  startSpan(
+    transactionId: string,
+    name: string,
+    parentSpanId?: string,
+  ): string {
     const transaction = this.activeTransactions.get(transactionId);
     if (!transaction) {
       throw new Error(`Transaction ${transactionId} not found`);
@@ -171,7 +184,7 @@ export class PerformanceMonitor extends EventEmitter {
       name,
       startTime: new Date(),
       tags: {},
-      logs: []
+      logs: [],
     };
 
     transaction.spans = transaction.spans || [];
@@ -183,11 +196,15 @@ export class PerformanceMonitor extends EventEmitter {
   /**
    * End a span
    */
-  endSpan(transactionId: string, spanId: string, tags?: Record<string, string>): void {
+  endSpan(
+    transactionId: string,
+    spanId: string,
+    tags?: Record<string, string>,
+  ): void {
     const transaction = this.activeTransactions.get(transactionId);
     if (!transaction) return;
 
-    const span = transaction.spans?.find(s => s.id === spanId);
+    const span = transaction.spans?.find((s) => s.id === spanId);
     if (!span) return;
 
     span.endTime = new Date();
@@ -212,7 +229,7 @@ export class PerformanceMonitor extends EventEmitter {
     if (metricArray) {
       metricArray.push(metric);
     }
-    this.emit('metric:recorded', metric);
+    this.emit("metric:recorded", metric);
 
     // Apply sampling
     if (Math.random() > this.config.samplingRate) {
@@ -226,46 +243,49 @@ export class PerformanceMonitor extends EventEmitter {
   /**
    * Record agent performance metrics
    */
-  recordAgentMetrics(agentId: string, metrics: {
-    executionTime: number;
-    tokensUsed: number;
-    memoryUsage: number;
-    qualityScore?: number;
-  }): void {
+  recordAgentMetrics(
+    agentId: string,
+    metrics: {
+      executionTime: number;
+      tokensUsed: number;
+      memoryUsage: number;
+      qualityScore?: number;
+    },
+  ): void {
     const timestamp = new Date();
     const tags = { agent_id: agentId };
 
     this.recordMetric({
-      name: 'agent.execution_time',
+      name: "agent.execution_time",
       value: metrics.executionTime,
-      unit: 'ms',
+      unit: "ms",
       timestamp,
-      tags
+      tags,
     });
 
     this.recordMetric({
-      name: 'agent.tokens_used',
+      name: "agent.tokens_used",
       value: metrics.tokensUsed,
-      unit: 'count',
+      unit: "count",
       timestamp,
-      tags
+      tags,
     });
 
     this.recordMetric({
-      name: 'agent.memory_usage',
+      name: "agent.memory_usage",
       value: metrics.memoryUsage,
-      unit: 'bytes',
+      unit: "bytes",
       timestamp,
-      tags
+      tags,
     });
 
     if (metrics.qualityScore !== undefined) {
       this.recordMetric({
-        name: 'agent.quality_score',
+        name: "agent.quality_score",
         value: metrics.qualityScore,
-        unit: 'count',
+        unit: "count",
         timestamp,
-        tags
+        tags,
       });
     }
   }
@@ -280,16 +300,16 @@ export class PerformanceMonitor extends EventEmitter {
     return {
       cpu: {
         usage: this.calculateCpuUsage(cpuUsage),
-        loadAverage: require('os').loadavg()
+        loadAverage: require("os").loadavg(),
       },
       memory: {
         used: memUsage.rss,
-        total: require('os').totalmem(),
+        total: require("os").totalmem(),
         heapUsed: memUsage.heapUsed,
-        heapTotal: memUsage.heapTotal
+        heapTotal: memUsage.heapTotal,
       },
       disk: await this.getDiskMetrics(),
-      network: await this.getNetworkMetrics()
+      network: await this.getNetworkMetrics(),
     };
   }
 
@@ -314,36 +334,49 @@ export class PerformanceMonitor extends EventEmitter {
     const cutoff = now - timeWindow;
 
     // Aggregate transaction metrics
-    const transactionMetrics = Array.from(this.metrics.get('transaction.duration') || [])
-      .filter(m => m.timestamp.getTime() > cutoff);
+    const transactionMetrics = Array.from(
+      this.metrics.get("transaction.duration") || [],
+    ).filter((m) => m.timestamp.getTime() > cutoff);
 
-    const successful = transactionMetrics.filter(m => m.tags?.status === 'success').length;
-    const failed = transactionMetrics.filter(m => m.tags?.status !== 'success').length;
-    const avgDuration = transactionMetrics.reduce((sum, m) => sum + m.value, 0) / transactionMetrics.length || 0;
+    const successful = transactionMetrics.filter(
+      (m) => m.tags?.status === "success",
+    ).length;
+    const failed = transactionMetrics.filter(
+      (m) => m.tags?.status !== "success",
+    ).length;
+    const avgDuration =
+      transactionMetrics.reduce((sum, m) => sum + m.value, 0) /
+        transactionMetrics.length || 0;
 
     // Aggregate agent metrics
-    const agentExecutionMetrics = Array.from(this.metrics.get('agent.execution_time') || [])
-      .filter(m => m.timestamp.getTime() > cutoff);
+    const agentExecutionMetrics = Array.from(
+      this.metrics.get("agent.execution_time") || [],
+    ).filter((m) => m.timestamp.getTime() > cutoff);
 
-    const qualityMetrics = Array.from(this.metrics.get('agent.quality_score') || [])
-      .filter(m => m.timestamp.getTime() > cutoff);
+    const qualityMetrics = Array.from(
+      this.metrics.get("agent.quality_score") || [],
+    ).filter((m) => m.timestamp.getTime() > cutoff);
 
-    const avgExecutionTime = agentExecutionMetrics.reduce((sum, m) => sum + m.value, 0) / agentExecutionMetrics.length || 0;
-    const avgQualityScore = qualityMetrics.reduce((sum, m) => sum + m.value, 0) / qualityMetrics.length || 0;
+    const avgExecutionTime =
+      agentExecutionMetrics.reduce((sum, m) => sum + m.value, 0) /
+        agentExecutionMetrics.length || 0;
+    const avgQualityScore =
+      qualityMetrics.reduce((sum, m) => sum + m.value, 0) /
+        qualityMetrics.length || 0;
 
     return {
       transactions: {
         total: transactionMetrics.length,
         successful,
         failed,
-        averageDuration: avgDuration
+        averageDuration: avgDuration,
       },
       agents: {
         totalExecutions: agentExecutionMetrics.length,
         averageExecutionTime: avgExecutionTime,
-        averageQualityScore: avgQualityScore
+        averageQualityScore: avgQualityScore,
       },
-      system: {} as SystemMetrics // Will be populated by real-time call
+      system: {} as SystemMetrics, // Will be populated by real-time call
     };
   }
 
@@ -354,23 +387,27 @@ export class PerformanceMonitor extends EventEmitter {
     const lines: string[] = [];
 
     for (const [metricName, metricArray] of this.metrics.entries()) {
-      const sanitizedName = metricName.replace(/[^a-zA-Z0-9_]/g, '_');
+      const sanitizedName = metricName.replace(/[^a-zA-Z0-9_]/g, "_");
 
       // Add help text
-      lines.push(`# HELP ${sanitizedName} Performance metric for ${metricName}`);
+      lines.push(
+        `# HELP ${sanitizedName} Performance metric for ${metricName}`,
+      );
       lines.push(`# TYPE ${sanitizedName} gauge`);
 
       // Add recent metrics
       const recentMetrics = metricArray.slice(-100); // Last 100 entries
       for (const metric of recentMetrics) {
         const labels = this.formatPrometheusLabels(metric.tags || {});
-        lines.push(`${sanitizedName}${labels} ${metric.value} ${metric.timestamp.getTime()}`);
+        lines.push(
+          `${sanitizedName}${labels} ${metric.value} ${metric.timestamp.getTime()}`,
+        );
       }
 
-      lines.push('');
+      lines.push("");
     }
 
-    return lines.join('\n');
+    return lines.join("\n");
   }
 
   /**
@@ -387,7 +424,7 @@ export class PerformanceMonitor extends EventEmitter {
 
     // Flush remaining metrics
     this.flushMetrics();
-    this.emit('shutdown');
+    this.emit("shutdown");
   }
 
   private startSystemMetricsCollection(): void {
@@ -396,28 +433,27 @@ export class PerformanceMonitor extends EventEmitter {
         const metrics = await this.getSystemMetrics();
 
         this.recordMetric({
-          name: 'system.cpu.usage',
+          name: "system.cpu.usage",
           value: metrics.cpu.usage,
-          unit: 'percent',
-          timestamp: new Date()
+          unit: "percent",
+          timestamp: new Date(),
         });
 
         this.recordMetric({
-          name: 'system.memory.usage',
+          name: "system.memory.usage",
           value: (metrics.memory.used / metrics.memory.total) * 100,
-          unit: 'percent',
-          timestamp: new Date()
+          unit: "percent",
+          timestamp: new Date(),
         });
 
         this.recordMetric({
-          name: 'system.disk.usage',
+          name: "system.disk.usage",
           value: (metrics.disk.used / metrics.disk.total) * 100,
-          unit: 'percent',
-          timestamp: new Date()
+          unit: "percent",
+          timestamp: new Date(),
         });
-
       } catch (error) {
-        console.error('Failed to collect system metrics:', error);
+        console.error("Failed to collect system metrics:", error);
       }
     }, 60000); // Every minute
   }
@@ -449,31 +485,31 @@ export class PerformanceMonitor extends EventEmitter {
 
   private sendToProvider(metric: PerformanceMetric): void {
     switch (this.config.provider) {
-      case 'datadog':
+      case "datadog":
         this.sendToDatadog([metric]);
         break;
-      case 'newrelic':
+      case "newrelic":
         this.sendToNewRelic([metric]);
         break;
-      case 'prometheus':
+      case "prometheus":
         // Prometheus pulls metrics, no push needed
         break;
-      case 'custom':
-        this.emit('metric:send', metric);
+      case "custom":
+        this.emit("metric:send", metric);
         break;
     }
   }
 
   private sendBatchToProvider(metrics: PerformanceMetric[]): void {
     switch (this.config.provider) {
-      case 'datadog':
+      case "datadog":
         this.sendToDatadog(metrics);
         break;
-      case 'newrelic':
+      case "newrelic":
         this.sendToNewRelic(metrics);
         break;
-      case 'custom':
-        this.emit('metrics:batch', metrics);
+      case "custom":
+        this.emit("metrics:batch", metrics);
         break;
     }
   }
@@ -482,57 +518,59 @@ export class PerformanceMonitor extends EventEmitter {
     if (!this.config.apiKey || !this.config.endpoint) return;
 
     const payload = {
-      series: metrics.map(metric => ({
+      series: metrics.map((metric) => ({
         metric: `synthetic_agents.${metric.name}`,
         points: [[metric.timestamp.getTime() / 1000, metric.value]],
         tags: Object.entries(metric.tags || {}).map(([k, v]) => `${k}:${v}`),
-        host: require('os').hostname(),
-        type: 'gauge'
-      }))
+        host: require("os").hostname(),
+        type: "gauge",
+      })),
     };
 
     try {
       await fetch(`${this.config.endpoint}/api/v1/series`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'DD-API-KEY': this.config.apiKey
+          "Content-Type": "application/json",
+          "DD-API-KEY": this.config.apiKey,
         },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
       });
     } catch (error) {
-      console.error('Failed to send metrics to Datadog:', error);
+      console.error("Failed to send metrics to Datadog:", error);
     }
   }
 
   private async sendToNewRelic(metrics: PerformanceMetric[]): Promise<void> {
     if (!this.config.apiKey || !this.config.endpoint) return;
 
-    const payload = metrics.map(metric => ({
-      metrics: [{
-        name: `synthetic.agents.${metric.name}`,
-        type: 'gauge',
-        value: metric.value,
-        timestamp: metric.timestamp.getTime(),
-        attributes: {
-          ...metric.tags,
-          service: this.config.serviceName,
-          environment: this.config.environment
-        }
-      }]
+    const payload = metrics.map((metric) => ({
+      metrics: [
+        {
+          name: `synthetic.agents.${metric.name}`,
+          type: "gauge",
+          value: metric.value,
+          timestamp: metric.timestamp.getTime(),
+          attributes: {
+            ...metric.tags,
+            service: this.config.serviceName,
+            environment: this.config.environment,
+          },
+        },
+      ],
     }));
 
     try {
       await fetch(`${this.config.endpoint}/metric/v1`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Api-Key': this.config.apiKey
+          "Content-Type": "application/json",
+          "Api-Key": this.config.apiKey,
         },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
       });
     } catch (error) {
-      console.error('Failed to send metrics to New Relic:', error);
+      console.error("Failed to send metrics to New Relic:", error);
     }
   }
 
@@ -541,10 +579,14 @@ export class PerformanceMonitor extends EventEmitter {
     return (total / 1000000) * 100; // Convert microseconds to percentage
   }
 
-  private async getDiskMetrics(): Promise<{ used: number; total: number; freeSpace: number }> {
+  private async getDiskMetrics(): Promise<{
+    used: number;
+    total: number;
+    freeSpace: number;
+  }> {
     try {
-      const fs = require('fs').promises;
-      const stats = await fs.statfs('./');
+      const fs = require("fs").promises;
+      const stats = await fs.statfs("./");
       const total = stats.blocks * stats.blksize;
       const free = stats.bavail * stats.blksize;
       const used = total - free;
@@ -555,24 +597,28 @@ export class PerformanceMonitor extends EventEmitter {
     }
   }
 
-  private async getNetworkMetrics(): Promise<{ bytesIn: number; bytesOut: number; connectionsActive: number }> {
+  private async getNetworkMetrics(): Promise<{
+    bytesIn: number;
+    bytesOut: number;
+    connectionsActive: number;
+  }> {
     // Simplified network metrics - would need platform-specific implementation
     return { bytesIn: 0, bytesOut: 0, connectionsActive: 0 };
   }
 
   private formatPrometheusLabels(tags: Record<string, string>): string {
     const entries = Object.entries(tags);
-    if (entries.length === 0) return '';
+    if (entries.length === 0) return "";
 
     const labelPairs = entries.map(([key, value]) => `${key}="${value}"`);
-    return `{${labelPairs.join(',')}}`;
+    return `{${labelPairs.join(",")}}`;
   }
 
   private clearOldMetrics(): void {
-    const cutoff = Date.now() - (24 * 60 * 60 * 1000); // 24 hours ago
+    const cutoff = Date.now() - 24 * 60 * 60 * 1000; // 24 hours ago
 
     for (const [key, metrics] of this.metrics.entries()) {
-      const filtered = metrics.filter(m => m.timestamp.getTime() > cutoff);
+      const filtered = metrics.filter((m) => m.timestamp.getTime() > cutoff);
       this.metrics.set(key, filtered);
     }
   }
@@ -585,7 +631,9 @@ export class PerformanceMonitor extends EventEmitter {
 // Global performance monitor instance
 let globalMonitor: PerformanceMonitor | null = null;
 
-export function initializePerformanceMonitoring(config: APMConfig): PerformanceMonitor {
+export function initializePerformanceMonitoring(
+  config: APMConfig,
+): PerformanceMonitor {
   if (globalMonitor) {
     globalMonitor.shutdown();
   }
@@ -600,7 +648,11 @@ export function getPerformanceMonitor(): PerformanceMonitor | null {
 
 // Decorator for automatic performance tracking
 export function trackPerformance(metricName?: string) {
-  return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+  return function (
+    target: any,
+    propertyKey: string,
+    descriptor: PropertyDescriptor,
+  ) {
     const originalMethod = descriptor.value;
     const name = metricName || `${target.constructor.name}.${propertyKey}`;
 
@@ -610,10 +662,10 @@ export function trackPerformance(metricName?: string) {
         return originalMethod.apply(this, args);
       }
 
-      const transactionId = monitor.startTransaction(name, 'agent_execution', {
+      const transactionId = monitor.startTransaction(name, "agent_execution", {
         class: target.constructor.name,
         method: propertyKey,
-        args: args.length
+        args: args.length,
       });
 
       try {
@@ -624,18 +676,18 @@ export function trackPerformance(metricName?: string) {
         monitor.recordMetric({
           name: `method.duration`,
           value: duration,
-          unit: 'ms',
+          unit: "ms",
           timestamp: new Date(),
           tags: {
             class: target.constructor.name,
-            method: propertyKey
-          }
+            method: propertyKey,
+          },
         });
 
-        monitor.endTransaction(transactionId, 'success');
+        monitor.endTransaction(transactionId, "success");
         return result;
       } catch (error) {
-        monitor.endTransaction(transactionId, 'error', error as Error);
+        monitor.endTransaction(transactionId, "error", error as Error);
         throw error;
       }
     };

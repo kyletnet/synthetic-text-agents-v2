@@ -1,5 +1,5 @@
-import * as fs from 'fs';
-import * as path from 'path';
+import * as fs from "fs";
+import * as path from "path";
 
 interface DLQEntry {
   run_id: string;
@@ -16,11 +16,11 @@ interface DLQEntry {
 }
 
 export class DLQManager {
-  private readonly dlqDir = 'reports/dlq';
+  private readonly dlqDir = "reports/dlq";
   private readonly indexPath: string;
 
   constructor() {
-    this.indexPath = path.join(this.dlqDir, 'index.jsonl');
+    this.indexPath = path.join(this.dlqDir, "index.jsonl");
     this.ensureDLQDirectory();
   }
 
@@ -48,7 +48,7 @@ export class DLQManager {
       budgetUsd?: string;
       costUsd?: string;
       notes?: string;
-    } = {}
+    } = {},
   ): void {
     const timestamp = new Date().toISOString();
     const dlqRunDir = path.join(this.dlqDir, runId);
@@ -74,7 +74,10 @@ export class DLQManager {
               fs.copyFileSync(artifact, targetPath);
             }
           } catch (copyError) {
-            console.warn(`[DLQ] Failed to copy artifact ${artifact}:`, copyError);
+            console.warn(
+              `[DLQ] Failed to copy artifact ${artifact}:`,
+              copyError,
+            );
             // Continue with other artifacts
           }
         }
@@ -84,20 +87,24 @@ export class DLQManager {
       const dlqEntry: DLQEntry = {
         run_id: runId,
         timestamp,
-        target: options.target || 'unknown',
-        mode: options.mode || 'unknown',
+        target: options.target || "unknown",
+        mode: options.mode || "unknown",
         reason,
         exit_code: exitCode,
         top_fail_reasons: this.extractFailReasons(reason, artifacts),
         budget_usd: options.budgetUsd,
         cost_usd: options.costUsd,
         session_id: options.sessionId,
-        notes: options.notes
+        notes: options.notes,
       };
 
       // Write metadata to DLQ directory
-      const metadataPath = path.join(dlqRunDir, 'dlq_metadata.json');
-      fs.writeFileSync(metadataPath, JSON.stringify(dlqEntry, null, 2), 'utf-8');
+      const metadataPath = path.join(dlqRunDir, "dlq_metadata.json");
+      fs.writeFileSync(
+        metadataPath,
+        JSON.stringify(dlqEntry, null, 2),
+        "utf-8",
+      );
 
       // Append to DLQ index (atomic append)
       this.appendToIndex(dlqEntry);
@@ -111,16 +118,19 @@ export class DLQManager {
         const minimalEntry: DLQEntry = {
           run_id: runId,
           timestamp,
-          target: options.target || 'unknown',
-          mode: options.mode || 'unknown',
+          target: options.target || "unknown",
+          mode: options.mode || "unknown",
           reason: `${reason} (dlq_creation_failed: ${error})`,
           exit_code: exitCode,
-          top_fail_reasons: ['dlq_creation_failed']
+          top_fail_reasons: ["dlq_creation_failed"],
         };
         this.appendToIndex(minimalEntry);
         console.warn(`[DLQ] Minimal DLQ entry recorded in index only`);
       } catch (indexError) {
-        console.error(`[DLQ] Critical: Failed to record DLQ entry anywhere:`, indexError);
+        console.error(
+          `[DLQ] Critical: Failed to record DLQ entry anywhere:`,
+          indexError,
+        );
         throw indexError;
       }
     }
@@ -158,28 +168,31 @@ export class DLQManager {
 
     // Check artifacts for additional context
     for (const artifact of artifacts) {
-      if (fs.existsSync(artifact) && artifact.includes('log')) {
+      if (fs.existsSync(artifact) && artifact.includes("log")) {
         try {
-          const content = fs.readFileSync(artifact, 'utf-8');
+          const content = fs.readFileSync(artifact, "utf-8");
 
           // Look for common error patterns
-          if (content.includes('ENOTFOUND') || content.includes('ECONNREFUSED')) {
-            reasons.push('network_connectivity');
+          if (
+            content.includes("ENOTFOUND") ||
+            content.includes("ECONNREFUSED")
+          ) {
+            reasons.push("network_connectivity");
           }
-          if (content.includes('401') || content.includes('unauthorized')) {
-            reasons.push('authentication_failure');
+          if (content.includes("401") || content.includes("unauthorized")) {
+            reasons.push("authentication_failure");
           }
-          if (content.includes('429') || content.includes('rate limit')) {
-            reasons.push('rate_limiting');
+          if (content.includes("429") || content.includes("rate limit")) {
+            reasons.push("rate_limiting");
           }
-          if (content.includes('timeout')) {
-            reasons.push('timeout');
+          if (content.includes("timeout")) {
+            reasons.push("timeout");
           }
-          if (content.includes('schema') || content.includes('validation')) {
-            reasons.push('schema_validation');
+          if (content.includes("schema") || content.includes("validation")) {
+            reasons.push("schema_validation");
           }
-          if (content.includes('budget') || content.includes('cost')) {
-            reasons.push('budget_exceeded');
+          if (content.includes("budget") || content.includes("cost")) {
+            reasons.push("budget_exceeded");
           }
         } catch (e) {
           // Ignore file read errors
@@ -196,8 +209,8 @@ export class DLQManager {
    */
   private appendToIndex(entry: DLQEntry): void {
     try {
-      const line = JSON.stringify(entry) + '\n';
-      fs.appendFileSync(this.indexPath, line, 'utf-8');
+      const line = JSON.stringify(entry) + "\n";
+      fs.appendFileSync(this.indexPath, line, "utf-8");
     } catch (error) {
       console.error(`[DLQ] Failed to append to index:`, error);
       throw error;
@@ -216,13 +229,16 @@ export class DLQManager {
       return {
         totalEntries: 0,
         recentEntries: [],
-        topFailReasons: []
+        topFailReasons: [],
       };
     }
 
     try {
-      const content = fs.readFileSync(this.indexPath, 'utf-8');
-      const lines = content.trim().split('\n').filter(line => line.trim());
+      const content = fs.readFileSync(this.indexPath, "utf-8");
+      const lines = content
+        .trim()
+        .split("\n")
+        .filter((line) => line.trim());
       const entries: DLQEntry[] = [];
 
       for (const line of lines) {
@@ -235,7 +251,10 @@ export class DLQManager {
       }
 
       // Sort by timestamp (most recent first)
-      entries.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+      entries.sort(
+        (a, b) =>
+          new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
+      );
 
       // Count failure reasons
       const reasonCounts: Record<string, number> = {};
@@ -253,14 +272,14 @@ export class DLQManager {
       return {
         totalEntries: entries.length,
         recentEntries: entries.slice(0, 10),
-        topFailReasons
+        topFailReasons,
       };
     } catch (error) {
       console.error(`[DLQ] Failed to read DLQ stats:`, error);
       return {
         totalEntries: 0,
         recentEntries: [],
-        topFailReasons: []
+        topFailReasons: [],
       };
     }
   }
@@ -276,7 +295,7 @@ export class DLQManager {
       if (fs.existsSync(this.dlqDir)) {
         const entries = fs.readdirSync(this.dlqDir);
         for (const entry of entries) {
-          if (entry === 'index.jsonl') continue;
+          if (entry === "index.jsonl") continue;
 
           const entryPath = path.join(this.dlqDir, entry);
           const stat = fs.statSync(entryPath);
@@ -308,14 +327,14 @@ export class DLQManager {
       const entries = fs.readdirSync(this.dlqDir);
 
       for (const entry of entries) {
-        if (entry === 'index.jsonl') continue;
+        if (entry === "index.jsonl") continue;
 
         const entryPath = path.join(this.dlqDir, entry);
-        const metadataPath = path.join(entryPath, 'dlq_metadata.json');
+        const metadataPath = path.join(entryPath, "dlq_metadata.json");
 
         if (fs.existsSync(metadataPath)) {
           try {
-            const metadata = JSON.parse(fs.readFileSync(metadataPath, 'utf-8'));
+            const metadata = JSON.parse(fs.readFileSync(metadataPath, "utf-8"));
             newEntries.push(metadata);
           } catch (e) {
             console.warn(`[DLQ] Skipping invalid metadata: ${metadataPath}`);
@@ -324,8 +343,9 @@ export class DLQManager {
       }
 
       // Write new index
-      const newIndexContent = newEntries.map(entry => JSON.stringify(entry)).join('\n') + '\n';
-      fs.writeFileSync(this.indexPath, newIndexContent, 'utf-8');
+      const newIndexContent =
+        newEntries.map((entry) => JSON.stringify(entry)).join("\n") + "\n";
+      fs.writeFileSync(this.indexPath, newIndexContent, "utf-8");
 
       console.log(`[DLQ] Rebuilt index with ${newEntries.length} entries`);
     } catch (error) {
@@ -335,23 +355,25 @@ export class DLQManager {
 }
 
 // CLI interface for Node.js execution
-if (typeof require !== 'undefined' && require.main === module) {
+if (typeof require !== "undefined" && require.main === module) {
   const args = process.argv.slice(2);
 
   if (args.length === 0) {
-    console.error('Usage: node dlq.js --to-dlq <run_id> <reason> <exit_code> [--target <target>] [--mode <mode>] ...');
+    console.error(
+      "Usage: node dlq.js --to-dlq <run_id> <reason> <exit_code> [--target <target>] [--mode <mode>] ...",
+    );
     process.exit(1);
   }
 
   const dlq = new DLQManager();
 
-  if (args[0] === '--to-dlq') {
+  if (args[0] === "--to-dlq") {
     const runId = args[1];
     const reason = args[2];
     const exitCode = parseInt(args[3], 10) || 1;
 
     if (!runId || !reason) {
-      console.error('Usage: --to-dlq <run_id> <reason> <exit_code>');
+      console.error("Usage: --to-dlq <run_id> <reason> <exit_code>");
       process.exit(1);
     }
 
@@ -362,31 +384,31 @@ if (typeof require !== 'undefined' && require.main === module) {
       const key = args[i];
       const value = args[i + 1];
 
-      if (key === '--target') options.target = value;
-      else if (key === '--mode') options.mode = value;
-      else if (key === '--session-id') options.sessionId = value;
-      else if (key === '--budget-usd') options.budgetUsd = value;
-      else if (key === '--cost-usd') options.costUsd = value;
-      else if (key === '--notes') options.notes = value;
-      else if (key === '--artifact') artifacts.push(value);
+      if (key === "--target") options.target = value;
+      else if (key === "--mode") options.mode = value;
+      else if (key === "--session-id") options.sessionId = value;
+      else if (key === "--budget-usd") options.budgetUsd = value;
+      else if (key === "--cost-usd") options.costUsd = value;
+      else if (key === "--notes") options.notes = value;
+      else if (key === "--artifact") artifacts.push(value);
     }
 
     try {
       dlq.toDLQ(runId, reason, exitCode, artifacts, options);
-      console.log('DLQ entry created successfully');
+      console.log("DLQ entry created successfully");
     } catch (error) {
-      console.error('Failed to create DLQ entry:', error);
+      console.error("Failed to create DLQ entry:", error);
       process.exit(1);
     }
-  } else if (args[0] === '--stats') {
+  } else if (args[0] === "--stats") {
     const stats = dlq.getDLQStats();
     console.log(JSON.stringify(stats, null, 2));
-  } else if (args[0] === '--cleanup') {
+  } else if (args[0] === "--cleanup") {
     const keepDays = parseInt(args[1], 10) || 30;
     dlq.cleanupOldEntries(keepDays);
     console.log(`DLQ cleanup completed (kept last ${keepDays} days)`);
   } else {
-    console.error('Unknown command. Use --to-dlq, --stats, or --cleanup');
+    console.error("Unknown command. Use --to-dlq, --stats, or --cleanup");
     process.exit(1);
   }
 }

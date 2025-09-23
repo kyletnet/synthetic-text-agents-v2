@@ -15,17 +15,17 @@ export type PatchCard = {
   id: string;
   applies: boolean;
   selectors?: Record<string, any>;
-  score?: number;          // 0..1 confidence from heuristics
+  score?: number; // 0..1 confidence from heuristics
   deltas: Record<string, any>;
-  evidence: string[];      // short bullets why/where
+  evidence: string[]; // short bullets why/where
 };
 
 export type FeedbackNote = {
-  author: string;          // e.g., "data-curator"
+  author: string; // e.g., "data-curator"
   target: "prompt" | "retriever" | "postprocess";
   positives?: string[];
   issues?: string[];
   suggestions?: string[];
   tags?: string[];
-  runRef?: string;         // RUN_LOGS filename
+  runRef?: string; // RUN_LOGS filename
 };

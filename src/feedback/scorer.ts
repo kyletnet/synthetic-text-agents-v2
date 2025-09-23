@@ -12,11 +12,27 @@ export function scorePatch(run: RunLog, base: any): number {
   return Math.max(0, Math.min(1, s));
 }
 
-export function applyGate(score: number, risk: "low"|"medium"|"high" = "low"): boolean {
+export function applyGate(
+  score: number,
+  risk: "low" | "medium" | "high" = "low",
+): boolean {
   const th = risk === "high" ? 0.2 : risk === "medium" ? 0.35 : 0.5;
   return score >= th;
 }
 
-export function toPatchCard(id: string, applies: boolean, base: any, score: number, why: string[]): PatchCard {
-  return { id, applies, selectors: base?.selectors, score, deltas: base?.deltas || {}, evidence: why };
+export function toPatchCard(
+  id: string,
+  applies: boolean,
+  base: any,
+  score: number,
+  why: string[],
+): PatchCard {
+  return {
+    id,
+    applies,
+    selectors: base?.selectors,
+    score,
+    deltas: base?.deltas || {},
+    evidence: why,
+  };
 }

@@ -5,16 +5,23 @@
  * - Maintains interface compatibility for future OpenAI single client
  */
 
-const { callAnthropicViaSingleClient } = require('./anthropicAdapter');
+const { callAnthropicViaSingleClient } = require("./anthropicAdapter");
 
 /**
  * Call OpenAI API (currently routed to Anthropic in P0)
  * @param {Object} params - API call parameters
  * @returns {Promise<Object>} Standardized response
  */
-async function callOpenAI({ model = 'gpt-4o-mini', system = '', user = '', json = false }) {
+async function callOpenAI({
+  model = "gpt-4o-mini",
+  system = "",
+  user = "",
+  json = false,
+}) {
   // For P0, route to Anthropic single client (maintains interface)
-  console.warn('OpenAI calls routed to Anthropic in P0 hardening. Use ANTHROPIC_API_KEY.');
+  console.warn(
+    "OpenAI calls routed to Anthropic in P0 hardening. Use ANTHROPIC_API_KEY.",
+  );
 
   // Map to Anthropic model
   const anthropicModel = mapOpenAIModelToAnthropic(model);
@@ -23,15 +30,15 @@ async function callOpenAI({ model = 'gpt-4o-mini', system = '', user = '', json 
     model: anthropicModel,
     system,
     user,
-    max_tokens: 1000
+    max_tokens: 1000,
   });
 
   // Add provider override for compatibility
   return {
     ...result,
-    provider: 'openai_via_anthropic',
+    provider: "openai_via_anthropic",
     originalModel: model,
-    mappedModel: anthropicModel
+    mappedModel: anthropicModel,
   };
 }
 
@@ -42,13 +49,13 @@ async function callOpenAI({ model = 'gpt-4o-mini', system = '', user = '', json 
  */
 function mapOpenAIModelToAnthropic(openaiModel) {
   const modelMap = {
-    'gpt-4o-mini': 'claude-3-haiku-20240307',
-    'gpt-4o': 'claude-3-5-sonnet-20241022',
-    'gpt-4': 'claude-3-5-sonnet-20241022',
-    'gpt-3.5-turbo': 'claude-3-haiku-20240307'
+    "gpt-4o-mini": "claude-3-haiku-20240307",
+    "gpt-4o": "claude-3-5-sonnet-20241022",
+    "gpt-4": "claude-3-5-sonnet-20241022",
+    "gpt-3.5-turbo": "claude-3-haiku-20240307",
   };
 
-  return modelMap[openaiModel] || 'claude-3-5-sonnet-20241022';
+  return modelMap[openaiModel] || "claude-3-5-sonnet-20241022";
 }
 
 /**
@@ -57,15 +64,15 @@ function mapOpenAIModelToAnthropic(openaiModel) {
  */
 function getStatus() {
   return {
-    adapter: 'openai',
-    note: 'Routed to Anthropic in P0 hardening',
-    routedTo: 'anthropic',
-    recommendation: 'Use callAnthropicViaSingleClient directly'
+    adapter: "openai",
+    note: "Routed to Anthropic in P0 hardening",
+    routedTo: "anthropic",
+    recommendation: "Use callAnthropicViaSingleClient directly",
   };
 }
 
 module.exports = {
   callOpenAI,
   mapOpenAIModelToAnthropic,
-  getStatus
+  getStatus,
 };

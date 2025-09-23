@@ -10,6 +10,7 @@ shell: true
 프로젝트의 모든 변경사항을 git 저장소에 동기화합니다.
 
 ## Actions
+
 1. Stage all changes (git add .)
 2. Commit with automatic message
 3. Push to remote repository

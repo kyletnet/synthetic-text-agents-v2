@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 
-import { ABTestManager } from '../core/abTestManager.js';
-import { Orchestrator } from '../core/orchestrator.js';
-import { QARequest } from '../shared/types.js';
-import { Logger } from '../shared/logger.js';
-import * as fs from 'fs';
+import { ABTestManager } from "../core/abTestManager.js";
+import { Orchestrator } from "../core/orchestrator.js";
+import { QARequest } from "../shared/types.js";
+import { Logger } from "../shared/logger.js";
+import * as fs from "fs";
 
 interface TestConfig {
   testId: string;
@@ -38,35 +38,38 @@ class ABTestCLI {
     const request: QARequest = {
       topic,
       complexity: 7,
-      domainContext: 'general',
-      qualityTarget: 8
+      domainContext: "general",
+      qualityTarget: 8,
     };
 
     try {
       const startTime = Date.now();
-      const { response, metrics } = await this.abTestManager.processRequestWithVariant(
-        variantId,
-        request
-      );
+      const { response, metrics } =
+        await this.abTestManager.processRequestWithVariant(variantId, request);
       const duration = Date.now() - startTime;
 
       console.log(`\n✅ Variant ${variantId} Results:`);
       console.log(`   📊 Quality Score: ${metrics.qualityScore.toFixed(2)}/10`);
       console.log(`   🎯 Confidence: ${metrics.averageConfidence.toFixed(2)}`);
       console.log(`   🌈 Diversity: ${metrics.diversityScore.toFixed(2)}/10`);
-      console.log(`   🧠 Agent Collaboration: ${metrics.agentCollaborationScore.toFixed(2)}/10`);
+      console.log(
+        `   🧠 Agent Collaboration: ${metrics.agentCollaborationScore.toFixed(2)}/10`,
+      );
       console.log(`   ⏱️  Processing Time: ${duration}ms`);
-      console.log(`   🤖 Agents Used: ${response.metadata?.agentsUsed?.join(', ') || 'unknown'}`);
-      console.log(`   📝 Questions Generated: ${response.questions?.length || 0}`);
+      console.log(
+        `   🤖 Agents Used: ${response.metadata?.agentsUsed?.join(", ") || "unknown"}`,
+      );
+      console.log(
+        `   📝 Questions Generated: ${response.questions?.length || 0}`,
+      );
 
       if (response.questions && response.questions.length > 0) {
         console.log(`\n📋 Sample Question:`);
         const sample = response.questions[0];
         console.log(`   Q: ${sample.question}`);
         console.log(`   A: ${sample.answer.substring(0, 100)}...`);
-        console.log(`   Confidence: ${sample.confidence?.toFixed(2) || 'N/A'}`);
+        console.log(`   Confidence: ${sample.confidence?.toFixed(2) || "N/A"}`);
       }
-
     } catch (error) {
       console.error(`❌ Variant ${variantId} failed:`, error);
     }
@@ -76,13 +79,15 @@ class ABTestCLI {
    * 여러 variant 비교 테스트
    */
   async compareVariants(variants: string[], topic: string): Promise<void> {
-    console.log(`🔬 Comparing variants: ${variants.join(', ')} with topic: "${topic}"`);
+    console.log(
+      `🔬 Comparing variants: ${variants.join(", ")} with topic: "${topic}"`,
+    );
 
     const request: QARequest = {
       topic,
       complexity: 7,
-      domainContext: 'general',
-      qualityTarget: 8
+      domainContext: "general",
+      qualityTarget: 8,
     };
 
     const results: { [variantId: string]: any } = {};
@@ -91,25 +96,27 @@ class ABTestCLI {
       try {
         console.log(`\n🧪 Testing ${variantId}...`);
         const startTime = Date.now();
-        const { response, metrics } = await this.abTestManager.processRequestWithVariant(
-          variantId,
-          request
-        );
+        const { response, metrics } =
+          await this.abTestManager.processRequestWithVariant(
+            variantId,
+            request,
+          );
         const duration = Date.now() - startTime;
 
         results[variantId] = {
           metrics,
           duration,
           response,
-          success: true
+          success: true,
         };
 
-        console.log(`   ✅ ${variantId}: Quality ${metrics.qualityScore.toFixed(1)}, Time ${duration}ms`);
-
+        console.log(
+          `   ✅ ${variantId}: Quality ${metrics.qualityScore.toFixed(1)}, Time ${duration}ms`,
+        );
       } catch (error) {
         results[variantId] = {
           error: String(error),
-          success: false
+          success: false,
         };
         console.log(`   ❌ ${variantId}: Failed - ${error}`);
       }
@@ -122,11 +129,11 @@ class ABTestCLI {
    * 자동화된 배치 테스트
    */
   async runBatchTest(configPath: string): Promise<void> {
-    const config: TestConfig = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
+    const config: TestConfig = JSON.parse(fs.readFileSync(configPath, "utf-8"));
 
     console.log(`🚀 Starting batch test: ${config.testId}`);
-    console.log(`   📝 Description: ${config.description || 'No description'}`);
-    console.log(`   🧪 Variants: ${config.variants.join(', ')}`);
+    console.log(`   📝 Description: ${config.description || "No description"}`);
+    console.log(`   🧪 Variants: ${config.variants.join(", ")}`);
     console.log(`   📊 Sample requests: ${config.sampleRequests.length}`);
 
     // Start the test
@@ -136,7 +143,7 @@ class ABTestCLI {
     await this.abTestManager.runAutomatedTest(
       config.testId,
       config.sampleRequests,
-      config.variants
+      config.variants,
     );
 
     // Analyze results
@@ -159,11 +166,13 @@ class ABTestCLI {
   listVariants(): void {
     const variants = this.abTestManager.getVariants();
 
-    console.log('🧬 Available Test Variants:');
-    console.log('=' .repeat(50));
+    console.log("🧬 Available Test Variants:");
+    console.log("=".repeat(50));
 
-    variants.forEach(variant => {
-      console.log(`\n📦 ${variant.id} (${variant.enabled ? '✅ Enabled' : '❌ Disabled'})`);
+    variants.forEach((variant) => {
+      console.log(
+        `\n📦 ${variant.id} (${variant.enabled ? "✅ Enabled" : "❌ Disabled"})`,
+      );
       console.log(`   📝 ${variant.name}`);
       console.log(`   💡 ${variant.description}`);
     });
@@ -171,22 +180,29 @@ class ABTestCLI {
 
   private printComparisonTable(results: { [variantId: string]: any }): void {
     console.log(`\n📊 Comparison Results:`);
-    console.log('=' .repeat(80));
+    console.log("=".repeat(80));
 
-    const headers = ['Variant', 'Quality', 'Confidence', 'Diversity', 'Time (ms)', 'Status'];
+    const headers = [
+      "Variant",
+      "Quality",
+      "Confidence",
+      "Diversity",
+      "Time (ms)",
+      "Status",
+    ];
     const widths = [12, 8, 10, 9, 10, 8];
 
     // Print header
-    let headerRow = '';
+    let headerRow = "";
     headers.forEach((header, i) => {
       headerRow += header.padEnd(widths[i]);
     });
     console.log(headerRow);
-    console.log('-'.repeat(80));
+    console.log("-".repeat(80));
 
     // Print data rows
     Object.entries(results).forEach(([variantId, result]) => {
-      let row = '';
+      let row = "";
       row += variantId.padEnd(widths[0]);
 
       if (result.success) {
@@ -194,25 +210,31 @@ class ABTestCLI {
         row += result.metrics.averageConfidence.toFixed(2).padEnd(widths[2]);
         row += result.metrics.diversityScore.toFixed(1).padEnd(widths[3]);
         row += result.duration.toString().padEnd(widths[4]);
-        row += '✅ OK'.padEnd(widths[5]);
+        row += "✅ OK".padEnd(widths[5]);
       } else {
-        row += 'N/A'.padEnd(widths[1]);
-        row += 'N/A'.padEnd(widths[2]);
-        row += 'N/A'.padEnd(widths[3]);
-        row += 'N/A'.padEnd(widths[4]);
-        row += '❌ FAIL'.padEnd(widths[5]);
+        row += "N/A".padEnd(widths[1]);
+        row += "N/A".padEnd(widths[2]);
+        row += "N/A".padEnd(widths[3]);
+        row += "N/A".padEnd(widths[4]);
+        row += "❌ FAIL".padEnd(widths[5]);
       }
 
       console.log(row);
     });
 
     // Find best performer
-    const successfulResults = Object.entries(results).filter(([_, result]) => result.success);
+    const successfulResults = Object.entries(results).filter(
+      ([_, result]) => result.success,
+    );
     if (successfulResults.length > 0) {
       const best = successfulResults.reduce((prev, curr) =>
-        curr[1].metrics.qualityScore > prev[1].metrics.qualityScore ? curr : prev
+        curr[1].metrics.qualityScore > prev[1].metrics.qualityScore
+          ? curr
+          : prev,
       );
-      console.log(`\n🏆 Best Performer: ${best[0]} (Quality: ${best[1].metrics.qualityScore.toFixed(2)})`);
+      console.log(
+        `\n🏆 Best Performer: ${best[0]} (Quality: ${best[1].metrics.qualityScore.toFixed(2)})`,
+      );
     }
   }
 }
@@ -227,54 +249,58 @@ async function main() {
 
   try {
     switch (command) {
-      case 'list':
+      case "list":
         cli.listVariants();
         break;
 
-      case 'test':
+      case "test":
         if (args.length < 3) {
-          console.error('Usage: test <variant> <topic>');
+          console.error("Usage: test <variant> <topic>");
           process.exit(1);
         }
         await cli.testSingleVariant(args[1], args[2]);
         break;
 
-      case 'compare': {
+      case "compare": {
         if (args.length < 3) {
-          console.error('Usage: compare <variant1,variant2,...> <topic>');
+          console.error("Usage: compare <variant1,variant2,...> <topic>");
           process.exit(1);
         }
-        const variants = args[1].split(',');
+        const variants = args[1].split(",");
         await cli.compareVariants(variants, args[2]);
         break;
       }
 
-      case 'batch':
+      case "batch":
         if (args.length < 2) {
-          console.error('Usage: batch <config.json>');
+          console.error("Usage: batch <config.json>");
           process.exit(1);
         }
         await cli.runBatchTest(args[1]);
         break;
 
       default:
-        console.log('🧪 A/B Test CLI for QA Generation System');
-        console.log('');
-        console.log('Commands:');
-        console.log('  list                     - List available variants');
-        console.log('  test <variant> <topic>   - Test single variant');
-        console.log('  compare <variants> <topic> - Compare multiple variants');
-        console.log('  batch <config.json>      - Run batch test from config');
-        console.log('');
-        console.log('Examples:');
-        console.log('  npm run ab-test list');
+        console.log("🧪 A/B Test CLI for QA Generation System");
+        console.log("");
+        console.log("Commands:");
+        console.log("  list                     - List available variants");
+        console.log("  test <variant> <topic>   - Test single variant");
+        console.log("  compare <variants> <topic> - Compare multiple variants");
+        console.log("  batch <config.json>      - Run batch test from config");
+        console.log("");
+        console.log("Examples:");
+        console.log("  npm run ab-test list");
         console.log('  npm run ab-test test balanced "TypeScript tutorial"');
-        console.log('  npm run ab-test compare conservative,balanced,comprehensive "AI ethics"');
-        console.log('  npm run ab-test batch test-configs/quality-comparison.json');
+        console.log(
+          '  npm run ab-test compare conservative,balanced,comprehensive "AI ethics"',
+        );
+        console.log(
+          "  npm run ab-test batch test-configs/quality-comparison.json",
+        );
         break;
     }
   } catch (error) {
-    console.error('❌ Error:', error);
+    console.error("❌ Error:", error);
     process.exit(1);
   }
 }

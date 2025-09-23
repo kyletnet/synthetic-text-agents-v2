@@ -21,6 +21,7 @@ P0 Hardening establishes the foundational security, stability, and operational s
 ### 1. Enhanced Unified Launcher (`run_v3.sh`)
 
 **Core Features:**
+
 - Shell validation and bash enforcement for zsh users
 - macOS compatibility layer with GNU tools detection
 - Enhanced policy violation detection
@@ -30,6 +31,7 @@ P0 Hardening establishes the foundational security, stability, and operational s
 - Git automation with secret scanning
 
 **Usage Examples:**
+
 ```bash
 # Two-button execution patterns
 ./run_v3.sh step4_2 --smoke                           # Quick test
@@ -42,6 +44,7 @@ P0 Hardening establishes the foundational security, stability, and operational s
 ```
 
 **Policy Enforcement:**
+
 - `DRY_RUN` in `.env` files → Immediate failure with fix guidance
 - `--full` mode without `--budget` → Blocked with usage examples
 - Production profile (`PROFILE=prod`) → Requires `--full` and non-zero budget
@@ -50,6 +53,7 @@ P0 Hardening establishes the foundational security, stability, and operational s
 ### 2. Single API Client Layer (`tools/anthropic_client.sh`)
 
 **Capabilities:**
+
 - Rate limiting with configurable QPS
 - Exponential backoff with jitter for retries
 - Comprehensive error classification (401/429/5xx)
@@ -58,6 +62,7 @@ P0 Hardening establishes the foundational security, stability, and operational s
 - Session statistics and cost tracking
 
 **API Call Protection:**
+
 ```bash
 # All API calls must go through this layer
 ./tools/anthropic_client.sh --smoke                   # Quick test
@@ -69,6 +74,7 @@ grep -r "curl.*anthropic" . | grep -v "tools/anthropic_client" # Should be empty
 ```
 
 **Budget and Rate Limiting:**
+
 - Pre-request budget validation
 - Real-time cost tracking
 - Session cost accumulation
@@ -78,6 +84,7 @@ grep -r "curl.*anthropic" . | grep -v "tools/anthropic_client" # Should be empty
 ### 3. Enhanced Environment Loading (`tools/load_env_v3.sh`)
 
 **Security Features:**
+
 - Enhanced secret masking for multiple key types
 - Format validation for API keys
 - Priority-based loading: CI > .env.local > .env
@@ -85,6 +92,7 @@ grep -r "curl.*anthropic" . | grep -v "tools/anthropic_client" # Should be empty
 - Offline mode fallbacks
 
 **Masking Examples:**
+
 ```bash
 # Anthropic keys: sk-ant-abcd****
 # OpenAI keys: sk-abcd****
@@ -115,6 +123,7 @@ TIMESTAMP: 2025-09-16T14:30:22Z
 ```
 
 **Operational Benefits:**
+
 - No more screenshots for reviews
 - Copy-paste session blocks for incident reports
 - Complete context preservation
@@ -123,12 +132,14 @@ TIMESTAMP: 2025-09-16T14:30:22Z
 ### 5. Git Automation & Hygiene (`tools/git_hygiene.sh`)
 
 **Security Scanning:**
+
 - Secret pattern detection with multiple algorithms
 - API key exposure prevention
 - Password and token scanning
 - Safe context exclusions (tests, examples, mocks)
 
 **Git Hygiene:**
+
 - `.gitignore` validation and enforcement
 - Large file detection (>10MB)
 - Working tree cleanliness checks
@@ -136,6 +147,7 @@ TIMESTAMP: 2025-09-16T14:30:22Z
 - Branch safety recommendations
 
 **Automated Commits:**
+
 ```bash
 # Auto-commit with secret scanning
 ./run_v3.sh target --full --budget 0.25 --autocommit
@@ -150,29 +162,34 @@ TIMESTAMP: 2025-09-16T14:30:22Z
 ### 6. CI Required Gates (5 Mandatory Gates)
 
 **Gate 1: 🔒 Guard Environment**
+
 - Environment loading coverage verification
 - DRY_RUN policy enforcement
 - Single API client compliance
 - Registry coverage validation
 
 **Gate 2: 💨 Smoke Test**
+
 - Offline mode functionality
 - API client smoke testing
 - Launcher offline validation
 - Schema validation readiness
 
 **Gate 3: 🏭 Guard Production**
+
 - Production profile enforcement
 - Budget requirement validation
 - Cost cap enforcement verification
 
 **Gate 4: 🔐 Guard Git**
+
 - Secret scanning across repository
 - Git configuration validation
 - Commit message format checking
 - Large file detection
 
 **Gate 5: 📋 Schema Validation**
+
 - Input/output schema validation hooks
 - API response structure validation
 - Schema tooling readiness (P1 placeholder)
@@ -214,16 +231,19 @@ export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
 ### Two-Button Execution
 
 **Standard Development Flow:**
+
 1. `./run_v3.sh <target> --smoke` → Quick validation
 2. `./run_v3.sh <target> --full --budget 0.25` → Production execution
 
 **Advanced Workflows:**
+
 1. `./run_v3.sh <target> --smoke --offline` → Network-free development
 2. `./run_v3.sh <target> --full --budget 0.50 --autocommit` → Full automation
 
 ### Session Report Sharing
 
 **For Operational Reviews:**
+
 1. Run target with launcher
 2. Copy session summary block from `reports/session_report.md`
 3. Paste into tickets, reviews, or incident reports
@@ -232,11 +252,13 @@ export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
 ### Git Workflow Integration
 
 **Before Each Session:**
+
 ```bash
 npm run guard:git                    # Verify git hygiene
 ```
 
 **After Successful Sessions:**
+
 ```bash
 ./run_v3.sh target --full --budget 0.25 --autocommit  # Auto-commit allowlisted files
 ```
@@ -271,26 +293,31 @@ npm run schema        # Schema validation (P1 placeholder)
 ### Defense in Depth
 
 **Layer 1: Entry Point Control**
+
 - Single unified launcher entry point
 - All direct script execution blocked via shims
 - Policy violation detection and prevention
 
 **Layer 2: API Security**
+
 - Single API client layer enforcement
 - Rate limiting and budget controls
 - Comprehensive error handling and retries
 
 **Layer 3: Secret Management**
+
 - Enhanced secret masking across all outputs
 - Format validation and strength checking
 - Environment variable priority management
 
 **Layer 4: Git Security**
+
 - Multi-pattern secret scanning
 - Automated commit secret prevention
 - Large file and hygiene enforcement
 
 **Layer 5: CI Enforcement**
+
 - Required gates prevent all regressions
 - Automated policy compliance verification
 - Daily drift detection and correction
@@ -300,6 +327,7 @@ npm run schema        # Schema validation (P1 placeholder)
 ### Common Issues and Solutions
 
 **1. API Authentication Failures**
+
 ```bash
 # Problem: HTTP 401 errors
 # Solution: Environment loading now centralized and verified
@@ -307,6 +335,7 @@ npm run schema        # Schema validation (P1 placeholder)
 ```
 
 **2. DRY_RUN Conflicts**
+
 ```bash
 # Problem: Inconsistent DRY_RUN behavior
 # Solution: CLI flags have absolute priority, .env conflicts blocked
@@ -314,6 +343,7 @@ npm run schema        # Schema validation (P1 placeholder)
 ```
 
 **3. macOS Compatibility Issues**
+
 ```bash
 # Problem: BSD vs GNU tool differences
 # Solution: Automatic detection and fallback
@@ -321,6 +351,7 @@ npm run schema        # Schema validation (P1 placeholder)
 ```
 
 **4. Secret Exposure**
+
 ```bash
 # Problem: API keys in logs/commits
 # Solution: Enhanced masking and CI scanning
@@ -330,6 +361,7 @@ npm run schema        # Schema validation (P1 placeholder)
 ### Recovery Procedures
 
 **Reset to Clean State:**
+
 ```bash
 git stash                           # Save current work
 npm run guard:git --working-tree    # Verify cleanliness
@@ -337,12 +369,14 @@ npm run guard:git --working-tree    # Verify cleanliness
 ```
 
 **Environment Issues:**
+
 ```bash
 ./tools/load_env_v3.sh              # Test environment loading
 npm run guard:env                   # Comprehensive validation
 ```
 
 **API Client Issues:**
+
 ```bash
 OFFLINE_MODE=true ./tools/anthropic_client.sh --smoke  # Test offline
 ./tools/anthropic_client.sh --smoke                    # Test with API
@@ -369,17 +403,20 @@ OFFLINE_MODE=true ./tools/anthropic_client.sh --smoke  # Test offline
 ### From Phase-2 to P0
 
 **Existing Infrastructure Preserved:**
+
 - All shimmed scripts continue working
 - Entrypoints registry maintained
 - Environment loading compatibility
 
 **New Requirements:**
+
 1. Use `run_v3.sh` instead of `run.sh`
 2. Update CI to use `ci-required-gates.yml`
 3. Adopt session reports for operational reviews
 4. Enable `--autocommit` for appropriate workflows
 
 **Migration Steps:**
+
 ```bash
 # 1. Test new launcher
 ./run_v3.sh --help
@@ -399,6 +436,7 @@ npm run smoke
 ## Future Roadmap (P1 Features)
 
 **Not in P0 Scope:**
+
 - Advanced state machine orchestration
 - Dead letter queue (DLQ) handling
 - Advanced concurrency and QPS management
@@ -422,7 +460,7 @@ These remain for P1 implementation based on operational experience with P0.
 
 ✅ **[AC5]** `--offline` mode passes/fails without network calls and reports schema/environment issues
 
-✅ **[AC6]** All logs/reports use enhanced secret masking (sk-ant-abcd****)
+✅ **[AC6]** All logs/reports use enhanced secret masking (sk-ant-abcd\*\*\*\*)
 
 ✅ **[AC7]** CI/server execution works with environment variables only (no .env required)
 
@@ -441,12 +479,14 @@ These remain for P1 implementation based on operational experience with P0.
 P0 Hardening establishes the production-ready foundation with zero-regression CI enforcement, comprehensive API security, macOS compatibility, and standardized operational workflows. The system is designed for immediate production deployment while providing a solid base for P1 advanced features.
 
 **Key Operational Changes:**
+
 - Use `./run_v3.sh` for all executions
 - Copy session report blocks instead of screenshots
 - Enable `--autocommit` for streamlined workflows
 - All 5 CI gates must pass before merge/deploy
 
 **Security Guarantees:**
+
 - No API authentication failures possible
 - All secrets automatically masked
 - Direct script execution blocked

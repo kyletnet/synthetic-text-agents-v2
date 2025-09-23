@@ -8,8 +8,8 @@
  * - P2 minor violations → PASS (quality notices)
  */
 
-import * as fs from 'fs';
-import * as path from 'path';
+import * as fs from "fs";
+import * as path from "path";
 
 export interface ThresholdConfig {
   p0: Record<string, number>;
@@ -20,14 +20,14 @@ export interface ThresholdConfig {
 export interface MetricResult {
   metric_name: string;
   value: number;
-  priority: 'P0' | 'P1' | 'P2';
+  priority: "P0" | "P1" | "P2";
   threshold_value: number;
-  status: 'PASS' | 'WARN' | 'FAIL';
-  violation_type?: 'max_exceeded' | 'min_not_met';
+  status: "PASS" | "WARN" | "FAIL";
+  violation_type?: "max_exceeded" | "min_not_met";
 }
 
 export interface GatingResult {
-  overall_result: 'PASS' | 'WARN' | 'FAIL';
+  overall_result: "PASS" | "WARN" | "FAIL";
   total_violations: number;
   p0_violations: number;
   p1_violations: number;
@@ -41,14 +41,17 @@ export class ThresholdGating {
   private thresholds!: ThresholdConfig;
   private profile: string;
 
-  constructor(configPath: string = 'baseline_config.json', profile: string = 'dev') {
+  constructor(
+    configPath: string = "baseline_config.json",
+    profile: string = "dev",
+  ) {
     this.profile = profile;
     this.loadConfiguration(configPath);
   }
 
   private loadConfiguration(configPath: string): void {
     try {
-      const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+      const config = JSON.parse(fs.readFileSync(configPath, "utf8"));
 
       // Load base thresholds
       const baseThresholds = config.dxloop?.thresholds || {};
@@ -59,7 +62,7 @@ export class ThresholdGating {
       this.thresholds = {
         p0: { ...baseThresholds.p0 },
         p1: { ...baseThresholds.p1, ...overrides.p1 },
-        p2: { ...baseThresholds.p2, ...overrides.p2 }
+        p2: { ...baseThresholds.p2, ...overrides.p2 },
       };
 
       console.log(`[GATING] Loaded thresholds for profile: ${this.profile}`);
@@ -78,7 +81,7 @@ export class ThresholdGating {
     for (const [metricName, threshold] of Object.entries(this.thresholds.p0)) {
       const value = metrics[metricName];
       if (value !== undefined) {
-        const result = this.evaluateMetric(metricName, value, threshold, 'P0');
+        const result = this.evaluateMetric(metricName, value, threshold, "P0");
         results.push(result);
       }
     }
@@ -87,8 +90,13 @@ export class ThresholdGating {
     for (const [metricName, threshold] of Object.entries(this.thresholds.p1)) {
       const value = metrics[metricName];
       if (value !== undefined) {
-        const priority = metricName.includes('_warn') ? 'P1' : 'P1';
-        const result = this.evaluateMetric(metricName, value, threshold, priority);
+        const priority = metricName.includes("_warn") ? "P1" : "P1";
+        const result = this.evaluateMetric(
+          metricName,
+          value,
+          threshold,
+          priority,
+        );
         results.push(result);
       }
     }
@@ -97,8 +105,13 @@ export class ThresholdGating {
     for (const [metricName, threshold] of Object.entries(this.thresholds.p2)) {
       const value = metrics[metricName];
       if (value !== undefined) {
-        const priority = metricName.includes('_warn') ? 'P2' : 'P2';
-        const result = this.evaluateMetric(metricName, value, threshold, priority);
+        const priority = metricName.includes("_warn") ? "P2" : "P2";
+        const result = this.evaluateMetric(
+          metricName,
+          value,
+          threshold,
+          priority,
+        );
         results.push(result);
       }
     }
@@ -110,30 +123,43 @@ export class ThresholdGating {
     metricName: string,
     value: number,
     threshold: number,
-    priority: 'P0' | 'P1' | 'P2'
+    priority: "P0" | "P1" | "P2",
   ): MetricResult {
-    let status: 'PASS' | 'WARN' | 'FAIL' = 'PASS';
-    let violationType: 'max_exceeded' | 'min_not_met' | undefined;
+    let status: "PASS" | "WARN" | "FAIL" = "PASS";
+    let violationType: "max_exceeded" | "min_not_met" | undefined;
 
     // Determine if this is a max or min threshold
-    const isMaxThreshold = metricName.includes('_max') || metricName.includes('_fail') || metricName.includes('_warn');
-    const isMinThreshold = metricName.includes('_min');
+    const isMaxThreshold =
+      metricName.includes("_max") ||
+      metricName.includes("_fail") ||
+      metricName.includes("_warn");
+    const isMinThreshold = metricName.includes("_min");
 
     if (isMaxThreshold) {
       if (value > threshold) {
-        status = priority === 'P0' ? 'FAIL' : (metricName.includes('_warn') ? 'WARN' : 'FAIL');
-        violationType = 'max_exceeded';
+        status =
+          priority === "P0"
+            ? "FAIL"
+            : metricName.includes("_warn")
+              ? "WARN"
+              : "FAIL";
+        violationType = "max_exceeded";
       }
     } else if (isMinThreshold) {
       if (value < threshold) {
-        status = priority === 'P0' ? 'FAIL' : (metricName.includes('_warn') ? 'WARN' : 'FAIL');
-        violationType = 'min_not_met';
+        status =
+          priority === "P0"
+            ? "FAIL"
+            : metricName.includes("_warn")
+              ? "WARN"
+              : "FAIL";
+        violationType = "min_not_met";
       }
     } else {
       // Default to max threshold behavior
       if (value > threshold) {
-        status = priority === 'P0' ? 'FAIL' : 'WARN';
-        violationType = 'max_exceeded';
+        status = priority === "P0" ? "FAIL" : "WARN";
+        violationType = "max_exceeded";
       }
     }
 
@@ -143,51 +169,62 @@ export class ThresholdGating {
       priority,
       threshold_value: threshold,
       status,
-      violation_type: violationType
+      violation_type: violationType,
     };
   }
 
   private determineOverallResult(results: MetricResult[]): GatingResult {
-    const p0Violations = results.filter(r => r.priority === 'P0' && r.status === 'FAIL');
-    const p1Violations = results.filter(r => r.priority === 'P1' && (r.status === 'FAIL' || r.status === 'WARN'));
-    const p2Violations = results.filter(r => r.priority === 'P2' && (r.status === 'FAIL' || r.status === 'WARN'));
+    const p0Violations = results.filter(
+      (r) => r.priority === "P0" && r.status === "FAIL",
+    );
+    const p1Violations = results.filter(
+      (r) =>
+        r.priority === "P1" && (r.status === "FAIL" || r.status === "WARN"),
+    );
+    const p2Violations = results.filter(
+      (r) =>
+        r.priority === "P2" && (r.status === "FAIL" || r.status === "WARN"),
+    );
 
-    let overallResult: 'PASS' | 'WARN' | 'FAIL';
+    let overallResult: "PASS" | "WARN" | "FAIL";
     let summary: string;
     let recommendation: string;
 
     // AC-1 Logic: P0 violations → FAIL, P1 multiple → WARN, P2 minor → PASS
     if (p0Violations.length > 0) {
-      overallResult = 'FAIL';
-      summary = `Critical P0 violation detected: ${p0Violations.map(v => v.metric_name).join(', ')}`;
-      recommendation = 'IMMEDIATE ACTION REQUIRED: Fix P0 violations before production deployment';
+      overallResult = "FAIL";
+      summary = `Critical P0 violation detected: ${p0Violations.map((v) => v.metric_name).join(", ")}`;
+      recommendation =
+        "IMMEDIATE ACTION REQUIRED: Fix P0 violations before production deployment";
     } else if (p1Violations.length >= 2) {
-      overallResult = 'WARN';
+      overallResult = "WARN";
       summary = `Multiple P1 performance issues: ${p1Violations.length} violations`;
-      recommendation = 'Performance optimization recommended before full production load';
-    } else if (p1Violations.length === 1 && p1Violations[0].status === 'FAIL') {
-      overallResult = 'WARN';
+      recommendation =
+        "Performance optimization recommended before full production load";
+    } else if (p1Violations.length === 1 && p1Violations[0].status === "FAIL") {
+      overallResult = "WARN";
       summary = `Single critical P1 violation: ${p1Violations[0].metric_name}`;
-      recommendation = 'Monitor performance closely, consider optimization';
+      recommendation = "Monitor performance closely, consider optimization";
     } else if (p2Violations.length > 0) {
-      overallResult = 'PASS';
+      overallResult = "PASS";
       summary = `Minor P2 quality issues: ${p2Violations.length} violations`;
-      recommendation = 'Quality improvements suggested for optimal performance';
+      recommendation = "Quality improvements suggested for optimal performance";
     } else {
-      overallResult = 'PASS';
-      summary = 'All metrics within acceptable thresholds';
-      recommendation = 'System performing within expected parameters';
+      overallResult = "PASS";
+      summary = "All metrics within acceptable thresholds";
+      recommendation = "System performing within expected parameters";
     }
 
     return {
       overall_result: overallResult,
-      total_violations: p0Violations.length + p1Violations.length + p2Violations.length,
+      total_violations:
+        p0Violations.length + p1Violations.length + p2Violations.length,
       p0_violations: p0Violations.length,
       p1_violations: p1Violations.length,
       p2_violations: p2Violations.length,
       metric_results: results,
       summary,
-      recommendation
+      recommendation,
     };
   }
 
@@ -197,18 +234,18 @@ export class ThresholdGating {
   public updateSessionReport(
     sessionReportPath: string,
     gatingResult: GatingResult,
-    runId: string = 'unknown'
+    runId: string = "unknown",
   ): void {
     try {
-      let reportContent = '';
+      let reportContent = "";
 
       if (fs.existsSync(sessionReportPath)) {
-        reportContent = fs.readFileSync(sessionReportPath, 'utf8');
+        reportContent = fs.readFileSync(sessionReportPath, "utf8");
 
         // Update RESULT field in summary block
         reportContent = reportContent.replace(
           /RESULT: [A-Z]+/g,
-          `RESULT: ${gatingResult.overall_result}`
+          `RESULT: ${gatingResult.overall_result}`,
         );
 
         // Add P0_VIOLATIONS, P1_VIOLATIONS, P2_VIOLATIONS fields
@@ -243,34 +280,59 @@ GATING_SUMMARY: ${gatingResult.summary}
 
 ### Metric Violations by Priority
 
-${gatingResult.p0_violations > 0 ? `
+${
+  gatingResult.p0_violations > 0
+    ? `
 **P0 Violations (Critical)**: ${gatingResult.p0_violations}
 ${gatingResult.metric_results
-  .filter(r => r.priority === 'P0' && r.status === 'FAIL')
-  .map(r => `- ❌ ${r.metric_name}: ${r.value} > ${r.threshold_value}`)
-  .join('\n')}
-` : ''}
+  .filter((r) => r.priority === "P0" && r.status === "FAIL")
+  .map((r) => `- ❌ ${r.metric_name}: ${r.value} > ${r.threshold_value}`)
+  .join("\n")}
+`
+    : ""
+}
 
-${gatingResult.p1_violations > 0 ? `
+${
+  gatingResult.p1_violations > 0
+    ? `
 **P1 Violations (Performance)**: ${gatingResult.p1_violations}
 ${gatingResult.metric_results
-  .filter(r => r.priority === 'P1' && (r.status === 'FAIL' || r.status === 'WARN'))
-  .map(r => `- ${r.status === 'FAIL' ? '❌' : '⚠️'} ${r.metric_name}: ${r.value} vs ${r.threshold_value}`)
-  .join('\n')}
-` : ''}
+  .filter(
+    (r) => r.priority === "P1" && (r.status === "FAIL" || r.status === "WARN"),
+  )
+  .map(
+    (r) =>
+      `- ${r.status === "FAIL" ? "❌" : "⚠️"} ${r.metric_name}: ${r.value} vs ${r.threshold_value}`,
+  )
+  .join("\n")}
+`
+    : ""
+}
 
-${gatingResult.p2_violations > 0 ? `
+${
+  gatingResult.p2_violations > 0
+    ? `
 **P2 Violations (Quality)**: ${gatingResult.p2_violations}
 ${gatingResult.metric_results
-  .filter(r => r.priority === 'P2' && (r.status === 'FAIL' || r.status === 'WARN'))
-  .map(r => `- ${r.status === 'FAIL' ? '❌' : '⚠️'} ${r.metric_name}: ${r.value} vs ${r.threshold_value}`)
-  .join('\n')}
-` : ''}
+  .filter(
+    (r) => r.priority === "P2" && (r.status === "FAIL" || r.status === "WARN"),
+  )
+  .map(
+    (r) =>
+      `- ${r.status === "FAIL" ? "❌" : "⚠️"} ${r.metric_name}: ${r.value} vs ${r.threshold_value}`,
+  )
+  .join("\n")}
+`
+    : ""
+}
 
 ### All Metric Results
 ${gatingResult.metric_results
-  .map(r => `- ${this.getStatusBadge(r.status)} **${r.metric_name}** (${r.priority}): ${r.value} vs ${r.threshold_value}`)
-  .join('\n')}
+  .map(
+    (r) =>
+      `- ${this.getStatusBadge(r.status)} **${r.metric_name}** (${r.priority}): ${r.value} vs ${r.threshold_value}`,
+  )
+  .join("\n")}
 
 **Gating Profile**: ${this.profile}
 **Evaluation Timestamp**: ${new Date().toISOString()}
@@ -281,8 +343,9 @@ ${gatingResult.metric_results
       fs.writeFileSync(sessionReportPath, reportContent);
 
       console.log(`[GATING] Updated session report: ${sessionReportPath}`);
-      console.log(`[GATING] Overall result: ${gatingResult.overall_result} (${gatingResult.total_violations} violations)`);
-
+      console.log(
+        `[GATING] Overall result: ${gatingResult.overall_result} (${gatingResult.total_violations} violations)`,
+      );
     } catch (error) {
       console.error(`[GATING] Failed to update session report: ${error}`);
     }
@@ -290,11 +353,11 @@ ${gatingResult.metric_results
 
   private getStatusBadge(status: string): string {
     const badges = {
-      'PASS': '✅',
-      'WARN': '⚠️',
-      'FAIL': '❌'
+      PASS: "✅",
+      WARN: "⚠️",
+      FAIL: "❌",
     };
-    return badges[status as keyof typeof badges] || 'ℹ️';
+    return badges[status as keyof typeof badges] || "ℹ️";
   }
 
   /**
@@ -304,7 +367,7 @@ ${gatingResult.metric_results
     gatingResult: GatingResult,
     outputPath: string,
     runId: string,
-    metadata: Record<string, any> = {}
+    metadata: Record<string, any> = {},
   ): void {
     const exportData = {
       timestamp: new Date().toISOString(),
@@ -318,7 +381,7 @@ ${gatingResult.metric_results
       summary: gatingResult.summary,
       recommendation: gatingResult.recommendation,
       metric_details: gatingResult.metric_results,
-      ...metadata
+      ...metadata,
     };
 
     try {
@@ -326,7 +389,7 @@ ${gatingResult.metric_results
       fs.mkdirSync(path.dirname(outputPath), { recursive: true });
 
       // Append to JSONL file
-      fs.appendFileSync(outputPath, JSON.stringify(exportData) + '\n');
+      fs.appendFileSync(outputPath, JSON.stringify(exportData) + "\n");
 
       console.log(`[GATING] Exported result to: ${outputPath}`);
     } catch (error) {
@@ -340,13 +403,15 @@ if (require.main === module) {
   const args = process.argv.slice(2);
   const command = args[0];
 
-  if (command === 'evaluate') {
-    const configPath = args[1] || 'baseline_config.json';
+  if (command === "evaluate") {
+    const configPath = args[1] || "baseline_config.json";
     const metricsPath = args[2];
-    const profile = args[3] || process.env.PROFILE || 'dev';
+    const profile = args[3] || process.env.PROFILE || "dev";
 
     if (!metricsPath) {
-      console.error('Usage: ts-node threshold_gating.ts evaluate <config_path> <metrics_jsonl> [profile]');
+      console.error(
+        "Usage: ts-node threshold_gating.ts evaluate <config_path> <metrics_jsonl> [profile]",
+      );
       process.exit(1);
     }
 
@@ -354,26 +419,33 @@ if (require.main === module) {
       const gating = new ThresholdGating(configPath, profile);
 
       // Read metrics from JSONL file
-      const metricsContent = fs.readFileSync(metricsPath, 'utf8');
-      const metricsLines = metricsContent.trim().split('\n').filter(line => line);
+      const metricsContent = fs.readFileSync(metricsPath, "utf8");
+      const metricsLines = metricsContent
+        .trim()
+        .split("\n")
+        .filter((line) => line);
 
       for (const line of metricsLines) {
         const metricsData = JSON.parse(line);
         const result = gating.evaluateMetrics(metricsData);
 
-        console.log(JSON.stringify({
-          run_id: metricsData.run_id || 'unknown',
-          gating_result: result.overall_result,
-          violations: result.total_violations,
-          summary: result.summary
-        }));
+        console.log(
+          JSON.stringify({
+            run_id: metricsData.run_id || "unknown",
+            gating_result: result.overall_result,
+            violations: result.total_violations,
+            summary: result.summary,
+          }),
+        );
       }
     } catch (error) {
       console.error(`Evaluation failed: ${error}`);
       process.exit(1);
     }
   } else {
-    console.log('Available commands:');
-    console.log('  evaluate <config_path> <metrics_jsonl> [profile] - Evaluate metrics against thresholds');
+    console.log("Available commands:");
+    console.log(
+      "  evaluate <config_path> <metrics_jsonl> [profile] - Evaluate metrics against thresholds",
+    );
   }
 }

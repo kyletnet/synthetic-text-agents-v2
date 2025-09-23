@@ -6,7 +6,7 @@ const mockLogger = {
   trace: vi.fn(),
   info: vi.fn(),
   warn: vi.fn(),
-  error: vi.fn()
+  error: vi.fn(),
 } as any;
 
 const run = async (input: string) => {
@@ -17,7 +17,9 @@ const run = async (input: string) => {
 
 describe("QualityAuditor", () => {
   it("passes when answer exists (JSON input)", async () => {
-    const res = await run(JSON.stringify({ answer: "Yes, this is a valid answer" }));
+    const res = await run(
+      JSON.stringify({ answer: "Yes, this is a valid answer" }),
+    );
     expect(res.status).toBe("PASS");
     expect(res.auditComplete).toBe(true);
     expect(res.issues).toBeUndefined();

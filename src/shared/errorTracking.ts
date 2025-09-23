@@ -24,7 +24,7 @@ export interface ErrorReport {
     code?: string | number;
   };
   context: ErrorContext;
-  severity: 'low' | 'medium' | 'high' | 'critical';
+  severity: "low" | "medium" | "high" | "critical";
   fingerprint: string;
   environment: string;
   tags: string[];
@@ -59,12 +59,10 @@ export class ErrorTracker {
   async trackError(
     error: Error | string,
     context: ErrorContext = {},
-    severity: ErrorReport['severity'] = 'medium'
+    severity: ErrorReport["severity"] = "medium",
   ): Promise<void> {
     try {
-      const errorObj = typeof error === 'string'
-        ? new Error(error)
-        : error;
+      const errorObj = typeof error === "string" ? new Error(error) : error;
 
       const report: ErrorReport = {
         id: this.generateErrorId(),
@@ -73,16 +71,16 @@ export class ErrorTracker {
           name: errorObj.name,
           message: errorObj.message,
           stack: errorObj.stack,
-          code: (errorObj as any).code
+          code: (errorObj as any).code,
         },
         context: {
           ...context,
-          environment: this.config.environment
+          environment: this.config.environment,
         },
         severity,
         fingerprint: this.generateFingerprint(errorObj, context),
         environment: this.config.environment,
-        tags: this.generateTags(errorObj, context, severity)
+        tags: this.generateTags(errorObj, context, severity),
       };
 
       // Apply beforeSend filter if configured
@@ -106,9 +104,8 @@ export class ErrorTracker {
       if (this.config.enableRemoteTracking) {
         await this.sendToRemoteServices(processedReport);
       }
-
     } catch (trackingError) {
-      console.error('Error tracking failed:', trackingError);
+      console.error("Error tracking failed:", trackingError);
     }
   }
 
@@ -117,9 +114,9 @@ export class ErrorTracker {
    */
   async trackCriticalError(
     error: Error | string,
-    context: ErrorContext = {}
+    context: ErrorContext = {},
   ): Promise<void> {
-    await this.trackError(error, context, 'critical');
+    await this.trackError(error, context, "critical");
 
     // Send immediate notification for critical errors
     await this.sendImmediateNotification(error, context);
@@ -130,16 +127,16 @@ export class ErrorTracker {
    */
   addBreadcrumb(
     message: string,
-    category: string = 'default',
-    level: 'debug' | 'info' | 'warning' | 'error' = 'info',
-    data?: Record<string, unknown>
+    category: string = "default",
+    level: "debug" | "info" | "warning" | "error" = "info",
+    data?: Record<string, unknown>,
   ): void {
     const breadcrumb = {
       timestamp: new Date().toISOString(),
       message,
       category,
       level,
-      data
+      data,
     };
 
     // Store breadcrumbs in context for next error
@@ -158,7 +155,7 @@ export class ErrorTracker {
   /**
    * Set user context for error tracking
    */
-  setUserContext(context: Pick<ErrorContext, 'userId' | 'sessionId'>): void {
+  setUserContext(context: Pick<ErrorContext, "userId" | "sessionId">): void {
     (globalThis as any).__errorTrackingUserContext = context;
   }
 
@@ -173,15 +170,21 @@ export class ErrorTracker {
   } {
     const totalErrors = this.errorBuffer.length;
 
-    const errorsByType = this.errorBuffer.reduce((acc, report) => {
-      acc[report.error.name] = (acc[report.error.name] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
+    const errorsByType = this.errorBuffer.reduce(
+      (acc, report) => {
+        acc[report.error.name] = (acc[report.error.name] || 0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>,
+    );
 
-    const errorsBySeverity = this.errorBuffer.reduce((acc, report) => {
-      acc[report.severity] = (acc[report.severity] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
+    const errorsBySeverity = this.errorBuffer.reduce(
+      (acc, report) => {
+        acc[report.severity] = (acc[report.severity] || 0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>,
+    );
 
     const recentErrors = this.errorBuffer
       .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())
@@ -191,7 +194,7 @@ export class ErrorTracker {
       totalErrors,
       errorsByType,
       errorsBySeverity,
-      recentErrors
+      recentErrors,
     };
   }
 
@@ -200,48 +203,50 @@ export class ErrorTracker {
    */
   private setupGlobalErrorHandlers(): void {
     // Handle unhandled promise rejections
-    if (typeof process !== 'undefined') {
-      process.on('unhandledRejection', (reason, promise) => {
+    if (typeof process !== "undefined") {
+      process.on("unhandledRejection", (reason, promise) => {
         this.trackCriticalError(
           reason instanceof Error ? reason : new Error(String(reason)),
           {
-            operation: 'unhandledRejection',
-            additionalData: { promise: promise.toString() }
-          }
+            operation: "unhandledRejection",
+            additionalData: { promise: promise.toString() },
+          },
         );
       });
 
-      process.on('uncaughtException', (error) => {
+      process.on("uncaughtException", (error) => {
         this.trackCriticalError(error, {
-          operation: 'uncaughtException'
+          operation: "uncaughtException",
         });
       });
     }
 
     // Handle browser errors
-    if (typeof globalThis !== 'undefined' && (globalThis as any).window) {
-      ((globalThis as any).window).addEventListener('error', (event: any) => {
-        this.trackError(
-          new Error(event.message),
-          {
-            operation: 'windowError',
-            additionalData: {
-              filename: event.filename,
-              lineno: event.lineno,
-              colno: event.colno
-            }
-          }
-        );
+    if (typeof globalThis !== "undefined" && (globalThis as any).window) {
+      (globalThis as any).window.addEventListener("error", (event: any) => {
+        this.trackError(new Error(event.message), {
+          operation: "windowError",
+          additionalData: {
+            filename: event.filename,
+            lineno: event.lineno,
+            colno: event.colno,
+          },
+        });
       });
 
-      ((globalThis as any).window).addEventListener('unhandledrejection', (event: any) => {
-        this.trackCriticalError(
-          event.reason instanceof Error ? event.reason : new Error(String(event.reason)),
-          {
-            operation: 'unhandledRejection'
-          }
-        );
-      });
+      (globalThis as any).window.addEventListener(
+        "unhandledrejection",
+        (event: any) => {
+          this.trackCriticalError(
+            event.reason instanceof Error
+              ? event.reason
+              : new Error(String(event.reason)),
+            {
+              operation: "unhandledRejection",
+            },
+          );
+        },
+      );
     }
   }
 
@@ -259,15 +264,15 @@ export class ErrorTracker {
     const hashInput = [
       error.name,
       error.message,
-      context.operation || '',
-      context.agentId || ''
-    ].join('|');
+      context.operation || "",
+      context.agentId || "",
+    ].join("|");
 
     // Simple hash function
     let hash = 0;
     for (let i = 0; i < hashInput.length; i++) {
       const char = hashInput.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
+      hash = (hash << 5) - hash + char;
       hash = hash & hash; // Convert to 32-bit integer
     }
 
@@ -280,12 +285,12 @@ export class ErrorTracker {
   private generateTags(
     error: Error,
     context: ErrorContext,
-    severity: ErrorReport['severity']
+    severity: ErrorReport["severity"],
   ): string[] {
     const tags: string[] = [
       `severity:${severity}`,
       `environment:${this.config.environment}`,
-      `error_type:${error.name}`
+      `error_type:${error.name}`,
     ];
 
     if (context.agentId) {
@@ -319,15 +324,16 @@ export class ErrorTracker {
    * Log error to console
    */
   private logToConsole(report: ErrorReport): void {
-    const logLevel = report.severity === 'critical' || report.severity === 'high'
-      ? 'error'
-      : 'warn';
+    const logLevel =
+      report.severity === "critical" || report.severity === "high"
+        ? "error"
+        : "warn";
 
     console[logLevel](`[ErrorTracker] ${report.severity.toUpperCase()}:`, {
       id: report.id,
       error: report.error.message,
       context: report.context,
-      timestamp: report.timestamp.toISOString()
+      timestamp: report.timestamp.toISOString(),
     });
   }
 
@@ -353,7 +359,7 @@ export class ErrorTracker {
     try {
       await Promise.allSettled(promises);
     } catch (error) {
-      console.error('Failed to send error to remote services:', error);
+      console.error("Failed to send error to remote services:", error);
     }
   }
 
@@ -386,14 +392,14 @@ export class ErrorTracker {
 
     try {
       await fetch(webhookUrl, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(report)
+        body: JSON.stringify(report),
       });
     } catch (error) {
-      console.debug('Failed to send error to webhook:', error);
+      console.debug("Failed to send error to webhook:", error);
     }
   }
 
@@ -402,7 +408,7 @@ export class ErrorTracker {
    */
   private async sendImmediateNotification(
     error: Error | string,
-    context: ErrorContext
+    context: ErrorContext,
   ): Promise<void> {
     const slackWebhook = process.env.SLACK_ERROR_WEBHOOK;
 
@@ -410,49 +416,52 @@ export class ErrorTracker {
       return;
     }
 
-    const errorMessage = typeof error === 'string' ? error : error.message;
+    const errorMessage = typeof error === "string" ? error : error.message;
 
     const slackMessage = {
       text: `🚨 Critical Error in ${this.config.environment}`,
       attachments: [
         {
-          color: 'danger',
+          color: "danger",
           fields: [
             {
-              title: 'Error',
+              title: "Error",
               value: errorMessage,
-              short: false
+              short: false,
             },
             {
-              title: 'Context',
+              title: "Context",
               value: JSON.stringify(context, null, 2),
-              short: false
+              short: false,
             },
             {
-              title: 'Environment',
+              title: "Environment",
               value: this.config.environment,
-              short: true
+              short: true,
             },
             {
-              title: 'Timestamp',
+              title: "Timestamp",
               value: new Date().toISOString(),
-              short: true
-            }
-          ]
-        }
-      ]
+              short: true,
+            },
+          ],
+        },
+      ],
     };
 
     try {
       await fetch(slackWebhook, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(slackMessage)
+        body: JSON.stringify(slackMessage),
       });
     } catch (notificationError) {
-      console.error('Failed to send critical error notification:', notificationError);
+      console.error(
+        "Failed to send critical error notification:",
+        notificationError,
+      );
     }
   }
 }
@@ -465,15 +474,18 @@ let globalErrorTracker: ErrorTracker;
 /**
  * Initialize error tracking
  */
-export function initializeErrorTracking(config?: Partial<ErrorTrackingConfig>): ErrorTracker {
+export function initializeErrorTracking(
+  config?: Partial<ErrorTrackingConfig>,
+): ErrorTracker {
   const defaultConfig: ErrorTrackingConfig = {
-    environment: process.env.ENVIRONMENT || process.env.NODE_ENV || 'development',
+    environment:
+      process.env.ENVIRONMENT || process.env.NODE_ENV || "development",
     enableConsoleLogging: true,
-    enableRemoteTracking: process.env.NODE_ENV === 'production',
+    enableRemoteTracking: process.env.NODE_ENV === "production",
     sampleRate: 1.0,
     sentryDsn: process.env.SENTRY_DSN,
     datadogApiKey: process.env.DATADOG_API_KEY,
-    ...config
+    ...config,
   };
 
   globalErrorTracker = new ErrorTracker(defaultConfig);
@@ -496,7 +508,7 @@ export function getErrorTracker(): ErrorTracker {
 export async function trackError(
   error: Error | string,
   context?: ErrorContext,
-  severity?: ErrorReport['severity']
+  severity?: ErrorReport["severity"],
 ): Promise<void> {
   const tracker = getErrorTracker();
   await tracker.trackError(error, context, severity);
@@ -504,7 +516,7 @@ export async function trackError(
 
 export async function trackCriticalError(
   error: Error | string,
-  context?: ErrorContext
+  context?: ErrorContext,
 ): Promise<void> {
   const tracker = getErrorTracker();
   await tracker.trackCriticalError(error, context);
@@ -513,14 +525,16 @@ export async function trackCriticalError(
 export function addBreadcrumb(
   message: string,
   category?: string,
-  level?: 'debug' | 'info' | 'warning' | 'error',
-  data?: Record<string, unknown>
+  level?: "debug" | "info" | "warning" | "error",
+  data?: Record<string, unknown>,
 ): void {
   const tracker = getErrorTracker();
   tracker.addBreadcrumb(message, category, level, data);
 }
 
-export function setUserContext(context: Pick<ErrorContext, 'userId' | 'sessionId'>): void {
+export function setUserContext(
+  context: Pick<ErrorContext, "userId" | "sessionId">,
+): void {
   const tracker = getErrorTracker();
   tracker.setUserContext(context);
 }

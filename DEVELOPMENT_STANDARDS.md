@@ -5,6 +5,7 @@
 ## 🚀 **표준화 완료 상태**
 
 ### ✅ **환경 설정 표준화**
+
 ```bash
 LLM_PROVIDER=anthropic    # 명시적 프로바이더 선언
 ANTHROPIC_API_KEY=xxx     # 주 LLM
@@ -13,6 +14,7 @@ OPENAI_API_KEY=placeholder # 백업/테스트만
 ```
 
 ### ✅ **코드 품질 표준**
+
 - **TypeScript**: strict mode, 모든 public 함수 return type 명시
 - **ESLint**: 미사용 변수 `_prefix` 적용, non-null assertion 제거
 - **로깅**: CLI 제외하고 `console.log` → `logger.info()` 사용
@@ -24,9 +26,10 @@ OPENAI_API_KEY=placeholder # 백업/테스트만
 ### **MANDATORY 규칙 (절대 준수)**
 
 #### **1. 타입 안전성**
+
 ```typescript
 // ❌ 금지
-function process(data: any): any { }
+function process(data: any): any {}
 const result = data!.value;
 
 // ✅ 필수
@@ -36,6 +39,7 @@ function process(data: ProcessRequest): ProcessResult {
 ```
 
 #### **2. 미사용 파라미터 처리**
+
 ```typescript
 // ❌ 금지 - ESLint 경고 발생
 function handler(request: Request, context: Context) {
@@ -49,6 +53,7 @@ function handler(request: Request, _context: Context) {
 ```
 
 #### **3. 로깅 시스템**
+
 ```typescript
 // ❌ 금지 - CLI 파일 외 사용 금지
 console.log('Debug info');
@@ -60,6 +65,7 @@ this.logger.info('Debug info', { context: data });
 ```
 
 #### **4. 에러 처리**
+
 ```typescript
 // ❌ 금지 - 에러 무시
 const result = await apiCall();
@@ -68,8 +74,8 @@ const result = await apiCall();
 try {
   const result = await apiCall();
 } catch (error) {
-  this.logger.error('API call failed', { error: error.message });
-  throw new ProcessingError('Failed to process request', error);
+  this.logger.error("API call failed", { error: error.message });
+  throw new ProcessingError("Failed to process request", error);
 }
 ```
 
@@ -78,6 +84,7 @@ try {
 ## 🔄 **자동 강제 시스템**
 
 ### **Pre-commit Hook (이미 설정됨)**
+
 ```bash
 # 모든 커밋 전 자동 실행
 npm run typecheck    # TS 컴파일 오류 = 커밋 차단
@@ -86,6 +93,7 @@ npm run test         # 테스트 실패 = 커밋 차단
 ```
 
 ### **개발 워크플로우**
+
 ```bash
 # 1. 개발 시작
 npm run dev          # 시스템 테스트
@@ -110,6 +118,7 @@ npm run /sync        # 변경사항 커밋
 ## 📊 **표준 준수 모니터링**
 
 ### **현재 품질 지표 (2025-09-23)**
+
 ```
 ✅ TypeScript 컴파일: 0 errors
 ⚠️  ESLint 경고: ~400개 (기존 코드, 신규는 0 목표)
@@ -118,6 +127,7 @@ npm run /sync        # 변경사항 커밋
 ```
 
 ### **Zero-Warning 정책 (신규 코드)**
+
 - **새 파일**: ESLint 경고 0개 필수
 - **기존 파일 수정**: 새 경고 추가 금지
 - **리팩토링 시**: 기존 경고도 함께 수정
@@ -127,6 +137,7 @@ npm run /sync        # 변경사항 커밋
 ## 🎯 **LLM Assistant 개발 지침**
 
 ### **파일 생성/수정 시**
+
 1. **파일 읽기 먼저**: 기존 코드 스타일 파악
 2. **Import 패턴 준수**: 상대 경로, .js 확장자
 3. **타입 정의 명시**: 모든 public interface
@@ -134,6 +145,7 @@ npm run /sync        # 변경사항 커밋
 5. **에러 처리**: try-catch + 구조화된 로깅
 
 ### **코드 리뷰 체크리스트**
+
 - [ ] TypeScript strict 모드 준수
 - [ ] 미사용 변수 `_prefix` 적용
 - [ ] console.log 사용 금지 (CLI 제외)
@@ -142,6 +154,7 @@ npm run /sync        # 변경사항 커밋
 - [ ] 문서 업데이트 (필요시)
 
 ### **자동 문서 갱신**
+
 ```bash
 # 개발 완료 후 필수 실행
 npm run docs:refresh
@@ -164,6 +177,7 @@ npm run docs:refresh
 ## 🚀 **성공 지표**
 
 ### **완전체 달성 기준**
+
 - ✅ **기능성**: 모든 핵심 시나리오 정상 작동
 - 🔄 **품질**: 신규 코드 ESLint warning 0개
 - ✅ **일관성**: 단일 로깅/환경 시스템

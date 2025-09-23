@@ -14,16 +14,16 @@
  * - Raw run logs
  */
 
-import { promises as fs } from 'fs';
-import { join } from 'path';
-import { parseArgs } from 'util';
-import { globSync } from 'glob';
+import { promises as fs } from "fs";
+import { join } from "path";
+import { parseArgs } from "util";
+import { globSync } from "glob";
 
 interface ConsistencyResult {
-  run_id_match: 'PASS' | 'FAIL';
-  cost_check: 'PASS' | 'WARN' | 'FAIL';
-  duration_check: 'PASS' | 'FAIL';
-  operations_check: 'PASS' | 'FAIL' | 'SKIP';
+  run_id_match: "PASS" | "FAIL";
+  cost_check: "PASS" | "WARN" | "FAIL";
+  duration_check: "PASS" | "FAIL";
+  operations_check: "PASS" | "FAIL" | "SKIP";
   components_seen: string[];
   notes: string[];
   exit: 0 | 1;
@@ -57,16 +57,16 @@ export class ObservabilityConsistencyChecker {
   async checkConsistency(
     sessionPath: string,
     htmlPath: string,
-    logsDir: string
+    logsDir: string,
   ): Promise<ConsistencyResult> {
     const result: ConsistencyResult = {
-      run_id_match: 'FAIL',
-      cost_check: 'FAIL',
-      duration_check: 'FAIL',
-      operations_check: 'SKIP',
+      run_id_match: "FAIL",
+      cost_check: "FAIL",
+      duration_check: "FAIL",
+      operations_check: "SKIP",
       components_seen: [],
       notes: [],
-      exit: 1
+      exit: 1,
     };
 
     try {
@@ -83,7 +83,7 @@ export class ObservabilityConsistencyChecker {
       result.details = {
         session_data: sessionData,
         html_data: htmlData,
-        logs_aggregated: logsData
+        logs_aggregated: logsData,
       };
 
       // Perform consistency checks
@@ -98,13 +98,12 @@ export class ObservabilityConsistencyChecker {
         result.run_id_match,
         result.cost_check,
         result.duration_check,
-        result.operations_check
-      ].some(check => check === 'FAIL');
+        result.operations_check,
+      ].some((check) => check === "FAIL");
 
       result.exit = hasFailures ? 1 : 0;
 
       return result;
-
     } catch (error) {
       result.notes.push(`Fatal error: ${error}`);
       result.exit = 1;
@@ -113,7 +112,7 @@ export class ObservabilityConsistencyChecker {
   }
 
   private async parseSessionReport(sessionPath: string): Promise<SessionData> {
-    const content = await fs.readFile(sessionPath, 'utf8');
+    const content = await fs.readFile(sessionPath, "utf8");
 
     // Extract JSON block from markdown
     const jsonBlockRegex = /```json\s*\n([\s\S]*?)\n```/g;
@@ -124,7 +123,11 @@ export class ObservabilityConsistencyChecker {
       try {
         const parsed = JSON.parse(match[1]);
         // Look for session summary (has run_id, cost_usd, duration_ms)
-        if (parsed.run_id && typeof parsed.cost_usd === 'number' && typeof parsed.duration_ms === 'number') {
+        if (
+          parsed.run_id &&
+          typeof parsed.cost_usd === "number" &&
+          typeof parsed.duration_ms === "number"
+        ) {
           sessionSummary = parsed;
           break;
         }
@@ -134,18 +137,20 @@ export class ObservabilityConsistencyChecker {
     }
 
     if (!sessionSummary) {
-      throw new Error('Could not find session summary JSON block in session report');
+      throw new Error(
+        "Could not find session summary JSON block in session report",
+      );
     }
 
     return {
       run_id: sessionSummary.run_id,
       cost_usd: sessionSummary.cost_usd,
-      duration_ms: sessionSummary.duration_ms
+      duration_ms: sessionSummary.duration_ms,
     };
   }
 
   private async parseObservabilityHtml(htmlPath: string): Promise<HtmlData> {
-    const content = await fs.readFile(htmlPath, 'utf8');
+    const content = await fs.readFile(htmlPath, "utf8");
 
     // Extract JSON from <pre> tag
     const preTagRegex = /<pre>([\s\S]*?)<\/pre>/g;
@@ -166,13 +171,13 @@ export class ObservabilityConsistencyChecker {
     }
 
     if (!traceData) {
-      throw new Error('Could not find trace data JSON in <pre> tag of HTML');
+      throw new Error("Could not find trace data JSON in <pre> tag of HTML");
     }
 
     // Extract run data (assuming single run)
     const runIds = Object.keys(traceData.runs);
     if (runIds.length === 0) {
-      throw new Error('No runs found in trace data');
+      throw new Error("No runs found in trace data");
     }
 
     // Use the first run (or could be more sophisticated)
@@ -184,29 +189,35 @@ export class ObservabilityConsistencyChecker {
       total_cost_usd: traceData.global_summary.total_cost_usd || 0,
       total_duration_ms: traceData.global_summary.total_duration_ms || 0,
       total_operations: traceData.global_summary.total_operations || 0,
-      components: runData.components || []
+      components: runData.components || [],
     };
   }
 
   private async aggregateRunLogs(logsDir: string): Promise<LogsData> {
     try {
       // Find all .jsonl files in logs directory
-      const logFiles = globSync(join(logsDir, '*.jsonl'));
+      const logFiles = globSync(join(logsDir, "*.jsonl"));
 
       let totalOperations = 0;
       const componentsSet = new Set<string>();
 
       for (const logFile of logFiles) {
         try {
-          const content = await fs.readFile(logFile, 'utf8');
-          const lines = content.trim().split('\n').filter(line => line.trim());
+          const content = await fs.readFile(logFile, "utf8");
+          const lines = content
+            .trim()
+            .split("\n")
+            .filter((line) => line.trim());
 
           for (const line of lines) {
             try {
               const entry = JSON.parse(line);
 
               // Count as operation if it has a component and operation/action
-              if (entry.component && (entry.operation || entry.action || entry.level)) {
+              if (
+                entry.component &&
+                (entry.operation || entry.action || entry.level)
+              ) {
                 totalOperations++;
                 componentsSet.add(entry.component);
               }
@@ -221,14 +232,13 @@ export class ObservabilityConsistencyChecker {
 
       return {
         total_operations: totalOperations,
-        components_seen: Array.from(componentsSet)
+        components_seen: Array.from(componentsSet),
       };
-
     } catch (error) {
       // If we can't read logs, return empty data
       return {
         total_operations: 0,
-        components_seen: []
+        components_seen: [],
       };
     }
   }
@@ -236,23 +246,32 @@ export class ObservabilityConsistencyChecker {
   private async checkRunIdMatch(
     sessionData: SessionData,
     htmlData: HtmlData,
-    result: ConsistencyResult
+    result: ConsistencyResult,
   ): Promise<void> {
     const sessionRunId = sessionData.run_id;
     const htmlRunId = htmlData.run_id;
 
     if (sessionRunId === htmlRunId) {
-      result.run_id_match = 'PASS';
+      result.run_id_match = "PASS";
       result.notes.push(`Run ID match: ${sessionRunId}`);
     } else {
-      result.run_id_match = 'FAIL';
-      result.notes.push(`Run ID mismatch: session="${sessionRunId}" vs html="${htmlRunId}"`);
+      result.run_id_match = "FAIL";
+      result.notes.push(
+        `Run ID mismatch: session="${sessionRunId}" vs html="${htmlRunId}"`,
+      );
 
       // Check for prefix mismatch pattern
-      if (sessionRunId.includes('smoke-') && htmlRunId.includes('run-')) {
-        result.notes.push('Hint: Use session_report.run_id as the exporter\'s run_id');
-      } else if (htmlRunId.includes('smoke-') && sessionRunId.includes('run-')) {
-        result.notes.push('Hint: Use session_report.run_id as the exporter\'s run_id');
+      if (sessionRunId.includes("smoke-") && htmlRunId.includes("run-")) {
+        result.notes.push(
+          "Hint: Use session_report.run_id as the exporter's run_id",
+        );
+      } else if (
+        htmlRunId.includes("smoke-") &&
+        sessionRunId.includes("run-")
+      ) {
+        result.notes.push(
+          "Hint: Use session_report.run_id as the exporter's run_id",
+        );
       }
     }
   }
@@ -260,49 +279,55 @@ export class ObservabilityConsistencyChecker {
   private async checkCostConsistency(
     sessionData: SessionData,
     htmlData: HtmlData,
-    result: ConsistencyResult
+    result: ConsistencyResult,
   ): Promise<void> {
     const sessionCost = sessionData.cost_usd;
     const htmlCost = htmlData.total_cost_usd;
     const diff = Math.abs(sessionCost - htmlCost);
 
     if (diff === 0) {
-      result.cost_check = 'PASS';
+      result.cost_check = "PASS";
       result.notes.push(`Cost exact match: $${sessionCost.toFixed(4)}`);
     } else if (diff <= 0.03) {
-      result.cost_check = 'WARN';
-      result.notes.push(`Cost within tolerance: session=$${sessionCost.toFixed(4)}, html=$${htmlCost.toFixed(4)}, diff=$${diff.toFixed(4)}`);
+      result.cost_check = "WARN";
+      result.notes.push(
+        `Cost within tolerance: session=$${sessionCost.toFixed(4)}, html=$${htmlCost.toFixed(4)}, diff=$${diff.toFixed(4)}`,
+      );
     } else {
-      result.cost_check = 'FAIL';
-      result.notes.push(`Cost difference exceeds threshold: session=$${sessionCost.toFixed(4)}, html=$${htmlCost.toFixed(4)}, diff=$${diff.toFixed(4)} > $0.03`);
+      result.cost_check = "FAIL";
+      result.notes.push(
+        `Cost difference exceeds threshold: session=$${sessionCost.toFixed(4)}, html=$${htmlCost.toFixed(4)}, diff=$${diff.toFixed(4)} > $0.03`,
+      );
     }
   }
 
   private async checkDurationConsistency(
     sessionData: SessionData,
     htmlData: HtmlData,
-    result: ConsistencyResult
+    result: ConsistencyResult,
   ): Promise<void> {
     const sessionDuration = sessionData.duration_ms;
     const htmlDuration = htmlData.total_duration_ms;
 
     if (sessionDuration === htmlDuration) {
-      result.duration_check = 'PASS';
+      result.duration_check = "PASS";
       result.notes.push(`Duration match: ${sessionDuration}ms`);
     } else {
-      result.duration_check = 'FAIL';
-      result.notes.push(`Duration mismatch: session=${sessionDuration}ms vs html=${htmlDuration}ms`);
+      result.duration_check = "FAIL";
+      result.notes.push(
+        `Duration mismatch: session=${sessionDuration}ms vs html=${htmlDuration}ms`,
+      );
     }
   }
 
   private async checkOperationsConsistency(
     htmlData: HtmlData,
     logsData: LogsData,
-    result: ConsistencyResult
+    result: ConsistencyResult,
   ): Promise<void> {
     if (logsData.total_operations === 0) {
-      result.operations_check = 'SKIP';
-      result.notes.push('Operations check skipped: no log data found');
+      result.operations_check = "SKIP";
+      result.notes.push("Operations check skipped: no log data found");
       return;
     }
 
@@ -310,38 +335,52 @@ export class ObservabilityConsistencyChecker {
     const logsOperations = logsData.total_operations;
 
     if (htmlOperations === logsOperations) {
-      result.operations_check = 'PASS';
+      result.operations_check = "PASS";
       result.notes.push(`Operations match: ${htmlOperations}`);
     } else {
-      result.operations_check = 'FAIL';
-      result.notes.push(`Operations mismatch: html=${htmlOperations} vs logs=${logsOperations}`);
+      result.operations_check = "FAIL";
+      result.notes.push(
+        `Operations mismatch: html=${htmlOperations} vs logs=${logsOperations}`,
+      );
     }
   }
 
   private async checkComponents(
     htmlData: HtmlData,
-    result: ConsistencyResult
+    result: ConsistencyResult,
   ): Promise<void> {
-    const expectedComponents = ['typescript-validation', 'smoke-run', 'gating-validation'];
+    const expectedComponents = [
+      "typescript-validation",
+      "smoke-run",
+      "gating-validation",
+    ];
     const seenComponents = htmlData.components;
 
     result.components_seen = seenComponents;
 
-    const missing = expectedComponents.filter(comp => !seenComponents.includes(comp));
-    const extra = seenComponents.filter(comp => !expectedComponents.includes(comp));
+    const missing = expectedComponents.filter(
+      (comp) => !seenComponents.includes(comp),
+    );
+    const extra = seenComponents.filter(
+      (comp) => !expectedComponents.includes(comp),
+    );
 
     if (missing.length === 0) {
-      result.notes.push(`All expected components present: [${expectedComponents.join(', ')}]`);
+      result.notes.push(
+        `All expected components present: [${expectedComponents.join(", ")}]`,
+      );
     } else {
-      result.notes.push(`Missing expected components: [${missing.join(', ')}]`);
+      result.notes.push(`Missing expected components: [${missing.join(", ")}]`);
     }
 
     if (extra.length > 0) {
-      result.notes.push(`Additional components found: [${extra.join(', ')}]`);
+      result.notes.push(`Additional components found: [${extra.join(", ")}]`);
     }
 
     // Components are informational only - never fail on this
-    result.notes.push(`Components check: informational only (${seenComponents.length} total)`);
+    result.notes.push(
+      `Components check: informational only (${seenComponents.length} total)`,
+    );
   }
 }
 
@@ -349,19 +388,25 @@ export class ObservabilityConsistencyChecker {
 async function main() {
   const { values: args } = parseArgs({
     options: {
-      session: { type: 'string' },
-      obs: { type: 'string' },
-      logs: { type: 'string' }
-    }
+      session: { type: "string" },
+      obs: { type: "string" },
+      logs: { type: "string" },
+    },
   });
 
   if (!args.session || !args.obs || !args.logs) {
-    console.error('Usage: node check_observability_consistency.js --session <path> --obs <path> --logs <dir>');
+    console.error(
+      "Usage: node check_observability_consistency.js --session <path> --obs <path> --logs <dir>",
+    );
     process.exit(1);
   }
 
   const checker = new ObservabilityConsistencyChecker();
-  const result = await checker.checkConsistency(args.session, args.obs, args.logs);
+  const result = await checker.checkConsistency(
+    args.session,
+    args.obs,
+    args.logs,
+  );
 
   // Remove details from output unless debugging
   const outputResult = { ...result };
@@ -374,15 +419,21 @@ async function main() {
 // Execute if run directly
 if (import.meta.url === `file://${process.argv[1]}`) {
   main().catch((error) => {
-    console.error(JSON.stringify({
-      run_id_match: 'FAIL',
-      cost_check: 'FAIL',
-      duration_check: 'FAIL',
-      operations_check: 'FAIL',
-      components_seen: [],
-      notes: [`Fatal error: ${error}`],
-      exit: 1
-    }, null, 2));
+    console.error(
+      JSON.stringify(
+        {
+          run_id_match: "FAIL",
+          cost_check: "FAIL",
+          duration_check: "FAIL",
+          operations_check: "FAIL",
+          components_seen: [],
+          notes: [`Fatal error: ${error}`],
+          exit: 1,
+        },
+        null,
+        2,
+      ),
+    );
     process.exit(1);
   });
 }

@@ -3,14 +3,16 @@
  * Verifies report-to-execution alignment and validates core requirements
  */
 
-import { promises as fs } from 'fs';
-import { SessionCollection, collectSessionData } from './collect_session.js';
-import { ConsistencyCheck } from './types.js';
+import { promises as fs } from "fs";
+import { SessionCollection, collectSessionData } from "./collect_session.js";
+import { ConsistencyCheck } from "./types.js";
 
 /**
  * Check if session report matches actual execution state
  */
-function validateSessionReportConsistency(collection: SessionCollection): ConsistencyCheck {
+function validateSessionReportConsistency(
+  collection: SessionCollection,
+): ConsistencyCheck {
   const issues: string[] = [];
   let dry_run_match = true;
   let mode_match = true;
@@ -20,7 +22,7 @@ function validateSessionReportConsistency(collection: SessionCollection): Consis
   const sessionData = collection.session_report;
 
   if (!sessionData) {
-    issues.push('Session report not found or could not be parsed');
+    issues.push("Session report not found or could not be parsed");
     return {
       passed: false,
       issues,
@@ -30,29 +32,38 @@ function validateSessionReportConsistency(collection: SessionCollection): Consis
       llm_analysis_exists: !!collection.llm_analysis,
       dry_run_match: false,
       mode_match: false,
-      result_match: false
+      result_match: false,
     };
   }
 
   // Check DRY_RUN consistency
-  const expectedDryRun = process.env.DRY_RUN === 'true';
+  const expectedDryRun = process.env.DRY_RUN === "true";
   if (sessionData.dry_run !== expectedDryRun) {
     dry_run_match = false;
-    issues.push(`DRY_RUN mismatch: report=${sessionData.dry_run}, env=${expectedDryRun}`);
+    issues.push(
+      `DRY_RUN mismatch: report=${sessionData.dry_run}, env=${expectedDryRun}`,
+    );
   }
 
   // Check MODE consistency
-  const expectedMode = process.env.MODE || 'unknown';
+  const expectedMode = process.env.MODE || "unknown";
   if (sessionData.mode !== expectedMode) {
     mode_match = false;
-    issues.push(`MODE mismatch: report=${sessionData.mode}, env=${expectedMode}`);
+    issues.push(
+      `MODE mismatch: report=${sessionData.mode}, env=${expectedMode}`,
+    );
   }
 
   // Check RESULT/RUN_STATE consistency
   const expectedResult = process.env.RESULT || sessionData.result;
-  if (sessionData.result !== expectedResult && sessionData.run_state !== expectedResult) {
+  if (
+    sessionData.result !== expectedResult &&
+    sessionData.run_state !== expectedResult
+  ) {
     result_match = false;
-    issues.push(`RESULT mismatch: report=${sessionData.result}/${sessionData.run_state}, expected=${expectedResult}`);
+    issues.push(
+      `RESULT mismatch: report=${sessionData.result}/${sessionData.run_state}, expected=${expectedResult}`,
+    );
   }
 
   // Check CASES_TOTAL validity
@@ -65,7 +76,9 @@ function validateSessionReportConsistency(collection: SessionCollection): Consis
   if (collection.baseline_report) {
     const baselineItems = collection.baseline_report.total_items || 0;
     if (sessionData.cases_total !== baselineItems && baselineItems > 0) {
-      issues.push(`Case count mismatch: session=${sessionData.cases_total}, baseline=${baselineItems}`);
+      issues.push(
+        `Case count mismatch: session=${sessionData.cases_total}, baseline=${baselineItems}`,
+      );
     }
   }
 
@@ -73,7 +86,9 @@ function validateSessionReportConsistency(collection: SessionCollection): Consis
   if (collection.llm_analysis) {
     const llmCases = collection.llm_analysis.total_cases || 0;
     if (sessionData.cases_total !== llmCases && llmCases > 0) {
-      issues.push(`Case count mismatch: session=${sessionData.cases_total}, llm_analysis=${llmCases}`);
+      issues.push(
+        `Case count mismatch: session=${sessionData.cases_total}, llm_analysis=${llmCases}`,
+      );
     }
   }
 
@@ -86,23 +101,25 @@ function validateSessionReportConsistency(collection: SessionCollection): Consis
     result_match,
     passed: cases_total >= 0,
     cases_total: Math.max(0, cases_total),
-    issues
+    issues,
   };
 }
 
 /**
  * Additional file-level consistency checks
  */
-async function performAdditionalChecks(collection: SessionCollection): Promise<string[]> {
+async function performAdditionalChecks(
+  collection: SessionCollection,
+): Promise<string[]> {
   const issues: string[] = [];
 
   try {
     // Check if reports directory exists
-    const reportsDir = 'reports';
+    const reportsDir = "reports";
     try {
       await fs.access(reportsDir);
     } catch {
-      issues.push('Reports directory does not exist');
+      issues.push("Reports directory does not exist");
     }
 
     // Check for stale reports (older than 24 hours)
@@ -110,7 +127,8 @@ async function performAdditionalChecks(collection: SessionCollection): Promise<s
     if (sessionData?.timestamp) {
       const reportTime = new Date(sessionData.timestamp);
       const now = new Date();
-      const ageHours = (now.getTime() - reportTime.getTime()) / (1000 * 60 * 60);
+      const ageHours =
+        (now.getTime() - reportTime.getTime()) / (1000 * 60 * 60);
 
       if (ageHours > 24) {
         issues.push(`Session report is stale (${Math.round(ageHours)}h old)`);
@@ -118,7 +136,7 @@ async function performAdditionalChecks(collection: SessionCollection): Promise<s
     }
 
     // Check for required environment variables
-    const requiredEnvVars = ['DRY_RUN', 'MODE'];
+    const requiredEnvVars = ["DRY_RUN", "MODE"];
     for (const envVar of requiredEnvVars) {
       if (!process.env[envVar]) {
         issues.push(`Required environment variable not set: ${envVar}`);
@@ -126,18 +144,17 @@ async function performAdditionalChecks(collection: SessionCollection): Promise<s
     }
 
     // Check for DLQ entries if failure detected
-    if (sessionData?.result === 'FAIL' || sessionData?.run_state === 'FAIL') {
+    if (sessionData?.result === "FAIL" || sessionData?.run_state === "FAIL") {
       try {
-        const dlqDir = 'DLQ';
+        const dlqDir = "DLQ";
         const dlqEntries = await fs.readdir(dlqDir);
         if (dlqEntries.length === 0) {
-          issues.push('Failed run but no DLQ entries found');
+          issues.push("Failed run but no DLQ entries found");
         }
       } catch {
-        issues.push('DLQ directory not accessible');
+        issues.push("DLQ directory not accessible");
       }
     }
-
   } catch (error) {
     issues.push(`Error during additional checks: ${error}`);
   }
@@ -150,7 +167,7 @@ async function performAdditionalChecks(collection: SessionCollection): Promise<s
  */
 export async function checkConsistency(): Promise<ConsistencyCheck> {
   try {
-    console.log('Starting consistency check...');
+    console.log("Starting consistency check...");
 
     // Collect session data
     const collection = await collectSessionData();
@@ -163,23 +180,24 @@ export async function checkConsistency(): Promise<ConsistencyCheck> {
     consistency.issues.push(...additionalIssues);
 
     // Determine overall pass/fail status
-    const hasCriticalIssues = !consistency.passed ||
-                             !consistency.session_report_exists ||
-                             consistency.issues.some(issue =>
-                               issue.includes('CASES_TOTAL is 0') ||
-                               issue.includes('Session report not found')
-                             );
+    const hasCriticalIssues =
+      !consistency.passed ||
+      !consistency.session_report_exists ||
+      consistency.issues.some(
+        (issue) =>
+          issue.includes("CASES_TOTAL is 0") ||
+          issue.includes("Session report not found"),
+      );
 
-    console.log('Consistency check completed:', {
+    console.log("Consistency check completed:", {
       passed: !hasCriticalIssues,
       total_issues: consistency.issues.length,
-      critical_issues: hasCriticalIssues
+      critical_issues: hasCriticalIssues,
     });
 
     return consistency;
-
   } catch (error) {
-    console.error('Consistency check failed:', error);
+    console.error("Consistency check failed:", error);
     return {
       passed: false,
       issues: [`Consistency check error: ${error}`],
@@ -189,7 +207,7 @@ export async function checkConsistency(): Promise<ConsistencyCheck> {
       llm_analysis_exists: false,
       dry_run_match: false,
       mode_match: false,
-      result_match: false
+      result_match: false,
     };
   }
 }
@@ -200,28 +218,30 @@ export async function checkConsistency(): Promise<ConsistencyCheck> {
 if (import.meta.url === `file://${process.argv[1]}`) {
   const command = process.argv[2];
 
-  if (command === 'check') {
+  if (command === "check") {
     checkConsistency()
       .then((result) => {
-        console.log('Consistency Check Result:');
+        console.log("Consistency Check Result:");
         console.log(JSON.stringify(result, null, 2));
 
         // Exit with appropriate code
-        const hasCriticalIssues = !result.passed ||
-                                 !result.session_report_exists ||
-                                 result.issues.some(issue =>
-                                   issue.includes('CASES_TOTAL is 0') ||
-                                   issue.includes('Session report not found')
-                                 );
+        const hasCriticalIssues =
+          !result.passed ||
+          !result.session_report_exists ||
+          result.issues.some(
+            (issue) =>
+              issue.includes("CASES_TOTAL is 0") ||
+              issue.includes("Session report not found"),
+          );
 
         process.exit(hasCriticalIssues ? 1 : 0);
       })
       .catch((error) => {
-        console.error('Consistency check failed:', error);
+        console.error("Consistency check failed:", error);
         process.exit(1);
       });
   } else {
-    console.log('Usage: node check_consistency.js check');
+    console.log("Usage: node check_consistency.js check");
     process.exit(1);
   }
 }

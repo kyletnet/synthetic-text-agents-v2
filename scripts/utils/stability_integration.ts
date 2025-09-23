@@ -4,17 +4,21 @@
  * Provides unified interface for run_v3.sh integration
  */
 
-import { MultiAgentOrchestrator, OrchestrationInput, OrchestrationOutput } from '../agents/orchestrator';
-import { BudgetGuard } from './budget_guard';
-import { DLQHandler } from './dlq_handler';
-import { ThresholdGating } from './threshold_gating';
-import { CheckpointManager } from './checkpoint_manager';
-import { AgentContext } from '../agents/base_agent';
+import {
+  MultiAgentOrchestrator,
+  OrchestrationInput,
+  OrchestrationOutput,
+} from "../agents/orchestrator";
+import { BudgetGuard } from "./budget_guard";
+import { DLQHandler } from "./dlq_handler";
+import { ThresholdGating } from "./threshold_gating";
+import { CheckpointManager } from "./checkpoint_manager";
+import { AgentContext } from "../agents/base_agent";
 
 export interface StabilityConfig {
   run_id: string;
   session_id: string;
-  profile: 'dev' | 'stage' | 'prod';
+  profile: "dev" | "stage" | "prod";
   config_path?: string;
   enable_checkpoints?: boolean;
   enable_hard_stop?: boolean;
@@ -34,7 +38,7 @@ export interface StabilityResult {
   failed_items: number;
   total_cost_usd: number;
   total_latency_ms: number;
-  quality_gate_result: 'PASS' | 'WARN' | 'FAIL';
+  quality_gate_result: "PASS" | "WARN" | "FAIL";
   threshold_violations: {
     p0: number;
     p1: number;
@@ -65,20 +69,23 @@ export class StabilityIntegration {
 
     // Initialize stability components
     this.budgetGuard = new BudgetGuard(
-      config.config_path || 'baseline_config.json',
+      config.config_path || "baseline_config.json",
       config.profile,
-      config.run_id
+      config.run_id,
     );
 
     this.dlqHandler = new DLQHandler();
 
     this.thresholdGating = new ThresholdGating(
-      config.config_path || 'baseline_config.json',
-      config.profile
+      config.config_path || "baseline_config.json",
+      config.profile,
     );
 
     if (config.enable_checkpoints) {
-      this.checkpointManager = new CheckpointManager(config.run_id, config.session_id);
+      this.checkpointManager = new CheckpointManager(
+        config.run_id,
+        config.session_id,
+      );
     }
 
     // Set up emergency stop monitoring if enabled
@@ -86,7 +93,9 @@ export class StabilityIntegration {
       this.setupEmergencyStopMonitoring();
     }
 
-    console.log(`[STABILITY] Initialized for run ${config.run_id} with profile ${config.profile}`);
+    console.log(
+      `[STABILITY] Initialized for run ${config.run_id} with profile ${config.profile}`,
+    );
   }
 
   /**
@@ -117,7 +126,9 @@ export class StabilityIntegration {
           results.push(...resumeInfo.partial_results);
           processedItems = resumeInfo.total_completed;
 
-          console.log(`[STABILITY] Resuming from item ${startIndex} (${resumeInfo.total_completed} already completed)`);
+          console.log(
+            `[STABILITY] Resuming from item ${startIndex} (${resumeInfo.total_completed} already completed)`,
+          );
         }
       }
 
@@ -145,31 +156,35 @@ export class StabilityIntegration {
           const agentContext: AgentContext = {
             run_id: this.config.run_id,
             item_id: item.id,
-            agent_role: 'orchestrator',
+            agent_role: "orchestrator",
             session_id: this.config.session_id,
             profile: this.config.profile,
             budget_limits: {
-              max_cost_usd: preCheck.item_budget || 0.10,
-              max_latency_ms: 60000
+              max_cost_usd: preCheck.item_budget || 0.1,
+              max_latency_ms: 60000,
             },
-            checkpoint_stream: this.checkpointManager ?
-              `reports/checkpoints/stream_${this.config.run_id}.jsonl` : undefined,
-            metadata: item.metadata
+            checkpoint_stream: this.checkpointManager
+              ? `reports/checkpoints/stream_${this.config.run_id}.jsonl`
+              : undefined,
+            metadata: item.metadata,
           };
 
           // Execute orchestrated processing
-          const orchestrator = new MultiAgentOrchestrator(agentContext, this.config.config_path);
+          const orchestrator = new MultiAgentOrchestrator(
+            agentContext,
+            this.config.config_path,
+          );
           const orchestrationInput: OrchestrationInput = {
             question: item.question,
             context_documents: item.context_documents,
             budget_constraints: {
-              max_cost_usd: preCheck.item_budget || 0.10,
-              max_latency_ms: 60000
+              max_cost_usd: preCheck.item_budget || 0.1,
+              max_latency_ms: 60000,
             },
             quality_requirements: {
               min_confidence: 0.6,
-              required_audit_score: 70
-            }
+              required_audit_score: 70,
+            },
           };
 
           const itemResult = await orchestrator.orchestrate(orchestrationInput);
@@ -183,20 +198,22 @@ export class StabilityIntegration {
 
           // Update budget tracking
           const budgetViolations = this.budgetGuard.recordCost({
-            agent_role: 'orchestrator',
+            agent_role: "orchestrator",
             item_id: item.id,
             cost_usd: itemCost,
             latency_ms: itemLatency,
             metadata: {
               quality_gate: itemResult.final_answer.quality_gate_result,
-              audit_score: itemResult.final_answer.audit_score
-            }
+              audit_score: itemResult.final_answer.audit_score,
+            },
           });
 
           // Handle budget violations
-          if (budgetViolations.some(v => v.action === 'abort')) {
+          if (budgetViolations.some((v) => v.action === "abort")) {
             emergencyStopTriggered = true;
-            stopReason = budgetViolations.find(v => v.action === 'abort')?.message;
+            stopReason = budgetViolations.find(
+              (v) => v.action === "abort",
+            )?.message;
             break;
           }
 
@@ -205,23 +222,23 @@ export class StabilityIntegration {
             await this.checkpointManager.recordCheckpoint({
               run_id: this.config.run_id,
               item_id: item.id,
-              agent_role: 'orchestrator',
+              agent_role: "orchestrator",
               checkpoint_index: i,
               total_items: items.length,
-              stage: 'orchestration_complete',
+              stage: "orchestration_complete",
               progress: 1.0,
               success: true,
               resumable_state: {
-                processing_stage: 'complete',
-                completed_steps: ['evidence', 'answer', 'audit'],
+                processing_stage: "complete",
+                completed_steps: ["evidence", "answer", "audit"],
                 intermediate_results: itemResult,
-                agent_context: agentContext
+                agent_context: agentContext,
               },
               metrics: {
                 cost_usd: itemCost,
                 latency_ms: itemLatency,
-                retries: 0
-              }
+                retries: 0,
+              },
             });
             checkpointsCreated++;
           }
@@ -232,13 +249,14 @@ export class StabilityIntegration {
             metrics: {
               cost_usd: itemCost,
               latency_ms: itemLatency,
-              quality_gate: itemResult.final_answer.quality_gate_result
-            }
+              quality_gate: itemResult.final_answer.quality_gate_result,
+            },
           });
 
           processedItems++;
-          console.log(`[STABILITY] Completed item ${i+1}/${items.length}: ${item.id} (Cost: $${itemCost.toFixed(4)}, Quality: ${itemResult.final_answer.quality_gate_result})`);
-
+          console.log(
+            `[STABILITY] Completed item ${i + 1}/${items.length}: ${item.id} (Cost: $${itemCost.toFixed(4)}, Quality: ${itemResult.final_answer.quality_gate_result})`,
+          );
         } catch (error) {
           failedItems++;
           dlqEntries++;
@@ -250,34 +268,33 @@ export class StabilityIntegration {
             await this.checkpointManager.recordCheckpoint({
               run_id: this.config.run_id,
               item_id: item.id,
-              agent_role: 'orchestrator',
+              agent_role: "orchestrator",
               checkpoint_index: i,
               total_items: items.length,
-              stage: 'failed',
+              stage: "failed",
               progress: 0,
               success: false,
               resumable_state: {
-                processing_stage: 'error',
+                processing_stage: "error",
                 completed_steps: [],
                 intermediate_results: null,
-                agent_context: {}
+                agent_context: {},
               },
               metrics: {
                 cost_usd: 0,
                 latency_ms: Date.now() - itemStart,
-                retries: 0
+                retries: 0,
               },
               error_info: {
-                error_type: 'orchestration_error',
+                error_type: "orchestration_error",
                 error_message: String(error),
-                retryable: true
-              }
+                retryable: true,
+              },
             });
             checkpointsCreated++;
           }
         }
       }
-
     } catch (error) {
       console.error(`[STABILITY] Batch processing failed: ${error}`);
       emergencyStopTriggered = true;
@@ -288,17 +305,14 @@ export class StabilityIntegration {
     const qualityMetrics = this.performFinalQualityGating(results);
 
     // Generate final reports
-    const finalReport = await this.generateFinalReports(
-      results,
-      {
-        processed_items: processedItems,
-        failed_items: failedItems,
-        total_cost_usd: totalCost,
-        total_latency_ms: totalLatency,
-        checkpoints_created: checkpointsCreated,
-        dlq_entries: dlqEntries
-      }
-    );
+    const finalReport = await this.generateFinalReports(results, {
+      processed_items: processedItems,
+      failed_items: failedItems,
+      total_cost_usd: totalCost,
+      total_latency_ms: totalLatency,
+      checkpoints_created: checkpointsCreated,
+      dlq_entries: dlqEntries,
+    });
 
     return {
       success: !emergencyStopTriggered && failedItems < items.length * 0.5,
@@ -310,13 +324,13 @@ export class StabilityIntegration {
       threshold_violations: {
         p0: qualityMetrics.p0_violations,
         p1: qualityMetrics.p1_violations,
-        p2: qualityMetrics.p2_violations
+        p2: qualityMetrics.p2_violations,
       },
       checkpoints_created: checkpointsCreated,
       dlq_entries: dlqEntries,
       final_report: finalReport,
       emergency_stop_triggered: emergencyStopTriggered,
-      stop_reason: stopReason
+      stop_reason: stopReason,
     };
   }
 
@@ -331,7 +345,7 @@ export class StabilityIntegration {
       return {
         allowed: false,
         emergency_stop: true,
-        reason: 'Emergency stop triggered'
+        reason: "Emergency stop triggered",
       };
     }
 
@@ -342,7 +356,7 @@ export class StabilityIntegration {
       return {
         allowed: false,
         emergency_stop: true,
-        reason: 'Budget exhausted'
+        reason: "Budget exhausted",
       };
     }
 
@@ -352,28 +366,28 @@ export class StabilityIntegration {
     if (budgetStatus.usage.remaining_budget_usd < estimatedCost) {
       return {
         allowed: false,
-        reason: `Insufficient budget remaining: $${budgetStatus.usage.remaining_budget_usd.toFixed(4)} < $${estimatedCost.toFixed(4)}`
+        reason: `Insufficient budget remaining: $${budgetStatus.usage.remaining_budget_usd.toFixed(4)} < $${estimatedCost.toFixed(4)}`,
       };
     }
 
     return {
       allowed: true,
-      item_budget: estimatedCost * 1.5 // Add buffer
+      item_budget: estimatedCost * 1.5, // Add buffer
     };
   }
 
   private performFinalQualityGating(results: any[]): {
-    overall_result: 'PASS' | 'WARN' | 'FAIL';
+    overall_result: "PASS" | "WARN" | "FAIL";
     p0_violations: number;
     p1_violations: number;
     p2_violations: number;
   } {
     if (results.length === 0) {
       return {
-        overall_result: 'FAIL',
+        overall_result: "FAIL",
         p0_violations: 1,
         p1_violations: 0,
-        p2_violations: 0
+        p2_violations: 0,
       };
     }
 
@@ -385,13 +399,24 @@ export class StabilityIntegration {
       evidence_missing_rate_max: 0,
 
       // P1 metrics
-      cost_per_item_warn: results.reduce((sum, r) => sum + r.metrics.cost_usd, 0) / results.length,
-      latency_p95_warn_ms: this.calculateP95(results.map(r => r.metrics.latency_ms)),
-      failure_rate_warn: results.filter(r => r.metrics.quality_gate === 'FAIL').length / results.length,
+      cost_per_item_warn:
+        results.reduce((sum, r) => sum + r.metrics.cost_usd, 0) /
+        results.length,
+      latency_p95_warn_ms: this.calculateP95(
+        results.map((r) => r.metrics.latency_ms),
+      ),
+      failure_rate_warn:
+        results.filter((r) => r.metrics.quality_gate === "FAIL").length /
+        results.length,
 
       // P2 metrics
-      quality_score_warn: results.reduce((sum, r) =>
-        sum + (r.result.final_answer.audit_score || 0), 0) / results.length / 100
+      quality_score_warn:
+        results.reduce(
+          (sum, r) => sum + (r.result.final_answer.audit_score || 0),
+          0,
+        ) /
+        results.length /
+        100,
     };
 
     return this.thresholdGating.evaluateMetrics(aggregatedMetrics);
@@ -406,9 +431,9 @@ export class StabilityIntegration {
       total_latency_ms: number;
       checkpoints_created: number;
       dlq_entries: number;
-    }
-  ): Promise<StabilityResult['final_report']> {
-    const reportsDir = 'reports';
+    },
+  ): Promise<StabilityResult["final_report"]> {
+    const reportsDir = "reports";
 
     // Update session report with stability metrics
     const sessionReportPath = `${reportsDir}/session_report.md`;
@@ -432,23 +457,22 @@ export class StabilityIntegration {
 - Checkpoints Created: ${summary.checkpoints_created}
 - DLQ Entries: ${summary.dlq_entries}
 - Budget Guard Active: Yes
-- Kill Switch Monitoring: ${this.config.enable_hard_stop ? 'Enabled' : 'Disabled'}
+- Kill Switch Monitoring: ${this.config.enable_hard_stop ? "Enabled" : "Disabled"}
 
 **Budget Status:**
 ${JSON.stringify(this.budgetGuard.getBudgetStatus().usage, null, 2)}
 `;
 
       // Append to session report if it exists
-      if (require('fs').existsSync(sessionReportPath)) {
-        require('fs').appendFileSync(sessionReportPath, stabilitySection);
+      if (require("fs").existsSync(sessionReportPath)) {
+        require("fs").appendFileSync(sessionReportPath, stabilitySection);
       }
-
     } catch (error) {
       console.error(`[STABILITY] Failed to update session report: ${error}`);
     }
 
-    const finalReport: StabilityResult['final_report'] = {
-      session_report_path: sessionReportPath
+    const finalReport: StabilityResult["final_report"] = {
+      session_report_path: sessionReportPath,
     };
 
     // Generate checkpoint summary if enabled
@@ -456,7 +480,10 @@ ${JSON.stringify(this.budgetGuard.getBudgetStatus().usage, null, 2)}
       const checkpointSummary = this.checkpointManager.generateSummaryReport();
       if (checkpointSummary) {
         const checkpointSummaryPath = `${reportsDir}/checkpoint_summary_${this.config.run_id}.json`;
-        require('fs').writeFileSync(checkpointSummaryPath, JSON.stringify(checkpointSummary, null, 2));
+        require("fs").writeFileSync(
+          checkpointSummaryPath,
+          JSON.stringify(checkpointSummary, null, 2),
+        );
         finalReport.checkpoint_summary_path = checkpointSummaryPath;
       }
     }
@@ -465,7 +492,10 @@ ${JSON.stringify(this.budgetGuard.getBudgetStatus().usage, null, 2)}
     const dlqStats = this.dlqHandler.getDLQStatistics();
     if (dlqStats.total_entries > 0) {
       const dlqSummaryPath = `${reportsDir}/dlq_summary_${this.config.run_id}.json`;
-      require('fs').writeFileSync(dlqSummaryPath, JSON.stringify(dlqStats, null, 2));
+      require("fs").writeFileSync(
+        dlqSummaryPath,
+        JSON.stringify(dlqStats, null, 2),
+      );
       finalReport.dlq_summary_path = dlqSummaryPath;
     }
 
@@ -475,15 +505,19 @@ ${JSON.stringify(this.budgetGuard.getBudgetStatus().usage, null, 2)}
   private setupEmergencyStopMonitoring(): void {
     // Monitor for HARD_STOP environment variable changes
     const checkInterval = setInterval(() => {
-      if (process.env.HARD_STOP === '1') {
-        console.error(`[STABILITY] HARD_STOP detected - triggering emergency shutdown`);
-        this.budgetGuard.triggerEmergencyStop('HARD_STOP environment variable set');
+      if (process.env.HARD_STOP === "1") {
+        console.error(
+          `[STABILITY] HARD_STOP detected - triggering emergency shutdown`,
+        );
+        this.budgetGuard.triggerEmergencyStop(
+          "HARD_STOP environment variable set",
+        );
         clearInterval(checkInterval);
       }
     }, 5000);
 
     // Clean up on process exit
-    process.on('beforeExit', () => {
+    process.on("beforeExit", () => {
       clearInterval(checkInterval);
     });
   }
@@ -492,7 +526,10 @@ ${JSON.stringify(this.budgetGuard.getBudgetStatus().usage, null, 2)}
     // Simple cost estimation based on question complexity and document count
     const baseCost = 0.02;
     const questionComplexity = item.question.length > 100 ? 1.5 : 1.0;
-    const documentFactor = Math.min((item.context_documents?.length || 1) / 5, 2.0);
+    const documentFactor = Math.min(
+      (item.context_documents?.length || 1) / 5,
+      2.0,
+    );
 
     return baseCost * questionComplexity * documentFactor;
   }
@@ -511,44 +548,50 @@ if (require.main === module) {
   const args = process.argv.slice(2);
   const command = args[0];
 
-  if (command === 'test') {
+  if (command === "test") {
     const config: StabilityConfig = {
-      run_id: 'stability_test_' + Date.now(),
-      session_id: 'test_session',
-      profile: 'dev',
+      run_id: "stability_test_" + Date.now(),
+      session_id: "test_session",
+      profile: "dev",
       enable_checkpoints: true,
       enable_hard_stop: true,
-      budget_max_usd: 0.50
+      budget_max_usd: 0.5,
     };
 
     const stability = new StabilityIntegration(config);
 
     const testItems: ProcessingItem[] = [
       {
-        id: 'test_1',
-        question: 'What are the benefits of renewable energy?',
-        context_documents: ['Renewable energy reduces carbon emissions...', 'Solar power is cost-effective...']
+        id: "test_1",
+        question: "What are the benefits of renewable energy?",
+        context_documents: [
+          "Renewable energy reduces carbon emissions...",
+          "Solar power is cost-effective...",
+        ],
       },
       {
-        id: 'test_2',
-        question: 'How does machine learning work?',
-        context_documents: ['Machine learning algorithms learn from data...', 'Neural networks are a type of ML...']
-      }
+        id: "test_2",
+        question: "How does machine learning work?",
+        context_documents: [
+          "Machine learning algorithms learn from data...",
+          "Neural networks are a type of ML...",
+        ],
+      },
     ];
 
-    stability.processBatch(testItems)
-      .then(result => {
-        console.log('Stability processing completed:');
+    stability
+      .processBatch(testItems)
+      .then((result) => {
+        console.log("Stability processing completed:");
         console.log(JSON.stringify(result, null, 2));
       })
-      .catch(error => {
-        console.error('Stability processing failed:', error);
+      .catch((error) => {
+        console.error("Stability processing failed:", error);
         process.exit(1);
       });
-
   } else {
-    console.log('Stability Integration CLI');
-    console.log('Commands:');
-    console.log('  test - Run stability integration test');
+    console.log("Stability Integration CLI");
+    console.log("Commands:");
+    console.log("  test - Run stability integration test");
   }
 }

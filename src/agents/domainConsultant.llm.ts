@@ -1,21 +1,23 @@
-const { callLLM } = require('../services/llmService');
-type Req={ documentText:string, domain?:string, personas?:string[] };
-type Res=any;
+const { callLLM } = require("../services/llmService");
+type Req = { documentText: string; domain?: string; personas?: string[] };
+type Res = any;
 
-const INDUSTRY_HINTS:Record<string,string>={
-  "software_maintenance":"SLA, 장애, 패치, 보안, 라이선스, 데이터백업, 통지의무, 위약금, 책임제한",
-  "construction_safety":"산안법, 불시점검, 출입통제, 중대재해, 원청/하청 책임, 사고보고, 로그보존"
+const INDUSTRY_HINTS: Record<string, string> = {
+  software_maintenance:
+    "SLA, 장애, 패치, 보안, 라이선스, 데이터백업, 통지의무, 위약금, 책임제한",
+  construction_safety:
+    "산안법, 불시점검, 출입통제, 중대재해, 원청/하청 책임, 사고보고, 로그보존",
 };
 
-function sys(_domain?:string){
+function sys(_domain?: string) {
   return [
     "당신은 문서 근거 기반 상황형 QA를 생성하는 전문가입니다.",
     "반드시 JSON 하나로만 출력하십시오. SCHEMA.json을 만족해야 합니다.",
-    "근거 불충분시 insufficient-evidence 라고 명시하고 추측을 금지합니다."
-  ].join('\n');
+    "근거 불충분시 insufficient-evidence 라고 명시하고 추측을 금지합니다.",
+  ].join("\n");
 }
-function user(doc:string, domain?:string, personas?:string[]){
-  const hints = INDUSTRY_HINTS[(domain||'').toLowerCase()] || "";
+function user(doc: string, domain?: string, personas?: string[]) {
+  const hints = INDUSTRY_HINTS[(domain || "").toLowerCase()] || "";
   return [
     "다음 문서를 분석하여 두 섹션을 생성하십시오.",
     "섹션 A: clause_map[] 추출 → 각 항목 {clause_id,human_label,key_text,conditions[],exceptions[],owner,severity}.",
@@ -28,18 +30,31 @@ function user(doc:string, domain?:string, personas?:string[]){
     "- 페르소나별 차별화(persona; 예: 운영팀, 법무, 영업).",
     "- 불명확하면 insufficient-evidence.",
     `도메인 힌트: ${hints}`,
-    personas?.length?`페르소나 후보: ${personas.join(', ')}`:"",
-    "출력은 반드시 하나의 JSON: {\"clause_map\":[], \"records\":[], \"_meta\":{}}",
+    personas?.length ? `페르소나 후보: ${personas.join(", ")}` : "",
+    '출력은 반드시 하나의 JSON: {"clause_map":[], "records":[], "_meta":{}}',
     "문서:",
-    doc.slice(0,12000)
-  ].join('\n');
+    doc.slice(0, 12000),
+  ].join("\n");
 }
 
-export async function consultDomainLLM(req:Req):Promise<Res>{
-  const { text, usage, model, provider, latencyMs, cost } =
-    await callLLM({system:sys(req.domain), user:user(req.documentText,req.domain,req.personas), json:true});
-  let data:any;
-  try{ data = JSON.parse(text); }catch(e){ data={clause_map:[], records:[], raw:text, parse_error:String(e)}; }
-  data._meta = { provider, model, latency_ms:latencyMs, usage, cost_usd:cost?.cost??0 };
+export async function consultDomainLLM(req: Req): Promise<Res> {
+  const { text, usage, model, provider, latencyMs, cost } = await callLLM({
+    system: sys(req.domain),
+    user: user(req.documentText, req.domain, req.personas),
+    json: true,
+  });
+  let data: any;
+  try {
+    data = JSON.parse(text);
+  } catch (e) {
+    data = { clause_map: [], records: [], raw: text, parse_error: String(e) };
+  }
+  data._meta = {
+    provider,
+    model,
+    latency_ms: latencyMs,
+    usage,
+    cost_usd: cost?.cost ?? 0,
+  };
   return data;
 }

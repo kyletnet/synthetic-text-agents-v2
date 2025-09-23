@@ -1,15 +1,35 @@
-<!doctype html><meta charset="utf-8"/>
+<!doctype html><meta charset="utf-8" />
 <title>Review — outputs JSONL</title>
-<style>body{font:14px/1.5 system-ui,apple-system,sans-serif;margin:20px}pre{white-space:pre-wrap;background:#f6f7f9;padding:12px;border-radius:8px}</style>
+<style>
+  body {
+    font:
+      14px/1.5 system-ui,
+      apple-system,
+      sans-serif;
+    margin: 20px;
+  }
+  pre {
+    white-space: pre-wrap;
+    background: #f6f7f9;
+    padding: 12px;
+    border-radius: 8px;
+  }
+</style>
 <h2>Outputs 리뷰</h2>
-<p><button id="suggest">최근 파일 자동 제안</button> <input id="path" size="60" placeholder="outputs/min_*.jsonl 경로 입력"/></p>
+<p>
+  <button id="suggest">최근 파일 자동 제안</button>
+  <input id="path" size="60" placeholder="outputs/min_*.jsonl 경로 입력" />
+</p>
 <pre id="out">로드 전</pre>
 <script>
-(async ()=>{
-  const $p = document.getElementById('path'), $o=document.getElementById('out');
-  document.getElementById('suggest').onclick = async ()=>{
-    const r = await fetch('/'); // 정적환경에선 파일선택 권장, 여기선 placeholder만 유지
-    $p.value = 'outputs/(수동으로 최신 파일 지정)'; $o.textContent='터미널에서: ls -lt outputs/min_*.jsonl | head -1 로 최신 경로 확인 후 붙여넣기';
-  };
-})();
+  (async () => {
+    const $p = document.getElementById("path"),
+      $o = document.getElementById("out");
+    document.getElementById("suggest").onclick = async () => {
+      const r = await fetch("/"); // 정적환경에선 파일선택 권장, 여기선 placeholder만 유지
+      $p.value = "outputs/(수동으로 최신 파일 지정)";
+      $o.textContent =
+        "터미널에서: ls -lt outputs/min_*.jsonl | head -1 로 최신 경로 확인 후 붙여넣기";
+    };
+  })();
 </script>

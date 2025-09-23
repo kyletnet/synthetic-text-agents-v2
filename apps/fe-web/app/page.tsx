@@ -1,11 +1,20 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { Upload, Play, FileText, BarChart3, Zap, Shield, Users, Target } from "lucide-react"
+import Link from "next/link";
+import {
+  Upload,
+  Play,
+  FileText,
+  BarChart3,
+  Zap,
+  Shield,
+  Users,
+  Target,
+} from "lucide-react";
 
-import { Button } from "@/components/ui/button"
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 export default function HomePage() {
   return (
@@ -16,8 +25,9 @@ export default function HomePage() {
           QA Generation System
         </h1>
         <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-          AI-powered QA generation using 8-Agent collaboration. Upload your documents,
-          generate high-quality Q&A pairs, and evaluate them with comprehensive quality metrics.
+          AI-powered QA generation using 8-Agent collaboration. Upload your
+          documents, generate high-quality Q&A pairs, and evaluate them with
+          comprehensive quality metrics.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link href="/upload">
@@ -46,7 +56,8 @@ export default function HomePage() {
           </CardHeader>
           <CardContent>
             <p className="text-sm text-gray-600">
-              Meta-adaptive expert orchestration with specialized agents for different aspects of QA generation and quality control.
+              Meta-adaptive expert orchestration with specialized agents for
+              different aspects of QA generation and quality control.
             </p>
           </CardContent>
         </Card>
@@ -60,7 +71,8 @@ export default function HomePage() {
           </CardHeader>
           <CardContent>
             <p className="text-sm text-gray-600">
-              Comprehensive quality metrics including duplication detection, evidence validation, and hallucination checks.
+              Comprehensive quality metrics including duplication detection,
+              evidence validation, and hallucination checks.
             </p>
           </CardContent>
         </Card>
@@ -74,7 +86,8 @@ export default function HomePage() {
           </CardHeader>
           <CardContent>
             <p className="text-sm text-gray-600">
-              Support for text documents (.txt), rich text (.rtf), and existing QA pairs (.jsonl) for various input scenarios.
+              Support for text documents (.txt), rich text (.rtf), and existing
+              QA pairs (.jsonl) for various input scenarios.
             </p>
           </CardContent>
         </Card>
@@ -88,7 +101,8 @@ export default function HomePage() {
           </CardHeader>
           <CardContent>
             <p className="text-sm text-gray-600">
-              Target quality score of 9.5/10 with transparent reasoning and comprehensive audit trails for all decisions.
+              Target quality score of 9.5/10 with transparent reasoning and
+              comprehensive audit trails for all decisions.
             </p>
           </CardContent>
         </Card>
@@ -110,7 +124,9 @@ export default function HomePage() {
               Upload your documents or existing QA pairs
             </p>
             <Link href="/upload">
-              <Button variant="outline" size="sm" className="mt-3">Upload Files</Button>
+              <Button variant="outline" size="sm" className="mt-3">
+                Upload Files
+              </Button>
             </Link>
           </div>
 
@@ -124,7 +140,9 @@ export default function HomePage() {
               Run QA generation and quality evaluation
             </p>
             <Link href="/run">
-              <Button variant="outline" size="sm" className="mt-3">Run Process</Button>
+              <Button variant="outline" size="sm" className="mt-3">
+                Run Process
+              </Button>
             </Link>
           </div>
 
@@ -138,7 +156,9 @@ export default function HomePage() {
               Review results and filter by quality metrics
             </p>
             <Link href="/results">
-              <Button variant="outline" size="sm" className="mt-3">View Results</Button>
+              <Button variant="outline" size="sm" className="mt-3">
+                View Results
+              </Button>
             </Link>
           </div>
 
@@ -152,7 +172,9 @@ export default function HomePage() {
               Analyze quality metrics and improvement areas
             </p>
             <Link href="/dashboard">
-              <Button variant="outline" size="sm" className="mt-3">View Dashboard</Button>
+              <Button variant="outline" size="sm" className="mt-3">
+                View Dashboard
+              </Button>
             </Link>
           </div>
         </div>
@@ -167,12 +189,16 @@ export default function HomePage() {
           <div className="text-center">
             <div className="text-2xl font-bold text-blue-600 mb-1">5%</div>
             <div className="text-sm text-gray-600">Duplication Rate</div>
-            <Badge className="mt-1 bg-green-100 text-green-800">Excellent</Badge>
+            <Badge className="mt-1 bg-green-100 text-green-800">
+              Excellent
+            </Badge>
           </div>
           <div className="text-center">
             <div className="text-2xl font-bold text-green-600 mb-1">95%</div>
             <div className="text-sm text-gray-600">Evidence Quality</div>
-            <Badge className="mt-1 bg-green-100 text-green-800">Excellent</Badge>
+            <Badge className="mt-1 bg-green-100 text-green-800">
+              Excellent
+            </Badge>
           </div>
           <div className="text-center">
             <div className="text-2xl font-bold text-green-600 mb-1">2%</div>
@@ -192,10 +218,12 @@ export default function HomePage() {
           <div className="text-center">
             <div className="text-2xl font-bold text-blue-600 mb-1">87.5%</div>
             <div className="text-sm text-gray-600">Overall Score</div>
-            <Badge className="mt-1 bg-green-100 text-green-800">Excellent</Badge>
+            <Badge className="mt-1 bg-green-100 text-green-800">
+              Excellent
+            </Badge>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -1,6 +1,6 @@
-import { readFileSync, writeFileSync } from 'fs';
-import { join } from 'path';
-import { glob } from 'glob';
+import { readFileSync, writeFileSync } from "fs";
+import { join } from "path";
+import { glob } from "glob";
 
 /**
  * Threshold Manager v1.0
@@ -12,28 +12,28 @@ import { glob } from 'glob';
  */
 
 export interface P0Thresholds {
-  pii_hits_max: number;              // Fixed: 0 (no PII allowed)
-  license_violations_max: number;    // Fixed: 2 max
+  pii_hits_max: number; // Fixed: 0 (no PII allowed)
+  license_violations_max: number; // Fixed: 2 max
   evidence_missing_rate_max: number; // Fixed: 20% max
-  hallucination_rate_max: number;    // Fixed: 5% max
+  hallucination_rate_max: number; // Fixed: 5% max
 }
 
 export interface P1Thresholds {
-  cost_per_item_warn: number;        // Auto-calibrated
-  cost_per_item_fail: number;        // Auto-calibrated
-  latency_p95_warn_ms: number;       // Auto-calibrated
-  latency_p95_fail_ms: number;       // Auto-calibrated
-  failure_rate_warn: number;         // Auto-calibrated
-  failure_rate_fail: number;         // Auto-calibrated
+  cost_per_item_warn: number; // Auto-calibrated
+  cost_per_item_fail: number; // Auto-calibrated
+  latency_p95_warn_ms: number; // Auto-calibrated
+  latency_p95_fail_ms: number; // Auto-calibrated
+  failure_rate_warn: number; // Auto-calibrated
+  failure_rate_fail: number; // Auto-calibrated
 }
 
 export interface P2Thresholds {
-  duplication_rate_warn: number;     // Auto-calibrated
-  duplication_rate_fail: number;     // Auto-calibrated
-  coverage_rate_warn: number;        // Auto-calibrated (min values)
-  coverage_rate_fail: number;        // Auto-calibrated (min values)
-  quality_score_warn: number;        // Auto-calibrated (min values)
-  quality_score_fail: number;        // Auto-calibrated (min values)
+  duplication_rate_warn: number; // Auto-calibrated
+  duplication_rate_fail: number; // Auto-calibrated
+  coverage_rate_warn: number; // Auto-calibrated (min values)
+  coverage_rate_fail: number; // Auto-calibrated (min values)
+  quality_score_warn: number; // Auto-calibrated (min values)
+  quality_score_fail: number; // Auto-calibrated (min values)
 }
 
 export interface ProfileConfig {
@@ -54,10 +54,10 @@ export interface ThresholdConfig {
 
 export interface AutoCalibrationConfig {
   enabled: boolean;
-  lookback_runs: number;           // Number of historical runs to analyze
-  percentile_warn: number;         // Percentile for warn threshold (e.g., 75)
-  percentile_fail: number;         // Percentile for fail threshold (e.g., 90)
-  drift_guard_max_delta: number;   // Max change allowed (e.g., 0.20 = ±20%)
+  lookback_runs: number; // Number of historical runs to analyze
+  percentile_warn: number; // Percentile for warn threshold (e.g., 75)
+  percentile_fail: number; // Percentile for fail threshold (e.g., 90)
+  drift_guard_max_delta: number; // Max change allowed (e.g., 0.20 = ±20%)
 }
 
 export interface HistoricalMetrics {
@@ -77,7 +77,7 @@ export interface HistoricalMetrics {
 
 export interface CalibrationResult {
   metric_name: string;
-  threshold_type: 'warn' | 'fail';
+  threshold_type: "warn" | "fail";
   old_value: number;
   new_value: number;
   change_pct: number;
@@ -87,17 +87,17 @@ export interface CalibrationResult {
 }
 
 export interface ThresholdViolation {
-  level: 'P0' | 'P1' | 'P2';
+  level: "P0" | "P1" | "P2";
   metric: string;
-  threshold_type: 'warn' | 'fail';
+  threshold_type: "warn" | "fail";
   actual_value: number;
   threshold_value: number;
-  severity: 'critical' | 'high' | 'medium' | 'low';
+  severity: "critical" | "high" | "medium" | "low";
   message: string;
 }
 
 export interface GatingResult {
-  gate_status: 'PASS' | 'WARN' | 'PARTIAL' | 'FAIL';
+  gate_status: "PASS" | "WARN" | "PARTIAL" | "FAIL";
   can_proceed: boolean;
   p0_violations: string[];
   p1_warnings: string[];
@@ -111,7 +111,7 @@ export class ThresholdManager {
   private baselineConfig: any;
 
   constructor(configPath?: string) {
-    this.configPath = configPath || join(process.cwd(), 'baseline_config.json');
+    this.configPath = configPath || join(process.cwd(), "baseline_config.json");
     this.loadConfig();
   }
 
@@ -120,10 +120,12 @@ export class ThresholdManager {
    */
   private loadConfig(): void {
     try {
-      const configContent = readFileSync(this.configPath, 'utf-8');
+      const configContent = readFileSync(this.configPath, "utf-8");
       this.baselineConfig = JSON.parse(configContent);
     } catch (error) {
-      throw new Error(`Failed to load configuration from ${this.configPath}: ${error}`);
+      throw new Error(
+        `Failed to load configuration from ${this.configPath}: ${error}`,
+      );
     }
   }
 
@@ -135,17 +137,17 @@ export class ThresholdManager {
     const p0 = dxloop.thresholds?.p0 || {};
 
     return {
-      pii_hits_max: p0.pii_hits_max ?? 0,                    // Fixed: no PII allowed
+      pii_hits_max: p0.pii_hits_max ?? 0, // Fixed: no PII allowed
       license_violations_max: p0.license_violations_max ?? 2, // Fixed: max 2 violations
-      evidence_missing_rate_max: p0.evidence_missing_rate_max ?? 0.20, // Fixed: 20% max
-      hallucination_rate_max: p0.hallucination_rate_max ?? 0.05       // Fixed: 5% max
+      evidence_missing_rate_max: p0.evidence_missing_rate_max ?? 0.2, // Fixed: 20% max
+      hallucination_rate_max: p0.hallucination_rate_max ?? 0.05, // Fixed: 5% max
     };
   }
 
   /**
    * Get P1 thresholds for a specific profile
    */
-  getP1Thresholds(profile: string = 'dev'): P1Thresholds {
+  getP1Thresholds(profile: string = "dev"): P1Thresholds {
     const dxloop = this.baselineConfig.dxloop || {};
     const p1 = dxloop.thresholds?.p1 || {};
 
@@ -153,19 +155,25 @@ export class ThresholdManager {
     const profileOverrides = dxloop.profile_overrides?.[profile]?.p1 || {};
 
     return {
-      cost_per_item_warn: profileOverrides.cost_per_item_warn ?? p1.cost_per_item_warn ?? 0.08,
-      cost_per_item_fail: profileOverrides.cost_per_item_fail ?? p1.cost_per_item_fail ?? 0.15,
-      latency_p95_warn_ms: profileOverrides.latency_p95_warn_ms ?? p1.latency_p95_warn_ms ?? 4000,
-      latency_p95_fail_ms: profileOverrides.latency_p95_fail_ms ?? p1.latency_p95_fail_ms ?? 8000,
-      failure_rate_warn: profileOverrides.failure_rate_warn ?? p1.failure_rate_warn ?? 0.10,
-      failure_rate_fail: profileOverrides.failure_rate_fail ?? p1.failure_rate_fail ?? 0.25
+      cost_per_item_warn:
+        profileOverrides.cost_per_item_warn ?? p1.cost_per_item_warn ?? 0.08,
+      cost_per_item_fail:
+        profileOverrides.cost_per_item_fail ?? p1.cost_per_item_fail ?? 0.15,
+      latency_p95_warn_ms:
+        profileOverrides.latency_p95_warn_ms ?? p1.latency_p95_warn_ms ?? 4000,
+      latency_p95_fail_ms:
+        profileOverrides.latency_p95_fail_ms ?? p1.latency_p95_fail_ms ?? 8000,
+      failure_rate_warn:
+        profileOverrides.failure_rate_warn ?? p1.failure_rate_warn ?? 0.1,
+      failure_rate_fail:
+        profileOverrides.failure_rate_fail ?? p1.failure_rate_fail ?? 0.25,
     };
   }
 
   /**
    * Get P2 thresholds for a specific profile
    */
-  getP2Thresholds(profile: string = 'dev'): P2Thresholds {
+  getP2Thresholds(profile: string = "dev"): P2Thresholds {
     const dxloop = this.baselineConfig.dxloop || {};
     const p2 = dxloop.thresholds?.p2 || {};
 
@@ -173,12 +181,22 @@ export class ThresholdManager {
     const profileOverrides = dxloop.profile_overrides?.[profile]?.p2 || {};
 
     return {
-      duplication_rate_warn: profileOverrides.duplication_rate_warn ?? p2.duplication_rate_warn ?? 0.10,
-      duplication_rate_fail: profileOverrides.duplication_rate_fail ?? p2.duplication_rate_fail ?? 0.20,
-      coverage_rate_warn: profileOverrides.coverage_rate_warn ?? p2.coverage_rate_warn ?? 0.70,
-      coverage_rate_fail: profileOverrides.coverage_rate_fail ?? p2.coverage_rate_fail ?? 0.50,
-      quality_score_warn: profileOverrides.quality_score_warn ?? p2.quality_score_warn ?? 0.70,
-      quality_score_fail: profileOverrides.quality_score_fail ?? p2.quality_score_fail ?? 0.50
+      duplication_rate_warn:
+        profileOverrides.duplication_rate_warn ??
+        p2.duplication_rate_warn ??
+        0.1,
+      duplication_rate_fail:
+        profileOverrides.duplication_rate_fail ??
+        p2.duplication_rate_fail ??
+        0.2,
+      coverage_rate_warn:
+        profileOverrides.coverage_rate_warn ?? p2.coverage_rate_warn ?? 0.7,
+      coverage_rate_fail:
+        profileOverrides.coverage_rate_fail ?? p2.coverage_rate_fail ?? 0.5,
+      quality_score_warn:
+        profileOverrides.quality_score_warn ?? p2.quality_score_warn ?? 0.7,
+      quality_score_fail:
+        profileOverrides.quality_score_fail ?? p2.quality_score_fail ?? 0.5,
     };
   }
 
@@ -209,7 +227,7 @@ export class ThresholdManager {
       lookback_runs: autocalib.lookback_runs ?? 10,
       percentile_warn: autocalib.percentile_warn ?? 75,
       percentile_fail: autocalib.percentile_fail ?? 90,
-      drift_guard_max_delta: autocalib.drift_guard_max_delta ?? 0.20
+      drift_guard_max_delta: autocalib.drift_guard_max_delta ?? 0.2,
     };
   }
 
@@ -217,12 +235,12 @@ export class ThresholdManager {
    * Load historical metrics from recent baseline reports
    */
   async loadHistoricalMetrics(): Promise<HistoricalMetrics[]> {
-    const reportsDir = join(process.cwd(), 'reports');
-    const historyDir = join(reportsDir, 'history');
+    const reportsDir = join(process.cwd(), "reports");
+    const historyDir = join(reportsDir, "history");
 
     try {
       // Find all historical baseline reports
-      const pattern = join(historyDir, '*', 'baseline_report.jsonl');
+      const pattern = join(historyDir, "*", "baseline_report.jsonl");
       const reportFiles = await glob(pattern);
 
       const metrics: HistoricalMetrics[] = [];
@@ -235,8 +253,8 @@ export class ThresholdManager {
 
       for (const file of sortedFiles) {
         try {
-          const content = readFileSync(file, 'utf-8');
-          const lines = content.trim().split('\n');
+          const content = readFileSync(file, "utf-8");
+          const lines = content.trim().split("\n");
 
           if (lines.length === 0) continue;
 
@@ -247,7 +265,7 @@ export class ThresholdManager {
           // Extract metrics we need for auto-calibration
           const historicalMetric: HistoricalMetrics = {
             timestamp: summary.timestamp || new Date().toISOString(),
-            session_id: summary.session_id || 'unknown',
+            session_id: summary.session_id || "unknown",
             cost_per_item: summary.cost_per_item || 0,
             latency_p95_ms: summary.latency_p95_ms || 0,
             failure_rate: this.calculateFailureRate(lines),
@@ -257,7 +275,7 @@ export class ThresholdManager {
             evidence_missing_rate: this.calculateEvidenceMissingRate(lines),
             hallucination_rate: this.calculateHallucinationRate(lines),
             pii_hits: this.calculatePIIHits(lines),
-            license_violations: this.calculateLicenseViolations(lines)
+            license_violations: this.calculateLicenseViolations(lines),
           };
 
           metrics.push(historicalMetric);
@@ -268,7 +286,7 @@ export class ThresholdManager {
 
       return metrics;
     } catch (error) {
-      console.warn('Failed to load historical metrics:', error);
+      console.warn("Failed to load historical metrics:", error);
       return [];
     }
   }
@@ -295,7 +313,9 @@ export class ThresholdManager {
   /**
    * Auto-calibrate P1 and P2 thresholds based on historical data
    */
-  async autoCalibrateThresholds(profile: string = 'dev'): Promise<CalibrationResult[]> {
+  async autoCalibrateThresholds(
+    profile: string = "dev",
+  ): Promise<CalibrationResult[]> {
     const autocalibConfig = this.getAutoCalibrationConfig();
 
     if (!autocalibConfig.enabled) {
@@ -305,7 +325,9 @@ export class ThresholdManager {
     const historicalMetrics = await this.loadHistoricalMetrics();
 
     if (historicalMetrics.length < 3) {
-      console.warn('Insufficient historical data for auto-calibration (need at least 3 runs)');
+      console.warn(
+        "Insufficient historical data for auto-calibration (need at least 3 runs)",
+      );
       return [];
     }
 
@@ -314,10 +336,14 @@ export class ThresholdManager {
     const currentP2 = this.getP2Thresholds(profile);
 
     // P1 Metrics Auto-calibration
-    results.push(...this.calibrateP1Metrics(historicalMetrics, currentP1, autocalibConfig));
+    results.push(
+      ...this.calibrateP1Metrics(historicalMetrics, currentP1, autocalibConfig),
+    );
 
     // P2 Metrics Auto-calibration
-    results.push(...this.calibrateP2Metrics(historicalMetrics, currentP2, autocalibConfig));
+    results.push(
+      ...this.calibrateP2Metrics(historicalMetrics, currentP2, autocalibConfig),
+    );
 
     return results;
   }
@@ -328,45 +354,99 @@ export class ThresholdManager {
   private calibrateP1Metrics(
     metrics: HistoricalMetrics[],
     current: P1Thresholds,
-    config: AutoCalibrationConfig
+    config: AutoCalibrationConfig,
   ): CalibrationResult[] {
     const results: CalibrationResult[] = [];
 
     // Cost per item (higher values are worse)
-    const costValues = metrics.map(m => m.cost_per_item);
-    const costWarnThreshold = this.calculatePercentile(costValues, config.percentile_warn);
-    const costFailThreshold = this.calculatePercentile(costValues, config.percentile_fail);
+    const costValues = metrics.map((m) => m.cost_per_item);
+    const costWarnThreshold = this.calculatePercentile(
+      costValues,
+      config.percentile_warn,
+    );
+    const costFailThreshold = this.calculatePercentile(
+      costValues,
+      config.percentile_fail,
+    );
 
-    results.push(this.createCalibrationResult(
-      'cost_per_item_warn', costWarnThreshold, current.cost_per_item_warn, config.drift_guard_max_delta, config.percentile_warn
-    ));
-    results.push(this.createCalibrationResult(
-      'cost_per_item_fail', costFailThreshold, current.cost_per_item_fail, config.drift_guard_max_delta, config.percentile_fail
-    ));
+    results.push(
+      this.createCalibrationResult(
+        "cost_per_item_warn",
+        costWarnThreshold,
+        current.cost_per_item_warn,
+        config.drift_guard_max_delta,
+        config.percentile_warn,
+      ),
+    );
+    results.push(
+      this.createCalibrationResult(
+        "cost_per_item_fail",
+        costFailThreshold,
+        current.cost_per_item_fail,
+        config.drift_guard_max_delta,
+        config.percentile_fail,
+      ),
+    );
 
     // Latency P95 (higher values are worse)
-    const latencyValues = metrics.map(m => m.latency_p95_ms);
-    const latencyWarnThreshold = this.calculatePercentile(latencyValues, config.percentile_warn);
-    const latencyFailThreshold = this.calculatePercentile(latencyValues, config.percentile_fail);
+    const latencyValues = metrics.map((m) => m.latency_p95_ms);
+    const latencyWarnThreshold = this.calculatePercentile(
+      latencyValues,
+      config.percentile_warn,
+    );
+    const latencyFailThreshold = this.calculatePercentile(
+      latencyValues,
+      config.percentile_fail,
+    );
 
-    results.push(this.createCalibrationResult(
-      'latency_p95_warn_ms', latencyWarnThreshold, current.latency_p95_warn_ms, config.drift_guard_max_delta, config.percentile_warn
-    ));
-    results.push(this.createCalibrationResult(
-      'latency_p95_fail_ms', latencyFailThreshold, current.latency_p95_fail_ms, config.drift_guard_max_delta, config.percentile_fail
-    ));
+    results.push(
+      this.createCalibrationResult(
+        "latency_p95_warn_ms",
+        latencyWarnThreshold,
+        current.latency_p95_warn_ms,
+        config.drift_guard_max_delta,
+        config.percentile_warn,
+      ),
+    );
+    results.push(
+      this.createCalibrationResult(
+        "latency_p95_fail_ms",
+        latencyFailThreshold,
+        current.latency_p95_fail_ms,
+        config.drift_guard_max_delta,
+        config.percentile_fail,
+      ),
+    );
 
     // Failure rate (higher values are worse)
-    const failureValues = metrics.map(m => m.failure_rate);
-    const failureWarnThreshold = this.calculatePercentile(failureValues, config.percentile_warn);
-    const failureFailThreshold = this.calculatePercentile(failureValues, config.percentile_fail);
+    const failureValues = metrics.map((m) => m.failure_rate);
+    const failureWarnThreshold = this.calculatePercentile(
+      failureValues,
+      config.percentile_warn,
+    );
+    const failureFailThreshold = this.calculatePercentile(
+      failureValues,
+      config.percentile_fail,
+    );
 
-    results.push(this.createCalibrationResult(
-      'failure_rate_warn', failureWarnThreshold, current.failure_rate_warn, config.drift_guard_max_delta, config.percentile_warn
-    ));
-    results.push(this.createCalibrationResult(
-      'failure_rate_fail', failureFailThreshold, current.failure_rate_fail, config.drift_guard_max_delta, config.percentile_fail
-    ));
+    results.push(
+      this.createCalibrationResult(
+        "failure_rate_warn",
+        failureWarnThreshold,
+        current.failure_rate_warn,
+        config.drift_guard_max_delta,
+        config.percentile_warn,
+      ),
+    );
+    results.push(
+      this.createCalibrationResult(
+        "failure_rate_fail",
+        failureFailThreshold,
+        current.failure_rate_fail,
+        config.drift_guard_max_delta,
+        config.percentile_fail,
+      ),
+    );
 
     return results;
   }
@@ -377,45 +457,99 @@ export class ThresholdManager {
   private calibrateP2Metrics(
     metrics: HistoricalMetrics[],
     current: P2Thresholds,
-    config: AutoCalibrationConfig
+    config: AutoCalibrationConfig,
   ): CalibrationResult[] {
     const results: CalibrationResult[] = [];
 
     // Duplication rate (higher values are worse)
-    const dupValues = metrics.map(m => m.duplication_rate);
-    const dupWarnThreshold = this.calculatePercentile(dupValues, config.percentile_warn);
-    const dupFailThreshold = this.calculatePercentile(dupValues, config.percentile_fail);
+    const dupValues = metrics.map((m) => m.duplication_rate);
+    const dupWarnThreshold = this.calculatePercentile(
+      dupValues,
+      config.percentile_warn,
+    );
+    const dupFailThreshold = this.calculatePercentile(
+      dupValues,
+      config.percentile_fail,
+    );
 
-    results.push(this.createCalibrationResult(
-      'duplication_rate_warn', dupWarnThreshold, current.duplication_rate_warn, config.drift_guard_max_delta, config.percentile_warn
-    ));
-    results.push(this.createCalibrationResult(
-      'duplication_rate_fail', dupFailThreshold, current.duplication_rate_fail, config.drift_guard_max_delta, config.percentile_fail
-    ));
+    results.push(
+      this.createCalibrationResult(
+        "duplication_rate_warn",
+        dupWarnThreshold,
+        current.duplication_rate_warn,
+        config.drift_guard_max_delta,
+        config.percentile_warn,
+      ),
+    );
+    results.push(
+      this.createCalibrationResult(
+        "duplication_rate_fail",
+        dupFailThreshold,
+        current.duplication_rate_fail,
+        config.drift_guard_max_delta,
+        config.percentile_fail,
+      ),
+    );
 
     // Coverage rate (lower values are worse - use inverse percentiles)
-    const coverageValues = metrics.map(m => m.coverage_rate);
-    const coverageWarnThreshold = this.calculatePercentile(coverageValues, 100 - config.percentile_warn); // 25th percentile
-    const coverageFailThreshold = this.calculatePercentile(coverageValues, 100 - config.percentile_fail);   // 10th percentile
+    const coverageValues = metrics.map((m) => m.coverage_rate);
+    const coverageWarnThreshold = this.calculatePercentile(
+      coverageValues,
+      100 - config.percentile_warn,
+    ); // 25th percentile
+    const coverageFailThreshold = this.calculatePercentile(
+      coverageValues,
+      100 - config.percentile_fail,
+    ); // 10th percentile
 
-    results.push(this.createCalibrationResult(
-      'coverage_rate_warn', coverageWarnThreshold, current.coverage_rate_warn, config.drift_guard_max_delta, 100 - config.percentile_warn
-    ));
-    results.push(this.createCalibrationResult(
-      'coverage_rate_fail', coverageFailThreshold, current.coverage_rate_fail, config.drift_guard_max_delta, 100 - config.percentile_fail
-    ));
+    results.push(
+      this.createCalibrationResult(
+        "coverage_rate_warn",
+        coverageWarnThreshold,
+        current.coverage_rate_warn,
+        config.drift_guard_max_delta,
+        100 - config.percentile_warn,
+      ),
+    );
+    results.push(
+      this.createCalibrationResult(
+        "coverage_rate_fail",
+        coverageFailThreshold,
+        current.coverage_rate_fail,
+        config.drift_guard_max_delta,
+        100 - config.percentile_fail,
+      ),
+    );
 
     // Quality score (lower values are worse - use inverse percentiles)
-    const qualityValues = metrics.map(m => m.quality_score);
-    const qualityWarnThreshold = this.calculatePercentile(qualityValues, 100 - config.percentile_warn); // 25th percentile
-    const qualityFailThreshold = this.calculatePercentile(qualityValues, 100 - config.percentile_fail);   // 10th percentile
+    const qualityValues = metrics.map((m) => m.quality_score);
+    const qualityWarnThreshold = this.calculatePercentile(
+      qualityValues,
+      100 - config.percentile_warn,
+    ); // 25th percentile
+    const qualityFailThreshold = this.calculatePercentile(
+      qualityValues,
+      100 - config.percentile_fail,
+    ); // 10th percentile
 
-    results.push(this.createCalibrationResult(
-      'quality_score_warn', qualityWarnThreshold, current.quality_score_warn, config.drift_guard_max_delta, 100 - config.percentile_warn
-    ));
-    results.push(this.createCalibrationResult(
-      'quality_score_fail', qualityFailThreshold, current.quality_score_fail, config.drift_guard_max_delta, 100 - config.percentile_fail
-    ));
+    results.push(
+      this.createCalibrationResult(
+        "quality_score_warn",
+        qualityWarnThreshold,
+        current.quality_score_warn,
+        config.drift_guard_max_delta,
+        100 - config.percentile_warn,
+      ),
+    );
+    results.push(
+      this.createCalibrationResult(
+        "quality_score_fail",
+        qualityFailThreshold,
+        current.quality_score_fail,
+        config.drift_guard_max_delta,
+        100 - config.percentile_fail,
+      ),
+    );
 
     return results;
   }
@@ -428,32 +562,38 @@ export class ThresholdManager {
     newValue: number,
     currentValue: number,
     maxDelta: number,
-    percentileSource: number
+    percentileSource: number,
   ): CalibrationResult {
-    const changePct = currentValue > 0 ? (newValue - currentValue) / currentValue : 0;
+    const changePct =
+      currentValue > 0 ? (newValue - currentValue) / currentValue : 0;
     const driftGuardTriggered = Math.abs(changePct) > maxDelta;
 
     return {
       metric_name: metricName,
-      threshold_type: metricName.includes('warn') ? 'warn' : 'fail',
+      threshold_type: metricName.includes("warn") ? "warn" : "fail",
       old_value: currentValue,
       new_value: driftGuardTriggered ? currentValue : newValue,
       change_pct: changePct,
       applied: !driftGuardTriggered,
       drift_guard_triggered: driftGuardTriggered,
-      percentile_source: percentileSource
+      percentile_source: percentileSource,
     };
   }
 
   /**
    * Apply calibration results to configuration
    */
-  applyCalibrationResults(results: CalibrationResult[], profile: string = 'dev'): void {
+  applyCalibrationResults(
+    results: CalibrationResult[],
+    profile: string = "dev",
+  ): void {
     let configModified = false;
 
     for (const result of results) {
       if (result.applied) {
-        const [metricGroup, metricName] = this.parseMetricName(result.metric_name);
+        const [metricGroup, metricName] = this.parseMetricName(
+          result.metric_name,
+        );
 
         if (!this.baselineConfig.dxloop) {
           this.baselineConfig.dxloop = {};
@@ -465,7 +605,8 @@ export class ThresholdManager {
           this.baselineConfig.dxloop.thresholds[metricGroup] = {};
         }
 
-        this.baselineConfig.dxloop.thresholds[metricGroup][metricName] = result.new_value;
+        this.baselineConfig.dxloop.thresholds[metricGroup][metricName] =
+          result.new_value;
         configModified = true;
       }
     }
@@ -475,8 +616,14 @@ export class ThresholdManager {
       this.baselineConfig.last_updated = new Date().toISOString();
 
       // Save back to file
-      writeFileSync(this.configPath, JSON.stringify(this.baselineConfig, null, 2), 'utf-8');
-      console.log(`Applied ${results.filter(r => r.applied).length} threshold calibrations to ${this.configPath}`);
+      writeFileSync(
+        this.configPath,
+        JSON.stringify(this.baselineConfig, null, 2),
+        "utf-8",
+      );
+      console.log(
+        `Applied ${results.filter((r) => r.applied).length} threshold calibrations to ${this.configPath}`,
+      );
     }
   }
 
@@ -487,18 +634,18 @@ export class ThresholdManager {
     // Examples: "cost_per_item_warn" -> ["p1", "cost_per_item_warn"]
     //           "duplication_rate_fail" -> ["p2", "duplication_rate_fail"]
 
-    const p1Metrics = ['cost_per_item', 'latency_p95', 'failure_rate'];
-    const p2Metrics = ['duplication_rate', 'coverage_rate', 'quality_score'];
+    const p1Metrics = ["cost_per_item", "latency_p95", "failure_rate"];
+    const p2Metrics = ["duplication_rate", "coverage_rate", "quality_score"];
 
     for (const p1Metric of p1Metrics) {
       if (fullName.startsWith(p1Metric)) {
-        return ['p1', fullName];
+        return ["p1", fullName];
       }
     }
 
     for (const p2Metric of p2Metrics) {
       if (fullName.startsWith(p2Metric)) {
-        return ['p2', fullName];
+        return ["p2", fullName];
       }
     }
 
@@ -508,10 +655,7 @@ export class ThresholdManager {
   /**
    * Evaluate current metrics against thresholds and return gating result
    */
-  evaluateGating(
-    currentMetrics: any,
-    profile: string = 'dev'
-  ): GatingResult {
+  evaluateGating(currentMetrics: any, profile: string = "dev"): GatingResult {
     const p0Thresholds = this.getP0Thresholds();
     const p1Thresholds = this.getP1Thresholds(profile);
     const p2Thresholds = this.getP2Thresholds(profile);
@@ -526,85 +670,108 @@ export class ThresholdManager {
       const violation = `PII violations detected: ${currentMetrics.pii_hits} > ${p0Thresholds.pii_hits_max}`;
       p0Violations.push(violation);
       violations.push({
-        level: 'P0',
-        metric: 'pii_hits',
-        threshold_type: 'fail',
+        level: "P0",
+        metric: "pii_hits",
+        threshold_type: "fail",
         actual_value: currentMetrics.pii_hits,
         threshold_value: p0Thresholds.pii_hits_max,
-        severity: 'critical',
-        message: violation
+        severity: "critical",
+        message: violation,
       });
     }
 
-    if (currentMetrics.license_violations > p0Thresholds.license_violations_max) {
+    if (
+      currentMetrics.license_violations > p0Thresholds.license_violations_max
+    ) {
       const violation = `License violations: ${currentMetrics.license_violations} > ${p0Thresholds.license_violations_max}`;
       p0Violations.push(violation);
       violations.push({
-        level: 'P0',
-        metric: 'license_violations',
-        threshold_type: 'fail',
+        level: "P0",
+        metric: "license_violations",
+        threshold_type: "fail",
         actual_value: currentMetrics.license_violations,
         threshold_value: p0Thresholds.license_violations_max,
-        severity: 'critical',
-        message: violation
+        severity: "critical",
+        message: violation,
       });
     }
 
-    if (currentMetrics.evidence_missing_rate > p0Thresholds.evidence_missing_rate_max) {
+    if (
+      currentMetrics.evidence_missing_rate >
+      p0Thresholds.evidence_missing_rate_max
+    ) {
       const violation = `Evidence missing rate: ${(currentMetrics.evidence_missing_rate * 100).toFixed(1)}% > ${(p0Thresholds.evidence_missing_rate_max * 100).toFixed(1)}%`;
       p0Violations.push(violation);
       violations.push({
-        level: 'P0',
-        metric: 'evidence_missing_rate',
-        threshold_type: 'fail',
+        level: "P0",
+        metric: "evidence_missing_rate",
+        threshold_type: "fail",
         actual_value: currentMetrics.evidence_missing_rate,
         threshold_value: p0Thresholds.evidence_missing_rate_max,
-        severity: 'critical',
-        message: violation
+        severity: "critical",
+        message: violation,
       });
     }
 
-    if (currentMetrics.hallucination_rate > p0Thresholds.hallucination_rate_max) {
+    if (
+      currentMetrics.hallucination_rate > p0Thresholds.hallucination_rate_max
+    ) {
       const violation = `Hallucination rate: ${(currentMetrics.hallucination_rate * 100).toFixed(1)}% > ${(p0Thresholds.hallucination_rate_max * 100).toFixed(1)}%`;
       p0Violations.push(violation);
       violations.push({
-        level: 'P0',
-        metric: 'hallucination_rate',
-        threshold_type: 'fail',
+        level: "P0",
+        metric: "hallucination_rate",
+        threshold_type: "fail",
         actual_value: currentMetrics.hallucination_rate,
         threshold_value: p0Thresholds.hallucination_rate_max,
-        severity: 'critical',
-        message: violation
+        severity: "critical",
+        message: violation,
       });
     }
 
     // P1 Performance Warnings
-    this.evaluateP1Thresholds(currentMetrics, p1Thresholds, violations, p1Warnings);
+    this.evaluateP1Thresholds(
+      currentMetrics,
+      p1Thresholds,
+      violations,
+      p1Warnings,
+    );
 
     // P2 Quality Issues
-    this.evaluateP2Thresholds(currentMetrics, p2Thresholds, violations, p2Issues);
+    this.evaluateP2Thresholds(
+      currentMetrics,
+      p2Thresholds,
+      violations,
+      p2Issues,
+    );
 
     // Determine gate status based on violation counts
-    let gateStatus: 'PASS' | 'WARN' | 'PARTIAL' | 'FAIL';
+    let gateStatus: "PASS" | "WARN" | "PARTIAL" | "FAIL";
     let canProceed = true;
-    let recommendation = '';
+    let recommendation = "";
 
     if (p0Violations.length > 0) {
-      gateStatus = 'FAIL';
+      gateStatus = "FAIL";
       canProceed = false;
-      recommendation = 'BLOCK: Critical P0 violations must be resolved before proceeding';
-    } else if (p1Warnings.length >= 3 || p1Warnings.filter(w => w.includes('fail')).length >= 1) {
-      gateStatus = 'PARTIAL';
+      recommendation =
+        "BLOCK: Critical P0 violations must be resolved before proceeding";
+    } else if (
+      p1Warnings.length >= 3 ||
+      p1Warnings.filter((w) => w.includes("fail")).length >= 1
+    ) {
+      gateStatus = "PARTIAL";
       canProceed = true; // Proceed with caution
-      recommendation = 'CAUTION: Multiple P1 performance issues detected, monitor closely';
+      recommendation =
+        "CAUTION: Multiple P1 performance issues detected, monitor closely";
     } else if (p2Issues.length >= 2) {
-      gateStatus = 'WARN';
+      gateStatus = "WARN";
       canProceed = true;
-      recommendation = 'MONITOR: P2 quality issues present, consider improvements';
+      recommendation =
+        "MONITOR: P2 quality issues present, consider improvements";
     } else {
-      gateStatus = 'PASS';
+      gateStatus = "PASS";
       canProceed = true;
-      recommendation = 'PROCEED: All thresholds within acceptable limits';
+      recommendation = "PROCEED: All thresholds within acceptable limits";
     }
 
     return {
@@ -614,7 +781,7 @@ export class ThresholdManager {
       p1_warnings: p1Warnings,
       p2_issues: p2Issues,
       violations,
-      recommendation
+      recommendation,
     };
   }
 
@@ -625,24 +792,32 @@ export class ThresholdManager {
     metrics: any,
     thresholds: P1Thresholds,
     violations: ThresholdViolation[],
-    warnings: string[]
+    warnings: string[],
   ): void {
     // Cost per item
     if (metrics.cost_per_item >= thresholds.cost_per_item_fail) {
       const msg = `Cost per item FAIL: $${metrics.cost_per_item.toFixed(3)} >= $${thresholds.cost_per_item_fail}`;
       warnings.push(msg);
       violations.push({
-        level: 'P1', metric: 'cost_per_item', threshold_type: 'fail',
-        actual_value: metrics.cost_per_item, threshold_value: thresholds.cost_per_item_fail,
-        severity: 'high', message: msg
+        level: "P1",
+        metric: "cost_per_item",
+        threshold_type: "fail",
+        actual_value: metrics.cost_per_item,
+        threshold_value: thresholds.cost_per_item_fail,
+        severity: "high",
+        message: msg,
       });
     } else if (metrics.cost_per_item >= thresholds.cost_per_item_warn) {
       const msg = `Cost per item WARN: $${metrics.cost_per_item.toFixed(3)} >= $${thresholds.cost_per_item_warn}`;
       warnings.push(msg);
       violations.push({
-        level: 'P1', metric: 'cost_per_item', threshold_type: 'warn',
-        actual_value: metrics.cost_per_item, threshold_value: thresholds.cost_per_item_warn,
-        severity: 'medium', message: msg
+        level: "P1",
+        metric: "cost_per_item",
+        threshold_type: "warn",
+        actual_value: metrics.cost_per_item,
+        threshold_value: thresholds.cost_per_item_warn,
+        severity: "medium",
+        message: msg,
       });
     }
 
@@ -651,17 +826,25 @@ export class ThresholdManager {
       const msg = `Latency P95 FAIL: ${metrics.latency_p95_ms}ms >= ${thresholds.latency_p95_fail_ms}ms`;
       warnings.push(msg);
       violations.push({
-        level: 'P1', metric: 'latency_p95_ms', threshold_type: 'fail',
-        actual_value: metrics.latency_p95_ms, threshold_value: thresholds.latency_p95_fail_ms,
-        severity: 'high', message: msg
+        level: "P1",
+        metric: "latency_p95_ms",
+        threshold_type: "fail",
+        actual_value: metrics.latency_p95_ms,
+        threshold_value: thresholds.latency_p95_fail_ms,
+        severity: "high",
+        message: msg,
       });
     } else if (metrics.latency_p95_ms >= thresholds.latency_p95_warn_ms) {
       const msg = `Latency P95 WARN: ${metrics.latency_p95_ms}ms >= ${thresholds.latency_p95_warn_ms}ms`;
       warnings.push(msg);
       violations.push({
-        level: 'P1', metric: 'latency_p95_ms', threshold_type: 'warn',
-        actual_value: metrics.latency_p95_ms, threshold_value: thresholds.latency_p95_warn_ms,
-        severity: 'medium', message: msg
+        level: "P1",
+        metric: "latency_p95_ms",
+        threshold_type: "warn",
+        actual_value: metrics.latency_p95_ms,
+        threshold_value: thresholds.latency_p95_warn_ms,
+        severity: "medium",
+        message: msg,
       });
     }
 
@@ -670,17 +853,25 @@ export class ThresholdManager {
       const msg = `Failure rate FAIL: ${(metrics.failure_rate * 100).toFixed(1)}% >= ${(thresholds.failure_rate_fail * 100).toFixed(1)}%`;
       warnings.push(msg);
       violations.push({
-        level: 'P1', metric: 'failure_rate', threshold_type: 'fail',
-        actual_value: metrics.failure_rate, threshold_value: thresholds.failure_rate_fail,
-        severity: 'high', message: msg
+        level: "P1",
+        metric: "failure_rate",
+        threshold_type: "fail",
+        actual_value: metrics.failure_rate,
+        threshold_value: thresholds.failure_rate_fail,
+        severity: "high",
+        message: msg,
       });
     } else if (metrics.failure_rate >= thresholds.failure_rate_warn) {
       const msg = `Failure rate WARN: ${(metrics.failure_rate * 100).toFixed(1)}% >= ${(thresholds.failure_rate_warn * 100).toFixed(1)}%`;
       warnings.push(msg);
       violations.push({
-        level: 'P1', metric: 'failure_rate', threshold_type: 'warn',
-        actual_value: metrics.failure_rate, threshold_value: thresholds.failure_rate_warn,
-        severity: 'medium', message: msg
+        level: "P1",
+        metric: "failure_rate",
+        threshold_type: "warn",
+        actual_value: metrics.failure_rate,
+        threshold_value: thresholds.failure_rate_warn,
+        severity: "medium",
+        message: msg,
       });
     }
   }
@@ -692,24 +883,32 @@ export class ThresholdManager {
     metrics: any,
     thresholds: P2Thresholds,
     violations: ThresholdViolation[],
-    issues: string[]
+    issues: string[],
   ): void {
     // Duplication rate (higher is worse)
     if (metrics.duplication_rate >= thresholds.duplication_rate_fail) {
       const msg = `Duplication rate FAIL: ${(metrics.duplication_rate * 100).toFixed(1)}% >= ${(thresholds.duplication_rate_fail * 100).toFixed(1)}%`;
       issues.push(msg);
       violations.push({
-        level: 'P2', metric: 'duplication_rate', threshold_type: 'fail',
-        actual_value: metrics.duplication_rate, threshold_value: thresholds.duplication_rate_fail,
-        severity: 'medium', message: msg
+        level: "P2",
+        metric: "duplication_rate",
+        threshold_type: "fail",
+        actual_value: metrics.duplication_rate,
+        threshold_value: thresholds.duplication_rate_fail,
+        severity: "medium",
+        message: msg,
       });
     } else if (metrics.duplication_rate >= thresholds.duplication_rate_warn) {
       const msg = `Duplication rate WARN: ${(metrics.duplication_rate * 100).toFixed(1)}% >= ${(thresholds.duplication_rate_warn * 100).toFixed(1)}%`;
       issues.push(msg);
       violations.push({
-        level: 'P2', metric: 'duplication_rate', threshold_type: 'warn',
-        actual_value: metrics.duplication_rate, threshold_value: thresholds.duplication_rate_warn,
-        severity: 'low', message: msg
+        level: "P2",
+        metric: "duplication_rate",
+        threshold_type: "warn",
+        actual_value: metrics.duplication_rate,
+        threshold_value: thresholds.duplication_rate_warn,
+        severity: "low",
+        message: msg,
       });
     }
 
@@ -718,17 +917,25 @@ export class ThresholdManager {
       const msg = `Coverage rate FAIL: ${(metrics.coverage_rate * 100).toFixed(1)}% <= ${(thresholds.coverage_rate_fail * 100).toFixed(1)}%`;
       issues.push(msg);
       violations.push({
-        level: 'P2', metric: 'coverage_rate', threshold_type: 'fail',
-        actual_value: metrics.coverage_rate, threshold_value: thresholds.coverage_rate_fail,
-        severity: 'medium', message: msg
+        level: "P2",
+        metric: "coverage_rate",
+        threshold_type: "fail",
+        actual_value: metrics.coverage_rate,
+        threshold_value: thresholds.coverage_rate_fail,
+        severity: "medium",
+        message: msg,
       });
     } else if (metrics.coverage_rate <= thresholds.coverage_rate_warn) {
       const msg = `Coverage rate WARN: ${(metrics.coverage_rate * 100).toFixed(1)}% <= ${(thresholds.coverage_rate_warn * 100).toFixed(1)}%`;
       issues.push(msg);
       violations.push({
-        level: 'P2', metric: 'coverage_rate', threshold_type: 'warn',
-        actual_value: metrics.coverage_rate, threshold_value: thresholds.coverage_rate_warn,
-        severity: 'low', message: msg
+        level: "P2",
+        metric: "coverage_rate",
+        threshold_type: "warn",
+        actual_value: metrics.coverage_rate,
+        threshold_value: thresholds.coverage_rate_warn,
+        severity: "low",
+        message: msg,
       });
     }
 
@@ -737,17 +944,25 @@ export class ThresholdManager {
       const msg = `Quality score FAIL: ${(metrics.quality_score * 100).toFixed(1)}% <= ${(thresholds.quality_score_fail * 100).toFixed(1)}%`;
       issues.push(msg);
       violations.push({
-        level: 'P2', metric: 'quality_score', threshold_type: 'fail',
-        actual_value: metrics.quality_score, threshold_value: thresholds.quality_score_fail,
-        severity: 'medium', message: msg
+        level: "P2",
+        metric: "quality_score",
+        threshold_type: "fail",
+        actual_value: metrics.quality_score,
+        threshold_value: thresholds.quality_score_fail,
+        severity: "medium",
+        message: msg,
       });
     } else if (metrics.quality_score <= thresholds.quality_score_warn) {
       const msg = `Quality score WARN: ${(metrics.quality_score * 100).toFixed(1)}% <= ${(thresholds.quality_score_warn * 100).toFixed(1)}%`;
       issues.push(msg);
       violations.push({
-        level: 'P2', metric: 'quality_score', threshold_type: 'warn',
-        actual_value: metrics.quality_score, threshold_value: thresholds.quality_score_warn,
-        severity: 'low', message: msg
+        level: "P2",
+        metric: "quality_score",
+        threshold_type: "warn",
+        actual_value: metrics.quality_score,
+        threshold_value: thresholds.quality_score_warn,
+        severity: "low",
+        message: msg,
       });
     }
   }
@@ -773,7 +988,11 @@ export class ThresholdManager {
   }
 
   private calculateCoverageRate(summary: any): number {
-    return summary.coverage?.entity_coverage_rate || summary.coverage?.section_coverage_rate || 0;
+    return (
+      summary.coverage?.entity_coverage_rate ||
+      summary.coverage?.section_coverage_rate ||
+      0
+    );
   }
 
   private calculateEvidenceMissingRate(lines: string[]): number {
@@ -851,12 +1070,14 @@ export class ThresholdManager {
   /**
    * Get calibration status for a profile
    */
-  async getCalibrationStatus(profile: string): Promise<{ status: string; lastCalibration?: string; nextDue?: string }> {
+  async getCalibrationStatus(
+    profile: string,
+  ): Promise<{ status: string; lastCalibration?: string; nextDue?: string }> {
     // Return basic calibration status
     return {
-      status: 'ready',
+      status: "ready",
       lastCalibration: new Date().toISOString(),
-      nextDue: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString() // Tomorrow
+      nextDue: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // Tomorrow
     };
   }
 }
@@ -871,11 +1092,14 @@ export function createThresholdManager(configPath?: string): ThresholdManager {
 /**
  * Convenience function to get all thresholds for a profile
  */
-export function getAllThresholds(profile: string = 'dev', configPath?: string): ThresholdConfig {
+export function getAllThresholds(
+  profile: string = "dev",
+  configPath?: string,
+): ThresholdConfig {
   const manager = new ThresholdManager(configPath);
   return {
     p0: manager.getP0Thresholds(),
     p1: manager.getP1Thresholds(profile),
-    p2: manager.getP2Thresholds(profile)
+    p2: manager.getP2Thresholds(profile),
   };
 }

@@ -11,8 +11,8 @@
  *   npx tsx scripts/dlq_reprocess.ts --cleanup           # Cleanup old entries
  */
 
-import { createDLQManager, DLQItem } from './lib/dlq_manager.js';
-import { createThresholdManager } from './metrics/threshold_manager.js';
+import { createDLQManager, DLQItem } from "./lib/dlq_manager.js";
+import { createThresholdManager } from "./metrics/threshold_manager.js";
 
 interface ReprocessOptions {
   runId?: string;
@@ -28,7 +28,7 @@ class DLQReprocessor {
   private thresholdManager = createThresholdManager();
 
   async reprocessPendingItems(options: ReprocessOptions): Promise<void> {
-    console.log('🔄 DLQ Reprocessing Started');
+    console.log("🔄 DLQ Reprocessing Started");
     console.log(`Options:`, JSON.stringify(options, null, 2));
 
     if (options.stats) {
@@ -45,7 +45,7 @@ class DLQReprocessor {
     console.log(`Found ${pendingItems.length} pending retry items`);
 
     if (pendingItems.length === 0) {
-      console.log('✅ No items to reprocess');
+      console.log("✅ No items to reprocess");
       return;
     }
 
@@ -54,7 +54,9 @@ class DLQReprocessor {
       ? pendingItems.slice(0, options.maxItems)
       : pendingItems;
 
-    console.log(`Processing ${itemsToProcess.length} items (dry-run: ${options.dryRun || false})`);
+    console.log(
+      `Processing ${itemsToProcess.length} items (dry-run: ${options.dryRun || false})`,
+    );
 
     let successCount = 0;
     let failureCount = 0;
@@ -62,19 +64,24 @@ class DLQReprocessor {
 
     for (const item of itemsToProcess) {
       try {
-        console.log(`\n📋 Processing item ${item.item_id} (retry ${item.retry_count + 1}/${item.max_retries})`);
+        console.log(
+          `\n📋 Processing item ${item.item_id} (retry ${item.retry_count + 1}/${item.max_retries})`,
+        );
 
         if (options.dryRun) {
-          console.log(`  [DRY-RUN] Would retry item with context:`, item.context);
+          console.log(
+            `  [DRY-RUN] Would retry item with context:`,
+            item.context,
+          );
           continue;
         }
 
         const result = await this.retryItem(item);
 
-        if (result === 'success') {
+        if (result === "success") {
           successCount++;
           console.log(`  ✅ Success`);
-        } else if (result === 'exhausted') {
+        } else if (result === "exhausted") {
           exhaustedCount++;
           console.log(`  ❌ Exhausted retries`);
         } else {
@@ -84,7 +91,6 @@ class DLQReprocessor {
 
         // Small delay between retries to avoid overwhelming services
         await this.sleep(500);
-
       } catch (error) {
         console.error(`  ❌ Error processing item ${item.item_id}:`, error);
         failureCount++;
@@ -101,7 +107,9 @@ class DLQReprocessor {
   /**
    * Retry a specific DLQ item
    */
-  private async retryItem(item: DLQItem): Promise<'success' | 'failure' | 'exhausted'> {
+  private async retryItem(
+    item: DLQItem,
+  ): Promise<"success" | "failure" | "exhausted"> {
     try {
       // Simulate the original operation that failed
       // In practice, this would call the actual agent/operation that failed
@@ -109,14 +117,26 @@ class DLQReprocessor {
 
       if (success) {
         this.dlqManager.markRetryAttempt(item, true);
-        return 'success';
+        return "success";
       } else {
-        const updatedItem = this.dlqManager.markRetryAttempt(item, false, new Error('Retry failed'));
-        return updatedItem?.next_retry_timestamp === 'exhausted' ? 'exhausted' : 'failure';
+        const updatedItem = this.dlqManager.markRetryAttempt(
+          item,
+          false,
+          new Error("Retry failed"),
+        );
+        return updatedItem?.next_retry_timestamp === "exhausted"
+          ? "exhausted"
+          : "failure";
       }
     } catch (error) {
-      const updatedItem = this.dlqManager.markRetryAttempt(item, false, error as Error);
-      return updatedItem?.next_retry_timestamp === 'exhausted' ? 'exhausted' : 'failure';
+      const updatedItem = this.dlqManager.markRetryAttempt(
+        item,
+        false,
+        error as Error,
+      );
+      return updatedItem?.next_retry_timestamp === "exhausted"
+        ? "exhausted"
+        : "failure";
     }
   }
 
@@ -126,34 +146,34 @@ class DLQReprocessor {
    */
   private async simulateOperation(item: DLQItem): Promise<boolean> {
     // For POLICY errors, never retry (they are permanent failures)
-    if (item.error_type === 'POLICY') {
-      throw new Error('Policy violation - permanent failure');
+    if (item.error_type === "POLICY") {
+      throw new Error("Policy violation - permanent failure");
     }
 
     // For PERMANENT errors, don't retry
-    if (item.error_type === 'PERMANENT') {
-      throw new Error('Permanent error - will not recover');
+    if (item.error_type === "PERMANENT") {
+      throw new Error("Permanent error - will not recover");
     }
 
     // For TRANSIENT errors, simulate recovery based on error message
-    if (item.error_type === 'TRANSIENT') {
+    if (item.error_type === "TRANSIENT") {
       const message = item.error_message.toLowerCase();
 
       // Simulate rate limit recovery
-      if (message.includes('429') || message.includes('rate limit')) {
+      if (message.includes("429") || message.includes("rate limit")) {
         console.log(`    ⏳ Simulating rate limit recovery...`);
         await this.sleep(1000);
         return Math.random() > 0.3; // 70% success rate after backoff
       }
 
       // Simulate timeout recovery
-      if (message.includes('timeout')) {
+      if (message.includes("timeout")) {
         console.log(`    ⏳ Simulating timeout recovery...`);
         return Math.random() > 0.2; // 80% success rate
       }
 
       // Simulate network recovery
-      if (message.includes('network') || message.includes('connection')) {
+      if (message.includes("network") || message.includes("connection")) {
         console.log(`    ⏳ Simulating network recovery...`);
         return Math.random() > 0.4; // 60% success rate
       }
@@ -169,12 +189,12 @@ class DLQReprocessor {
    * Show DLQ statistics
    */
   private async showStats(runId?: string): Promise<void> {
-    console.log('📊 DLQ Statistics');
+    console.log("📊 DLQ Statistics");
 
     if (runId) {
       console.log(`Run ID: ${runId}`);
     } else {
-      console.log('All runs');
+      console.log("All runs");
     }
 
     const stats = this.dlqManager.getDLQStats(runId);
@@ -182,7 +202,7 @@ class DLQReprocessor {
     console.log(`\n📋 Total Items: ${stats.total_items}`);
 
     if (stats.total_items === 0) {
-      console.log('🎉 No items in DLQ');
+      console.log("🎉 No items in DLQ");
       return;
     }
 
@@ -198,16 +218,23 @@ class DLQReprocessor {
 
     // Calculate success rate
     const totalRetryable = stats.transient_errors;
-    const successRate = totalRetryable > 0 ? (stats.success_after_retry / totalRetryable * 100).toFixed(1) : '0';
+    const successRate =
+      totalRetryable > 0
+        ? ((stats.success_after_retry / totalRetryable) * 100).toFixed(1)
+        : "0";
     console.log(`\n📈 Recovery Success Rate: ${successRate}%`);
 
     // Show recommendations
     if (stats.pending_retries > 0) {
-      console.log(`\n💡 Recommendation: Run 'npx tsx scripts/dlq_reprocess.ts --all' to process ${stats.pending_retries} pending items`);
+      console.log(
+        `\n💡 Recommendation: Run 'npx tsx scripts/dlq_reprocess.ts --all' to process ${stats.pending_retries} pending items`,
+      );
     }
 
     if (stats.policy_errors > 0) {
-      console.log(`\n⚠️  Warning: ${stats.policy_errors} policy violations detected (require manual review)`);
+      console.log(
+        `\n⚠️  Warning: ${stats.policy_errors} policy violations detected (require manual review)`,
+      );
     }
   }
 
@@ -215,7 +242,7 @@ class DLQReprocessor {
    * Cleanup old DLQ entries
    */
   private async cleanupOldEntries(): Promise<void> {
-    console.log('🧹 Cleaning up old DLQ entries...');
+    console.log("🧹 Cleaning up old DLQ entries...");
 
     const removed = this.dlqManager.cleanupOldEntries(7); // 7 days
 
@@ -226,7 +253,7 @@ class DLQReprocessor {
   }
 
   private sleep(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 }
 
@@ -238,25 +265,25 @@ async function main() {
   // Parse command line arguments
   for (let i = 0; i < args.length; i++) {
     switch (args[i]) {
-      case '--run-id':
+      case "--run-id":
         options.runId = args[++i];
         break;
-      case '--all':
+      case "--all":
         options.all = true;
         break;
-      case '--stats':
+      case "--stats":
         options.stats = true;
         break;
-      case '--cleanup':
+      case "--cleanup":
         options.cleanup = true;
         break;
-      case '--max-items':
+      case "--max-items":
         options.maxItems = parseInt(args[++i]);
         break;
-      case '--dry-run':
+      case "--dry-run":
         options.dryRun = true;
         break;
-      case '--help':
+      case "--help":
         showHelp();
         return;
       default:
@@ -268,7 +295,7 @@ async function main() {
 
   // Validate options
   if (!options.stats && !options.cleanup && !options.all && !options.runId) {
-    console.error('Must specify --all, --run-id, --stats, or --cleanup');
+    console.error("Must specify --all, --run-id, --stats, or --cleanup");
     showHelp();
     process.exit(1);
   }
@@ -277,7 +304,7 @@ async function main() {
     const reprocessor = new DLQReprocessor();
     await reprocessor.reprocessPendingItems(options);
   } catch (error) {
-    console.error('❌ DLQ reprocessing failed:', error);
+    console.error("❌ DLQ reprocessing failed:", error);
     process.exit(1);
   }
 }

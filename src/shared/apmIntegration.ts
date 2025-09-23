@@ -3,8 +3,12 @@
  * Provides unified interface for multiple APM providers
  */
 
-import { PerformanceMonitor, APMConfig, PerformanceMetric } from './performanceMonitoring';
-import { Logger } from './logger';
+import {
+  PerformanceMonitor,
+  APMConfig,
+  PerformanceMetric,
+} from "./performanceMonitoring";
+import { Logger } from "./logger";
 
 export interface APMProvider {
   name: string;
@@ -12,7 +16,7 @@ export interface APMProvider {
   recordMetric(metric: PerformanceMetric): Promise<void>;
   recordError(error: Error, context?: Record<string, unknown>): Promise<void>;
   startTransaction(name: string, type: string): string;
-  endTransaction(id: string, result: 'success' | 'error'): Promise<void>;
+  endTransaction(id: string, result: "success" | "error"): Promise<void>;
   addCustomAttribute(key: string, value: string | number): void;
   shutdown(): Promise<void>;
 }
@@ -31,13 +35,13 @@ export interface APMProviderConfig {
  * Datadog APM Provider
  */
 export class DatadogProvider implements APMProvider {
-  name = 'datadog';
+  name = "datadog";
   private config!: APMProviderConfig;
   private logger: Logger;
   private dd: any;
 
   constructor() {
-    this.logger = new Logger({ level: 'info' });
+    this.logger = new Logger({ level: "info" });
   }
 
   async initialize(config: APMProviderConfig): Promise<void> {
@@ -45,19 +49,19 @@ export class DatadogProvider implements APMProvider {
 
     try {
       // Initialize Datadog APM
-      this.dd = require('dd-trace');
+      this.dd = require("dd-trace");
       this.dd.init({
         service: config.serviceName,
         env: config.environment,
         version: config.version,
         sampleRate: config.sampleRate || 1.0,
         runtimeMetrics: true,
-        logInjection: true
+        logInjection: true,
       });
 
-      this.logger.info('Datadog APM initialized successfully');
+      this.logger.info("Datadog APM initialized successfully");
     } catch (error) {
-      this.logger.error('Failed to initialize Datadog APM:', error);
+      this.logger.error("Failed to initialize Datadog APM:", error);
       throw error;
     }
   }
@@ -69,23 +73,28 @@ export class DatadogProvider implements APMProvider {
       this.dd.dogstatsd.gauge(
         `synthetic_agents.${metric.name}`,
         metric.value,
-        metric.tags ? Object.entries(metric.tags).map(([k, v]) => `${k}:${v}`) : []
+        metric.tags
+          ? Object.entries(metric.tags).map(([k, v]) => `${k}:${v}`)
+          : [],
       );
     } catch (error) {
-      this.logger.error('Failed to record metric to Datadog:', error);
+      this.logger.error("Failed to record metric to Datadog:", error);
     }
   }
 
-  async recordError(error: Error, context?: Record<string, unknown>): Promise<void> {
+  async recordError(
+    error: Error,
+    context?: Record<string, unknown>,
+  ): Promise<void> {
     if (!this.dd) return;
 
     try {
       const span = this.dd.scope().active();
       if (span) {
-        span.setTag('error', true);
-        span.setTag('error.msg', error.message);
-        span.setTag('error.type', error.name);
-        span.setTag('error.stack', error.stack);
+        span.setTag("error", true);
+        span.setTag("error.msg", error.message);
+        span.setTag("error.type", error.name);
+        span.setTag("error.stack", error.stack);
 
         if (context) {
           Object.entries(context).forEach(([key, value]) => {
@@ -94,38 +103,38 @@ export class DatadogProvider implements APMProvider {
         }
       }
     } catch (err) {
-      this.logger.error('Failed to record error to Datadog:', err);
+      this.logger.error("Failed to record error to Datadog:", err);
     }
   }
 
   startTransaction(name: string, type: string): string {
-    if (!this.dd) return '';
+    if (!this.dd) return "";
 
     try {
       const span = this.dd.trace(name, {
         service: this.config.serviceName,
         resource: name,
-        type: type
+        type: type,
       });
 
       return span.context().toSpanId();
     } catch (error) {
-      this.logger.error('Failed to start Datadog transaction:', error);
-      return '';
+      this.logger.error("Failed to start Datadog transaction:", error);
+      return "";
     }
   }
 
-  async endTransaction(id: string, result: 'success' | 'error'): Promise<void> {
+  async endTransaction(id: string, result: "success" | "error"): Promise<void> {
     if (!this.dd) return;
 
     try {
       const span = this.dd.scope().active();
       if (span) {
-        span.setTag('result', result);
+        span.setTag("result", result);
         span.finish();
       }
     } catch (error) {
-      this.logger.error('Failed to end Datadog transaction:', error);
+      this.logger.error("Failed to end Datadog transaction:", error);
     }
   }
 
@@ -138,7 +147,7 @@ export class DatadogProvider implements APMProvider {
         span.setTag(key, value);
       }
     } catch (error) {
-      this.logger.error('Failed to add custom attribute to Datadog:', error);
+      this.logger.error("Failed to add custom attribute to Datadog:", error);
     }
   }
 
@@ -153,13 +162,13 @@ export class DatadogProvider implements APMProvider {
  * New Relic APM Provider
  */
 export class NewRelicProvider implements APMProvider {
-  name = 'newrelic';
+  name = "newrelic";
   private config!: APMProviderConfig;
   private logger: Logger;
   private newrelic: any;
 
   constructor() {
-    this.logger = new Logger({ level: 'info' });
+    this.logger = new Logger({ level: "info" });
   }
 
   async initialize(config: APMProviderConfig): Promise<void> {
@@ -170,10 +179,10 @@ export class NewRelicProvider implements APMProvider {
       process.env.NEW_RELIC_APP_NAME = config.serviceName;
       process.env.NEW_RELIC_ENVIRONMENT = config.environment;
 
-      this.newrelic = require('newrelic');
-      this.logger.info('New Relic APM initialized successfully');
+      this.newrelic = require("newrelic");
+      this.logger.info("New Relic APM initialized successfully");
     } catch (error) {
-      this.logger.error('Failed to initialize New Relic APM:', error);
+      this.logger.error("Failed to initialize New Relic APM:", error);
       throw error;
     }
   }
@@ -184,44 +193,47 @@ export class NewRelicProvider implements APMProvider {
     try {
       this.newrelic.recordMetric(
         `Custom/SyntheticAgents/${metric.name}`,
-        metric.value
+        metric.value,
       );
     } catch (error) {
-      this.logger.error('Failed to record metric to New Relic:', error);
+      this.logger.error("Failed to record metric to New Relic:", error);
     }
   }
 
-  async recordError(error: Error, context?: Record<string, unknown>): Promise<void> {
+  async recordError(
+    error: Error,
+    context?: Record<string, unknown>,
+  ): Promise<void> {
     if (!this.newrelic) return;
 
     try {
       this.newrelic.noticeError(error, context);
     } catch (err) {
-      this.logger.error('Failed to record error to New Relic:', err);
+      this.logger.error("Failed to record error to New Relic:", err);
     }
   }
 
   startTransaction(name: string, type: string): string {
-    if (!this.newrelic) return '';
+    if (!this.newrelic) return "";
 
     try {
       const transactionId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
       this.newrelic.setTransactionName(type, name);
       return transactionId;
     } catch (error) {
-      this.logger.error('Failed to start New Relic transaction:', error);
-      return '';
+      this.logger.error("Failed to start New Relic transaction:", error);
+      return "";
     }
   }
 
-  async endTransaction(id: string, result: 'success' | 'error'): Promise<void> {
+  async endTransaction(id: string, result: "success" | "error"): Promise<void> {
     if (!this.newrelic) return;
 
     try {
-      this.newrelic.addCustomAttribute('result', result);
+      this.newrelic.addCustomAttribute("result", result);
       this.newrelic.endTransaction();
     } catch (error) {
-      this.logger.error('Failed to end New Relic transaction:', error);
+      this.logger.error("Failed to end New Relic transaction:", error);
     }
   }
 
@@ -231,7 +243,7 @@ export class NewRelicProvider implements APMProvider {
     try {
       this.newrelic.addCustomAttribute(key, value);
     } catch (error) {
-      this.logger.error('Failed to add custom attribute to New Relic:', error);
+      this.logger.error("Failed to add custom attribute to New Relic:", error);
     }
   }
 
@@ -244,38 +256,38 @@ export class NewRelicProvider implements APMProvider {
  * Prometheus Provider (for metrics collection)
  */
 export class PrometheusProvider implements APMProvider {
-  name = 'prometheus';
+  name = "prometheus";
   private config!: APMProviderConfig;
   private logger: Logger;
   private prom: any;
   private metrics: Map<string, any> = new Map();
 
   constructor() {
-    this.logger = new Logger({ level: 'info' });
+    this.logger = new Logger({ level: "info" });
   }
 
   async initialize(config: APMProviderConfig): Promise<void> {
     this.config = config;
 
     try {
-      this.prom = require('prom-client');
+      this.prom = require("prom-client");
 
       // Set default labels
       this.prom.register.setDefaultLabels({
         service: config.serviceName,
         environment: config.environment,
-        version: config.version
+        version: config.version,
       });
 
       // Collect default metrics
       this.prom.collectDefaultMetrics({
-        prefix: 'synthetic_agents_',
-        timeout: 5000
+        prefix: "synthetic_agents_",
+        timeout: 5000,
       });
 
-      this.logger.info('Prometheus metrics initialized successfully');
+      this.logger.info("Prometheus metrics initialized successfully");
     } catch (error) {
-      this.logger.error('Failed to initialize Prometheus metrics:', error);
+      this.logger.error("Failed to initialize Prometheus metrics:", error);
       throw error;
     }
   }
@@ -284,14 +296,17 @@ export class PrometheusProvider implements APMProvider {
     if (!this.prom) return;
 
     try {
-      const metricName = `synthetic_agents_${metric.name.replace(/[^a-zA-Z0-9_]/g, '_')}`;
+      const metricName = `synthetic_agents_${metric.name.replace(/[^a-zA-Z0-9_]/g, "_")}`;
 
       if (!this.metrics.has(metricName)) {
-        this.metrics.set(metricName, new this.prom.Gauge({
-          name: metricName,
-          help: `Performance metric for ${metric.name}`,
-          labelNames: Object.keys(metric.tags || {})
-        }));
+        this.metrics.set(
+          metricName,
+          new this.prom.Gauge({
+            name: metricName,
+            help: `Performance metric for ${metric.name}`,
+            labelNames: Object.keys(metric.tags || {}),
+          }),
+        );
       }
 
       const prometheusMetric = this.metrics.get(metricName);
@@ -301,21 +316,24 @@ export class PrometheusProvider implements APMProvider {
         prometheusMetric.set(metric.value);
       }
     } catch (error) {
-      this.logger.error('Failed to record metric to Prometheus:', error);
+      this.logger.error("Failed to record metric to Prometheus:", error);
     }
   }
 
-  async recordError(error: Error, context?: Record<string, unknown>): Promise<void> {
+  async recordError(
+    error: Error,
+    context?: Record<string, unknown>,
+  ): Promise<void> {
     if (!this.prom) return;
 
     try {
       const errorMetric = this.getOrCreateErrorMetric();
       errorMetric.inc({
         error_type: error.name,
-        error_message: error.message.substring(0, 100) // Truncate for label safety
+        error_message: error.message.substring(0, 100), // Truncate for label safety
       });
     } catch (err) {
-      this.logger.error('Failed to record error to Prometheus:', err);
+      this.logger.error("Failed to record error to Prometheus:", err);
     }
   }
 
@@ -324,14 +342,14 @@ export class PrometheusProvider implements APMProvider {
     return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
   }
 
-  async endTransaction(id: string, result: 'success' | 'error'): Promise<void> {
+  async endTransaction(id: string, result: "success" | "error"): Promise<void> {
     if (!this.prom) return;
 
     try {
       const transactionMetric = this.getOrCreateTransactionMetric();
       transactionMetric.inc({ result });
     } catch (error) {
-      this.logger.error('Failed to end Prometheus transaction:', error);
+      this.logger.error("Failed to end Prometheus transaction:", error);
     }
   }
 
@@ -346,30 +364,36 @@ export class PrometheusProvider implements APMProvider {
   }
 
   getMetricsForScraping(): string {
-    if (!this.prom) return '';
+    if (!this.prom) return "";
     return this.prom.register.metrics();
   }
 
   private getOrCreateErrorMetric() {
-    const name = 'synthetic_agents_errors_total';
+    const name = "synthetic_agents_errors_total";
     if (!this.metrics.has(name)) {
-      this.metrics.set(name, new this.prom.Counter({
+      this.metrics.set(
         name,
-        help: 'Total number of errors',
-        labelNames: ['error_type', 'error_message']
-      }));
+        new this.prom.Counter({
+          name,
+          help: "Total number of errors",
+          labelNames: ["error_type", "error_message"],
+        }),
+      );
     }
     return this.metrics.get(name);
   }
 
   private getOrCreateTransactionMetric() {
-    const name = 'synthetic_agents_transactions_total';
+    const name = "synthetic_agents_transactions_total";
     if (!this.metrics.has(name)) {
-      this.metrics.set(name, new this.prom.Counter({
+      this.metrics.set(
         name,
-        help: 'Total number of transactions',
-        labelNames: ['result']
-      }));
+        new this.prom.Counter({
+          name,
+          help: "Total number of transactions",
+          labelNames: ["result"],
+        }),
+      );
     }
     return this.metrics.get(name);
   }
@@ -387,12 +411,12 @@ export class APMIntegration {
   constructor(config: APMConfig, performanceMonitor: PerformanceMonitor) {
     this.config = config;
     this.performanceMonitor = performanceMonitor;
-    this.logger = new Logger({ level: 'info' });
+    this.logger = new Logger({ level: "info" });
   }
 
   async initialize(): Promise<void> {
     if (!this.config.enabled) {
-      this.logger.info('APM integration disabled');
+      this.logger.info("APM integration disabled");
       return;
     }
 
@@ -403,50 +427,67 @@ export class APMIntegration {
         serviceName: this.config.serviceName,
         environment: this.config.environment,
         version: this.config.version,
-        sampleRate: this.config.samplingRate
+        sampleRate: this.config.samplingRate,
       };
 
       switch (this.config.provider) {
-        case 'datadog': {
+        case "datadog": {
           const datadogProvider = new DatadogProvider();
           await datadogProvider.initialize(providerConfig);
-          this.providers.set('datadog', datadogProvider);
+          this.providers.set("datadog", datadogProvider);
           break;
         }
 
-        case 'newrelic': {
+        case "newrelic": {
           const newrelicProvider = new NewRelicProvider();
           await newrelicProvider.initialize(providerConfig);
-          this.providers.set('newrelic', newrelicProvider);
+          this.providers.set("newrelic", newrelicProvider);
           break;
         }
 
-        case 'prometheus': {
+        case "prometheus": {
           const prometheusProvider = new PrometheusProvider();
           await prometheusProvider.initialize(providerConfig);
-          this.providers.set('prometheus', prometheusProvider);
+          this.providers.set("prometheus", prometheusProvider);
           break;
         }
       }
 
       // Set up metric forwarding from performance monitor
-      this.performanceMonitor.on('metric:recorded', this.onMetricRecorded.bind(this));
-      this.performanceMonitor.on('transaction:start', this.onTransactionStart.bind(this));
-      this.performanceMonitor.on('transaction:end', this.onTransactionEnd.bind(this));
+      this.performanceMonitor.on(
+        "metric:recorded",
+        this.onMetricRecorded.bind(this),
+      );
+      this.performanceMonitor.on(
+        "transaction:start",
+        this.onTransactionStart.bind(this),
+      );
+      this.performanceMonitor.on(
+        "transaction:end",
+        this.onTransactionEnd.bind(this),
+      );
 
-      this.logger.info(`APM integration initialized with provider: ${this.config.provider}`);
+      this.logger.info(
+        `APM integration initialized with provider: ${this.config.provider}`,
+      );
     } catch (error) {
-      this.logger.error('Failed to initialize APM integration:', error);
+      this.logger.error("Failed to initialize APM integration:", error);
       throw error;
     }
   }
 
-  async recordError(error: Error, context?: Record<string, unknown>): Promise<void> {
+  async recordError(
+    error: Error,
+    context?: Record<string, unknown>,
+  ): Promise<void> {
     for (const provider of this.providers.values()) {
       try {
         await provider.recordError(error, context);
       } catch (err) {
-        this.logger.error(`Failed to record error with provider ${provider.name}:`, err);
+        this.logger.error(
+          `Failed to record error with provider ${provider.name}:`,
+          err,
+        );
       }
     }
   }
@@ -456,17 +497,22 @@ export class APMIntegration {
       try {
         provider.addCustomAttribute(key, value);
       } catch (error) {
-        this.logger.error(`Failed to add custom attribute with provider ${provider.name}:`, error);
+        this.logger.error(
+          `Failed to add custom attribute with provider ${provider.name}:`,
+          error,
+        );
       }
     }
   }
 
   getPrometheusMetrics(): string {
-    const prometheusProvider = this.providers.get('prometheus') as PrometheusProvider;
+    const prometheusProvider = this.providers.get(
+      "prometheus",
+    ) as PrometheusProvider;
     if (prometheusProvider) {
       return prometheusProvider.getMetricsForScraping();
     }
-    return '';
+    return "";
   }
 
   async shutdown(): Promise<void> {
@@ -474,7 +520,10 @@ export class APMIntegration {
       try {
         await provider.shutdown();
       } catch (error) {
-        this.logger.error(`Failed to shutdown provider ${provider.name}:`, error);
+        this.logger.error(
+          `Failed to shutdown provider ${provider.name}:`,
+          error,
+        );
       }
     }
     this.providers.clear();
@@ -485,7 +534,10 @@ export class APMIntegration {
       try {
         await provider.recordMetric(metric);
       } catch (error) {
-        this.logger.error(`Failed to record metric with provider ${provider.name}:`, error);
+        this.logger.error(
+          `Failed to record metric with provider ${provider.name}:`,
+          error,
+        );
       }
     }
   }
@@ -495,7 +547,10 @@ export class APMIntegration {
       try {
         provider.startTransaction(transaction.name, transaction.type);
       } catch (error) {
-        this.logger.error(`Failed to start transaction with provider ${provider.name}:`, error);
+        this.logger.error(
+          `Failed to start transaction with provider ${provider.name}:`,
+          error,
+        );
       }
     }
   }
@@ -503,9 +558,15 @@ export class APMIntegration {
   private async onTransactionEnd(transaction: any): Promise<void> {
     for (const provider of this.providers.values()) {
       try {
-        await provider.endTransaction(transaction.id, transaction.status === 'success' ? 'success' : 'error');
+        await provider.endTransaction(
+          transaction.id,
+          transaction.status === "success" ? "success" : "error",
+        );
       } catch (error) {
-        this.logger.error(`Failed to end transaction with provider ${provider.name}:`, error);
+        this.logger.error(
+          `Failed to end transaction with provider ${provider.name}:`,
+          error,
+        );
       }
     }
   }
@@ -514,7 +575,10 @@ export class APMIntegration {
 // Global APM integration instance
 let globalAPM: APMIntegration | null = null;
 
-export function initializeAPM(config: APMConfig, performanceMonitor: PerformanceMonitor): APMIntegration {
+export function initializeAPM(
+  config: APMConfig,
+  performanceMonitor: PerformanceMonitor,
+): APMIntegration {
   if (globalAPM) {
     globalAPM.shutdown();
   }

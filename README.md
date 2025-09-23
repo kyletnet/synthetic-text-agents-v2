@@ -5,11 +5,13 @@ AI-powered QA generation using 8-Agent collaboration with P0 hardened launcher.
 ## Quick Start
 
 **Smoke Test (Free):**
+
 ```bash
 ./run_v3.sh step4_2 --smoke --offline
 ```
 
 **Production Run:**
+
 ```bash
 ./run_v3.sh step4_2 --full --budget 5.00 --profile prod
 ```

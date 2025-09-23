@@ -1,13 +1,13 @@
-import { BaseAgent } from '../core/baseAgent.js';
-import { Logger } from '../shared/logger.js';
-import { PromptArchitect } from '../agents/promptArchitect.js';
-import { QAGenerator } from '../agents/qaGenerator.js';
-import { QualityAuditor } from '../agents/qualityAuditor.js';
-import { PsychologySpecialist } from '../agents/psychologySpecialist.js';
-import { LinguisticsEngineer } from '../agents/linguisticsEngineer.js';
-import { DomainConsultant } from '../agents/domainConsultant.js';
-import { CognitiveScientist } from '../agents/cognitiveScientist.js';
-import { MetaController } from '../core/metaController.js';
+import { BaseAgent } from "../core/baseAgent.js";
+import { Logger } from "../shared/logger.js";
+import { PromptArchitect } from "../agents/promptArchitect.js";
+import { QAGenerator } from "../agents/qaGenerator.js";
+import { QualityAuditor } from "../agents/qualityAuditor.js";
+import { PsychologySpecialist } from "../agents/psychologySpecialist.js";
+import { LinguisticsEngineer } from "../agents/linguisticsEngineer.js";
+import { DomainConsultant } from "../agents/domainConsultant.js";
+import { CognitiveScientist } from "../agents/cognitiveScientist.js";
+import { MetaController } from "../core/metaController.js";
 
 // Re-export BaseAgent for convenience
 export { BaseAgent };

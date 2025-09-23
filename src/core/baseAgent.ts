@@ -1,8 +1,12 @@
-import { randomUUID } from 'crypto';
-import { BaseAgent as IBaseAgent } from '../shared/registry.js';
-import { AgentResult, AgentResultSchema, AgentContext } from '../shared/types.js';
-import { Logger } from '../shared/logger.js';
-import { PerformanceGuardian } from './performanceGuardian.js';
+import { randomUUID } from "crypto";
+import { BaseAgent as IBaseAgent } from "../shared/registry.js";
+import {
+  AgentResult,
+  AgentResultSchema,
+  AgentContext,
+} from "../shared/types.js";
+import { Logger } from "../shared/logger.js";
+import { PerformanceGuardian } from "./performanceGuardian.js";
 
 export abstract class BaseAgent implements IBaseAgent {
   public readonly id: string;
@@ -15,7 +19,7 @@ export abstract class BaseAgent implements IBaseAgent {
     id: string,
     specialization: string,
     tags: string[],
-    logger: Logger
+    logger: Logger,
   ) {
     this.id = id;
     this.specialization = specialization;
@@ -28,9 +32,9 @@ export abstract class BaseAgent implements IBaseAgent {
     const taskId = randomUUID();
 
     await this.logger.trace({
-      level: 'info',
+      level: "info",
       agentId: this.id,
-      action: 'task_received',
+      action: "task_received",
       data: { taskId, contentType: typeof content },
     });
 
@@ -41,26 +45,36 @@ export abstract class BaseAgent implements IBaseAgent {
       const agentResult: AgentResult = {
         agentId: this.id,
         result,
-        confidence: await this.assessConfidence(result, context as AgentContext),
-        reasoning: await this.explainReasoning(content, result, context as AgentContext),
+        confidence: await this.assessConfidence(
+          result,
+          context as AgentContext,
+        ),
+        reasoning: await this.explainReasoning(
+          content,
+          result,
+          context as AgentContext,
+        ),
         performance: {
           duration,
           tokensUsed: await this.estimateTokensUsed(content, result),
-          qualityScore: await this.assessQuality(result, context as AgentContext),
+          qualityScore: await this.assessQuality(
+            result,
+            context as AgentContext,
+          ),
         },
       };
 
       const validatedResult = AgentResultSchema.parse(agentResult);
-      
+
       // Pass through PerformanceGuardian for evaluation
       const guardian = new PerformanceGuardian();
       const guardedResult = guardian.evaluate(validatedResult);
-      
+
       if (!guardedResult.ok) {
         await this.logger.trace({
-          level: 'warn',
+          level: "warn",
           agentId: this.id,
-          action: 'guardian_vetoed_result',
+          action: "guardian_vetoed_result",
           data: {
             taskId,
             issues: guardedResult.issues,
@@ -69,7 +83,7 @@ export abstract class BaseAgent implements IBaseAgent {
           },
           duration,
         });
-        
+
         // Return the vetoed result (orchestrator will handle appropriately)
         return guardedResult;
       }
@@ -81,9 +95,9 @@ export abstract class BaseAgent implements IBaseAgent {
       }
 
       await this.logger.trace({
-        level: 'info',
+        level: "info",
         agentId: this.id,
-        action: 'task_completed',
+        action: "task_completed",
         data: {
           taskId,
           confidence: validatedResult.confidence,
@@ -95,44 +109,60 @@ export abstract class BaseAgent implements IBaseAgent {
       return validatedResult;
     } catch (error) {
       await this.logger.trace({
-        level: 'error',
+        level: "error",
         agentId: this.id,
-        action: 'task_failed',
-        data: { taskId, error: error instanceof Error ? error.message : String(error) },
+        action: "task_failed",
+        data: {
+          taskId,
+          error: error instanceof Error ? error.message : String(error),
+        },
         duration: Date.now() - start,
       });
       throw error;
     }
   }
 
-  protected abstract handle(content: unknown, context?: AgentContext): Promise<unknown>;
+  protected abstract handle(
+    content: unknown,
+    context?: AgentContext,
+  ): Promise<unknown>;
 
-  protected async assessConfidence(_result: unknown, _context?: AgentContext): Promise<number> {
+  protected async assessConfidence(
+    _result: unknown,
+    _context?: AgentContext,
+  ): Promise<number> {
     return 0.8;
   }
 
   protected async explainReasoning(
     input: unknown,
     output: unknown,
-    _context?: AgentContext
+    _context?: AgentContext,
   ): Promise<string> {
     return `Agent ${this.id} processed ${typeof input} input and produced ${typeof output} output using ${this.specialization} expertise.`;
   }
 
-  protected async estimateTokensUsed(input: unknown, output: unknown): Promise<number> {
-    const inputStr = typeof input === 'string' ? input : JSON.stringify(input);
-    const outputStr = typeof output === 'string' ? output : JSON.stringify(output);
+  protected async estimateTokensUsed(
+    input: unknown,
+    output: unknown,
+  ): Promise<number> {
+    const inputStr = typeof input === "string" ? input : JSON.stringify(input);
+    const outputStr =
+      typeof output === "string" ? output : JSON.stringify(output);
     return Math.ceil((inputStr.length + outputStr.length) / 4);
   }
 
-  protected async assessQuality(result: unknown, context?: AgentContext): Promise<number> {
+  protected async assessQuality(
+    result: unknown,
+    context?: AgentContext,
+  ): Promise<number> {
     const qualityTarget = context?.qualityTarget || 8;
     return Math.min(qualityTarget, 8.5);
   }
 
   protected async validateInput(input: unknown): Promise<void> {
     if (input === null || input === undefined) {
-      throw new Error('Input cannot be null or undefined');
+      throw new Error("Input cannot be null or undefined");
     }
   }
 
@@ -157,7 +187,7 @@ export abstract class BaseAgent implements IBaseAgent {
         quality: acc.quality + (result.performance?.qualityScore || 0),
         duration: acc.duration + (result.performance?.duration || 0),
       }),
-      { confidence: 0, quality: 0, duration: 0 }
+      { confidence: 0, quality: 0, duration: 0 },
     );
 
     const count = this.performanceHistory.length;

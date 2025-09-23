@@ -1,6 +1,6 @@
-import * as fs from 'fs';
-import * as path from 'path';
-import { execSync } from 'child_process';
+import * as fs from "fs";
+import * as path from "path";
+import { execSync } from "child_process";
 
 interface OpsBriefValidationResult {
   exists: boolean;
@@ -20,16 +20,16 @@ interface OpsBriefValidationResult {
 export class OpsBriefVerifier {
   private readonly opsBriefPath: string;
   private readonly requiredHeadings = [
-    '1. Terminology Canonical Map',
-    '2. Run Modes & Commands',
-    '3. Required Artifacts Matrix',
-    '4. Paths Index',
-    '5. Preflight Gates',
-    '6. Update Rules'
+    "1. Terminology Canonical Map",
+    "2. Run Modes & Commands",
+    "3. Required Artifacts Matrix",
+    "4. Paths Index",
+    "5. Preflight Gates",
+    "6. Update Rules",
   ];
 
-  constructor(rootPath: string = '.') {
-    this.opsBriefPath = path.join(rootPath, 'docs', 'OPS_BRIEF.md');
+  constructor(rootPath: string = ".") {
+    this.opsBriefPath = path.join(rootPath, "docs", "OPS_BRIEF.md");
   }
 
   /**
@@ -45,7 +45,7 @@ export class OpsBriefVerifier {
       currentCommit: undefined,
       documentCommit: undefined,
       warnings: [],
-      errors: []
+      errors: [],
     };
 
     // Check if file exists
@@ -58,7 +58,7 @@ export class OpsBriefVerifier {
     // Read file content
     let content: string;
     try {
-      content = fs.readFileSync(this.opsBriefPath, 'utf-8');
+      content = fs.readFileSync(this.opsBriefPath, "utf-8");
     } catch (error) {
       result.errors.push(`Failed to read operations brief: ${error}`);
       return result;
@@ -70,7 +70,9 @@ export class OpsBriefVerifier {
     result.missingHeadings = missingHeadings;
 
     if (!hasAllHeadings) {
-      result.errors.push(`Missing required headings: ${missingHeadings.join(', ')}`);
+      result.errors.push(
+        `Missing required headings: ${missingHeadings.join(", ")}`,
+      );
     }
 
     // Check commit synchronization
@@ -85,7 +87,7 @@ export class OpsBriefVerifier {
     } else if (!commitValidation.commitMatch) {
       result.warnings.push(
         `Commit mismatch: document shows ${commitValidation.documentCommit}, ` +
-        `current is ${commitValidation.currentCommit}`
+          `current is ${commitValidation.currentCommit}`,
       );
     }
 
@@ -98,12 +100,18 @@ export class OpsBriefVerifier {
   /**
    * Validates that all required headings are present
    */
-  private validateHeadings(content: string): { hasAllHeadings: boolean; missingHeadings: string[] } {
+  private validateHeadings(content: string): {
+    hasAllHeadings: boolean;
+    missingHeadings: string[];
+  } {
     const missingHeadings: string[] = [];
 
     for (const heading of this.requiredHeadings) {
       // Look for heading patterns like "## 1. Terminology Canonical Map"
-      const headingRegex = new RegExp(`^#+\\s*${heading.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`, 'm');
+      const headingRegex = new RegExp(
+        `^#+\\s*${heading.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}`,
+        "m",
+      );
       if (!headingRegex.test(content)) {
         missingHeadings.push(heading);
       }
@@ -111,7 +119,7 @@ export class OpsBriefVerifier {
 
     return {
       hasAllHeadings: missingHeadings.length === 0,
-      missingHeadings
+      missingHeadings,
     };
   }
 
@@ -125,7 +133,9 @@ export class OpsBriefVerifier {
     documentCommit: string | undefined;
   } {
     // Extract commit from document
-    const commitMatch = content.match(/\*\*Last synced commit:\*\*\s*([a-f0-9]+)/);
+    const commitMatch = content.match(
+      /\*\*Last synced commit:\*\*\s*([a-f0-9]+)/,
+    );
     const documentCommit = commitMatch ? commitMatch[1] : undefined;
 
     if (!documentCommit) {
@@ -133,20 +143,22 @@ export class OpsBriefVerifier {
         hasCurrentCommit: false,
         commitMatch: false,
         currentCommit: undefined,
-        documentCommit: undefined
+        documentCommit: undefined,
       };
     }
 
     // Get current git commit
     let currentCommit: string;
     try {
-      currentCommit = execSync('git rev-parse HEAD', { encoding: 'utf-8' }).trim();
+      currentCommit = execSync("git rev-parse HEAD", {
+        encoding: "utf-8",
+      }).trim();
     } catch (error) {
       return {
         hasCurrentCommit: true,
         commitMatch: false,
         documentCommit,
-        currentCommit: 'unknown'
+        currentCommit: "unknown",
       };
     }
 
@@ -154,33 +166,37 @@ export class OpsBriefVerifier {
       hasCurrentCommit: true,
       commitMatch: documentCommit === currentCommit,
       currentCommit,
-      documentCommit
+      documentCommit,
     };
   }
 
   /**
    * Additional structure validation
    */
-  private validateStructure(content: string, result: OpsBriefValidationResult): void {
+  private validateStructure(
+    content: string,
+    result: OpsBriefValidationResult,
+  ): void {
     // Check for owner information
-    if (!content.includes('**Owner:**')) {
-      result.warnings.push('No owner information found');
+    if (!content.includes("**Owner:**")) {
+      result.warnings.push("No owner information found");
     }
 
     // Check for last reviewed date
-    if (!content.includes('**Last reviewed date:**')) {
-      result.warnings.push('No last reviewed date found');
+    if (!content.includes("**Last reviewed date:**")) {
+      result.warnings.push("No last reviewed date found");
     }
 
     // Check for terminology enforcement note
-    if (!content.includes('Import from `scripts/metrics/taxonomy.ts`')) {
-      result.warnings.push('Missing taxonomy enforcement reference');
+    if (!content.includes("Import from `scripts/metrics/taxonomy.ts`")) {
+      result.warnings.push("Missing taxonomy enforcement reference");
     }
 
     // Check for basic command examples
-    const hasCommands = content.includes('bash run_v3.sh') || content.includes('npm run');
+    const hasCommands =
+      content.includes("bash run_v3.sh") || content.includes("npm run");
     if (!hasCommands) {
-      result.warnings.push('No command examples found in Run Modes section');
+      result.warnings.push("No command examples found in Run Modes section");
     }
   }
 
@@ -190,53 +206,55 @@ export class OpsBriefVerifier {
   public formatResults(result: OpsBriefValidationResult): string {
     const lines: string[] = [];
 
-    lines.push('=== Operations Brief Verification ===');
-    lines.push('');
+    lines.push("=== Operations Brief Verification ===");
+    lines.push("");
 
     if (!result.exists) {
-      lines.push('❌ FAILED: Operations brief does not exist');
-      lines.push('');
-      lines.push('Errors:');
-      result.errors.forEach(error => lines.push(`  - ${error}`));
-      return lines.join('\n');
+      lines.push("❌ FAILED: Operations brief does not exist");
+      lines.push("");
+      lines.push("Errors:");
+      result.errors.forEach((error) => lines.push(`  - ${error}`));
+      return lines.join("\n");
     }
 
     // Overall status
     const hasErrors = result.errors.length > 0;
-    const status = hasErrors ? '❌ FAILED' : '✅ PASSED';
+    const status = hasErrors ? "❌ FAILED" : "✅ PASSED";
     lines.push(`Status: ${status}`);
-    lines.push('');
+    lines.push("");
 
     // Detailed checks
-    lines.push('Checks:');
+    lines.push("Checks:");
     lines.push(`  File exists: ✅`);
-    lines.push(`  Required headings: ${result.hasRequiredHeadings ? '✅' : '❌'}`);
-    lines.push(`  Commit sync: ${result.commitMatch ? '✅' : '⚠️'}`);
-    lines.push('');
+    lines.push(
+      `  Required headings: ${result.hasRequiredHeadings ? "✅" : "❌"}`,
+    );
+    lines.push(`  Commit sync: ${result.commitMatch ? "✅" : "⚠️"}`);
+    lines.push("");
 
     // Errors
     if (result.errors.length > 0) {
-      lines.push('Errors:');
-      result.errors.forEach(error => lines.push(`  - ${error}`));
-      lines.push('');
+      lines.push("Errors:");
+      result.errors.forEach((error) => lines.push(`  - ${error}`));
+      lines.push("");
     }
 
     // Warnings
     if (result.warnings.length > 0) {
-      lines.push('Warnings:');
-      result.warnings.forEach(warning => lines.push(`  - ${warning}`));
-      lines.push('');
+      lines.push("Warnings:");
+      result.warnings.forEach((warning) => lines.push(`  - ${warning}`));
+      lines.push("");
     }
 
     // Commit info
     if (result.hasCurrentCommit) {
-      lines.push('Commit Information:');
+      lines.push("Commit Information:");
       lines.push(`  Document: ${result.documentCommit}`);
       lines.push(`  Current:  ${result.currentCommit}`);
-      lines.push(`  Match: ${result.commitMatch ? 'Yes' : 'No'}`);
+      lines.push(`  Match: ${result.commitMatch ? "Yes" : "No"}`);
     }
 
-    return lines.join('\n');
+    return lines.join("\n");
   }
 }
 

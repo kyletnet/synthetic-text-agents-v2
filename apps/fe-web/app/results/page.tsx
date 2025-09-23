@@ -1,13 +1,20 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { Download, Filter, AlertTriangle, Eye, HelpCircle, X } from "lucide-react"
+import { useState, useEffect } from "react";
+import {
+  Download,
+  Filter,
+  AlertTriangle,
+  Eye,
+  HelpCircle,
+  X,
+} from "lucide-react";
 
-import { Button } from "@/components/ui/button"
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
-import { Checkbox } from "@/components/ui/checkbox"
+import { Button } from "@/components/ui/button";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Table,
   TableBody,
@@ -15,130 +22,186 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
+} from "@/components/ui/table";
 
 interface QAPair {
-  id: string
-  question: string
-  answer: string
-  confidence: number
-  quality_score: number
-  issues: string[]
+  id: string;
+  question: string;
+  answer: string;
+  confidence: number;
+  quality_score: number;
+  issues: string[];
   metadata?: {
-    generated_by: string[]
-    processing_time: number
-    cost_usd: number
-  }
+    generated_by: string[];
+    processing_time: number;
+    cost_usd: number;
+  };
 }
 
 export default function ResultsPage() {
-  const [qaPairs, setQaPairs] = useState<QAPair[]>([])
-  const [filteredPairs, setFilteredPairs] = useState<QAPair[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string>("")
-  const [searchTerm, setSearchTerm] = useState("")
-  const [showOnlyHallucinated, setShowOnlyHallucinated] = useState(false)
-  const [showOnlyLowQuality, setShowOnlyLowQuality] = useState(false)
-  const [showHelp, setShowHelp] = useState(false)
+  const [qaPairs, setQaPairs] = useState<QAPair[]>([]);
+  const [filteredPairs, setFilteredPairs] = useState<QAPair[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string>("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [showOnlyHallucinated, setShowOnlyHallucinated] = useState(false);
+  const [showOnlyLowQuality, setShowOnlyLowQuality] = useState(false);
+  const [showHelp, setShowHelp] = useState(false);
 
   useEffect(() => {
-    fetchResults()
-  }, [])
+    fetchResults();
+  }, []);
 
   useEffect(() => {
-    applyFilters()
-  }, [qaPairs, searchTerm, showOnlyHallucinated, showOnlyLowQuality])
+    applyFilters();
+  }, [qaPairs, searchTerm, showOnlyHallucinated, showOnlyLowQuality]);
 
   const fetchResults = async () => {
     try {
-      const apiBase = process.env.NEXT_PUBLIC_API_BASE || '/api'
-      const response = await fetch(`${apiBase}/results`)
+      const apiBase = process.env.NEXT_PUBLIC_API_BASE || "/api";
+      const response = await fetch(`${apiBase}/results`);
 
       if (response.ok) {
-        const data = await response.json()
-        setQaPairs(data.qaPairs || [])
+        const data = await response.json();
+        setQaPairs(data.qaPairs || []);
       } else {
-        const errorData = await response.json()
-        setError(errorData.message || 'Failed to fetch results')
+        const errorData = await response.json();
+        setError(errorData.message || "Failed to fetch results");
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Network error')
+      setError(err instanceof Error ? err.message : "Network error");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const applyFilters = () => {
-    let filtered = qaPairs
+    let filtered = qaPairs;
 
     // Search filter
     if (searchTerm) {
-      const term = searchTerm.toLowerCase()
+      const term = searchTerm.toLowerCase();
       filtered = filtered.filter(
-        pair =>
+        (pair) =>
           pair.question.toLowerCase().includes(term) ||
-          pair.answer.toLowerCase().includes(term)
-      )
+          pair.answer.toLowerCase().includes(term),
+      );
     }
 
     // Hallucination filter
     if (showOnlyHallucinated) {
-      filtered = filtered.filter(pair =>
-        pair.issues.some(issue => issue.toLowerCase().includes('hallucination'))
-      )
+      filtered = filtered.filter((pair) =>
+        pair.issues.some((issue) =>
+          issue.toLowerCase().includes("hallucination"),
+        ),
+      );
     }
 
     // Low quality filter
     if (showOnlyLowQuality) {
-      filtered = filtered.filter(pair => pair.quality_score < 7.0)
+      filtered = filtered.filter((pair) => pair.quality_score < 7.0);
     }
 
-    setFilteredPairs(filtered)
-  }
+    setFilteredPairs(filtered);
+  };
 
   const downloadCSV = () => {
-    const headers = ['ID', 'Question', 'Answer', 'Confidence', 'Quality Score', 'Issues', 'Generated By', 'Processing Time (ms)', 'Cost (USD)']
+    const headers = [
+      "ID",
+      "Question",
+      "Answer",
+      "Confidence",
+      "Quality Score",
+      "Issues",
+      "Generated By",
+      "Processing Time (ms)",
+      "Cost (USD)",
+    ];
 
     const csvContent = [
-      headers.join(','),
-      ...filteredPairs.map(pair => [
-        pair.id,
-        `"${pair.question.replace(/"/g, '""')}"`,
-        `"${pair.answer.replace(/"/g, '""')}"`,
-        pair.confidence,
-        pair.quality_score,
-        `"${pair.issues.join('; ')}"`,
-        `"${pair.metadata?.generated_by?.join('; ') || ''}"`,
-        pair.metadata?.processing_time || '',
-        pair.metadata?.cost_usd || ''
-      ].join(','))
-    ].join('\n')
+      headers.join(","),
+      ...filteredPairs.map((pair) =>
+        [
+          pair.id,
+          `"${pair.question.replace(/"/g, '""')}"`,
+          `"${pair.answer.replace(/"/g, '""')}"`,
+          pair.confidence,
+          pair.quality_score,
+          `"${pair.issues.join("; ")}"`,
+          `"${pair.metadata?.generated_by?.join("; ") || ""}"`,
+          pair.metadata?.processing_time || "",
+          pair.metadata?.cost_usd || "",
+        ].join(","),
+      ),
+    ].join("\n");
 
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
-    const link = document.createElement('a')
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
     if (link.download !== undefined) {
-      const url = URL.createObjectURL(blob)
-      link.setAttribute('href', url)
-      link.setAttribute('download', `qa_results_${new Date().toISOString().split('T')[0]}.csv`)
-      link.style.visibility = 'hidden'
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link)
+      const url = URL.createObjectURL(blob);
+      link.setAttribute("href", url);
+      link.setAttribute(
+        "download",
+        `qa_results_${new Date().toISOString().split("T")[0]}.csv`,
+      );
+      link.style.visibility = "hidden";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     }
-  }
+  };
 
   const getQualityBadge = (score: number) => {
-    if (score >= 8.5) return <Badge className="bg-green-100 text-green-800" title="전문가 수준 품질">Excellent</Badge>
-    if (score >= 7.5) return <Badge className="bg-blue-100 text-blue-800" title="양호한 품질">Good</Badge>
-    if (score >= 7.0) return <Badge className="bg-yellow-100 text-yellow-800" title="보통 품질">Fair</Badge>
-    return <Badge variant="destructive" title="개선 필요">Poor</Badge>
-  }
+    if (score >= 8.5)
+      return (
+        <Badge className="bg-green-100 text-green-800" title="전문가 수준 품질">
+          Excellent
+        </Badge>
+      );
+    if (score >= 7.5)
+      return (
+        <Badge className="bg-blue-100 text-blue-800" title="양호한 품질">
+          Good
+        </Badge>
+      );
+    if (score >= 7.0)
+      return (
+        <Badge className="bg-yellow-100 text-yellow-800" title="보통 품질">
+          Fair
+        </Badge>
+      );
+    return (
+      <Badge variant="destructive" title="개선 필요">
+        Poor
+      </Badge>
+    );
+  };
 
   const getConfidenceBadge = (confidence: number) => {
-    if (confidence >= 0.9) return <Badge className="bg-green-100 text-green-800" title="매우 신뢰할 수 있음">High</Badge>
-    if (confidence >= 0.7) return <Badge className="bg-yellow-100 text-yellow-800" title="적당히 신뢰할 수 있음">Medium</Badge>
-    return <Badge className="bg-red-100 text-red-800" title="검토 필요">Low</Badge>
-  }
+    if (confidence >= 0.9)
+      return (
+        <Badge
+          className="bg-green-100 text-green-800"
+          title="매우 신뢰할 수 있음"
+        >
+          High
+        </Badge>
+      );
+    if (confidence >= 0.7)
+      return (
+        <Badge
+          className="bg-yellow-100 text-yellow-800"
+          title="적당히 신뢰할 수 있음"
+        >
+          Medium
+        </Badge>
+      );
+    return (
+      <Badge className="bg-red-100 text-red-800" title="검토 필요">
+        Low
+      </Badge>
+    );
+  };
 
   if (loading) {
     return (
@@ -150,7 +213,7 @@ export default function ResultsPage() {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   if (error) {
@@ -161,14 +224,16 @@ export default function ResultsPage() {
             <div className="flex items-center gap-3">
               <AlertTriangle className="w-5 h-5 text-red-500" />
               <div>
-                <p className="font-medium text-red-800">Error loading results</p>
+                <p className="font-medium text-red-800">
+                  Error loading results
+                </p>
                 <p className="text-sm text-red-600">{error}</p>
               </div>
             </div>
           </CardContent>
         </Card>
       </div>
-    )
+    );
   }
 
   return (
@@ -176,7 +241,9 @@ export default function ResultsPage() {
       <div className="mb-8">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">QA Results</h1>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              QA Results
+            </h1>
             <p className="text-gray-600">
               Review and download your generated QA pairs with quality metrics
             </p>
@@ -187,7 +254,7 @@ export default function ResultsPage() {
             className="flex items-center gap-2"
           >
             <HelpCircle className="w-4 h-4" />
-            {showHelp ? 'Hide Help' : 'Evaluation Guide'}
+            {showHelp ? "Hide Help" : "Evaluation Guide"}
           </Button>
         </div>
       </div>
@@ -214,55 +281,98 @@ export default function ResultsPage() {
           <CardContent className="text-sm space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <h4 className="font-semibold text-blue-900 mb-2">📊 신뢰도 (Confidence)</h4>
+                <h4 className="font-semibold text-blue-900 mb-2">
+                  📊 신뢰도 (Confidence)
+                </h4>
                 <ul className="space-y-1 text-blue-800">
-                  <li>🟢 <strong>High (≥0.9)</strong>: 매우 신뢰할 수 있음</li>
-                  <li>🟡 <strong>Medium (0.7-0.9)</strong>: 적당히 신뢰할 수 있음</li>
-                  <li>🔴 <strong>Low (&lt;0.7)</strong>: 검토 필요</li>
+                  <li>
+                    🟢 <strong>High (≥0.9)</strong>: 매우 신뢰할 수 있음
+                  </li>
+                  <li>
+                    🟡 <strong>Medium (0.7-0.9)</strong>: 적당히 신뢰할 수 있음
+                  </li>
+                  <li>
+                    🔴 <strong>Low (&lt;0.7)</strong>: 검토 필요
+                  </li>
                 </ul>
               </div>
               <div>
-                <h4 className="font-semibold text-blue-900 mb-2">⭐ 품질 점수 (Quality Score)</h4>
+                <h4 className="font-semibold text-blue-900 mb-2">
+                  ⭐ 품질 점수 (Quality Score)
+                </h4>
                 <ul className="space-y-1 text-blue-800">
-                  <li>🟢 <strong>Excellent (≥8.5)</strong>: 전문가 수준</li>
-                  <li>🔵 <strong>Good (7.5-8.5)</strong>: 양호한 품질</li>
-                  <li>🟡 <strong>Fair (7.0-7.5)</strong>: 보통 품질</li>
-                  <li>🔴 <strong>Poor (&lt;7.0)</strong>: 개선 필요</li>
+                  <li>
+                    🟢 <strong>Excellent (≥8.5)</strong>: 전문가 수준
+                  </li>
+                  <li>
+                    🔵 <strong>Good (7.5-8.5)</strong>: 양호한 품질
+                  </li>
+                  <li>
+                    🟡 <strong>Fair (7.0-7.5)</strong>: 보통 품질
+                  </li>
+                  <li>
+                    🔴 <strong>Poor (&lt;7.0)</strong>: 개선 필요
+                  </li>
                 </ul>
               </div>
               <div>
-                <h4 className="font-semibold text-blue-900 mb-2">⚠️ 주요 이슈 유형</h4>
+                <h4 className="font-semibold text-blue-900 mb-2">
+                  ⚠️ 주요 이슈 유형
+                </h4>
                 <ul className="space-y-1 text-blue-800">
-                  <li><strong>hallucination</strong>: 환각 내용 포함</li>
-                  <li><strong>low_confidence</strong>: 낮은 신뢰도</li>
-                  <li><strong>insufficient_evidence</strong>: 근거 부족</li>
-                  <li><strong>general_response</strong>: 일반적/모호한 답변</li>
+                  <li>
+                    <strong>hallucination</strong>: 환각 내용 포함
+                  </li>
+                  <li>
+                    <strong>low_confidence</strong>: 낮은 신뢰도
+                  </li>
+                  <li>
+                    <strong>insufficient_evidence</strong>: 근거 부족
+                  </li>
+                  <li>
+                    <strong>general_response</strong>: 일반적/모호한 답변
+                  </li>
                 </ul>
               </div>
               <div>
-                <h4 className="font-semibold text-blue-900 mb-2">🎯 사용 권장 기준</h4>
+                <h4 className="font-semibold text-blue-900 mb-2">
+                  🎯 사용 권장 기준
+                </h4>
                 <ul className="space-y-1 text-blue-800">
-                  <li><strong>교육용</strong>: 품질 8.5+ 권장</li>
-                  <li><strong>업무용</strong>: 품질 7.5+ 적합</li>
-                  <li><strong>검토용</strong>: 품질 7.0+ 최소</li>
-                  <li><strong>환각 있음</strong>: 반드시 검토 후 사용</li>
+                  <li>
+                    <strong>교육용</strong>: 품질 8.5+ 권장
+                  </li>
+                  <li>
+                    <strong>업무용</strong>: 품질 7.5+ 적합
+                  </li>
+                  <li>
+                    <strong>검토용</strong>: 품질 7.0+ 최소
+                  </li>
+                  <li>
+                    <strong>환각 있음</strong>: 반드시 검토 후 사용
+                  </li>
                 </ul>
               </div>
             </div>
             <div className="bg-white rounded-lg p-4 border border-blue-200">
-              <h4 className="font-semibold text-blue-900 mb-2">💡 빠른 해석 팁</h4>
+              <h4 className="font-semibold text-blue-900 mb-2">
+                💡 빠른 해석 팁
+              </h4>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-blue-800">
                 <div>
                   <strong>🟢 좋은 결과:</strong>
-                  <br />품질 8.5+, 신뢰도 0.9+, 이슈 없음
+                  <br />
+                  품질 8.5+, 신뢰도 0.9+, 이슈 없음
                 </div>
                 <div>
                   <strong>🟡 주의 필요:</strong>
-                  <br />품질 7.0-8.5, 환각이나 낮은 신뢰도
+                  <br />
+                  품질 7.0-8.5, 환각이나 낮은 신뢰도
                 </div>
                 <div>
                   <strong>🔴 개선 필요:</strong>
-                  <br />품질 7.0 미만, 다수 이슈 존재
+                  <br />
+                  품질 7.0 미만, 다수 이슈 존재
                 </div>
               </div>
             </div>
@@ -275,7 +385,9 @@ export default function ResultsPage() {
         <Card>
           <CardContent className="pt-6">
             <div className="text-center">
-              <p className="text-2xl font-bold text-blue-600">{qaPairs.length}</p>
+              <p className="text-2xl font-bold text-blue-600">
+                {qaPairs.length}
+              </p>
               <p className="text-sm text-gray-600">Total Pairs</p>
             </div>
           </CardContent>
@@ -284,7 +396,7 @@ export default function ResultsPage() {
           <CardContent className="pt-6">
             <div className="text-center">
               <p className="text-2xl font-bold text-green-600">
-                {qaPairs.filter(p => p.quality_score >= 7.0).length}
+                {qaPairs.filter((p) => p.quality_score >= 7.0).length}
               </p>
               <p className="text-sm text-gray-600">High Quality (≥7.0)</p>
             </div>
@@ -294,7 +406,13 @@ export default function ResultsPage() {
           <CardContent className="pt-6">
             <div className="text-center">
               <p className="text-2xl font-bold text-orange-600">
-                {qaPairs.filter(p => p.issues.some(i => i.toLowerCase().includes('hallucination'))).length}
+                {
+                  qaPairs.filter((p) =>
+                    p.issues.some((i) =>
+                      i.toLowerCase().includes("hallucination"),
+                    ),
+                  ).length
+                }
               </p>
               <p className="text-sm text-gray-600">Hallucinations</p>
             </div>
@@ -304,7 +422,12 @@ export default function ResultsPage() {
           <CardContent className="pt-6">
             <div className="text-center">
               <p className="text-2xl font-bold text-purple-600">
-                {qaPairs.length > 0 ? (qaPairs.reduce((sum, p) => sum + p.quality_score, 0) / qaPairs.length).toFixed(1) : '0.0'}
+                {qaPairs.length > 0
+                  ? (
+                      qaPairs.reduce((sum, p) => sum + p.quality_score, 0) /
+                      qaPairs.length
+                    ).toFixed(1)
+                  : "0.0"}
               </p>
               <p className="text-sm text-gray-600">Avg Quality Score</p>
             </div>
@@ -338,7 +461,9 @@ export default function ResultsPage() {
                 <Checkbox
                   id="hallucinations"
                   checked={showOnlyHallucinated}
-                  onCheckedChange={(checked) => setShowOnlyHallucinated(checked === true)}
+                  onCheckedChange={(checked) =>
+                    setShowOnlyHallucinated(checked === true)
+                  }
                 />
                 <label htmlFor="hallucinations" className="text-sm font-medium">
                   Only Hallucinated
@@ -348,7 +473,9 @@ export default function ResultsPage() {
                 <Checkbox
                   id="low-quality"
                   checked={showOnlyLowQuality}
-                  onCheckedChange={(checked) => setShowOnlyLowQuality(checked === true)}
+                  onCheckedChange={(checked) =>
+                    setShowOnlyLowQuality(checked === true)
+                  }
                 />
                 <label htmlFor="low-quality" className="text-sm font-medium">
                   Low Quality (&lt;7.0)
@@ -372,9 +499,9 @@ export default function ResultsPage() {
                 size="sm"
                 className="p-0 h-auto ml-2"
                 onClick={() => {
-                  setSearchTerm("")
-                  setShowOnlyHallucinated(false)
-                  setShowOnlyLowQuality(false)
+                  setSearchTerm("");
+                  setShowOnlyHallucinated(false);
+                  setShowOnlyLowQuality(false);
                 }}
               >
                 Clear filters
@@ -393,7 +520,9 @@ export default function ResultsPage() {
           {filteredPairs.length === 0 ? (
             <div className="text-center py-8">
               <Eye className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-600">No results match your current filters</p>
+              <p className="text-gray-600">
+                No results match your current filters
+              </p>
             </div>
           ) : (
             <div className="overflow-x-auto">
@@ -411,10 +540,14 @@ export default function ResultsPage() {
                 <TableBody>
                   {filteredPairs.map((pair) => (
                     <TableRow key={pair.id}>
-                      <TableCell className="font-mono text-xs">{pair.id}</TableCell>
+                      <TableCell className="font-mono text-xs">
+                        {pair.id}
+                      </TableCell>
                       <TableCell>
                         <div className="max-w-xs">
-                          <p className="text-sm line-clamp-3">{pair.question}</p>
+                          <p className="text-sm line-clamp-3">
+                            {pair.question}
+                          </p>
                         </div>
                       </TableCell>
                       <TableCell>
@@ -425,13 +558,17 @@ export default function ResultsPage() {
                       <TableCell>
                         <div className="space-y-1">
                           {getConfidenceBadge(pair.confidence)}
-                          <p className="text-xs text-gray-500">{pair.confidence.toFixed(2)}</p>
+                          <p className="text-xs text-gray-500">
+                            {pair.confidence.toFixed(2)}
+                          </p>
                         </div>
                       </TableCell>
                       <TableCell>
                         <div className="space-y-1">
                           {getQualityBadge(pair.quality_score)}
-                          <p className="text-xs text-gray-500">{pair.quality_score.toFixed(1)}</p>
+                          <p className="text-xs text-gray-500">
+                            {pair.quality_score.toFixed(1)}
+                          </p>
                         </div>
                       </TableCell>
                       <TableCell>
@@ -440,14 +577,20 @@ export default function ResultsPage() {
                             pair.issues.map((issue, idx) => {
                               const getIssueTooltip = (issue: string) => {
                                 switch (issue.toLowerCase()) {
-                                  case 'hallucination': return '환각: 문서에 없는 내용 포함'
-                                  case 'low_confidence': return '낮은 신뢰도: 검토 필요'
-                                  case 'insufficient_evidence': return '근거 부족: 원본 문서 근거 부족'
-                                  case 'general_response': return '일반적 답변: 모호하거나 일반적인 내용'
-                                  case 'unknown_format': return '알 수 없는 형식: 파일 형식 인식 불가'
-                                  default: return issue
+                                  case "hallucination":
+                                    return "환각: 문서에 없는 내용 포함";
+                                  case "low_confidence":
+                                    return "낮은 신뢰도: 검토 필요";
+                                  case "insufficient_evidence":
+                                    return "근거 부족: 원본 문서 근거 부족";
+                                  case "general_response":
+                                    return "일반적 답변: 모호하거나 일반적인 내용";
+                                  case "unknown_format":
+                                    return "알 수 없는 형식: 파일 형식 인식 불가";
+                                  default:
+                                    return issue;
                                 }
-                              }
+                              };
 
                               return (
                                 <Badge
@@ -458,10 +601,14 @@ export default function ResultsPage() {
                                 >
                                   {issue}
                                 </Badge>
-                              )
+                              );
                             })
                           ) : (
-                            <Badge variant="outline" className="text-xs bg-green-50 text-green-700" title="문제 없음">
+                            <Badge
+                              variant="outline"
+                              className="text-xs bg-green-50 text-green-700"
+                              title="문제 없음"
+                            >
                               No issues
                             </Badge>
                           )}
@@ -476,5 +623,5 @@ export default function ResultsPage() {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

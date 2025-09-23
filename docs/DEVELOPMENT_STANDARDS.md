@@ -10,6 +10,7 @@
 ### 1. **파일 명명 규칙**
 
 #### TypeScript/JavaScript 파일
+
 ```bash
 ✅ GOOD: camelCase
 - qaGenerator.ts
@@ -22,6 +23,7 @@
 ```
 
 #### 설정 파일
+
 ```bash
 ✅ GOOD: kebab-case
 - eslint.config.js
@@ -33,6 +35,7 @@
 ```
 
 #### Shell 스크립트
+
 ```bash
 ✅ GOOD: kebab-case
 - forbidden-direct-http.sh
@@ -65,6 +68,7 @@ legacy/          # 구버전 코드 (빌드 제외)
 ### 3. **import/export 표준**
 
 #### 절대 경로 vs 상대 경로
+
 ```typescript
 ✅ GOOD: 명확한 상대 경로
 import { BaseAgent } from '../core/baseAgent.js';
@@ -76,6 +80,7 @@ import { Logger } from 'logger';
 ```
 
 #### 파일 확장자
+
 ```typescript
 ✅ GOOD: .js 확장자 (TypeScript → JavaScript 컴파일 고려)
 import { something } from './module.js';
@@ -87,6 +92,7 @@ import { something } from './module.ts';
 ### 4. **타입 정의 표준**
 
 #### 클래스 vs 인터페이스
+
 ```typescript
 ✅ GOOD: 명확한 구분
 // 구현체는 클래스
@@ -103,6 +109,7 @@ export interface QAGenerator {} // 구현체를 인터페이스로
 ```
 
 #### any 타입 사용
+
 ```typescript
 ✅ GOOD: 구체적 타입
 function processData(data: AgentMessage): AgentResult {}
@@ -114,6 +121,7 @@ function processData(data: any): any {}
 ### 5. **문서 작성 표준**
 
 #### README vs 가이드 구분
+
 ```
 README.md              # 프로젝트 개요, 빠른 시작
 docs/DEVELOPMENT_STANDARDS.md  # 개발 표준
@@ -122,14 +130,20 @@ docs/API_REFERENCE.md   # API 문서
 ```
 
 #### 문서 구조
+
 ```markdown
 ✅ GOOD: 표준화된 구조
+
 # 제목
 
 ## 🎯 목적
+
 ## 📋 사용법
+
 ## ⚠️ 주의사항
+
 ## 🔧 설정
+
 ## 🆘 문제 해결
 
 ❌ BAD: 자유형식 문서
@@ -195,6 +209,7 @@ npm run format        # 코드 포매팅
 ### 2. **Pre-commit Hook 검증**
 
 Pre-commit hook은 다음을 자동 검사:
+
 - TypeScript 컴파일 오류
 - ESLint 규칙 위반
 - Git secrets 누출
@@ -217,18 +232,21 @@ npm run generate:agent -- --name=MyAgent
 ## 🚫 절대 금지 사항
 
 ### 1. **코드 스타일**
+
 - ❌ `any` 타입 남발 (src/ 폴더에서 금지)
 - ❌ `console.log` 직접 사용 (Logger 사용 필수)
 - ❌ 하드코딩된 설정값
 - ❌ 직접 HTTP 호출 (클라이언트 어댑터 사용)
 
 ### 2. **파일 구조**
+
 - ❌ src/ 밖에서 비즈니스 로직 구현
 - ❌ 테스트 없는 새 에이전트 추가
 - ❌ legacy/ 폴더에 새 코드 추가
 - ❌ 임시 파일을 git에 커밋
 
 ### 3. **문서화**
+
 - ❌ 구현과 문서 불일치
 - ❌ README 없는 새 모듈
 - ❌ 주석 없는 복잡한 로직
@@ -236,6 +254,7 @@ npm run generate:agent -- --name=MyAgent
 ## 📊 일관성 메트릭
 
 ### 자동 측정 지표
+
 - TypeScript 에러 수: **0개 유지**
 - 테스트 커버리지: **80% 이상**
 - ESLint 경고: **10개 이하**
@@ -245,6 +264,7 @@ npm run generate:agent -- --name=MyAgent
 ## 🆘 문제 발생 시 대응
 
 ### 1. **표준 위반 발견 시**
+
 ```bash
 # 자동 수정 시도
 npm run lint:fix
@@ -257,8 +277,9 @@ npm run format
 ```
 
 ### 2. **새로운 패턴 필요 시**
+
 ```markdown
-1. RFC 문서 작성 (docs/RFC_새패턴.md)
+1. RFC 문서 작성 (docs/RFC\_새패턴.md)
 2. 팀 리뷰 및 승인
 3. 이 문서 업데이트
 4. 기존 코드 마이그레이션 계획 수립

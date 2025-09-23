@@ -1,6 +1,9 @@
-import { createThresholdManager, GatingResult } from '../metrics/threshold_manager.js';
-import { createBudgetGuardian } from './budget_guardian.js';
-import { getAgentLogger } from './agent_logger.js';
+import {
+  createThresholdManager,
+  GatingResult,
+} from "../metrics/threshold_manager.js";
+import { createBudgetGuardian } from "./budget_guardian.js";
+import { getAgentLogger } from "./agent_logger.js";
 
 /**
  * Gating Integrator
@@ -13,7 +16,7 @@ export interface GatingContext {
   session_id: string;
   profile: string;
   dry_run: boolean;
-  mode: 'smoke' | 'full';
+  mode: "smoke" | "full";
   cases_total: number;
 }
 
@@ -38,8 +41,8 @@ export interface GatedMetrics {
 }
 
 export interface SessionResult {
-  result: 'PASS' | 'WARN' | 'PARTIAL' | 'FAIL';
-  run_state: 'completed' | 'failed' | 'killed' | 'budget_exceeded';
+  result: "PASS" | "WARN" | "PARTIAL" | "FAIL";
+  run_state: "completed" | "failed" | "killed" | "budget_exceeded";
   can_proceed: boolean;
 
   // Gating summary
@@ -77,23 +80,39 @@ export class GatingIntegrator {
     context: GatingContext,
     metrics: GatedMetrics,
     manifestHash?: string,
-    budgetState?: any
+    budgetState?: any,
   ): SessionResult {
     console.log(`🚪 Evaluating session result for ${context.run_id}...`);
 
     // Validate required conditions
-    const validations = this.validateRequiredConditions(context, metrics, manifestHash, budgetState);
+    const validations = this.validateRequiredConditions(
+      context,
+      metrics,
+      manifestHash,
+      budgetState,
+    );
 
     // If critical validations fail, return immediate FAIL
     if (!validations.cases_total_valid || !validations.budget_compliance) {
-      return this.createFailResult(context, validations, 'Critical validation failure');
+      return this.createFailResult(
+        context,
+        validations,
+        "Critical validation failure",
+      );
     }
 
     // Run threshold gating
-    const gatingResult = this.thresholdManager.evaluateGating(metrics, context.profile);
+    const gatingResult = this.thresholdManager.evaluateGating(
+      metrics,
+      context.profile,
+    );
 
     // Apply gating logic
-    const sessionResult = this.mapGatingToSessionResult(context, gatingResult, validations);
+    const sessionResult = this.mapGatingToSessionResult(
+      context,
+      gatingResult,
+      validations,
+    );
 
     // Log gating decision
     this.logGatingDecision(context, sessionResult, gatingResult);
@@ -108,7 +127,7 @@ export class GatingIntegrator {
     context: GatingContext,
     metrics: GatedMetrics,
     manifestHash?: string,
-    budgetState?: any
+    budgetState?: any,
   ): {
     cases_total_valid: boolean;
     threshold_compliance: boolean;
@@ -127,7 +146,9 @@ export class GatingIntegrator {
     // 2. Budget compliance
     let budgetCompliant = true;
     if (budgetState) {
-      budgetCompliant = budgetState.status !== 'budget_exceeded' && budgetState.status !== 'killed';
+      budgetCompliant =
+        budgetState.status !== "budget_exceeded" &&
+        budgetState.status !== "killed";
       if (!budgetCompliant) {
         errors.push(`Budget status: ${budgetState.status}`);
       }
@@ -147,14 +168,17 @@ export class GatingIntegrator {
       threshold_compliance: thresholdCompliance.valid,
       manifest_integrity: manifestIntegrityOk,
       budget_compliance: budgetCompliant,
-      validation_errors: errors
+      validation_errors: errors,
     };
   }
 
   /**
    * Validate threshold sanity (detect obviously invalid metrics)
    */
-  private validateThresholdSanity(metrics: GatedMetrics): { valid: boolean; errors: string[] } {
+  private validateThresholdSanity(metrics: GatedMetrics): {
+    valid: boolean;
+    errors: string[];
+  } {
     const errors: string[] = [];
 
     // Check for impossible values
@@ -162,8 +186,13 @@ export class GatingIntegrator {
       errors.push(`Invalid duplication_rate: ${metrics.duplication_rate}`);
     }
 
-    if (metrics.evidence_presence_rate < 0 || metrics.evidence_presence_rate > 1) {
-      errors.push(`Invalid evidence_presence_rate: ${metrics.evidence_presence_rate}`);
+    if (
+      metrics.evidence_presence_rate < 0 ||
+      metrics.evidence_presence_rate > 1
+    ) {
+      errors.push(
+        `Invalid evidence_presence_rate: ${metrics.evidence_presence_rate}`,
+      );
     }
 
     if (metrics.hallucination_rate < 0 || metrics.hallucination_rate > 1) {
@@ -188,7 +217,7 @@ export class GatingIntegrator {
 
     return {
       valid: errors.length === 0,
-      errors
+      errors,
     };
   }
 
@@ -198,61 +227,65 @@ export class GatingIntegrator {
   private mapGatingToSessionResult(
     context: GatingContext,
     gatingResult: GatingResult,
-    validations: any
+    validations: any,
   ): SessionResult {
     // Determine run state
-    let runState: 'completed' | 'failed' | 'killed' | 'budget_exceeded' = 'completed';
+    let runState: "completed" | "failed" | "killed" | "budget_exceeded" =
+      "completed";
 
     if (!validations.budget_compliance) {
-      runState = 'budget_exceeded';
+      runState = "budget_exceeded";
     } else if (gatingResult.p0_violations.length > 0) {
-      runState = 'failed';
+      runState = "failed";
     }
 
     // Map gate status to result
-    let result: 'PASS' | 'WARN' | 'PARTIAL' | 'FAIL';
+    let result: "PASS" | "WARN" | "PARTIAL" | "FAIL";
     let decisionRationale: string;
     const blockingIssues: string[] = [];
 
     switch (gatingResult.gate_status) {
-      case 'PASS':
-        result = 'PASS';
-        decisionRationale = 'All metrics within acceptable thresholds';
+      case "PASS":
+        result = "PASS";
+        decisionRationale = "All metrics within acceptable thresholds";
         break;
 
-      case 'WARN':
-        result = 'WARN';
-        decisionRationale = 'Quality issues detected but within operational limits';
+      case "WARN":
+        result = "WARN";
+        decisionRationale =
+          "Quality issues detected but within operational limits";
         break;
 
-      case 'PARTIAL':
-        result = 'PARTIAL';
-        decisionRationale = 'Performance issues require monitoring but can proceed';
+      case "PARTIAL":
+        result = "PARTIAL";
+        decisionRationale =
+          "Performance issues require monitoring but can proceed";
         break;
 
-      case 'FAIL':
-        result = 'FAIL';
-        decisionRationale = 'Critical violations detected - cannot proceed';
+      case "FAIL":
+        result = "FAIL";
+        decisionRationale = "Critical violations detected - cannot proceed";
         blockingIssues.push(...gatingResult.p0_violations);
         break;
 
       default:
-        result = 'FAIL';
-        decisionRationale = 'Unknown gate status - defaulting to FAIL for safety';
+        result = "FAIL";
+        decisionRationale =
+          "Unknown gate status - defaulting to FAIL for safety";
         blockingIssues.push(`Unknown gate status: ${gatingResult.gate_status}`);
     }
 
     // Override result based on validations
     if (!validations.cases_total_valid) {
-      result = 'FAIL';
-      decisionRationale = 'CASES_TOTAL validation failed';
+      result = "FAIL";
+      decisionRationale = "CASES_TOTAL validation failed";
       blockingIssues.push(...validations.validation_errors);
     }
 
     // For smoke runs, be more lenient with P2 issues
-    if (context.mode === 'smoke' && result === 'WARN') {
-      result = 'PASS';
-      decisionRationale += ' (smoke mode - P2 issues acceptable)';
+    if (context.mode === "smoke" && result === "WARN") {
+      result = "PASS";
+      decisionRationale += " (smoke mode - P2 issues acceptable)";
     }
 
     // Get threshold configuration info
@@ -271,17 +304,19 @@ export class GatingIntegrator {
         p2_issues: gatingResult.p2_issues,
         threshold_source: thresholdSource,
         profile_used: context.profile,
-        autocalibration_enabled: autocalibConfig.enabled
+        autocalibration_enabled: autocalibConfig.enabled,
       },
 
       decision_rationale: decisionRationale,
       blocking_issues: blockingIssues,
-      recommendations: gatingResult.recommendation ? [gatingResult.recommendation] : [],
+      recommendations: gatingResult.recommendation
+        ? [gatingResult.recommendation]
+        : [],
 
       cases_total_valid: validations.cases_total_valid,
       threshold_compliance: validations.threshold_compliance,
       manifest_integrity: validations.manifest_integrity,
-      budget_compliance: validations.budget_compliance
+      budget_compliance: validations.budget_compliance,
     };
   }
 
@@ -291,31 +326,31 @@ export class GatingIntegrator {
   private createFailResult(
     context: GatingContext,
     validations: any,
-    reason: string
+    reason: string,
   ): SessionResult {
     return {
-      result: 'FAIL',
-      run_state: 'failed',
+      result: "FAIL",
+      run_state: "failed",
       can_proceed: false,
 
       gating_summary: {
-        gate_status: 'FAIL',
+        gate_status: "FAIL",
         p0_violations: validations.validation_errors,
         p1_warnings: [],
         p2_issues: [],
-        threshold_source: 'validation_failure',
+        threshold_source: "validation_failure",
         profile_used: context.profile,
-        autocalibration_enabled: false
+        autocalibration_enabled: false,
       },
 
       decision_rationale: reason,
       blocking_issues: validations.validation_errors,
-      recommendations: ['Fix critical validation errors before retrying'],
+      recommendations: ["Fix critical validation errors before retrying"],
 
       cases_total_valid: validations.cases_total_valid,
       threshold_compliance: validations.threshold_compliance,
       manifest_integrity: validations.manifest_integrity,
-      budget_compliance: validations.budget_compliance
+      budget_compliance: validations.budget_compliance,
     };
   }
 
@@ -328,7 +363,7 @@ export class GatingIntegrator {
     if (autocalibConfig.enabled) {
       return `autocalibrated (lookback: ${autocalibConfig.lookback_runs} runs)`;
     } else {
-      return 'defaults from baseline_config.json';
+      return "defaults from baseline_config.json";
     }
   }
 
@@ -338,15 +373,19 @@ export class GatingIntegrator {
   private logGatingDecision(
     context: GatingContext,
     sessionResult: SessionResult,
-    gatingResult: GatingResult
+    gatingResult: GatingResult,
   ): void {
-    const traceContext = this.logger.createTraceContext(context.run_id, 'session', context.session_id);
+    const traceContext = this.logger.createTraceContext(
+      context.run_id,
+      "session",
+      context.session_id,
+    );
 
     this.logger.logOperationComplete(
       traceContext,
-      'gating_integrator',
-      'gating',
-      'session_evaluation',
+      "gating_integrator",
+      "gating",
+      "session_evaluation",
       Date.now() - 1000, // Approximate start time
       {
         cost_usd: 0,
@@ -358,14 +397,16 @@ export class GatingIntegrator {
           p1_warnings_count: gatingResult.p1_warnings.length,
           p2_issues_count: gatingResult.p2_issues.length,
           can_proceed: sessionResult.can_proceed,
-          decision_rationale: sessionResult.decision_rationale
+          decision_rationale: sessionResult.decision_rationale,
         },
         quality_score: this.calculateGatingQualityScore(sessionResult),
-        confidence_score: this.calculateGatingConfidence(sessionResult)
-      }
+        confidence_score: this.calculateGatingConfidence(sessionResult),
+      },
     );
 
-    console.log(`🚪 Gating result: ${sessionResult.result} (${sessionResult.run_state})`);
+    console.log(
+      `🚪 Gating result: ${sessionResult.result} (${sessionResult.run_state})`,
+    );
     console.log(`   P0 violations: ${gatingResult.p0_violations.length}`);
     console.log(`   P1 warnings: ${gatingResult.p1_warnings.length}`);
     console.log(`   P2 issues: ${gatingResult.p2_issues.length}`);
@@ -380,7 +421,7 @@ export class GatingIntegrator {
       PASS: 1.0,
       WARN: 0.8,
       PARTIAL: 0.6,
-      FAIL: 0.0
+      FAIL: 0.0,
     };
 
     return weights[sessionResult.result] || 0.0;
@@ -398,7 +439,7 @@ export class GatingIntegrator {
     if (!sessionResult.budget_compliance) confidence -= 0.2;
 
     // Reduce confidence for edge cases
-    if (sessionResult.result === 'PARTIAL') confidence -= 0.1;
+    if (sessionResult.result === "PARTIAL") confidence -= 0.1;
 
     return Math.max(0, confidence);
   }
@@ -410,7 +451,7 @@ export class GatingIntegrator {
     context: GatingContext,
     sessionResult: SessionResult,
     metrics: GatedMetrics,
-    manifestHash?: string
+    manifestHash?: string,
   ): any {
     return {
       // Summary block fields
@@ -428,10 +469,11 @@ export class GatingIntegrator {
       // Threshold information
       THRESHOLD_SOURCE: sessionResult.gating_summary.threshold_source,
       PROFILE_USED: sessionResult.gating_summary.profile_used,
-      AUTOCALIBRATION_ENABLED: sessionResult.gating_summary.autocalibration_enabled,
+      AUTOCALIBRATION_ENABLED:
+        sessionResult.gating_summary.autocalibration_enabled,
 
       // Manifest information
-      MANIFEST_HASH: manifestHash || 'not_provided',
+      MANIFEST_HASH: manifestHash || "not_provided",
       MANIFEST_INTEGRITY: sessionResult.manifest_integrity,
 
       // Budget information
@@ -440,16 +482,16 @@ export class GatingIntegrator {
 
       // Decision metadata
       DECISION_RATIONALE: sessionResult.decision_rationale,
-      BLOCKING_ISSUES: sessionResult.blocking_issues.join('; '),
-      RECOMMENDATIONS: sessionResult.recommendations.join('; '),
+      BLOCKING_ISSUES: sessionResult.blocking_issues.join("; "),
+      RECOMMENDATIONS: sessionResult.recommendations.join("; "),
 
       // Compliance flags
       VALIDATIONS: {
         cases_total_valid: sessionResult.cases_total_valid,
         threshold_compliance: sessionResult.threshold_compliance,
         manifest_integrity: sessionResult.manifest_integrity,
-        budget_compliance: sessionResult.budget_compliance
-      }
+        budget_compliance: sessionResult.budget_compliance,
+      },
     };
   }
 
@@ -463,24 +505,37 @@ export class GatingIntegrator {
       console.log(`🔧 Auto-calibrating thresholds for profile: ${profile}...`);
 
       try {
-        const calibrationResults = await this.thresholdManager.autoCalibrateThresholds(profile);
+        const calibrationResults =
+          await this.thresholdManager.autoCalibrateThresholds(profile);
 
         if (calibrationResults.length > 0) {
-          console.log(`📊 Applied ${calibrationResults.filter(r => r.applied).length} threshold calibrations`);
+          console.log(
+            `📊 Applied ${calibrationResults.filter((r) => r.applied).length} threshold calibrations`,
+          );
 
           // Log calibration for audit
-          const appliedResults = calibrationResults.filter(r => r.applied);
+          const appliedResults = calibrationResults.filter((r) => r.applied);
           for (const result of appliedResults) {
-            console.log(`   ${result.metric_name}: ${result.old_value} → ${result.new_value} (${result.change_pct > 0 ? '+' : ''}${(result.change_pct * 100).toFixed(1)}%)`);
+            console.log(
+              `   ${result.metric_name}: ${result.old_value} → ${result.new_value} (${result.change_pct > 0 ? "+" : ""}${(result.change_pct * 100).toFixed(1)}%)`,
+            );
           }
 
           // Apply calibration to configuration
-          this.thresholdManager.applyCalibrationResults(calibrationResults, profile);
+          this.thresholdManager.applyCalibrationResults(
+            calibrationResults,
+            profile,
+          );
         } else {
-          console.log(`ℹ️  No threshold calibrations needed for profile: ${profile}`);
+          console.log(
+            `ℹ️  No threshold calibrations needed for profile: ${profile}`,
+          );
         }
       } catch (error) {
-        console.error(`❌ Auto-calibration failed for profile ${profile}:`, error);
+        console.error(
+          `❌ Auto-calibration failed for profile ${profile}:`,
+          error,
+        );
       }
     }
   }
@@ -499,7 +554,7 @@ export function createGatingIntegrator(): GatingIntegrator {
 export async function evaluateSession(
   context: GatingContext,
   metrics: GatedMetrics,
-  manifestHash?: string
+  manifestHash?: string,
 ): Promise<SessionResult> {
   const integrator = createGatingIntegrator();
 
@@ -515,7 +570,7 @@ export async function evaluateSession(
     context,
     metrics,
     manifestHash,
-    budgetState ? budgetGuardian.getBudgetSummary() : null
+    budgetState ? budgetGuardian.getBudgetSummary() : null,
   );
 
   return sessionResult;

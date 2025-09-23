@@ -14,6 +14,7 @@
 ## 🏗️ 핵심 모듈 구조
 
 ### 1. **Core Engine (핵심 엔진)**
+
 ```
 src/core/
 ├── metaController.ts      # 전체 프로세스 오케스트레이션
@@ -27,6 +28,7 @@ src/core/
 ### 2. **8-Agent Council (8개 에이전트 협의체)**
 
 #### Core Engine Agents (4개)
+
 ```
 src/agents/
 ├── promptArchitect.ts     # 프롬프트 설계 및 최적화
@@ -36,6 +38,7 @@ src/agents/
 ```
 
 #### Expert Council Agents (4개)
+
 ```
 src/agents/
 ├── psychologySpecialist.ts  # 사용자 심리 분석
@@ -45,6 +48,7 @@ src/agents/
 ```
 
 ### 3. **Shared Infrastructure (공유 인프라)**
+
 ```
 src/shared/
 ├── types.ts              # 시스템 전체 타입 정의
@@ -55,6 +59,7 @@ src/shared/
 ```
 
 ### 4. **Client & Services**
+
 ```
 src/clients/
 └── anthropicAdapter.ts   # Anthropic API 클라이언트
@@ -66,6 +71,7 @@ src/services/
 ## 🔄 모듈 간 연관 관계
 
 ### 1. **요청 처리 흐름**
+
 ```
 사용자 요청
     ↓
@@ -83,6 +89,7 @@ PerformanceGuardian (최종 검증)
 ```
 
 ### 2. **에이전트 통신 패턴**
+
 ```
 Agent A ←→ Bus ←→ Agent B
     ↓        ↑        ↓
@@ -90,11 +97,13 @@ Agent A ←→ Bus ←→ Agent B
 ```
 
 **주요 통신 인터페이스**:
+
 - `AgentMessage`: 에이전트 간 메시지
 - `AgentContext`: 공유 컨텍스트
 - `AgentResult`: 처리 결과
 
 ### 3. **데이터 플로우**
+
 ```
 Input Data → [Preprocessing] → [Multi-Agent Processing] → [Quality Control] → Output
      ↓              ↓                    ↓                      ↓           ↓
@@ -104,16 +113,19 @@ Input Data → [Preprocessing] → [Multi-Agent Processing] → [Quality Control
 ## 🎯 핵심 설계 원칙 구현
 
 ### 1. **Quality > Complexity**
+
 - QualityAuditor가 4단계 품질 검증 수행
 - PerformanceGuardian이 최종 품질 게이트 역할
 - 목표: QA 품질 9.5/10
 
 ### 2. **Adaptability > Efficiency**
+
 - MetaController가 동적으로 에이전트 조합 결정
 - 단순 요청: 5개 에이전트, 복잡 요청: 8개 에이전트
 - 실시간 전문가 소환 시스템
 
 ### 3. **Transparency > Automation**
+
 - 모든 결정이 추적 가능한 로그로 기록
 - Agent 추론 과정이 구조화된 로그에 저장
 - 감사(audit) 기능 내장
@@ -121,12 +133,14 @@ Input Data → [Preprocessing] → [Multi-Agent Processing] → [Quality Control
 ## 🔧 개발자 진입점
 
 ### 새로운 에이전트 추가 시
+
 1. `BaseAgent` 상속
 2. `handle()` 메서드 구현
 3. `src/shared/registry.ts`에 등록
 4. 테스트 파일 작성 (`tests/`)
 
 ### 시스템 확장 시
+
 1. **새로운 서비스**: `src/services/`에 추가
 2. **새로운 클라이언트**: `src/clients/`에 추가
 3. **공유 유틸리티**: `src/shared/`에 추가
@@ -134,6 +148,7 @@ Input Data → [Preprocessing] → [Multi-Agent Processing] → [Quality Control
 ## 🚦 품질 게이트 시스템
 
 ### 자동 검증 단계
+
 ```
 1. TypeScript 컴파일 ✓
 2. ESLint 규칙 검증 ✓
@@ -143,6 +158,7 @@ Input Data → [Preprocessing] → [Multi-Agent Processing] → [Quality Control
 ```
 
 ### 실행 명령어
+
 - `npm run ci:quality`: 전체 품질 검사
 - `npm run check:standards`: 개발 표준 준수 검증
 - `npm run test`: 모든 테스트 실행
@@ -150,12 +166,14 @@ Input Data → [Preprocessing] → [Multi-Agent Processing] → [Quality Control
 ## 📊 모니터링 및 성능
 
 ### 핵심 메트릭
+
 - **처리 시간**: 평균 1200ms 이하
 - **품질 점수**: 평균 8.5+ (목표: 9.5)
 - **성공률**: 95% 이상
 - **비용**: 요청당 $0.02 이하
 
 ### 로깅 구조
+
 ```
 RUN_LOGS/          # 실행 로그
 DECISIONS/         # 결정 과정 로그

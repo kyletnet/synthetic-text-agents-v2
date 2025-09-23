@@ -1,29 +1,37 @@
 #!/usr/bin/env node
 
-const { Server } = require('@modelcontextprotocol/sdk/server/index.js');
-const { StdioServerTransport } = require('@modelcontextprotocol/sdk/server/stdio.js');
-const { CallToolRequestSchema, ListToolsRequestSchema } = require('@modelcontextprotocol/sdk/types.js');
-const { exec } = require('child_process');
-const { promisify } = require('util');
+const { Server } = require("@modelcontextprotocol/sdk/server/index.js");
+const {
+  StdioServerTransport,
+} = require("@modelcontextprotocol/sdk/server/stdio.js");
+const {
+  CallToolRequestSchema,
+  ListToolsRequestSchema,
+} = require("@modelcontextprotocol/sdk/types.js");
+const { exec } = require("child_process");
+const { promisify } = require("util");
 
 const execAsync = promisify(exec);
 
 class ProjectCommandsServer {
   constructor() {
-    this.server = new Server({
-      name: 'project-commands',
-      version: '1.0.0'
-    }, {
-      capabilities: {
-        tools: {}
-      }
-    });
+    this.server = new Server(
+      {
+        name: "project-commands",
+        version: "1.0.0",
+      },
+      {
+        capabilities: {
+          tools: {},
+        },
+      },
+    );
 
     this.setupToolHandlers();
 
     // Error handling
-    this.server.onerror = (error) => console.error('[MCP Error]', error);
-    process.on('SIGINT', async () => {
+    this.server.onerror = (error) => console.error("[MCP Error]", error);
+    process.on("SIGINT", async () => {
       await this.server.close();
       process.exit(0);
     });
@@ -33,42 +41,42 @@ class ProjectCommandsServer {
     this.server.setRequestHandler(ListToolsRequestSchema, async () => ({
       tools: [
         {
-          name: 'sync',
-          description: 'Sync project changes to git repository',
+          name: "sync",
+          description: "Sync project changes to git repository",
           inputSchema: {
-            type: 'object',
+            type: "object",
             properties: {},
-            required: []
-          }
+            required: [],
+          },
         },
         {
-          name: 'commit',
-          description: 'Commit and push changes',
+          name: "commit",
+          description: "Commit and push changes",
           inputSchema: {
-            type: 'object',
+            type: "object",
             properties: {},
-            required: []
-          }
+            required: [],
+          },
         },
         {
-          name: 'dev',
-          description: 'Run the multi-agent QA system',
+          name: "dev",
+          description: "Run the multi-agent QA system",
           inputSchema: {
-            type: 'object',
+            type: "object",
             properties: {},
-            required: []
-          }
+            required: [],
+          },
         },
         {
-          name: 'status',
-          description: 'Check system status',
+          name: "status",
+          description: "Check system status",
           inputSchema: {
-            type: 'object',
+            type: "object",
             properties: {},
-            required: []
-          }
-        }
-      ]
+            required: [],
+          },
+        },
+      ],
     }));
 
     this.server.setRequestHandler(CallToolRequestSchema, async (request) => {
@@ -77,17 +85,20 @@ class ProjectCommandsServer {
       try {
         let command;
         switch (name) {
-          case 'sync':
-            command = 'git add . && git commit -m "sync: update with latest changes - 🤖 Generated with Claude Code\\n\\nCo-Authored-By: Claude <noreply@anthropic.com>" && git push && echo "✅ 프로젝트 동기화 완료"';
+          case "sync":
+            command =
+              'git add . && git commit -m "sync: update with latest changes - 🤖 Generated with Claude Code\\n\\nCo-Authored-By: Claude <noreply@anthropic.com>" && git push && echo "✅ 프로젝트 동기화 완료"';
             break;
-          case 'commit':
-            command = 'git add . && git commit -m "feat: automated commit - 🤖 Generated with Claude Code\\n\\nCo-Authored-By: Claude <noreply@anthropic.com>" && git push';
+          case "commit":
+            command =
+              'git add . && git commit -m "feat: automated commit - 🤖 Generated with Claude Code\\n\\nCo-Authored-By: Claude <noreply@anthropic.com>" && git push';
             break;
-          case 'dev':
-            command = 'npm run dev';
+          case "dev":
+            command = "npm run dev";
             break;
-          case 'status':
-            command = 'echo "🔍 Git Status:" && git status --short && echo "" && echo "🔧 TypeScript Check:" && npm run typecheck';
+          case "status":
+            command =
+              'echo "🔍 Git Status:" && git status --short && echo "" && echo "🔧 TypeScript Check:" && npm run typecheck';
             break;
           default:
             throw new Error(`Unknown command: ${name}`);
@@ -98,20 +109,20 @@ class ProjectCommandsServer {
         return {
           content: [
             {
-              type: 'text',
-              text: `Command executed successfully:\\n\\nSTDOUT:\\n${stdout}${stderr ? `\\n\\nSTDERR:\\n${stderr}` : ''}`
-            }
-          ]
+              type: "text",
+              text: `Command executed successfully:\\n\\nSTDOUT:\\n${stdout}${stderr ? `\\n\\nSTDERR:\\n${stderr}` : ""}`,
+            },
+          ],
         };
       } catch (error) {
         return {
           content: [
             {
-              type: 'text',
-              text: `Command failed: ${error.message}`
-            }
+              type: "text",
+              text: `Command failed: ${error.message}`,
+            },
           ],
-          isError: true
+          isError: true,
         };
       }
     });
@@ -120,7 +131,7 @@ class ProjectCommandsServer {
   async run() {
     const transport = new StdioServerTransport();
     await this.server.connect(transport);
-    console.error('Project Commands MCP server running on stdio');
+    console.error("Project Commands MCP server running on stdio");
   }
 }
 

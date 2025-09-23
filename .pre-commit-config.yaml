@@ -255,15 +255,15 @@ repos:
 default_stages: [commit]
 
 # Performance settings
-minimum_pre_commit_version: '2.20.0'
+minimum_pre_commit_version: "2.20.0"
 default_language_version:
-  node: '18.18.0'
+  node: "18.18.0"
 
 # Fail fast on first error
 fail_fast: true
 
 # Additional settings
 ci:
-  autofix_commit_msg: 'style: auto-fix pre-commit issues [skip ci]'
+  autofix_commit_msg: "style: auto-fix pre-commit issues [skip ci]"
   autofix_prs: true
   autoupdate_schedule: monthly

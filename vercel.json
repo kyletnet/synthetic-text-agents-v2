@@ -6,12 +6,7 @@
       "src": "src/cli/main.ts",
       "use": "@vercel/node",
       "config": {
-        "includeFiles": [
-          "dist/**",
-          "src/**",
-          "package.json",
-          ".env.example"
-        ]
+        "includeFiles": ["dist/**", "src/**", "package.json", ".env.example"]
       }
     }
   ],

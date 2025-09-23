@@ -7,11 +7,11 @@
  * - Provides retry-dlq command for reprocessing failed items
  */
 
-import * as fs from 'fs';
-import * as path from 'path';
+import * as fs from "fs";
+import * as path from "path";
 
 export interface RetryableError {
-  type: 'rate_limit' | 'server_error' | 'timeout' | 'network_error' | 'unknown';
+  type: "rate_limit" | "server_error" | "timeout" | "network_error" | "unknown";
   status_code?: number;
   message: string;
   retryable: boolean;
@@ -52,7 +52,7 @@ export class DLQHandler {
   private retryPolicy: RetryPolicy;
   private dlqDirectory: string;
 
-  constructor(dlqDirectory: string = 'reports/dlq') {
+  constructor(dlqDirectory: string = "reports/dlq") {
     this.dlqDirectory = dlqDirectory;
     this.retryPolicy = this.getDefaultRetryPolicy();
     this.ensureDLQDirectory();
@@ -61,19 +61,19 @@ export class DLQHandler {
   private getDefaultRetryPolicy(): RetryPolicy {
     return {
       max_attempts: 3,
-      initial_backoff_ms: 1000,      // Start with 1 second
-      max_backoff_ms: 30000,         // Cap at 30 seconds
-      backoff_multiplier: 2.0,       // Exponential backoff
-      jitter_factor: 0.1,            // 10% jitter to prevent thundering herd
+      initial_backoff_ms: 1000, // Start with 1 second
+      max_backoff_ms: 30000, // Cap at 30 seconds
+      backoff_multiplier: 2.0, // Exponential backoff
+      jitter_factor: 0.1, // 10% jitter to prevent thundering herd
       retryable_status_codes: [429, 500, 502, 503, 504], // Rate limits and server errors
       retryable_error_patterns: [
-        'timeout',
-        'ECONNRESET',
-        'ECONNREFUSED',
-        'ETIMEDOUT',
-        'socket hang up',
-        'network timeout'
-      ]
+        "timeout",
+        "ECONNRESET",
+        "ECONNREFUSED",
+        "ETIMEDOUT",
+        "socket hang up",
+        "network timeout",
+      ],
     };
   }
 
@@ -87,29 +87,31 @@ export class DLQHandler {
    * Classify an error to determine if it's retryable
    */
   public classifyError(error: any): RetryableError {
-    let errorType: RetryableError['type'] = 'unknown';
+    let errorType: RetryableError["type"] = "unknown";
     let retryable = false;
-    const message = String(error?.message || error || 'Unknown error');
-    const statusCode = error?.response?.status || error?.status || error?.statusCode;
+    const message = String(error?.message || error || "Unknown error");
+    const statusCode =
+      error?.response?.status || error?.status || error?.statusCode;
 
     // Check status codes
     if (statusCode) {
       if (statusCode === 429) {
-        errorType = 'rate_limit';
+        errorType = "rate_limit";
         retryable = true;
       } else if (statusCode >= 500 && statusCode < 600) {
-        errorType = 'server_error';
-        retryable = this.retryPolicy.retryable_status_codes.includes(statusCode);
+        errorType = "server_error";
+        retryable =
+          this.retryPolicy.retryable_status_codes.includes(statusCode);
       }
     }
 
     // Check error message patterns
     for (const pattern of this.retryPolicy.retryable_error_patterns) {
       if (message.toLowerCase().includes(pattern.toLowerCase())) {
-        if (pattern.includes('timeout')) {
-          errorType = 'timeout';
+        if (pattern.includes("timeout")) {
+          errorType = "timeout";
         } else {
-          errorType = 'network_error';
+          errorType = "network_error";
         }
         retryable = true;
         break;
@@ -120,7 +122,7 @@ export class DLQHandler {
       type: errorType,
       status_code: statusCode,
       message: message.slice(0, 500), // Truncate long messages
-      retryable
+      retryable,
     };
   }
 
@@ -129,12 +131,14 @@ export class DLQHandler {
    */
   private calculateBackoff(attempt: number): number {
     const exponentialBackoff = Math.min(
-      this.retryPolicy.initial_backoff_ms * Math.pow(this.retryPolicy.backoff_multiplier, attempt - 1),
-      this.retryPolicy.max_backoff_ms
+      this.retryPolicy.initial_backoff_ms *
+        Math.pow(this.retryPolicy.backoff_multiplier, attempt - 1),
+      this.retryPolicy.max_backoff_ms,
     );
 
     // Add jitter to prevent thundering herd
-    const jitter = exponentialBackoff * this.retryPolicy.jitter_factor * Math.random();
+    const jitter =
+      exponentialBackoff * this.retryPolicy.jitter_factor * Math.random();
 
     return Math.round(exponentialBackoff + jitter);
   }
@@ -151,10 +155,10 @@ export class DLQHandler {
       operation_name: string;
       request_data?: any;
       metadata?: Record<string, any>;
-    }
+    },
   ): Promise<T> {
     let lastError: any;
-    const failureHistory: DLQEntry['failure_history'] = [];
+    const failureHistory: DLQEntry["failure_history"] = [];
 
     for (let attempt = 1; attempt <= this.retryPolicy.max_attempts; attempt++) {
       const attemptStart = Date.now();
@@ -164,7 +168,9 @@ export class DLQHandler {
 
         // Log successful retry if this wasn't the first attempt
         if (attempt > 1) {
-          console.log(`[DLQ] Retry successful on attempt ${attempt} for ${context.operation_name} (${context.item_id})`);
+          console.log(
+            `[DLQ] Retry successful on attempt ${attempt} for ${context.operation_name} (${context.item_id})`,
+          );
         }
 
         return result;
@@ -173,7 +179,9 @@ export class DLQHandler {
         const classifiedError = this.classifyError(error);
         const latencyMs = Date.now() - attemptStart;
 
-        console.log(`[DLQ] Attempt ${attempt}/${this.retryPolicy.max_attempts} failed for ${context.operation_name}: ${classifiedError.message}`);
+        console.log(
+          `[DLQ] Attempt ${attempt}/${this.retryPolicy.max_attempts} failed for ${context.operation_name}: ${classifiedError.message}`,
+        );
 
         // Record failure
         const backoffMs = this.calculateBackoff(attempt);
@@ -181,12 +189,14 @@ export class DLQHandler {
           attempt,
           timestamp: new Date().toISOString(),
           error: classifiedError,
-          backoff_ms: backoffMs
+          backoff_ms: backoffMs,
         });
 
         // If this isn't retryable, fail immediately
         if (!classifiedError.retryable) {
-          console.log(`[DLQ] Non-retryable error, failing immediately: ${classifiedError.type}`);
+          console.log(
+            `[DLQ] Non-retryable error, failing immediately: ${classifiedError.type}`,
+          );
           break;
         }
 
@@ -196,8 +206,10 @@ export class DLQHandler {
         }
 
         // Wait for backoff period
-        console.log(`[DLQ] Backing off for ${backoffMs}ms before retry ${attempt + 1}`);
-        await new Promise(resolve => setTimeout(resolve, backoffMs));
+        console.log(
+          `[DLQ] Backing off for ${backoffMs}ms before retry ${attempt + 1}`,
+        );
+        await new Promise((resolve) => setTimeout(resolve, backoffMs));
       }
     }
 
@@ -209,7 +221,7 @@ export class DLQHandler {
       original_request: context.request_data,
       last_error: this.classifyError(lastError),
       failure_history: failureHistory,
-      metadata: context.metadata || {}
+      metadata: context.metadata || {},
     });
 
     throw lastError;
@@ -224,7 +236,7 @@ export class DLQHandler {
     agent_role: string;
     original_request: any;
     last_error: RetryableError;
-    failure_history: DLQEntry['failure_history'];
+    failure_history: DLQEntry["failure_history"];
     metadata: Record<string, any>;
   }): Promise<void> {
     const dlqEntry: DLQEntry = {
@@ -239,20 +251,23 @@ export class DLQHandler {
       last_error: params.last_error,
       failure_history: params.failure_history,
       cost_usd: 0, // Will be updated by cost tracking
-      latency_ms: params.failure_history.reduce((sum, f) => sum + (f.backoff_ms || 0), 0),
+      latency_ms: params.failure_history.reduce(
+        (sum, f) => sum + (f.backoff_ms || 0),
+        0,
+      ),
       metadata: {
         ...params.metadata,
         dlq_timestamp: new Date().toISOString(),
-        retry_policy: this.retryPolicy
-      }
+        retry_policy: this.retryPolicy,
+      },
     };
 
     // Write to date-specific DLQ file
-    const today = new Date().toISOString().split('T')[0];
+    const today = new Date().toISOString().split("T")[0];
     const dlqFile = path.join(this.dlqDirectory, `dlq_${today}.jsonl`);
 
     try {
-      fs.appendFileSync(dlqFile, JSON.stringify(dlqEntry) + '\n');
+      fs.appendFileSync(dlqFile, JSON.stringify(dlqEntry) + "\n");
       console.log(`[DLQ] Added entry to DLQ: ${dlqFile} (ID: ${dlqEntry.id})`);
     } catch (error) {
       console.error(`[DLQ] Failed to write DLQ entry: ${error}`);
@@ -269,16 +284,20 @@ export class DLQHandler {
       return entries;
     }
 
-    const dlqFiles = fs.readdirSync(this.dlqDirectory)
-      .filter(file => file.startsWith('dlq_') && file.endsWith('.jsonl'))
+    const dlqFiles = fs
+      .readdirSync(this.dlqDirectory)
+      .filter((file) => file.startsWith("dlq_") && file.endsWith(".jsonl"))
       .sort();
 
     for (const file of dlqFiles) {
       const filePath = path.join(this.dlqDirectory, file);
 
       try {
-        const content = fs.readFileSync(filePath, 'utf8');
-        const lines = content.trim().split('\n').filter(line => line);
+        const content = fs.readFileSync(filePath, "utf8");
+        const lines = content
+          .trim()
+          .split("\n")
+          .filter((line) => line);
 
         for (const line of lines) {
           const entry: DLQEntry = JSON.parse(line);
@@ -307,15 +326,17 @@ export class DLQHandler {
       error_type?: string;
       max_age_hours?: number;
     } = {},
-    retryHandler: (entry: DLQEntry) => Promise<boolean>
+    retryHandler: (entry: DLQEntry) => Promise<boolean>,
   ): Promise<{ attempted: number; succeeded: number; failed: number }> {
     const entries = this.listDLQEntries();
 
     // Apply filters
-    const filteredEntries = entries.filter(entry => {
+    const filteredEntries = entries.filter((entry) => {
       if (filter.run_id && entry.run_id !== filter.run_id) return false;
-      if (filter.agent_role && entry.agent_role !== filter.agent_role) return false;
-      if (filter.error_type && entry.last_error.type !== filter.error_type) return false;
+      if (filter.agent_role && entry.agent_role !== filter.agent_role)
+        return false;
+      if (filter.error_type && entry.last_error.type !== filter.error_type)
+        return false;
 
       if (filter.max_age_hours) {
         const entryAge = Date.now() - new Date(entry.timestamp).getTime();
@@ -333,7 +354,9 @@ export class DLQHandler {
 
     for (const entry of filteredEntries) {
       try {
-        console.log(`[DLQ] Retrying entry ${entry.id} (${entry.agent_role}:${entry.item_id})`);
+        console.log(
+          `[DLQ] Retrying entry ${entry.id} (${entry.agent_role}:${entry.item_id})`,
+        );
         const success = await retryHandler(entry);
 
         if (success) {
@@ -349,12 +372,14 @@ export class DLQHandler {
       }
     }
 
-    console.log(`[DLQ] Retry complete: ${succeeded} succeeded, ${failed} failed out of ${filteredEntries.length} attempted`);
+    console.log(
+      `[DLQ] Retry complete: ${succeeded} succeeded, ${failed} failed out of ${filteredEntries.length} attempted`,
+    );
 
     return {
       attempted: filteredEntries.length,
       succeeded,
-      failed
+      failed,
     };
   }
 
@@ -362,22 +387,22 @@ export class DLQHandler {
    * Archive a successfully processed DLQ entry
    */
   private async archiveDLQEntry(entry: DLQEntry): Promise<void> {
-    const archiveDir = path.join(this.dlqDirectory, 'processed');
+    const archiveDir = path.join(this.dlqDirectory, "processed");
     if (!fs.existsSync(archiveDir)) {
       fs.mkdirSync(archiveDir, { recursive: true });
     }
 
-    const today = new Date().toISOString().split('T')[0];
+    const today = new Date().toISOString().split("T")[0];
     const archiveFile = path.join(archiveDir, `processed_${today}.jsonl`);
 
     try {
       const archivedEntry = {
         ...entry,
         processed_timestamp: new Date().toISOString(),
-        status: 'retry_succeeded'
+        status: "retry_succeeded",
       };
 
-      fs.appendFileSync(archiveFile, JSON.stringify(archivedEntry) + '\n');
+      fs.appendFileSync(archiveFile, JSON.stringify(archivedEntry) + "\n");
 
       // TODO: Remove from original DLQ file (requires more complex file manipulation)
       console.log(`[DLQ] Archived processed entry: ${entry.id}`);
@@ -404,17 +429,20 @@ export class DLQHandler {
       by_error_type: {} as Record<string, number>,
       by_agent_role: {} as Record<string, number>,
       by_run_id: {} as Record<string, number>,
-      oldest_entry: entries.length > 0 ? entries[0].timestamp : '',
-      newest_entry: entries.length > 0 ? entries[entries.length - 1].timestamp : ''
+      oldest_entry: entries.length > 0 ? entries[0].timestamp : "",
+      newest_entry:
+        entries.length > 0 ? entries[entries.length - 1].timestamp : "",
     };
 
     for (const entry of entries) {
       // Count by error type
       const errorType = entry.last_error.type;
-      stats.by_error_type[errorType] = (stats.by_error_type[errorType] || 0) + 1;
+      stats.by_error_type[errorType] =
+        (stats.by_error_type[errorType] || 0) + 1;
 
       // Count by agent role
-      stats.by_agent_role[entry.agent_role] = (stats.by_agent_role[entry.agent_role] || 0) + 1;
+      stats.by_agent_role[entry.agent_role] =
+        (stats.by_agent_role[entry.agent_role] || 0) + 1;
 
       // Count by run ID
       stats.by_run_id[entry.run_id] = (stats.by_run_id[entry.run_id] || 0) + 1;
@@ -431,34 +459,39 @@ if (require.main === module) {
 
   const dlq = new DLQHandler();
 
-  if (command === 'list') {
+  if (command === "list") {
     const entries = dlq.listDLQEntries();
     console.log(JSON.stringify(entries, null, 2));
-  } else if (command === 'stats') {
+  } else if (command === "stats") {
     const stats = dlq.getDLQStatistics();
     console.log(JSON.stringify(stats, null, 2));
-  } else if (command === 'retry') {
+  } else if (command === "retry") {
     const runId = args[1];
     const agentRole = args[2];
 
-    dlq.retryDLQEntries(
-      { run_id: runId, agent_role: agentRole },
-      async (entry) => {
-        console.log(`Would retry: ${entry.id} - ${entry.agent_role}:${entry.item_id}`);
-        // Mock retry success for CLI demo
-        return true;
-      }
-    ).then(result => {
-      console.log('Retry complete:', result);
-    }).catch(error => {
-      console.error('Retry failed:', error);
-      process.exit(1);
-    });
+    dlq
+      .retryDLQEntries(
+        { run_id: runId, agent_role: agentRole },
+        async (entry) => {
+          console.log(
+            `Would retry: ${entry.id} - ${entry.agent_role}:${entry.item_id}`,
+          );
+          // Mock retry success for CLI demo
+          return true;
+        },
+      )
+      .then((result) => {
+        console.log("Retry complete:", result);
+      })
+      .catch((error) => {
+        console.error("Retry failed:", error);
+        process.exit(1);
+      });
   } else {
-    console.log('DLQ Handler CLI');
-    console.log('Commands:');
-    console.log('  list                 - List all DLQ entries');
-    console.log('  stats                - Show DLQ statistics');
-    console.log('  retry [run_id] [role] - Retry failed entries');
+    console.log("DLQ Handler CLI");
+    console.log("Commands:");
+    console.log("  list                 - List all DLQ entries");
+    console.log("  stats                - Show DLQ statistics");
+    console.log("  retry [run_id] [role] - Retry failed entries");
   }
 }

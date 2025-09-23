@@ -5,12 +5,15 @@
 ## 🚀 **1단계: 즉시 시작 (5분)**
 
 ### 가장 중요한 명령어 하나
+
 ```bash
 npm run dev
 ```
+
 이것으로 전체 멀티 에이전트 시스템이 실행됩니다!
 
 ### 핵심 환경 확인
+
 - ✅ `.env` 파일에 `ANTHROPIC_API_KEY` 설정됨
 - ✅ `npm install` 완료
 - ✅ `npm run typecheck` 통과
@@ -20,25 +23,33 @@ npm run dev
 ## 📚 **2단계: 맥락 이해 (순서대로 읽기)**
 
 ### A. 시스템 철학 & 아키텍처 (15분)
+
 📖 **`CLAUDE.md`** - 전체 프로젝트의 DNA
+
 - 8-Agent 협업 시스템 철학
 - 품질 > 복잡도, 적응성 > 효율성
 - 개발 안전 규칙 및 가이드라인
 
 ### B. 실무 개발 가이드 (10분)
+
 📖 **`DEVELOPER_HANDOFF_COMPLETE.md`** - 일상 개발 워크플로우
+
 - `/sync` 명령어로 모든 것 해결
 - 실제 사용하는 명령어들
 - 문제 해결 방법
 
 ### C. LLM을 위한 기술 요약 (5분)
+
 📖 **`docs/llm_friendly_summary.md`** - 시스템 구조 한눈에
+
 - 8개 에이전트 역할 분담
 - 현재 구현 상태
 - 기술 스택 요약
 
 ### D. 순수 기술 스펙 (10분)
+
 📖 **`docs/SPEC_ONLY_GUIDE.md`** - 구현 없는 순수 사양
+
 - 성능 요구사항
 - 인터페이스 정의
 - API 스펙
@@ -48,6 +59,7 @@ npm run dev
 ## 🔧 **3단계: 코드 이해 (필요시)**
 
 ### 핵심 파일들
+
 1. **`src/core/orchestrator.ts`** - 8개 에이전트 오케스트레이션
 2. **`src/agents/qaGenerator.ts`** - 실제 AI QA 생성 로직
 3. **`src/shared/types.ts`** - 전체 시스템 타입 정의
@@ -58,18 +70,23 @@ npm run dev
 ## 🎯 **상황별 빠른 참조**
 
 ### "바로 개발 시작하고 싶어"
+
 → `npm run dev` + `CLAUDE.md` 읽기
 
 ### "시스템 전체를 이해하고 싶어"
+
 → 2단계 A→B→C→D 순서대로
 
 ### "특정 기능만 수정하고 싶어"
+
 → `docs/llm_friendly_summary.md` + 해당 에이전트 파일
 
 ### "LLM으로 자동 개발하고 싶어"
+
 → `docs/llm_friendly_summary.md` + `CLAUDE.md` 피드
 
 ### "프로덕션 배포 준비"
+
 → `npm run ship` + `docs/SPEC_ONLY_GUIDE.md`
 
 ---

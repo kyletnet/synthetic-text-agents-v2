@@ -5,12 +5,14 @@
 ## 🎯 시스템 사양 (System Specification)
 
 ### 기본 요구사항
+
 - **목적**: 전문가 수준의 QA 생성 (품질 9.5/10)
 - **방식**: 8개 에이전트 협업을 통한 메타-적응형 전문가 오케스트레이션
 - **입력**: 텍스트 문서, 골드 페어, 혼합 입력
 - **출력**: 고품질 Q&A 데이터셋
 
 ### 성능 요구사항
+
 ```yaml
 품질 목표:
   - QA 품질 점수: >= 9.5/10
@@ -26,6 +28,7 @@
 ## 🏗️ 아키텍처 스펙
 
 ### 에이전트 인터페이스 스펙
+
 ```typescript
 interface BaseAgentSpec {
   // 필수 구현 메서드
@@ -43,29 +46,31 @@ interface BaseAgentSpec {
 ```
 
 ### 통신 프로토콜 스펙
+
 ```typescript
 interface AgentMessage {
-  id: string;                    // 고유 메시지 ID
-  sender: string;               // 발신자 에이전트 ID
-  receiver: string;             // 수신자 에이전트 ID
-  type: MessageType;            // 메시지 유형
-  content: unknown;             // 메시지 내용
-  timestamp: Date;              // 전송 시각
+  id: string; // 고유 메시지 ID
+  sender: string; // 발신자 에이전트 ID
+  receiver: string; // 수신자 에이전트 ID
+  type: MessageType; // 메시지 유형
+  content: unknown; // 메시지 내용
+  timestamp: Date; // 전송 시각
   priority: 1 | 2 | 3 | 4 | 5; // 우선순위 (1=최고)
-  context?: AgentContext;       // 선택적 컨텍스트
+  context?: AgentContext; // 선택적 컨텍스트
 }
 
-type MessageType = 'request' | 'response' | 'broadcast' | 'collaboration';
+type MessageType = "request" | "response" | "broadcast" | "collaboration";
 ```
 
 ### 품질 검증 스펙
+
 ```typescript
 interface QualityAuditSpec {
   // 4단계 품질 검증
-  level1_structural(): StructuralCheck;    // 형식 및 완성도
-  level2_expertise(): ExpertiseCheck;      // 도메인 정확성
+  level1_structural(): StructuralCheck; // 형식 및 완성도
+  level2_expertise(): ExpertiseCheck; // 도메인 정확성
   level3_practicality(): PracticalityCheck; // 실용성
-  level4_innovation(): InnovationCheck;    // 혁신성 및 통찰
+  level4_innovation(): InnovationCheck; // 혁신성 및 통찰
 
   // 최종 점수 계산
   calculateOverallScore(): number; // 0-10 점수
@@ -75,6 +80,7 @@ interface QualityAuditSpec {
 ## 🎛️ 8-Agent Council 스펙
 
 ### Core Engine Agents (4개)
+
 ```yaml
 MetaController:
   책임: 전체 프로세스 오케스트레이션 및 전략 결정
@@ -98,6 +104,7 @@ QualityAuditor:
 ```
 
 ### Expert Council Agents (4개)
+
 ```yaml
 PsychologySpecialist:
   책임: 사용자 심리 분석 및 커뮤니케이션 전략
@@ -119,16 +126,19 @@ CognitiveScientist:
 ## 🔄 워크플로우 스펙
 
 ### 단순 요청 처리 (5-Agent)
+
 ```
 Request → MetaController → [3 Core + 2 Expert] → QualityAuditor → Output
 ```
 
 ### 복잡 요청 처리 (8-Agent)
+
 ```
 Request → MetaController → [4 Core + 4 Expert] → QualityAuditor → Output
 ```
 
 ### 동적 전문가 소환
+
 ```
 Domain Analysis → Expert Pool Query → Specialized Agent Creation → Integration
 ```
@@ -136,6 +146,7 @@ Domain Analysis → Expert Pool Query → Specialized Agent Creation → Integra
 ## 📊 데이터 플로우 스펙
 
 ### 입력 데이터 형식
+
 ```typescript
 interface InputSpec {
   // 문서 기반 입력
@@ -160,6 +171,7 @@ interface InputSpec {
 ```
 
 ### 출력 데이터 형식
+
 ```typescript
 interface OutputSpec {
   qaPairs: {
@@ -186,12 +198,14 @@ interface OutputSpec {
 ## 🔒 제약사항 및 한계
 
 ### 기술적 제약사항
+
 - **동시성**: 최대 8개 에이전트 동시 처리
 - **메모리**: 단일 요청당 최대 100MB
 - **시간**: 단일 요청 최대 처리시간 10분
 - **비용**: 요청당 최대 $0.50
 
 ### 품질 보장 제약사항
+
 - **최소 품질**: 7.0 미만 결과 자동 거부
 - **일관성**: 동일 입력에 대한 품질 편차 ±0.5 이내
 - **추적성**: 모든 결정 과정 로그 보존 필수
@@ -199,6 +213,7 @@ interface OutputSpec {
 ## 🎯 API 스펙 (향후 확장)
 
 ### RESTful API 인터페이스 (예정)
+
 ```yaml
 POST /api/v1/generate:
   description: QA 생성 요청

@@ -127,11 +127,11 @@ export interface AnomalyDetection {
     value: number;
     baseline: number;
     deviation: number;
-    severity: 'low' | 'medium' | 'high';
+    severity: "low" | "medium" | "high";
     description: string;
   }>;
   spikes: Array<{
-    type: 'cost' | 'latency' | 'failure_rate';
+    type: "cost" | "latency" | "failure_rate";
     value: number;
     threshold: number;
     timestamp: string;
@@ -140,16 +140,16 @@ export interface AnomalyDetection {
 
 export interface ActionRecommendation {
   issue: string;
-  category: 'data' | 'prompt' | 'cache' | 'retriever' | 'agent' | 'system';
-  severity: 'low' | 'medium' | 'high' | 'critical';
+  category: "data" | "prompt" | "cache" | "retriever" | "agent" | "system";
+  severity: "low" | "medium" | "high" | "critical";
   hypothesis: string;
   action: string;
   expected_impact: string;
-  effort_estimate: 'low' | 'medium' | 'high';
+  effort_estimate: "low" | "medium" | "high";
 }
 
 export interface GatingResult {
-  gate_status: 'PASS' | 'WARN' | 'PARTIAL' | 'FAIL';
+  gate_status: "PASS" | "WARN" | "PARTIAL" | "FAIL";
   p0_violations: string[];
   p1_warnings: string[];
   p2_issues: string[];
@@ -218,7 +218,7 @@ export interface DxLoopReport {
 
   // Summary
   summary: {
-    overall_status: 'PASS' | 'WARN' | 'PARTIAL' | 'FAIL';
+    overall_status: "PASS" | "WARN" | "PARTIAL" | "FAIL";
     top_issues: string[];
     next_actions: string[];
     proceed_recommendation: boolean;

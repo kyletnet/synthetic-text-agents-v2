@@ -49,7 +49,12 @@ export interface AgentResult {
 }
 
 export interface OrchestrationEvent {
-  event_type: 'agent_start' | 'agent_complete' | 'agent_error' | 'checkpoint' | 'fallback';
+  event_type:
+    | "agent_start"
+    | "agent_complete"
+    | "agent_error"
+    | "checkpoint"
+    | "fallback";
   run_id: string;
   item_id: string;
   agent_role: string;
@@ -86,7 +91,7 @@ export abstract class BaseAgent {
    */
   protected validateInput(input: any): { valid: boolean; error?: string } {
     if (!input) {
-      return { valid: false, error: 'Input is required' };
+      return { valid: false, error: "Input is required" };
     }
     return { valid: true };
   }
@@ -100,15 +105,15 @@ export abstract class BaseAgent {
       use_fallback?: boolean;
       max_retries?: number;
       checkpoint_frequency?: number;
-    } = {}
+    } = {},
   ): Promise<AgentResult> {
     const maxRetries = options.max_retries || 3;
     let lastError: any;
 
     // Emit start event
-    this.emitOrchestrationEvent('agent_start', {
+    this.emitOrchestrationEvent("agent_start", {
       input_summary: this.summarizeInput(input),
-      options
+      options,
     });
 
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
@@ -119,7 +124,9 @@ export abstract class BaseAgent {
         const constraintCheck = this.checkConstraints();
         if (!constraintCheck.allowed) {
           if (constraintCheck.use_fallback && !options.use_fallback) {
-            console.log(`[${this.context.agent_role}] Switching to fallback mode: ${constraintCheck.reason}`);
+            console.log(
+              `[${this.context.agent_role}] Switching to fallback mode: ${constraintCheck.reason}`,
+            );
             options.use_fallback = true;
           } else if (!constraintCheck.allowed) {
             throw new Error(`Constraints violated: ${constraintCheck.reason}`);
@@ -127,19 +134,19 @@ export abstract class BaseAgent {
         }
 
         // Execute (main or fallback)
-        const result = options.use_fallback ?
-          await this.executeFallback(input) :
-          await this.execute(input);
+        const result = options.use_fallback
+          ? await this.executeFallback(input)
+          : await this.execute(input);
 
         // Update metrics
         result.metrics.retries = this.totalRetries;
         this.totalCost += result.metrics.cost_usd;
 
         // Emit completion event
-        this.emitOrchestrationEvent('agent_complete', {
+        this.emitOrchestrationEvent("agent_complete", {
           success: result.success,
           metrics: result.metrics,
-          fallback_used: options.use_fallback || false
+          fallback_used: options.use_fallback || false,
         });
 
         // Create checkpoint if successful
@@ -148,22 +155,23 @@ export abstract class BaseAgent {
         }
 
         return result;
-
       } catch (error) {
         lastError = error;
-        console.log(`[${this.context.agent_role}] Attempt ${attempt}/${maxRetries} failed: ${error}`);
+        console.log(
+          `[${this.context.agent_role}] Attempt ${attempt}/${maxRetries} failed: ${error}`,
+        );
 
         // Emit error event
-        this.emitOrchestrationEvent('agent_error', {
+        this.emitOrchestrationEvent("agent_error", {
           attempt,
           max_attempts: maxRetries,
-          error: String(error)
+          error: String(error),
         });
 
         // If this isn't the last attempt, wait before retrying
         if (attempt < maxRetries) {
           const backoffMs = this.calculateBackoff(attempt);
-          await new Promise(resolve => setTimeout(resolve, backoffMs));
+          await new Promise((resolve) => setTimeout(resolve, backoffMs));
         }
       }
     }
@@ -173,28 +181,32 @@ export abstract class BaseAgent {
     return {
       success: false,
       error: {
-        type: 'max_retries_exceeded',
+        type: "max_retries_exceeded",
         message: `Failed after ${maxRetries} attempts: ${lastError}`,
-        retryable: false
+        retryable: false,
       },
       metrics: {
         cost_usd: this.totalCost,
         latency_ms: latencyMs,
-        retries: this.totalRetries
+        retries: this.totalRetries,
       },
       telemetry: {
         timestamp: new Date().toISOString(),
         agent_version: this.getVersion(),
         fallback_used: options.use_fallback || false,
-        final_error: String(lastError)
-      }
+        final_error: String(lastError),
+      },
     };
   }
 
   /**
    * Check budget and timing constraints
    */
-  protected checkConstraints(): { allowed: boolean; use_fallback?: boolean; reason?: string } {
+  protected checkConstraints(): {
+    allowed: boolean;
+    use_fallback?: boolean;
+    reason?: string;
+  } {
     const limits = this.context.budget_limits;
     if (!limits) return { allowed: true };
 
@@ -202,7 +214,7 @@ export abstract class BaseAgent {
     if (this.totalCost >= limits.max_cost_usd) {
       return {
         allowed: false,
-        reason: `Cost limit exceeded: $${this.totalCost.toFixed(4)} >= $${limits.max_cost_usd.toFixed(4)}`
+        reason: `Cost limit exceeded: $${this.totalCost.toFixed(4)} >= $${limits.max_cost_usd.toFixed(4)}`,
       };
     }
 
@@ -211,7 +223,7 @@ export abstract class BaseAgent {
       return {
         allowed: true,
         use_fallback: true,
-        reason: `Approaching cost limit, suggesting fallback mode`
+        reason: `Approaching cost limit, suggesting fallback mode`,
       };
     }
 
@@ -220,7 +232,7 @@ export abstract class BaseAgent {
     if (currentLatency >= limits.max_latency_ms) {
       return {
         allowed: false,
-        reason: `Latency limit exceeded: ${currentLatency}ms >= ${limits.max_latency_ms}ms`
+        reason: `Latency limit exceeded: ${currentLatency}ms >= ${limits.max_latency_ms}ms`,
       };
     }
 
@@ -229,7 +241,7 @@ export abstract class BaseAgent {
       return {
         allowed: true,
         use_fallback: true,
-        reason: `Approaching latency limit, suggesting fallback mode`
+        reason: `Approaching latency limit, suggesting fallback mode`,
       };
     }
 
@@ -241,7 +253,10 @@ export abstract class BaseAgent {
    */
   protected calculateBackoff(attempt: number): number {
     const baseBackoff = 1000; // 1 second
-    const exponentialBackoff = Math.min(baseBackoff * Math.pow(2, attempt - 1), 30000);
+    const exponentialBackoff = Math.min(
+      baseBackoff * Math.pow(2, attempt - 1),
+      30000,
+    );
     const jitter = exponentialBackoff * 0.1 * Math.random();
     return Math.round(exponentialBackoff + jitter);
   }
@@ -249,7 +264,10 @@ export abstract class BaseAgent {
   /**
    * Emit orchestration event for monitoring
    */
-  protected emitOrchestrationEvent(eventType: OrchestrationEvent['event_type'], data: any): void {
+  protected emitOrchestrationEvent(
+    eventType: OrchestrationEvent["event_type"],
+    data: any,
+  ): void {
     const event: OrchestrationEvent = {
       event_type: eventType,
       run_id: this.context.run_id,
@@ -259,7 +277,7 @@ export abstract class BaseAgent {
       data,
       cost_usd: this.totalCost,
       latency_ms: Date.now() - this.startTime,
-      retries: this.totalRetries
+      retries: this.totalRetries,
     };
 
     // Log to orchestration stream
@@ -269,7 +287,10 @@ export abstract class BaseAgent {
   /**
    * Create checkpoint for resumable execution
    */
-  protected createCheckpoint(checkpoint: AgentResult['checkpoint'], data: any): void {
+  protected createCheckpoint(
+    checkpoint: AgentResult["checkpoint"],
+    data: any,
+  ): void {
     if (!this.context.checkpoint_stream) return;
 
     const checkpointEntry = {
@@ -284,27 +305,33 @@ export abstract class BaseAgent {
       metrics: {
         cost_usd: this.totalCost,
         latency_ms: Date.now() - this.startTime,
-        retries: this.totalRetries
-      }
+        retries: this.totalRetries,
+      },
     };
 
     try {
-      const fs = require('fs');
-      const path = require('path');
+      const fs = require("fs");
+      const path = require("path");
 
       // Ensure directory exists
-      fs.mkdirSync(path.dirname(this.context.checkpoint_stream), { recursive: true });
-
-      // Append checkpoint to JSONL stream
-      fs.appendFileSync(this.context.checkpoint_stream, JSON.stringify(checkpointEntry) + '\n');
-
-      this.emitOrchestrationEvent('checkpoint', {
-        stage: checkpoint!.stage,
-        progress: checkpoint!.progress
+      fs.mkdirSync(path.dirname(this.context.checkpoint_stream), {
+        recursive: true,
       });
 
+      // Append checkpoint to JSONL stream
+      fs.appendFileSync(
+        this.context.checkpoint_stream,
+        JSON.stringify(checkpointEntry) + "\n",
+      );
+
+      this.emitOrchestrationEvent("checkpoint", {
+        stage: checkpoint!.stage,
+        progress: checkpoint!.progress,
+      });
     } catch (error) {
-      console.warn(`[${this.context.agent_role}] Failed to create checkpoint: ${error}`);
+      console.warn(
+        `[${this.context.agent_role}] Failed to create checkpoint: ${error}`,
+      );
     }
   }
 
@@ -318,14 +345,21 @@ export abstract class BaseAgent {
 
       // Also log to file if orchestration logging is enabled
       if (process.env.ORCHESTRATION_LOG_PATH) {
-        const fs = require('fs');
-        const path = require('path');
+        const fs = require("fs");
+        const path = require("path");
 
-        fs.mkdirSync(path.dirname(process.env.ORCHESTRATION_LOG_PATH), { recursive: true });
-        fs.appendFileSync(process.env.ORCHESTRATION_LOG_PATH, JSON.stringify(event) + '\n');
+        fs.mkdirSync(path.dirname(process.env.ORCHESTRATION_LOG_PATH), {
+          recursive: true,
+        });
+        fs.appendFileSync(
+          process.env.ORCHESTRATION_LOG_PATH,
+          JSON.stringify(event) + "\n",
+        );
       }
     } catch (error) {
-      console.warn(`[${this.context.agent_role}] Failed to log orchestration event: ${error}`);
+      console.warn(
+        `[${this.context.agent_role}] Failed to log orchestration event: ${error}`,
+      );
     }
   }
 
@@ -333,12 +367,12 @@ export abstract class BaseAgent {
    * Summarize input for logging (avoid logging sensitive data)
    */
   protected summarizeInput(input: any): any {
-    if (typeof input === 'string') {
-      return { type: 'string', length: input.length };
+    if (typeof input === "string") {
+      return { type: "string", length: input.length };
     } else if (Array.isArray(input)) {
-      return { type: 'array', length: input.length };
-    } else if (typeof input === 'object' && input !== null) {
-      return { type: 'object', keys: Object.keys(input) };
+      return { type: "array", length: input.length };
+    } else if (typeof input === "object" && input !== null) {
+      return { type: "object", keys: Object.keys(input) };
     }
     return { type: typeof input };
   }
@@ -347,7 +381,7 @@ export abstract class BaseAgent {
    * Get agent version for telemetry
    */
   protected getVersion(): string {
-    return '1.0.0'; // Override in subclasses
+    return "1.0.0"; // Override in subclasses
   }
 
   /**
@@ -372,7 +406,7 @@ export abstract class BaseAgent {
         cost_usd: params.cost_usd,
         latency_ms: latencyMs,
         retries: this.totalRetries,
-        tokens_used: params.tokens_used
+        tokens_used: params.tokens_used,
       },
       checkpoint: params.checkpoint,
       telemetry: {
@@ -383,9 +417,9 @@ export abstract class BaseAgent {
           run_id: this.context.run_id,
           item_id: this.context.item_id,
           agent_role: this.context.agent_role,
-          profile: this.context.profile
-        }
-      }
+          profile: this.context.profile,
+        },
+      },
     };
   }
 }

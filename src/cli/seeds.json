@@ -18,7 +18,7 @@
         "expectedStrategy": "minimal"
       },
       {
-        "id": "moderate_request", 
+        "id": "moderate_request",
         "description": "Domain-specific technical support Q&A",
         "input": {
           "description": "Create technical support Q&A for SaaS billing and integration issues",
@@ -78,11 +78,18 @@
           "qualityTarget": 9
         },
         "expectedDomainOutput": {
-          "bestPractices": ["consultative selling", "value demonstration", "stakeholder mapping"],
+          "bestPractices": [
+            "consultative selling",
+            "value demonstration",
+            "stakeholder mapping"
+          ],
           "processFrameworks": ["enterprise sales methodology"]
         },
         "expectedCognitiveOutput": {
-          "reasoningPatterns": ["consultative reasoning", "stakeholder analysis"],
+          "reasoningPatterns": [
+            "consultative reasoning",
+            "stakeholder analysis"
+          ],
           "decisionHeuristics": ["value-first positioning"]
         }
       }
@@ -92,8 +99,8 @@
         "id": "structural_quality_baseline",
         "description": "Minimum structural quality requirements",
         "benchmarks": {
-          "questionLength": {"min": 10, "max": 200},
-          "answerLength": {"min": 50, "max": 1000},
+          "questionLength": { "min": 10, "max": 200 },
+          "answerLength": { "min": 50, "max": 1000 },
           "formatCompliance": "Q: ... A: ...",
           "punctuationCorrectness": true,
           "capitalizationCorrectness": true
@@ -101,12 +108,15 @@
         "passingScore": 7.0
       },
       {
-        "id": "expertise_quality_baseline", 
+        "id": "expertise_quality_baseline",
         "description": "Domain expertise demonstration requirements",
         "benchmarks": {
-          "domainTerminologyUsage": {"min": 2, "description": "Professional terms per answer"},
+          "domainTerminologyUsage": {
+            "min": 2,
+            "description": "Professional terms per answer"
+          },
           "practicalApplicability": true,
-          "industryStandardsReference": {"preferred": true},
+          "industryStandardsReference": { "preferred": true },
           "professionalContext": true
         },
         "passingScore": 6.5
@@ -116,7 +126,7 @@
         "description": "Real-world applicability standards",
         "benchmarks": {
           "actionableGuidance": true,
-          "specificSteps": {"min": 1},
+          "specificSteps": { "min": 1 },
           "contextConsideration": true,
           "implementationFeasibility": true
         },
@@ -126,7 +136,7 @@
         "id": "innovation_quality_baseline",
         "description": "Value-added insights and uniqueness",
         "benchmarks": {
-          "expertInsights": {"preferred": true},
+          "expertInsights": { "preferred": true },
           "beyondBasicAdvice": true,
           "professionalNuance": true,
           "situationalAdaptation": true
@@ -189,12 +199,17 @@
         },
         "expectedOutputSample": {
           "question": "How should I handle a customer who wants to cancel their subscription immediately due to billing confusion?",
-          "answerElements": ["empathy", "process_explanation", "solution_steps", "follow_up"],
-          "qualityScore": {"min": 7.5}
+          "answerElements": [
+            "empathy",
+            "process_explanation",
+            "solution_steps",
+            "follow_up"
+          ],
+          "qualityScore": { "min": 7.5 }
         },
         "stabilityCriteria": {
           "qualityConsistency": 0.9,
-          "outputVariation": {"max": 0.2}
+          "outputVariation": { "max": 0.2 }
         }
       },
       {
@@ -208,12 +223,16 @@
         },
         "expectedOutputSample": {
           "question": "What's the most effective approach for handling price objections in B2B software sales?",
-          "answerElements": ["value_focus", "roi_demonstration", "competitive_positioning"],
-          "qualityScore": {"min": 8.0}
+          "answerElements": [
+            "value_focus",
+            "roi_demonstration",
+            "competitive_positioning"
+          ],
+          "qualityScore": { "min": 8.0 }
         },
         "stabilityCriteria": {
           "qualityConsistency": 0.85,
-          "outputVariation": {"max": 0.25}
+          "outputVariation": { "max": 0.25 }
         }
       }
     ],
@@ -271,27 +290,30 @@
   "validation_criteria": {
     "systemHealth": {
       "allAgentsOperational": true,
-      "communicationLatency": {"max": 1000, "unit": "ms"},
-      "errorRate": {"max": 0.01},
+      "communicationLatency": { "max": 1000, "unit": "ms" },
+      "errorRate": { "max": 0.01 },
       "memoryLeaks": false
     },
     "qualityConsistency": {
-      "averageQualityVariation": {"max": 0.3},
+      "averageQualityVariation": { "max": 0.3 },
       "minimumPassingRate": 0.9,
       "structuralComplianceRate": 1.0,
-      "domainRelevanceRate": {"min": 0.95}
+      "domainRelevanceRate": { "min": 0.95 }
     },
     "performanceStability": {
-      "processingTimeVariation": {"max": 0.5},
-      "memoryUsageGrowth": {"max": 0.1, "description": "10% max increase over baseline"},
-      "throughputDegradation": {"max": 0.05}
+      "processingTimeVariation": { "max": 0.5 },
+      "memoryUsageGrowth": {
+        "max": 0.1,
+        "description": "10% max increase over baseline"
+      },
+      "throughputDegradation": { "max": 0.05 }
     }
   },
   "metadata": {
     "totalSeeds": 19,
     "coverageAreas": [
       "complexity_analysis",
-      "agent_collaboration", 
+      "agent_collaboration",
       "quality_benchmarks",
       "performance_targets",
       "regression_scenarios",

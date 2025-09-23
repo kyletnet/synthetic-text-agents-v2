@@ -1,11 +1,11 @@
 // Minimal retriever: token-overlap (Jaccard-like) for predictable baseline.
 // Replace later with vector/semantic retrieval.
 
-import type { Chunk } from './chunk';
+import type { Chunk } from "./chunk";
 
 export interface RetrieveOptions {
-  topK?: number;           // number of results
-  minScore?: number;       // filter low matches
+  topK?: number; // number of results
+  minScore?: number; // filter low matches
 }
 
 export interface RetrievalItem {
@@ -22,10 +22,11 @@ const DEFAULTS: Required<RetrieveOptions> = {
 export function retrieve(
   query: string,
   corpus: Chunk[],
-  options: RetrieveOptions = {}
+  options: RetrieveOptions = {},
 ): RetrievalItem[] {
   const cfg = { ...DEFAULTS, ...options };
-  if (!query?.trim() || !Array.isArray(corpus) || corpus.length === 0) return [];
+  if (!query?.trim() || !Array.isArray(corpus) || corpus.length === 0)
+    return [];
 
   const q = toTokens(query);
   const results: RetrievalItem[] = corpus.map((c) => {
@@ -34,14 +35,15 @@ export function retrieve(
   });
 
   return results
-    .filter(r => r.score >= cfg.minScore)
-    .sort((a,b) => b.score - a.score)
+    .filter((r) => r.score >= cfg.minScore)
+    .sort((a, b) => b.score - a.score)
     .slice(0, cfg.topK);
 }
 
 function toTokens(s: string): string[] {
-  return s.toLowerCase()
-    .replace(/\s+/g, ' ')
+  return s
+    .toLowerCase()
+    .replace(/\s+/g, " ")
     .split(/[^a-z0-9가-힣]+/g)
     .filter(Boolean);
 }

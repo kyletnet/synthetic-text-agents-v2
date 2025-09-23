@@ -4,7 +4,9 @@ import { AgentResult } from "../src/shared/types.js";
 
 const guardian = new PerformanceGuardian();
 
-const createMockResult = (overrides: Partial<AgentResult> = {}): AgentResult => ({
+const createMockResult = (
+  overrides: Partial<AgentResult> = {},
+): AgentResult => ({
   agentId: "test-agent",
   result: "test output",
   confidence: 0.8,
@@ -20,9 +22,9 @@ const createMockResult = (overrides: Partial<AgentResult> = {}): AgentResult => 
 describe("PerformanceGuardian", () => {
   it("passes when within thresholds", () => {
     const result = createMockResult({
-      performance: { duration: 1000, tokensUsed: 100, qualityScore: 8.0 }
+      performance: { duration: 1000, tokensUsed: 100, qualityScore: 8.0 },
     });
-    
+
     const evaluated = guardian.evaluate(result);
     expect(evaluated.ok).toBe(true);
     expect(evaluated.vetoed).toBe(false);
@@ -32,9 +34,9 @@ describe("PerformanceGuardian", () => {
 
   it("fails when qualityScore too low", () => {
     const result = createMockResult({
-      performance: { duration: 1000, tokensUsed: 100, qualityScore: 3.0 }
+      performance: { duration: 1000, tokensUsed: 100, qualityScore: 3.0 },
     });
-    
+
     const evaluated = guardian.evaluate(result);
     expect(evaluated.ok).toBe(false);
     expect(evaluated.vetoed).toBe(true);
@@ -44,9 +46,9 @@ describe("PerformanceGuardian", () => {
 
   it("fails when latency too high", () => {
     const result = createMockResult({
-      performance: { duration: 35000, tokensUsed: 100, qualityScore: 8.0 }
+      performance: { duration: 35000, tokensUsed: 100, qualityScore: 8.0 },
     });
-    
+
     const evaluated = guardian.evaluate(result);
     expect(evaluated.ok).toBe(false);
     expect(evaluated.vetoed).toBe(true);
@@ -56,9 +58,9 @@ describe("PerformanceGuardian", () => {
 
   it("fails when both quality and latency are bad", () => {
     const result = createMockResult({
-      performance: { duration: 35000, tokensUsed: 100, qualityScore: 3.0 }
+      performance: { duration: 35000, tokensUsed: 100, qualityScore: 3.0 },
     });
-    
+
     const evaluated = guardian.evaluate(result);
     expect(evaluated.ok).toBe(false);
     expect(evaluated.vetoed).toBe(true);
@@ -73,7 +75,7 @@ describe("PerformanceGuardian", () => {
       result: "specific output",
       confidence: 0.9,
     });
-    
+
     const evaluated = guardian.evaluate(originalResult);
     expect(evaluated.agentId).toBe("specific-agent");
     expect(evaluated.result).toBe("specific output");

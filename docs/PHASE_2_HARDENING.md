@@ -32,6 +32,7 @@ exit 1
 ```
 
 **Shimmed Scripts:**
+
 - `set_anthropic_keys.sh`
 - `anthropic_call_now.sh`
 - `quick_api_check.sh`
@@ -108,11 +109,11 @@ name: Guard Environment Enforcement
 jobs:
   guard-env-audit:
     steps:
-    - name: Run guard:env audit
-    - name: Verify shim integrity
-    - name: Check entrypoints registry
-    - name: Validate DRY_RUN policy
-    - name: Test unified launcher
+      - name: Run guard:env audit
+      - name: Verify shim integrity
+      - name: Check entrypoints registry
+      - name: Validate DRY_RUN policy
+      - name: Test unified launcher
 ```
 
 ## Security Architecture
@@ -212,11 +213,13 @@ echo 'Shim count:' $(find . -name '*.sh' -exec grep -l 'EXECUTION SHIM' {} \; | 
 When adding new scripts that use ANTHROPIC_API_KEY:
 
 1. **Add Environment Loading**:
+
    ```bash
    source tools/load_env.sh && load_anthropic_env
    ```
 
 2. **OR Add Execution Shim**:
+
    ```bash
    #!/usr/bin/env bash
    # EXECUTION SHIM: new_script.sh
@@ -226,7 +229,12 @@ When adding new scripts that use ANTHROPIC_API_KEY:
 
 3. **Register in Entry Points**:
    ```json
-   {"name": "new_script", "script": "./new_script.sh", "env_required": ["ANTHROPIC_API_KEY"], "smoke_args": "DRY_RUN=true"}
+   {
+     "name": "new_script",
+     "script": "./new_script.sh",
+     "env_required": ["ANTHROPIC_API_KEY"],
+     "smoke_args": "DRY_RUN=true"
+   }
    ```
 
 ### Monitoring Health
@@ -245,6 +253,7 @@ grep -r "EXECUTION SHIM" . | wc -l  # Should be ≥19
 ## Results Summary
 
 ### Before Phase-2
+
 - ❌ 19 scripts missing environment loading
 - ❌ Direct execution bypass possible
 - ❌ API 401 errors in production
@@ -252,6 +261,7 @@ grep -r "EXECUTION SHIM" . | wc -l  # Should be ≥19
 - ❌ No policy enforcement
 
 ### After Phase-2
+
 - ✅ 0 scripts missing environment loading
 - ✅ All direct execution prevented
 - ✅ 100% API authentication success
@@ -283,4 +293,4 @@ For projects adopting this hardening approach:
 **Security**: 🔒 Complete API Protection
 **Enforcement**: 🤖 Automated CI/CD
 
-*This implementation ensures that no script can bypass environment loading, eliminating API authentication failures permanently.*
+_This implementation ensures that no script can bypass environment loading, eliminating API authentication failures permanently._

@@ -4,13 +4,13 @@
  */
 
 export interface RateLimitConfig {
-  windowMs: number;           // Time window in milliseconds
-  maxRequests: number;        // Maximum requests per window
+  windowMs: number; // Time window in milliseconds
+  maxRequests: number; // Maximum requests per window
   keyGenerator?: (req: any) => string; // Function to generate rate limit key
-  skipSuccessfulRequests?: boolean;    // Don't count successful requests
-  skipFailedRequests?: boolean;        // Don't count failed requests
+  skipSuccessfulRequests?: boolean; // Don't count successful requests
+  skipFailedRequests?: boolean; // Don't count failed requests
   onLimitReached?: (key: string, hits: number) => void;
-  store?: RateLimitStore;     // Custom storage backend
+  store?: RateLimitStore; // Custom storage backend
 }
 
 export interface RateLimitInfo {
@@ -41,7 +41,9 @@ export class MemoryRateLimitStore implements RateLimitStore {
     }, 60000);
   }
 
-  async increment(key: string): Promise<{ totalHits: number; resetTime: Date }> {
+  async increment(
+    key: string,
+  ): Promise<{ totalHits: number; resetTime: Date }> {
     const now = new Date();
     const existing = this.store.get(key);
 
@@ -69,7 +71,9 @@ export class MemoryRateLimitStore implements RateLimitStore {
     this.store.delete(key);
   }
 
-  async get(key: string): Promise<{ totalHits: number; resetTime: Date } | null> {
+  async get(
+    key: string,
+  ): Promise<{ totalHits: number; resetTime: Date } | null> {
     const existing = this.store.get(key);
     if (!existing) {
       return null;
@@ -105,11 +109,13 @@ export class MemoryRateLimitStore implements RateLimitStore {
  */
 export class RedisRateLimitStore implements RateLimitStore {
   constructor(
-    private redis: any,  // Redis client instance
-    private windowMs: number
+    private redis: any, // Redis client instance
+    private windowMs: number,
   ) {}
 
-  async increment(key: string): Promise<{ totalHits: number; resetTime: Date }> {
+  async increment(
+    key: string,
+  ): Promise<{ totalHits: number; resetTime: Date }> {
     const pipeline = this.redis.pipeline();
     const windowKey = `rate_limit:${key}`;
 
@@ -133,18 +139,20 @@ export class RedisRateLimitStore implements RateLimitStore {
     await this.redis.del(windowKey);
   }
 
-  async get(key: string): Promise<{ totalHits: number; resetTime: Date } | null> {
+  async get(
+    key: string,
+  ): Promise<{ totalHits: number; resetTime: Date } | null> {
     const windowKey = `rate_limit:${key}`;
     const [totalHits, ttl] = await Promise.all([
       this.redis.get(windowKey),
-      this.redis.ttl(windowKey)
+      this.redis.ttl(windowKey),
     ]);
 
     if (totalHits === null || ttl <= 0) {
       return null;
     }
 
-    const resetTime = new Date(Date.now() + (ttl * 1000));
+    const resetTime = new Date(Date.now() + ttl * 1000);
     return { totalHits: parseInt(totalHits), resetTime };
   }
 }
@@ -166,9 +174,14 @@ export class RateLimiter {
     const key = this.generateKey(request);
     const result = await this.store.increment(key);
 
-    const remainingPoints = Math.max(0, this.config.maxRequests - result.totalHits);
+    const remainingPoints = Math.max(
+      0,
+      this.config.maxRequests - result.totalHits,
+    );
     const isBlocked = result.totalHits > this.config.maxRequests;
-    const msBeforeNext = result.resetTime ? result.resetTime.getTime() - Date.now() : 0;
+    const msBeforeNext = result.resetTime
+      ? result.resetTime.getTime() - Date.now()
+      : 0;
 
     if (isBlocked && this.config.onLimitReached) {
       this.config.onLimitReached(key, result.totalHits);
@@ -178,7 +191,7 @@ export class RateLimiter {
       totalHits: result.totalHits,
       remainingPoints,
       msBeforeNext: Math.max(0, msBeforeNext),
-      isBlocked
+      isBlocked,
     };
   }
 
@@ -190,9 +203,9 @@ export class RateLimiter {
 
     if (limitInfo.isBlocked) {
       throw new RateLimitError(
-        'Rate limit exceeded',
+        "Rate limit exceeded",
         limitInfo.totalHits,
-        limitInfo.msBeforeNext
+        limitInfo.msBeforeNext,
       );
     }
 
@@ -219,19 +232,24 @@ export class RateLimiter {
         totalHits: 0,
         remainingPoints: this.config.maxRequests,
         msBeforeNext: 0,
-        isBlocked: false
+        isBlocked: false,
       };
     }
 
-    const remainingPoints = Math.max(0, this.config.maxRequests - result.totalHits);
+    const remainingPoints = Math.max(
+      0,
+      this.config.maxRequests - result.totalHits,
+    );
     const isBlocked = result.totalHits > this.config.maxRequests;
-    const msBeforeNext = result.resetTime ? result.resetTime.getTime() - Date.now() : 0;
+    const msBeforeNext = result.resetTime
+      ? result.resetTime.getTime() - Date.now()
+      : 0;
 
     return {
       totalHits: result.totalHits,
       remainingPoints,
       msBeforeNext: Math.max(0, msBeforeNext),
-      isBlocked
+      isBlocked,
     };
   }
 
@@ -253,25 +271,30 @@ export class RateLimiter {
    */
   private extractIP(request: any): string {
     // Try various methods to get the real IP
-    const xForwardedFor = request.headers?.['x-forwarded-for'];
-    const xRealIP = request.headers?.['x-real-ip'];
-    const cfConnectingIP = request.headers?.['cf-connecting-ip']; // Cloudflare
+    const xForwardedFor = request.headers?.["x-forwarded-for"];
+    const xRealIP = request.headers?.["x-real-ip"];
+    const cfConnectingIP = request.headers?.["cf-connecting-ip"]; // Cloudflare
     const remoteAddress = request.socket?.remoteAddress;
     const connectionRemoteAddress = request.connection?.remoteAddress;
 
-    let ip = xForwardedFor || xRealIP || cfConnectingIP || remoteAddress || connectionRemoteAddress;
+    let ip =
+      xForwardedFor ||
+      xRealIP ||
+      cfConnectingIP ||
+      remoteAddress ||
+      connectionRemoteAddress;
 
     // Handle X-Forwarded-For header which can contain multiple IPs
-    if (typeof ip === 'string' && ip.includes(',')) {
-      ip = ip.split(',')[0].trim();
+    if (typeof ip === "string" && ip.includes(",")) {
+      ip = ip.split(",")[0].trim();
     }
 
     // Remove IPv6 prefix if present
-    if (typeof ip === 'string' && ip.startsWith('::ffff:')) {
+    if (typeof ip === "string" && ip.startsWith("::ffff:")) {
       ip = ip.substring(7);
     }
 
-    return ip || 'unknown';
+    return ip || "unknown";
   }
 }
 
@@ -282,10 +305,10 @@ export class RateLimitError extends Error {
   constructor(
     message: string,
     public totalHits: number,
-    public retryAfter: number
+    public retryAfter: number,
   ) {
     super(message);
-    this.name = 'RateLimitError';
+    this.name = "RateLimitError";
   }
 }
 
@@ -301,27 +324,32 @@ export function createRateLimitMiddleware(config: RateLimitConfig) {
 
       // Add rate limit headers
       res.set({
-        'X-RateLimit-Limit': config.maxRequests.toString(),
-        'X-RateLimit-Remaining': limitInfo.remainingPoints.toString(),
-        'X-RateLimit-Reset': new Date(Date.now() + limitInfo.msBeforeNext).toISOString(),
-        'X-RateLimit-Window': config.windowMs.toString()
+        "X-RateLimit-Limit": config.maxRequests.toString(),
+        "X-RateLimit-Remaining": limitInfo.remainingPoints.toString(),
+        "X-RateLimit-Reset": new Date(
+          Date.now() + limitInfo.msBeforeNext,
+        ).toISOString(),
+        "X-RateLimit-Window": config.windowMs.toString(),
       });
 
       if (limitInfo.isBlocked) {
-        res.set('Retry-After', Math.ceil(limitInfo.msBeforeNext / 1000).toString());
+        res.set(
+          "Retry-After",
+          Math.ceil(limitInfo.msBeforeNext / 1000).toString(),
+        );
 
         return res.status(429).json({
-          error: 'Too Many Requests',
-          message: 'Rate limit exceeded',
+          error: "Too Many Requests",
+          message: "Rate limit exceeded",
           retryAfter: limitInfo.msBeforeNext,
           limit: config.maxRequests,
-          windowMs: config.windowMs
+          windowMs: config.windowMs,
         });
       }
 
       next();
     } catch (error) {
-      console.error('Rate limiter error:', error);
+      console.error("Rate limiter error:", error);
       // Don't block requests if rate limiter fails
       next();
     }
@@ -340,23 +368,32 @@ export function withRateLimit(config: RateLimitConfig) {
         const limitInfo = await rateLimiter.checkLimit(req);
 
         // Add rate limit headers
-        res.setHeader('X-RateLimit-Limit', config.maxRequests.toString());
-        res.setHeader('X-RateLimit-Remaining', limitInfo.remainingPoints.toString());
-        res.setHeader('X-RateLimit-Reset', new Date(Date.now() + limitInfo.msBeforeNext).toISOString());
+        res.setHeader("X-RateLimit-Limit", config.maxRequests.toString());
+        res.setHeader(
+          "X-RateLimit-Remaining",
+          limitInfo.remainingPoints.toString(),
+        );
+        res.setHeader(
+          "X-RateLimit-Reset",
+          new Date(Date.now() + limitInfo.msBeforeNext).toISOString(),
+        );
 
         if (limitInfo.isBlocked) {
-          res.setHeader('Retry-After', Math.ceil(limitInfo.msBeforeNext / 1000).toString());
+          res.setHeader(
+            "Retry-After",
+            Math.ceil(limitInfo.msBeforeNext / 1000).toString(),
+          );
 
           return res.status(429).json({
-            error: 'Too Many Requests',
-            message: 'Rate limit exceeded',
-            retryAfter: limitInfo.msBeforeNext
+            error: "Too Many Requests",
+            message: "Rate limit exceeded",
+            retryAfter: limitInfo.msBeforeNext,
           });
         }
 
         return handler(req, res);
       } catch (error) {
-        console.error('Rate limiter error:', error);
+        console.error("Rate limiter error:", error);
         // Don't block requests if rate limiter fails
         return handler(req, res);
       }
@@ -372,7 +409,7 @@ export class MultiTierRateLimiter {
 
   constructor(
     private tiers: Record<string, RateLimitConfig>,
-    private tierResolver: (request: any) => string
+    private tierResolver: (request: any) => string,
   ) {
     Object.entries(tiers).forEach(([tier, config]) => {
       this.limiters.set(tier, new RateLimiter(config));
@@ -411,45 +448,55 @@ export const CommonRateLimiters = {
   /**
    * Strict rate limiter for authentication endpoints
    */
-  auth: (store?: RateLimitStore) => new RateLimiter({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    maxRequests: 5,            // 5 attempts per 15 minutes
-    store,
-    onLimitReached: (key, hits) => {
-      console.warn(`[RateLimit] Auth endpoint blocked for ${key}: ${hits} attempts`);
-    }
-  }),
+  auth: (store?: RateLimitStore) =>
+    new RateLimiter({
+      windowMs: 15 * 60 * 1000, // 15 minutes
+      maxRequests: 5, // 5 attempts per 15 minutes
+      store,
+      onLimitReached: (key, hits) => {
+        console.warn(
+          `[RateLimit] Auth endpoint blocked for ${key}: ${hits} attempts`,
+        );
+      },
+    }),
 
   /**
    * General API rate limiter
    */
-  api: (store?: RateLimitStore) => new RateLimiter({
-    windowMs: 60 * 1000,       // 1 minute
-    maxRequests: 100,          // 100 requests per minute
-    store,
-    onLimitReached: (key, hits) => {
-      console.warn(`[RateLimit] API rate limit exceeded for ${key}: ${hits} requests`);
-    }
-  }),
+  api: (store?: RateLimitStore) =>
+    new RateLimiter({
+      windowMs: 60 * 1000, // 1 minute
+      maxRequests: 100, // 100 requests per minute
+      store,
+      onLimitReached: (key, hits) => {
+        console.warn(
+          `[RateLimit] API rate limit exceeded for ${key}: ${hits} requests`,
+        );
+      },
+    }),
 
   /**
    * Generous rate limiter for public endpoints
    */
-  public: (store?: RateLimitStore) => new RateLimiter({
-    windowMs: 60 * 1000,       // 1 minute
-    maxRequests: 1000,         // 1000 requests per minute
-    store
-  }),
+  public: (store?: RateLimitStore) =>
+    new RateLimiter({
+      windowMs: 60 * 1000, // 1 minute
+      maxRequests: 1000, // 1000 requests per minute
+      store,
+    }),
 
   /**
    * Very strict rate limiter for expensive operations
    */
-  expensive: (store?: RateLimitStore) => new RateLimiter({
-    windowMs: 60 * 60 * 1000,  // 1 hour
-    maxRequests: 10,           // 10 requests per hour
-    store,
-    onLimitReached: (key, hits) => {
-      console.warn(`[RateLimit] Expensive operation blocked for ${key}: ${hits} attempts`);
-    }
-  })
+  expensive: (store?: RateLimitStore) =>
+    new RateLimiter({
+      windowMs: 60 * 60 * 1000, // 1 hour
+      maxRequests: 10, // 10 requests per hour
+      store,
+      onLimitReached: (key, hits) => {
+        console.warn(
+          `[RateLimit] Expensive operation blocked for ${key}: ${hits} attempts`,
+        );
+      },
+    }),
 };

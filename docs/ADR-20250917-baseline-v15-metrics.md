@@ -19,36 +19,42 @@ The existing baseline system (v1.0) provided basic quality metrics (sentence len
 We have implemented Baseline v1.5 with six core human-perceptible quality metrics:
 
 ### 1. Duplication Detection
+
 - **Rationale**: Content repetition directly impacts user experience
 - **Implementation**: 3-5gram Jaccard/cosine similarity with optional LLM semantic judging
 - **Threshold**: <15% duplication rate triggers alerts
 - **Output**: Top duplicate pairs with similarity scores
 
 ### 2. Question Type Distribution
+
 - **Rationale**: Balanced question types indicate comprehensive coverage
 - **Implementation**: Rule-based classification (what/why/how/when/where/who/comparison/inference)
 - **Threshold**: Imbalance score >30% or >2 missing categories triggers alerts
 - **Output**: Distribution table with entropy and balance metrics
 
 ### 3. Coverage Analysis
+
 - **Rationale**: Ensures important content from source material is addressed
 - **Implementation**: Entity/keyphrase extraction with section mapping
 - **Threshold**: <60% entity coverage or <70% section coverage triggers alerts
 - **Output**: Coverage rates with lists of missed important entities
 
 ### 4. Evidence Quality Assessment
+
 - **Rationale**: Poor answer-evidence alignment indicates potential hallucinations
 - **Implementation**: Hit-rate calculation + snippet alignment scoring
 - **Threshold**: <80% evidence presence or <50% mean alignment triggers alerts
 - **Output**: Presence rates and alignment quality scores
 
 ### 5. Hallucination Detection
+
 - **Rationale**: Unsupported claims directly impact trustworthiness
 - **Implementation**: Rule-based similarity checks for claim support
 - **Threshold**: >5% hallucination rate or >3 high-risk cases triggers alerts
 - **Output**: Risk distribution and flagged cases with evidence
 
 ### 6. PII/License Compliance
+
 - **Rationale**: Privacy and legal compliance are non-negotiable
 - **Implementation**: Pattern matching for PII, keyword scanning for license terms
 - **Threshold**: Any PII violations or >2 license risks trigger alerts
@@ -57,6 +63,7 @@ We have implemented Baseline v1.5 with six core human-perceptible quality metric
 ## Implementation Architecture
 
 ### Core Principles
+
 - **Feature Flags**: All metrics can be disabled via `FEATURE_*` flags
 - **Budget Controls**: LLM-based analysis respects cost limits
 - **Atomic Reports**: Generate both JSONL (data) and Markdown (human-readable) outputs
@@ -64,12 +71,14 @@ We have implemented Baseline v1.5 with six core human-perceptible quality metric
 - **Reproducibility**: ±5% tolerance for key metrics across runs
 
 ### Integration Points
+
 - **CLI Integration**: `./run_v3.sh baseline --smoke|--full --budget <USD>`
 - **Session Reports**: Baseline summaries automatically added to session reports
 - **Regression Testing**: Comprehensive test suite with performance benchmarks
 - **Documentation**: Full operational procedures in OPERATIONS.md
 
 ### File Structure
+
 ```
 baseline_config.json              # Single source configuration
 scripts/metrics/
@@ -92,6 +101,7 @@ reports/
 ## Consequences
 
 ### Positive
+
 - **Stakeholder Visibility**: Non-technical stakeholders can understand quality status
 - **Proactive Quality Control**: Issues caught before they reach users
 - **Operational Confidence**: Clear go/no-go criteria for releases
@@ -99,12 +109,14 @@ reports/
 - **Reproducible Results**: Consistent metrics support reliable decision-making
 
 ### Negative
+
 - **Added Complexity**: More moving parts in the quality assessment pipeline
 - **Execution Time**: Full baseline analysis takes 30-60 seconds for large datasets
 - **Cost Overhead**: LLM-based similarity analysis adds to operational costs
 - **Configuration Maintenance**: Thresholds and patterns require periodic tuning
 
 ### Mitigation Strategies
+
 - **Smoke Mode**: Quick quality checks for daily monitoring
 - **Budget Caps**: Configurable limits prevent runaway costs
 - **Feature Flags**: Ability to disable expensive operations
@@ -113,31 +125,37 @@ reports/
 ## Alternatives Considered
 
 ### 1. Statistical-Only Approach
+
 - **Rejected**: Lacked semantic understanding and actionable insights
 - **Reason**: Pure statistics don't correlate well with human-perceived quality
 
 ### 2. Full LLM-Based Analysis
+
 - **Rejected**: Too expensive and slow for routine operations
 - **Reason**: Cost would be prohibitive for regular quality monitoring
 
 ### 3. External Quality Service
+
 - **Rejected**: Added external dependencies and potential vendor lock-in
 - **Reason**: Need for customization and control over quality criteria
 
 ## Monitoring and Evolution
 
 ### Success Metrics
+
 - **Adoption Rate**: Teams using baseline metrics before major releases
 - **Issue Detection**: Quality problems caught before user reports
 - **Decision Speed**: Time from metrics to go/no-go decision
 - **Cost Efficiency**: Quality improvement per dollar spent
 
 ### Review Schedule
+
 - **Monthly**: Threshold tuning based on production data
 - **Quarterly**: Metric effectiveness review and potential additions
 - **Annually**: Full architecture review and modernization
 
 ### Planned Enhancements
+
 - **Advanced Entity Recognition**: Move beyond simple n-gram extraction
 - **Multi-language Support**: Expand beyond Korean/English patterns
 - **ML-Based Classification**: Supplement rule-based question typing
@@ -146,9 +164,11 @@ reports/
 ## Preflight Gate System
 
 ### Overview
+
 To ensure quality and reliability before full production runs, we have implemented a comprehensive preflight validation system that verifies both baseline metrics compliance and operational readiness.
 
 ### Required Elements (7)
+
 All production runs must satisfy these critical requirements:
 
 1. **CASES_TOTAL > 0**: Actual test cases executed (not just configuration validation)
@@ -160,6 +180,7 @@ All production runs must satisfy these critical requirements:
 7. **Standard Fields**: Presence of core logging fields (RUN_ID, ITEM_ID, AGENT_ROLE, COST, LAT_MS, RETRIES)
 
 ### 3-Layer Orchestration
+
 Advanced system validation covering:
 
 **A) Contract Layer**: Envelope field validation and state transition logging (QUEUED→RUNNING→RETRYING→DLQ|DONE)
@@ -167,6 +188,7 @@ Advanced system validation covering:
 **C) Policy Layer**: Per-agent cost/time caps with enforcement logging
 
 ### Gate Mapping Policy
+
 Quality assessment follows a strict priority hierarchy:
 
     P0 violations → FAIL (immediate halt, cannot proceed)
@@ -179,19 +201,14 @@ Quality assessment follows a strict priority hierarchy:
 
 ### Preflight Tools
 
-**Validation Script**: `scripts/preflight/validate_report.sh`
-    - Automated validation of all 7 required elements + 3-layer orchestration
-    - Generates both human-readable (reports/preflight_check.md) and structured (preflight_check.json) outputs
-    - Exit codes: 0 (pass), 1 (fail) for CI/CD integration
+**Validation Script**: `scripts/preflight/validate_report.sh` - Automated validation of all 7 required elements + 3-layer orchestration - Generates both human-readable (reports/preflight_check.md) and structured (preflight_check.json) outputs - Exit codes: 0 (pass), 1 (fail) for CI/CD integration
 
-**Smoke Rehearsal**: `scripts/preflight/smoke_rehearsal.sh`
-    - End-to-end validation via baseline --smoke execution
-    - Parameter consistency verification (DRY_RUN, MODEL_ID, BUDGET)
-    - Automatic preflight validation execution and reporting
+**Smoke Rehearsal**: `scripts/preflight/smoke_rehearsal.sh` - End-to-end validation via baseline --smoke execution - Parameter consistency verification (DRY_RUN, MODEL_ID, BUDGET) - Automatic preflight validation execution and reporting
 
 **Integration**: Optional run_v3.sh alias 'preflight_smoke' for one-command rehearsal
 
 ### Operational Workflow
+
 1. **Before Full Run**: Execute `bash scripts/preflight/smoke_rehearsal.sh`
 2. **Validation**: Review generated `reports/preflight_check.md` for any FAIL items
 3. **Resolution**: Address any P0 violations before proceeding

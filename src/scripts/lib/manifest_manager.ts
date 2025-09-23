@@ -1,7 +1,13 @@
-import { readFileSync, writeFileSync, existsSync, mkdirSync, statSync } from 'fs';
-import { join, dirname } from 'path';
-import { createHash } from 'crypto';
-import { glob } from 'glob';
+import {
+  readFileSync,
+  writeFileSync,
+  existsSync,
+  mkdirSync,
+  statSync,
+} from "fs";
+import { join, dirname } from "path";
+import { createHash } from "crypto";
+import { glob } from "glob";
 
 /**
  * Manifest Manager
@@ -82,7 +88,7 @@ export class ManifestManager {
 
   constructor(baseDir?: string) {
     this.baseDir = baseDir || process.cwd();
-    this.manifestDir = join(this.baseDir, 'reports', 'manifests');
+    this.manifestDir = join(this.baseDir, "reports", "manifests");
     this.ensureDirectoryExists();
   }
 
@@ -101,7 +107,7 @@ export class ManifestManager {
     goldPatterns: string[] = [],
     configPatterns: string[] = [],
     freezeEnabled: boolean = true,
-    seedValue?: number
+    seedValue?: number,
   ): Promise<DataManifest> {
     const manifestId = this.generateManifestId();
     const seed = seedValue ?? this.generateSeed();
@@ -109,9 +115,9 @@ export class ManifestManager {
     console.log(`📋 Creating manifest ${manifestId}...`);
 
     // Collect file entries for each category
-    const inputFiles = await this.collectFiles(inputPatterns, 'input');
-    const goldFiles = await this.collectFiles(goldPatterns, 'gold');
-    const configFiles = await this.collectFiles(configPatterns, 'config');
+    const inputFiles = await this.collectFiles(inputPatterns, "input");
+    const goldFiles = await this.collectFiles(goldPatterns, "gold");
+    const configFiles = await this.collectFiles(configPatterns, "config");
 
     // Calculate checksums
     const inputChecksum = this.calculateGroupChecksum(inputFiles);
@@ -141,11 +147,11 @@ export class ManifestManager {
 
       file_count: allFiles.length,
       total_size_bytes: totalSize,
-      manifest_checksum: '', // Will be calculated after manifest is complete
+      manifest_checksum: "", // Will be calculated after manifest is complete
 
       seed_value: seed,
       reproducibility_target_pct: 5.0, // ±5% target
-      comparison_window_days: 7
+      comparison_window_days: 7,
     };
 
     // Calculate manifest checksum
@@ -154,7 +160,9 @@ export class ManifestManager {
     // Save manifest
     this.saveManifest(manifest);
 
-    console.log(`✅ Manifest created: ${inputFiles.length} input files, ${goldFiles.length} gold files, ${configFiles.length} config files`);
+    console.log(
+      `✅ Manifest created: ${inputFiles.length} input files, ${goldFiles.length} gold files, ${configFiles.length} config files`,
+    );
     console.log(`📊 Total size: ${(totalSize / 1024 / 1024).toFixed(2)} MB`);
     console.log(`🔒 Freeze enabled: ${freezeEnabled}`);
     console.log(`🎲 Seed: ${seed}`);
@@ -170,7 +178,7 @@ export class ManifestManager {
 
     try {
       if (existsSync(manifestPath)) {
-        const content = readFileSync(manifestPath, 'utf-8');
+        const content = readFileSync(manifestPath, "utf-8");
         return JSON.parse(content) as DataManifest;
       }
     } catch (error) {
@@ -195,7 +203,7 @@ export class ManifestManager {
         valid: false,
         issues: [`Manifest ${manifestId} not found`],
         missing_files: [],
-        modified_files: []
+        modified_files: [],
       };
     }
 
@@ -204,7 +212,11 @@ export class ManifestManager {
     const modifiedFiles: string[] = [];
 
     // Check all files in manifest
-    const allFiles = [...manifest.input_files, ...manifest.gold_files, ...manifest.config_files];
+    const allFiles = [
+      ...manifest.input_files,
+      ...manifest.gold_files,
+      ...manifest.config_files,
+    ];
 
     for (const fileEntry of allFiles) {
       const fullPath = join(this.baseDir, fileEntry.relative_path);
@@ -225,23 +237,30 @@ export class ManifestManager {
       }
 
       if (currentStats.size !== fileEntry.size_bytes) {
-        issues.push(`File size changed: ${fileEntry.relative_path} (${fileEntry.size_bytes} → ${currentStats.size} bytes)`);
+        issues.push(
+          `File size changed: ${fileEntry.relative_path} (${fileEntry.size_bytes} → ${currentStats.size} bytes)`,
+        );
       }
     }
 
     // Check manifest checksum
     const currentManifestChecksum = this.calculateManifestChecksum(manifest);
     if (currentManifestChecksum !== manifest.manifest_checksum) {
-      issues.push('Manifest checksum mismatch - manifest may have been tampered with');
+      issues.push(
+        "Manifest checksum mismatch - manifest may have been tampered with",
+      );
     }
 
-    const valid = issues.length === 0 && missingFiles.length === 0 && modifiedFiles.length === 0;
+    const valid =
+      issues.length === 0 &&
+      missingFiles.length === 0 &&
+      modifiedFiles.length === 0;
 
     return {
       valid,
       issues,
       missing_files: missingFiles,
-      modified_files: modifiedFiles
+      modified_files: modifiedFiles,
     };
   }
 
@@ -250,21 +269,28 @@ export class ManifestManager {
    */
   getLatestManifest(descriptionPattern?: string): DataManifest | null {
     try {
-      const manifestFiles = require('fs').readdirSync(this.manifestDir)
-        .filter((file: string) => file.endsWith('.json'))
+      const manifestFiles = require("fs")
+        .readdirSync(this.manifestDir)
+        .filter((file: string) => file.endsWith(".json"))
         .map((file: string) => {
           const path = join(this.manifestDir, file);
           const stats = statSync(path);
           return { file, path, created: stats.ctime };
         })
-        .sort((a: { created: Date }, b: { created: Date }) => b.created.getTime() - a.created.getTime());
+        .sort(
+          (a: { created: Date }, b: { created: Date }) =>
+            b.created.getTime() - a.created.getTime(),
+        );
 
       for (const { path } of manifestFiles) {
         try {
-          const content = readFileSync(path, 'utf-8');
+          const content = readFileSync(path, "utf-8");
           const manifest = JSON.parse(content) as DataManifest;
 
-          if (!descriptionPattern || manifest.description.includes(descriptionPattern)) {
+          if (
+            !descriptionPattern ||
+            manifest.description.includes(descriptionPattern)
+          ) {
             return manifest;
           }
         } catch (error) {
@@ -272,7 +298,7 @@ export class ManifestManager {
         }
       }
     } catch (error) {
-      console.error('Failed to get latest manifest:', error);
+      console.error("Failed to get latest manifest:", error);
     }
 
     return null;
@@ -286,18 +312,18 @@ export class ManifestManager {
     baselineMetrics: any,
     comparisonMetrics: any,
     baselineRunId: string,
-    comparisonRunId: string
+    comparisonRunId: string,
   ): ReproducibilityCheck {
     const manifest = this.loadManifest(manifestId);
     const targetPct = manifest?.reproducibility_target_pct || 5.0;
 
     const keyMetrics = [
-      'duplication_rate',
-      'evidence_presence_rate',
-      'cost_per_item',
-      'latency_p95',
-      'quality_score',
-      'coverage_rate'
+      "duplication_rate",
+      "evidence_presence_rate",
+      "cost_per_item",
+      "latency_p95",
+      "quality_score",
+      "coverage_rate",
     ];
 
     const metricsComparison: any = {};
@@ -305,17 +331,26 @@ export class ManifestManager {
 
     for (const metric of keyMetrics) {
       const baselineValue = this.extractMetricValue(baselineMetrics, metric);
-      const comparisonValue = this.extractMetricValue(comparisonMetrics, metric);
+      const comparisonValue = this.extractMetricValue(
+        comparisonMetrics,
+        metric,
+      );
 
-      if (baselineValue !== null && comparisonValue !== null && baselineValue !== 0) {
-        const deltaPct = Math.abs((comparisonValue - baselineValue) / baselineValue * 100);
+      if (
+        baselineValue !== null &&
+        comparisonValue !== null &&
+        baselineValue !== 0
+      ) {
+        const deltaPct = Math.abs(
+          ((comparisonValue - baselineValue) / baselineValue) * 100,
+        );
         const withinTolerance = deltaPct <= targetPct;
 
         metricsComparison[metric] = {
           baseline_value: baselineValue,
           comparison_value: comparisonValue,
           delta_pct: deltaPct,
-          within_tolerance: withinTolerance
+          within_tolerance: withinTolerance,
         };
 
         deltas.push(deltaPct);
@@ -323,9 +358,10 @@ export class ManifestManager {
     }
 
     // Calculate overall delta (RMS of individual deltas)
-    const overallDelta = deltas.length > 0
-      ? Math.sqrt(deltas.reduce((sum, d) => sum + d * d, 0) / deltas.length)
-      : 0;
+    const overallDelta =
+      deltas.length > 0
+        ? Math.sqrt(deltas.reduce((sum, d) => sum + d * d, 0) / deltas.length)
+        : 0;
 
     const withinTarget = overallDelta <= targetPct;
 
@@ -337,22 +373,24 @@ export class ManifestManager {
       const comp = comparison as any;
       if (!comp.within_tolerance) {
         significantChanges.push(
-          `${metric}: ${comp.delta_pct.toFixed(1)}% change (${comp.baseline_value.toFixed(3)} → ${comp.comparison_value.toFixed(3)})`
+          `${metric}: ${comp.delta_pct.toFixed(1)}% change (${comp.baseline_value.toFixed(3)} → ${comp.comparison_value.toFixed(3)})`,
         );
       }
     }
 
     if (!withinTarget) {
-      recommendations.push('Review input data consistency');
-      recommendations.push('Check random seed consistency');
-      recommendations.push('Verify environment configuration');
+      recommendations.push("Review input data consistency");
+      recommendations.push("Check random seed consistency");
+      recommendations.push("Verify environment configuration");
 
-      if (significantChanges.some(change => change.includes('cost_per_item'))) {
-        recommendations.push('Check model pricing changes');
+      if (
+        significantChanges.some((change) => change.includes("cost_per_item"))
+      ) {
+        recommendations.push("Check model pricing changes");
       }
 
-      if (significantChanges.some(change => change.includes('latency'))) {
-        recommendations.push('Check system performance and load');
+      if (significantChanges.some((change) => change.includes("latency"))) {
+        recommendations.push("Check system performance and load");
       }
     }
 
@@ -366,7 +404,7 @@ export class ManifestManager {
       within_target: withinTarget,
       target_pct: targetPct,
       significant_changes: significantChanges,
-      recommendations
+      recommendations,
     };
 
     // Save reproducibility check
@@ -378,7 +416,10 @@ export class ManifestManager {
   /**
    * Collect files matching patterns
    */
-  private async collectFiles(patterns: string[], category: string): Promise<FileManifestEntry[]> {
+  private async collectFiles(
+    patterns: string[],
+    category: string,
+  ): Promise<FileManifestEntry[]> {
     const files: FileManifestEntry[] = [];
 
     for (const pattern of patterns) {
@@ -398,7 +439,7 @@ export class ManifestManager {
               size_bytes: stats.size,
               checksum_sha256: checksum,
               last_modified: stats.mtime.toISOString(),
-              content_type: this.getContentType(match)
+              content_type: this.getContentType(match),
             });
           }
         }
@@ -417,10 +458,10 @@ export class ManifestManager {
   private async calculateFileChecksum(filePath: string): Promise<string> {
     try {
       const content = readFileSync(filePath);
-      return createHash('sha256').update(content).digest('hex');
+      return createHash("sha256").update(content).digest("hex");
     } catch (error) {
       console.error(`Failed to calculate checksum for ${filePath}:`, error);
-      return '';
+      return "";
     }
   }
 
@@ -429,11 +470,11 @@ export class ManifestManager {
    */
   private calculateGroupChecksum(files: FileManifestEntry[]): string {
     const sortedChecksums = files
-      .map(f => f.checksum_sha256)
+      .map((f) => f.checksum_sha256)
       .sort()
-      .join('');
+      .join("");
 
-    return createHash('sha256').update(sortedChecksums).digest('hex');
+    return createHash("sha256").update(sortedChecksums).digest("hex");
   }
 
   /**
@@ -444,15 +485,18 @@ export class ManifestManager {
     const manifestCopy = { ...manifest };
     delete (manifestCopy as any).manifest_checksum;
 
-    const manifestJson = JSON.stringify(manifestCopy, Object.keys(manifestCopy).sort());
-    return createHash('sha256').update(manifestJson).digest('hex');
+    const manifestJson = JSON.stringify(
+      manifestCopy,
+      Object.keys(manifestCopy).sort(),
+    );
+    return createHash("sha256").update(manifestJson).digest("hex");
   }
 
   /**
    * Generate unique manifest ID
    */
   private generateManifestId(): string {
-    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
     const random = Math.random().toString(36).substring(2, 8);
     return `manifest_${timestamp}_${random}`;
   }
@@ -468,21 +512,21 @@ export class ManifestManager {
    * Get content type based on file extension
    */
   private getContentType(filePath: string): string {
-    const ext = filePath.split('.').pop()?.toLowerCase();
+    const ext = filePath.split(".").pop()?.toLowerCase();
 
     const contentTypes: { [key: string]: string } = {
-      'json': 'application/json',
-      'jsonl': 'application/x-jsonlines',
-      'md': 'text/markdown',
-      'txt': 'text/plain',
-      'csv': 'text/csv',
-      'yaml': 'application/x-yaml',
-      'yml': 'application/x-yaml',
-      'js': 'application/javascript',
-      'ts': 'application/typescript'
+      json: "application/json",
+      jsonl: "application/x-jsonlines",
+      md: "text/markdown",
+      txt: "text/plain",
+      csv: "text/csv",
+      yaml: "application/x-yaml",
+      yml: "application/x-yaml",
+      js: "application/javascript",
+      ts: "application/typescript",
     };
 
-    return contentTypes[ext || ''] || 'application/octet-stream';
+    return contentTypes[ext || ""] || "application/octet-stream";
   }
 
   /**
@@ -498,12 +542,12 @@ export class ManifestManager {
         `${metricName}_rate`,
         `${metricName}_value`,
         `overall.${metricName}`,
-        `summary.${metricName}`
+        `summary.${metricName}`,
       ];
 
       for (const path of paths) {
         const value = this.getNestedValue(metrics, path);
-        if (typeof value === 'number' && !isNaN(value)) {
+        if (typeof value === "number" && !isNaN(value)) {
           return value;
         }
       }
@@ -518,7 +562,7 @@ export class ManifestManager {
    * Get nested value from object using dot notation
    */
   private getNestedValue(obj: any, path: string): any {
-    return path.split('.').reduce((current, key) => current?.[key], obj);
+    return path.split(".").reduce((current, key) => current?.[key], obj);
   }
 
   /**
@@ -540,50 +584,61 @@ export class ManifestManager {
    * Save reproducibility check
    */
   private saveReproducibilityCheck(check: ReproducibilityCheck): void {
-    const checksDir = join(this.manifestDir, 'reproducibility_checks');
+    const checksDir = join(this.manifestDir, "reproducibility_checks");
     if (!existsSync(checksDir)) {
       mkdirSync(checksDir, { recursive: true });
     }
 
-    const checkPath = join(checksDir, `${check.manifest_id}_${check.comparison_run_id}.json`);
+    const checkPath = join(
+      checksDir,
+      `${check.manifest_id}_${check.comparison_run_id}.json`,
+    );
 
     try {
       writeFileSync(checkPath, JSON.stringify(check, null, 2));
       console.log(`📊 Reproducibility check saved: ${checkPath}`);
     } catch (error) {
-      console.error('Failed to save reproducibility check:', error);
+      console.error("Failed to save reproducibility check:", error);
     }
   }
 
   /**
    * List all manifests
    */
-  listManifests(): { id: string; description: string; created: string; file_count: number }[] {
+  listManifests(): {
+    id: string;
+    description: string;
+    created: string;
+    file_count: number;
+  }[] {
     try {
-      const manifestFiles = require('fs').readdirSync(this.manifestDir)
-        .filter((file: string) => file.endsWith('.json'));
+      const manifestFiles = require("fs")
+        .readdirSync(this.manifestDir)
+        .filter((file: string) => file.endsWith(".json"));
 
       const manifests = [];
 
       for (const file of manifestFiles) {
         try {
-          const content = readFileSync(join(this.manifestDir, file), 'utf-8');
+          const content = readFileSync(join(this.manifestDir, file), "utf-8");
           const manifest = JSON.parse(content) as DataManifest;
 
           manifests.push({
             id: manifest.manifest_id,
             description: manifest.description,
             created: manifest.created_timestamp,
-            file_count: manifest.file_count
+            file_count: manifest.file_count,
           });
         } catch (error) {
           console.warn(`Failed to parse manifest ${file}:`, error);
         }
       }
 
-      return manifests.sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime());
+      return manifests.sort(
+        (a, b) => new Date(b.created).getTime() - new Date(a.created).getTime(),
+      );
     } catch (error) {
-      console.error('Failed to list manifests:', error);
+      console.error("Failed to list manifests:", error);
       return [];
     }
   }
@@ -601,21 +656,21 @@ export function createManifestManager(baseDir?: string): ManifestManager {
  */
 export const DEFAULT_PATTERNS = {
   input: [
-    'scripts/entrypoints.jsonl',
-    'apps/fe-web/dev/runs/*.json',
-    'src/**/*.ts',
-    'src/**/*.js'
+    "scripts/entrypoints.jsonl",
+    "apps/fe-web/dev/runs/*.json",
+    "src/**/*.ts",
+    "src/**/*.js",
   ],
   gold: [
-    'tests/regression/*.json',
-    'tests/regression/*.jsonl',
-    'reports/baseline_*.jsonl'
+    "tests/regression/*.json",
+    "tests/regression/*.jsonl",
+    "reports/baseline_*.jsonl",
   ],
   config: [
-    'baseline_config.json',
-    'package.json',
-    'tsconfig.json',
-    '.env*',
-    'schema/*.json'
-  ]
+    "baseline_config.json",
+    "package.json",
+    "tsconfig.json",
+    ".env*",
+    "schema/*.json",
+  ],
 };

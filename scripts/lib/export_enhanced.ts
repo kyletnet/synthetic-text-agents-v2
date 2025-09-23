@@ -1,14 +1,14 @@
-import * as fs from 'fs';
-import * as path from 'path';
-import { createReadStream, createWriteStream } from 'fs';
-import { Transform } from 'stream';
-import { pipeline } from 'stream/promises';
-import Ajv from 'ajv';
-import addFormats from 'ajv-formats';
+import * as fs from "fs";
+import * as path from "path";
+import { createReadStream, createWriteStream } from "fs";
+import { Transform } from "stream";
+import { pipeline } from "stream/promises";
+import Ajv from "ajv";
+import addFormats from "ajv-formats";
 
 export interface ExportOptions {
-  source: 'baseline' | 'session';
-  format: 'csv' | 'json';
+  source: "baseline" | "session";
+  format: "csv" | "json";
   runId: string;
   outputDir?: string;
   dryRun?: boolean;
@@ -19,7 +19,7 @@ export interface ExportOptions {
 export interface ExportRecord {
   RUN_ID: string;
   ITEM_ID: string;
-  RESULT: 'PASS' | 'WARN' | 'PARTIAL' | 'FAIL';
+  RESULT: "PASS" | "WARN" | "PARTIAL" | "FAIL";
   COST_USD: number;
   LAT_MS: number;
   WARNINGS: number;
@@ -29,7 +29,7 @@ export interface ExportRecord {
   ACCURACY_SCORE: number;
   EVIDENCE_PRESENCE: number;
   DUPLICATION_RATE: number;
-  HALLUCINATION_RISK: 'low' | 'medium' | 'high' | 'none';
+  HALLUCINATION_RISK: "low" | "medium" | "high" | "none";
   PII_HITS: number;
   LICENSE_HITS: number;
   PROFILE: string;
@@ -62,9 +62,9 @@ export class EnhancedExporter {
   async export(options: ExportOptions): Promise<ExportResult> {
     const result: ExportResult = {
       success: false,
-      outputPath: '',
+      outputPath: "",
       recordCount: 0,
-      warnings: []
+      warnings: [],
     };
 
     try {
@@ -80,7 +80,9 @@ export class EnhancedExporter {
 
       // 3. Check for duplicates and versioning
       if (options.skipDuplicates && fs.existsSync(outputPath)) {
-        result.warnings?.push(`Output file already exists, skipping: ${outputPath}`);
+        result.warnings?.push(
+          `Output file already exists, skipping: ${outputPath}`,
+        );
         return { ...result, success: true, recordCount: 0 };
       }
 
@@ -94,24 +96,32 @@ export class EnhancedExporter {
 
       // 4. Dry run check
       if (options.dryRun) {
-        result.warnings?.push('Dry run mode - no files written');
+        result.warnings?.push("Dry run mode - no files written");
         return { ...result, success: true, recordCount: 0 };
       }
 
       // 5. Schema validation
-      const schemaValidation = await this.validateSchema(inputPath, options.source);
+      const schemaValidation = await this.validateSchema(
+        inputPath,
+        options.source,
+      );
       if (!schemaValidation.valid) {
         result.validationErrors = schemaValidation.errors;
-        result.warnings?.push('Schema validation failed, proceeding with warnings');
+        result.warnings?.push(
+          "Schema validation failed, proceeding with warnings",
+        );
       }
 
       // 6. Stream processing with temporary file + atomic rename
-      const recordCount = await this.streamProcess(inputPath, finalOutputPath, options);
+      const recordCount = await this.streamProcess(
+        inputPath,
+        finalOutputPath,
+        options,
+      );
       result.recordCount = recordCount;
       result.success = true;
 
       return result;
-
     } catch (error) {
       throw new Error(`Export failed: ${error}`);
     }
@@ -120,23 +130,36 @@ export class EnhancedExporter {
   /**
    * Resolve input file path based on source type
    */
-  private resolveInputPath(source: 'baseline' | 'session', runId: string): string {
-    const basePath = 'reports';
+  private resolveInputPath(
+    source: "baseline" | "session",
+    runId: string,
+  ): string {
+    const basePath = "reports";
 
-    if (source === 'baseline') {
+    if (source === "baseline") {
       // Try RUN_ID specific path first, fallback to latest
-      const specificPath = path.join(basePath, 'history', runId, 'baseline_report.jsonl');
+      const specificPath = path.join(
+        basePath,
+        "history",
+        runId,
+        "baseline_report.jsonl",
+      );
       if (fs.existsSync(specificPath)) {
         return specificPath;
       }
-      return path.join(basePath, 'baseline_report.jsonl');
+      return path.join(basePath, "baseline_report.jsonl");
     } else {
       // Session report
-      const specificPath = path.join(basePath, 'history', runId, 'session_report.md');
+      const specificPath = path.join(
+        basePath,
+        "history",
+        runId,
+        "session_report.md",
+      );
       if (fs.existsSync(specificPath)) {
         return specificPath;
       }
-      return path.join(basePath, 'session_report.md');
+      return path.join(basePath, "session_report.md");
     }
   }
 
@@ -144,7 +167,7 @@ export class EnhancedExporter {
    * Setup output path with RUN_ID namespace
    */
   private setupOutputPath(options: ExportOptions): string {
-    const baseDir = options.outputDir || 'reports/export';
+    const baseDir = options.outputDir || "reports/export";
     const runDir = path.join(baseDir, options.runId);
 
     // Ensure directory exists
@@ -187,25 +210,34 @@ export class EnhancedExporter {
   /**
    * Validate input against schema
    */
-  private async validateSchema(inputPath: string, source: string): Promise<{ valid: boolean; errors?: string[] }> {
+  private async validateSchema(
+    inputPath: string,
+    source: string,
+  ): Promise<{ valid: boolean; errors?: string[] }> {
     try {
-      const schemaPath = path.join('schema', `${source}_export.schema.json`);
+      const schemaPath = path.join("schema", `${source}_export.schema.json`);
 
       if (!fs.existsSync(schemaPath)) {
         // Fallback to main schema
-        const fallbackPath = path.join('schema', `${source}_report.schema.json`);
+        const fallbackPath = path.join(
+          "schema",
+          `${source}_report.schema.json`,
+        );
         if (!fs.existsSync(fallbackPath)) {
           return { valid: false, errors: [`Schema not found: ${schemaPath}`] };
         }
       }
 
-      const schemaContent = fs.readFileSync(schemaPath, 'utf-8');
+      const schemaContent = fs.readFileSync(schemaPath, "utf-8");
       const schema = JSON.parse(schemaContent);
       const validate = this.ajv.compile(schema);
 
       // Sample validation (first 3 records)
-      const content = fs.readFileSync(inputPath, 'utf-8');
-      const lines = content.trim().split('\n').filter(line => line.trim());
+      const content = fs.readFileSync(inputPath, "utf-8");
+      const lines = content
+        .trim()
+        .split("\n")
+        .filter((line) => line.trim());
 
       let validCount = 0;
       const errors: string[] = [];
@@ -216,7 +248,9 @@ export class EnhancedExporter {
           if (validate(record)) {
             validCount++;
           } else {
-            errors.push(`Line ${i + 1}: ${validate.errors?.map(e => e.message).join(', ')}`);
+            errors.push(
+              `Line ${i + 1}: ${validate.errors?.map((e) => e.message).join(", ")}`,
+            );
           }
         } catch (e) {
           errors.push(`Line ${i + 1}: Invalid JSON`);
@@ -225,9 +259,8 @@ export class EnhancedExporter {
 
       return {
         valid: validCount > 0,
-        errors: errors.length > 0 ? errors : undefined
+        errors: errors.length > 0 ? errors : undefined,
       };
-
     } catch (error) {
       return { valid: false, errors: [`Schema validation error: ${error}`] };
     }
@@ -236,18 +269,29 @@ export class EnhancedExporter {
   /**
    * Stream processing with memory efficiency
    */
-  private async streamProcess(inputPath: string, outputPath: string, options: ExportOptions): Promise<number> {
+  private async streamProcess(
+    inputPath: string,
+    outputPath: string,
+    options: ExportOptions,
+  ): Promise<number> {
     const tempPath = `${outputPath}.tmp`;
     let recordCount = 0;
 
     try {
       const exporter = this;
-    const transformStream = new Transform({
+      const transformStream = new Transform({
         objectMode: false,
-        transform(chunk: Buffer, encoding: BufferEncoding, callback: (error?: Error | null, data?: any) => void) {
+        transform(
+          chunk: Buffer,
+          encoding: BufferEncoding,
+          callback: (error?: Error | null, data?: any) => void,
+        ) {
           try {
-            const lines = chunk.toString().split('\n').filter(line => line.trim());
-            let output = '';
+            const lines = chunk
+              .toString()
+              .split("\n")
+              .filter((line) => line.trim());
+            let output = "";
 
             for (const line of lines) {
               if (line.trim()) {
@@ -255,11 +299,14 @@ export class EnhancedExporter {
                 const exportRecord = exporter.transformRecord(record, options);
                 recordCount++;
 
-                if (options.format === 'csv') {
-                  const csvLine = exporter.recordToCsv(exportRecord, recordCount === 1);
+                if (options.format === "csv") {
+                  const csvLine = exporter.recordToCsv(
+                    exportRecord,
+                    recordCount === 1,
+                  );
                   output += csvLine;
                 } else {
-                  output += JSON.stringify(exportRecord) + '\n';
+                  output += JSON.stringify(exportRecord) + "\n";
                 }
               }
             }
@@ -267,21 +314,20 @@ export class EnhancedExporter {
           } catch (error) {
             callback(error as Error);
           }
-        }
+        },
       });
 
       // Setup pipeline
       await pipeline(
         createReadStream(inputPath, { highWaterMark: 64 * 1024 }), // 64KB chunks
         transformStream,
-        createWriteStream(tempPath)
+        createWriteStream(tempPath),
       );
 
       // Atomic rename
       fs.renameSync(tempPath, outputPath);
 
       return recordCount;
-
     } catch (error) {
       // Cleanup temp file on error
       if (fs.existsSync(tempPath)) {
@@ -294,10 +340,15 @@ export class EnhancedExporter {
   /**
    * Transform source record to export format
    */
-  private transformRecord(sourceRecord: any, options: ExportOptions): ExportRecord {
+  private transformRecord(
+    sourceRecord: any,
+    options: ExportOptions,
+  ): ExportRecord {
     const record: ExportRecord = {
       RUN_ID: options.runId,
-      ITEM_ID: sourceRecord.item_index ? `${options.runId}_${sourceRecord.item_index}` : `${options.runId}_${Date.now()}`,
+      ITEM_ID: sourceRecord.item_index
+        ? `${options.runId}_${sourceRecord.item_index}`
+        : `${options.runId}_${Date.now()}`,
       RESULT: this.determineResult(sourceRecord),
       COST_USD: sourceRecord.cost_usd || 0,
       LAT_MS: sourceRecord.latency_ms || 0,
@@ -305,14 +356,18 @@ export class EnhancedExporter {
       P0_VIOLATIONS: this.countP0Violations(sourceRecord),
       P1_VIOLATIONS: this.countP1Violations(sourceRecord),
       P2_VIOLATIONS: this.countP2Violations(sourceRecord),
-      ACCURACY_SCORE: sourceRecord.quality_score || sourceRecord.overall_quality_score || 0,
+      ACCURACY_SCORE:
+        sourceRecord.quality_score || sourceRecord.overall_quality_score || 0,
       EVIDENCE_PRESENCE: sourceRecord.evidence_quality?.has_evidence ? 1 : 0,
-      DUPLICATION_RATE: sourceRecord.duplication?.max_similarity || sourceRecord.duplication?.rate || 0,
-      HALLUCINATION_RISK: sourceRecord.hallucination?.risk_level || 'none',
+      DUPLICATION_RATE:
+        sourceRecord.duplication?.max_similarity ||
+        sourceRecord.duplication?.rate ||
+        0,
+      HALLUCINATION_RISK: sourceRecord.hallucination?.risk_level || "none",
       PII_HITS: sourceRecord.pii_license?.pii_violations || 0,
       LICENSE_HITS: sourceRecord.pii_license?.license_violations || 0,
-      PROFILE: 'dev', // Will be overridden
-      TIMESTAMP: sourceRecord.timestamp || new Date().toISOString()
+      PROFILE: "dev", // Will be overridden
+      TIMESTAMP: sourceRecord.timestamp || new Date().toISOString(),
     };
 
     // Add hyperlinks if requested
@@ -324,28 +379,29 @@ export class EnhancedExporter {
     return record;
   }
 
-  private determineResult(record: any): 'PASS' | 'WARN' | 'PARTIAL' | 'FAIL' {
+  private determineResult(record: any): "PASS" | "WARN" | "PARTIAL" | "FAIL" {
     const alerts = record.alert_flags || [];
-    if (alerts.includes('pii_license')) return 'FAIL';
-    if (alerts.length > 2) return 'PARTIAL';
-    if (alerts.length > 0) return 'WARN';
-    return 'PASS';
+    if (alerts.includes("pii_license")) return "FAIL";
+    if (alerts.length > 2) return "PARTIAL";
+    if (alerts.length > 0) return "WARN";
+    return "PASS";
   }
 
   private countP0Violations(record: any): number {
     const flags = record.alert_flags || [];
-    return flags.filter((flag: string) => flag === 'pii_license').length;
+    return flags.filter((flag: string) => flag === "pii_license").length;
   }
 
   private countP1Violations(record: any): number {
     const flags = record.alert_flags || [];
-    return flags.filter((flag: string) => ['hallucination'].includes(flag)).length;
+    return flags.filter((flag: string) => ["hallucination"].includes(flag))
+      .length;
   }
 
   private countP2Violations(record: any): number {
     const flags = record.alert_flags || [];
     return flags.filter((flag: string) =>
-      ['duplication', 'missing_evidence', 'low_quality'].includes(flag)
+      ["duplication", "missing_evidence", "low_quality"].includes(flag),
     ).length;
   }
 
@@ -353,49 +409,60 @@ export class EnhancedExporter {
    * Convert record to CSV format
    */
   private recordToCsv(record: ExportRecord, includeHeader: boolean): string {
-    const values = Object.values(record).map(val => {
-      if (val === null || val === undefined) return '';
-      if (typeof val === 'string' && (val.includes(',') || val.includes('"') || val.includes('\n'))) {
+    const values = Object.values(record).map((val) => {
+      if (val === null || val === undefined) return "";
+      if (
+        typeof val === "string" &&
+        (val.includes(",") || val.includes('"') || val.includes("\n"))
+      ) {
         return '"' + val.replace(/"/g, '""') + '"';
       }
       return String(val);
     });
 
-    let result = '';
+    let result = "";
     if (includeHeader) {
-      const headers = Object.keys(record).map(key =>
-        key.includes(',') ? `"${key}"` : key
+      const headers = Object.keys(record).map((key) =>
+        key.includes(",") ? `"${key}"` : key,
       );
-      result += headers.join(',') + '\n';
+      result += headers.join(",") + "\n";
     }
 
-    result += values.join(',') + '\n';
+    result += values.join(",") + "\n";
     return result;
   }
 
   /**
    * Validate export result against schema
    */
-  async validateExportResult(outputPath: string): Promise<{ valid: boolean; errors?: string[] }> {
+  async validateExportResult(
+    outputPath: string,
+  ): Promise<{ valid: boolean; errors?: string[] }> {
     try {
       if (!fs.existsSync(outputPath)) {
-        return { valid: false, errors: ['Output file does not exist'] };
+        return { valid: false, errors: ["Output file does not exist"] };
       }
 
-      const content = fs.readFileSync(outputPath, 'utf-8');
+      const content = fs.readFileSync(outputPath, "utf-8");
       if (content.trim().length === 0) {
-        return { valid: false, errors: ['Output file is empty'] };
+        return { valid: false, errors: ["Output file is empty"] };
       }
 
       // Basic validation
-      if (outputPath.endsWith('.csv')) {
-        const lines = content.trim().split('\n');
+      if (outputPath.endsWith(".csv")) {
+        const lines = content.trim().split("\n");
         if (lines.length < 2) {
-          return { valid: false, errors: ['CSV must have at least header + 1 data row'] };
+          return {
+            valid: false,
+            errors: ["CSV must have at least header + 1 data row"],
+          };
         }
-      } else if (outputPath.endsWith('.json')) {
+      } else if (outputPath.endsWith(".json")) {
         // Validate each JSON line
-        const lines = content.trim().split('\n').filter(line => line.trim());
+        const lines = content
+          .trim()
+          .split("\n")
+          .filter((line) => line.trim());
         for (let i = 0; i < Math.min(3, lines.length); i++) {
           try {
             JSON.parse(lines[i]);
@@ -406,7 +473,6 @@ export class EnhancedExporter {
       }
 
       return { valid: true };
-
     } catch (error) {
       return { valid: false, errors: [`Validation error: ${error}`] };
     }
@@ -422,32 +488,32 @@ export function parseExportArgs(args: string[]): ExportOptions {
     const value = args[i + 1];
 
     switch (key) {
-      case '--source':
-        if (value === 'baseline' || value === 'session') {
+      case "--source":
+        if (value === "baseline" || value === "session") {
           options.source = value;
         }
         break;
-      case '--format':
-        if (value === 'csv' || value === 'json') {
+      case "--format":
+        if (value === "csv" || value === "json") {
           options.format = value;
         }
         break;
-      case '--run-id':
+      case "--run-id":
         options.runId = value;
         break;
-      case '--output-dir':
+      case "--output-dir":
         options.outputDir = value;
         break;
-      case '--dry-run':
-        options.dryRun = value === 'true';
+      case "--dry-run":
+        options.dryRun = value === "true";
         i--; // No value for boolean flag
         break;
-      case '--skip-duplicates':
-        options.skipDuplicates = value === 'true';
+      case "--skip-duplicates":
+        options.skipDuplicates = value === "true";
         i--; // No value for boolean flag
         break;
-      case '--include-links':
-        options.includeLinks = value === 'true';
+      case "--include-links":
+        options.includeLinks = value === "true";
         i--; // No value for boolean flag
         break;
     }
@@ -456,12 +522,14 @@ export function parseExportArgs(args: string[]): ExportOptions {
   return options as ExportOptions;
 }
 
-export function validateExportOptions(options: Partial<ExportOptions>): string[] {
+export function validateExportOptions(
+  options: Partial<ExportOptions>,
+): string[] {
   const errors: string[] = [];
 
-  if (!options.source) errors.push('--source is required (baseline|session)');
-  if (!options.format) errors.push('--format is required (csv|json)');
-  if (!options.runId) errors.push('--run-id is required');
+  if (!options.source) errors.push("--source is required (baseline|session)");
+  if (!options.format) errors.push("--format is required (csv|json)");
+  if (!options.runId) errors.push("--run-id is required");
 
   return errors;
 }

@@ -1,4 +1,5 @@
 # ADR — Architecture Decision Record (Template)
+
 - **Context**: 문제 배경 / 제약
 - **Decision**: 선택한 해법(대안 비교 포함)
 - **Consequences**: 장단점, 리스크, 롤백

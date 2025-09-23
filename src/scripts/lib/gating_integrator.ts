@@ -2,8 +2,8 @@
  * gating_integrator.ts — Evaluate session reports against success criteria for gating decisions
  */
 
-import { promises as fs } from 'fs';
-import { ThresholdManager } from '../metrics/thresholdManager.js';
+import { promises as fs } from "fs";
+import { ThresholdManager } from "../metrics/thresholdManager.js";
 
 interface GatingCriteria {
   minCases: number;
@@ -36,7 +36,7 @@ interface GatingResult {
   decision: {
     timestamp: string;
     profile: string;
-    gateStatus: 'PASS' | 'WARN' | 'PARTIAL' | 'FAIL';
+    gateStatus: "PASS" | "WARN" | "PARTIAL" | "FAIL";
     overallScore: number;
   };
 }
@@ -73,7 +73,7 @@ export class GatingIntegrator {
 
   async evaluateSession(
     sessionReportPath: string,
-    criteria: GatingCriteria
+    criteria: GatingCriteria,
   ): Promise<GatingResult> {
     const sessionData = await this.loadSessionReport(sessionReportPath);
 
@@ -87,7 +87,7 @@ export class GatingIntegrator {
       this.evaluateCostRequirement(sessionMetrics, criteria),
       this.evaluateWarningLimit(sessionMetrics, criteria),
       this.evaluateResultRequirement(sessionMetrics, criteria),
-      this.evaluateThresholdViolations(sessionMetrics, criteria)
+      this.evaluateThresholdViolations(sessionMetrics, criteria),
     ];
 
     for (const evaluation of evaluations) {
@@ -99,11 +99,14 @@ export class GatingIntegrator {
 
     // Determine overall gate status
     const gateStatus = this.determineGateStatus(sessionMetrics, violations);
-    const overallScore = this.calculateOverallScore(sessionMetrics, violations.length);
+    const overallScore = this.calculateOverallScore(
+      sessionMetrics,
+      violations.length,
+    );
 
     const reason = canProceed
-      ? 'All success criteria met'
-      : `Failed criteria: ${violations.join('; ')}`;
+      ? "All success criteria met"
+      : `Failed criteria: ${violations.join("; ")}`;
 
     const result: GatingResult = {
       canProceed,
@@ -115,17 +118,19 @@ export class GatingIntegrator {
         timestamp: new Date().toISOString(),
         profile: sessionData.session_summary.profile,
         gateStatus,
-        overallScore
-      }
+        overallScore,
+      },
     };
 
     await this.logGatingDecision(result);
     return result;
   }
 
-  private async loadSessionReport(reportPath: string): Promise<SessionReportData> {
+  private async loadSessionReport(
+    reportPath: string,
+  ): Promise<SessionReportData> {
     try {
-      const content = await fs.readFile(reportPath, 'utf8');
+      const content = await fs.readFile(reportPath, "utf8");
 
       // Try to parse as JSON first
       try {
@@ -135,7 +140,9 @@ export class GatingIntegrator {
         return this.extractJSONFromMarkdown(content);
       }
     } catch (error) {
-      throw new Error(`Failed to load session report from ${reportPath}: ${error}`);
+      throw new Error(
+        `Failed to load session report from ${reportPath}: ${error}`,
+      );
     }
   }
 
@@ -158,19 +165,38 @@ export class GatingIntegrator {
     // Fallback: look for structured data patterns
     const sessionData: SessionReportData = {
       session_summary: {
-        cases_total: this.extractNumericValue(content, /cases[_\s]*total[:\s]*(\d+)/i) || 0,
-        cost_usd: this.extractNumericValue(content, /cost[_\s]*usd[:\s]*\$?([0-9.]+)/i) || 0,
-        result: this.extractStringValue(content, /result[:\s]*([A-Z]+)/i) || 'UNKNOWN',
-        profile: this.extractStringValue(content, /profile[:\s]*(\w+)/i) || 'unknown',
-        timestamp: new Date().toISOString()
+        cases_total:
+          this.extractNumericValue(content, /cases[_\s]*total[:\s]*(\d+)/i) ||
+          0,
+        cost_usd:
+          this.extractNumericValue(
+            content,
+            /cost[_\s]*usd[:\s]*\$?([0-9.]+)/i,
+          ) || 0,
+        result:
+          this.extractStringValue(content, /result[:\s]*([A-Z]+)/i) ||
+          "UNKNOWN",
+        profile:
+          this.extractStringValue(content, /profile[:\s]*(\w+)/i) || "unknown",
+        timestamp: new Date().toISOString(),
       },
       baseline_summary: {
-        sample_count: this.extractNumericValue(content, /sample[_\s]*count[:\s]*(\d+)/i) || 0,
+        sample_count:
+          this.extractNumericValue(content, /sample[_\s]*count[:\s]*(\d+)/i) ||
+          0,
         quality_score_summary: {
-          overall_score: this.extractNumericValue(content, /overall[_\s]*score[:\s]*([0-9.]+)/i) || 0,
-          total_alerts: this.extractNumericValue(content, /total[_\s]*alerts[:\s]*(\d+)/i) || 0
-        }
-      }
+          overall_score:
+            this.extractNumericValue(
+              content,
+              /overall[_\s]*score[:\s]*([0-9.]+)/i,
+            ) || 0,
+          total_alerts:
+            this.extractNumericValue(
+              content,
+              /total[_\s]*alerts[:\s]*(\d+)/i,
+            ) || 0,
+        },
+      },
     };
 
     return sessionData;
@@ -186,7 +212,9 @@ export class GatingIntegrator {
     return match ? match[1] : null;
   }
 
-  private extractSessionMetrics(sessionData: SessionReportData): GatingResult['sessionMetrics'] {
+  private extractSessionMetrics(
+    sessionData: SessionReportData,
+  ): GatingResult["sessionMetrics"] {
     const threshold = sessionData.baseline_summary.threshold_validation;
 
     return {
@@ -198,105 +226,106 @@ export class GatingIntegrator {
       errorCount: threshold?.p0_violations?.length || 0,
       p0Violations: threshold?.p0_violations || [],
       p1Warnings: threshold?.p1_warnings || [],
-      p2Issues: threshold?.p2_issues || []
+      p2Issues: threshold?.p2_issues || [],
     };
   }
 
   private evaluateMinCases(
-    metrics: GatingResult['sessionMetrics'],
-    criteria: GatingCriteria
+    metrics: GatingResult["sessionMetrics"],
+    criteria: GatingCriteria,
   ): { passed: boolean; reason: string } {
     if (metrics.totalCases < criteria.minCases) {
       return {
         passed: false,
-        reason: `Insufficient test cases: ${metrics.totalCases} < ${criteria.minCases} required`
+        reason: `Insufficient test cases: ${metrics.totalCases} < ${criteria.minCases} required`,
       };
     }
-    return { passed: true, reason: 'Minimum cases requirement met' };
+    return { passed: true, reason: "Minimum cases requirement met" };
   }
 
   private evaluateCostRequirement(
-    metrics: GatingResult['sessionMetrics'],
-    criteria: GatingCriteria
+    metrics: GatingResult["sessionMetrics"],
+    criteria: GatingCriteria,
   ): { passed: boolean; reason: string } {
     if (metrics.totalCost <= criteria.requireCostGt) {
       return {
         passed: false,
-        reason: `Insufficient cost verification: $${metrics.totalCost} <= $${criteria.requireCostGt} (smoke run may not have executed properly)`
+        reason: `Insufficient cost verification: $${metrics.totalCost} <= $${criteria.requireCostGt} (smoke run may not have executed properly)`,
       };
     }
-    return { passed: true, reason: 'Cost requirement met' };
+    return { passed: true, reason: "Cost requirement met" };
   }
 
   private evaluateWarningLimit(
-    metrics: GatingResult['sessionMetrics'],
-    criteria: GatingCriteria
+    metrics: GatingResult["sessionMetrics"],
+    criteria: GatingCriteria,
   ): { passed: boolean; reason: string } {
     if (metrics.warningCount > criteria.maxWarn) {
       return {
         passed: false,
-        reason: `Too many warnings: ${metrics.warningCount} > ${criteria.maxWarn} allowed`
+        reason: `Too many warnings: ${metrics.warningCount} > ${criteria.maxWarn} allowed`,
       };
     }
-    return { passed: true, reason: 'Warning limit met' };
+    return { passed: true, reason: "Warning limit met" };
   }
 
   private evaluateResultRequirement(
-    metrics: GatingResult['sessionMetrics'],
-    criteria: GatingCriteria
+    metrics: GatingResult["sessionMetrics"],
+    criteria: GatingCriteria,
   ): { passed: boolean; reason: string } {
     if (!criteria.enforceResult.includes(metrics.result)) {
       return {
         passed: false,
-        reason: `Result '${metrics.result}' not in allowed results: [${criteria.enforceResult.join(', ')}]`
+        reason: `Result '${metrics.result}' not in allowed results: [${criteria.enforceResult.join(", ")}]`,
       };
     }
-    return { passed: true, reason: 'Result requirement met' };
+    return { passed: true, reason: "Result requirement met" };
   }
 
   private evaluateThresholdViolations(
-    metrics: GatingResult['sessionMetrics'],
-    criteria: GatingCriteria
+    metrics: GatingResult["sessionMetrics"],
+    criteria: GatingCriteria,
   ): { passed: boolean; reason: string } {
     // P0 violations are always blocking
     if (metrics.p0Violations.length > 0) {
       return {
         passed: false,
-        reason: `Critical P0 violations found: ${metrics.p0Violations.join(', ')}`
+        reason: `Critical P0 violations found: ${metrics.p0Violations.join(", ")}`,
       };
     }
 
     // P1 warnings are considered in the warning count (already checked above)
     // P2 issues are informational and don't block
 
-    return { passed: true, reason: 'No blocking threshold violations' };
+    return { passed: true, reason: "No blocking threshold violations" };
   }
 
   private determineGateStatus(
-    metrics: GatingResult['sessionMetrics'],
-    violations: string[]
-  ): 'PASS' | 'WARN' | 'PARTIAL' | 'FAIL' {
+    metrics: GatingResult["sessionMetrics"],
+    violations: string[],
+  ): "PASS" | "WARN" | "PARTIAL" | "FAIL" {
     if (violations.length === 0) {
-      return metrics.warningCount === 0 ? 'PASS' : 'WARN';
+      return metrics.warningCount === 0 ? "PASS" : "WARN";
     }
 
     // Check if any violations are critical
-    const hasCriticalViolations = violations.some(v =>
-      v.includes('P0') ||
-      v.includes('Insufficient test cases') ||
-      v.includes('not in allowed results')
+    const hasCriticalViolations = violations.some(
+      (v) =>
+        v.includes("P0") ||
+        v.includes("Insufficient test cases") ||
+        v.includes("not in allowed results"),
     );
 
     if (hasCriticalViolations) {
-      return 'FAIL';
+      return "FAIL";
     }
 
-    return 'PARTIAL';
+    return "PARTIAL";
   }
 
   private calculateOverallScore(
-    metrics: GatingResult['sessionMetrics'],
-    violationCount: number
+    metrics: GatingResult["sessionMetrics"],
+    violationCount: number,
   ): number {
     let score = 1.0;
 
@@ -308,7 +337,7 @@ export class GatingIntegrator {
     score -= metrics.warningCount * 0.05;
 
     // Bonus for successful completion
-    if (metrics.result === 'PASS') {
+    if (metrics.result === "PASS") {
       score += 0.1;
     }
 
@@ -318,8 +347,8 @@ export class GatingIntegrator {
   private async logGatingDecision(result: GatingResult): Promise<void> {
     const logEntry = {
       timestamp: result.decision.timestamp,
-      component: 'gating_integrator',
-      operation: 'evaluate_session',
+      component: "gating_integrator",
+      operation: "evaluate_session",
       gating_result: {
         can_proceed: result.canProceed,
         gate_status: result.decision.gateStatus,
@@ -327,9 +356,9 @@ export class GatingIntegrator {
         violations_count: result.violations.length,
         violations: result.violations,
         criteria: result.criteria,
-        session_metrics: result.sessionMetrics
+        session_metrics: result.sessionMetrics,
       },
-      level: result.canProceed ? 'info' : 'warn'
+      level: result.canProceed ? "info" : "warn",
     };
 
     console.log(`[GATING] ${JSON.stringify(logEntry)}`);
@@ -338,17 +367,19 @@ export class GatingIntegrator {
   // Utility method for CI/CD integration
   async evaluateAndExit(
     sessionReportPath: string,
-    criteria: GatingCriteria
+    criteria: GatingCriteria,
   ): Promise<never> {
     try {
       const result = await this.evaluateSession(sessionReportPath, criteria);
 
-      console.log(`\n[GATING] ${result.canProceed ? '✅ PASS' : '❌ FAIL'}`);
+      console.log(`\n[GATING] ${result.canProceed ? "✅ PASS" : "❌ FAIL"}`);
       console.log(`[GATING] Gate Status: ${result.decision.gateStatus}`);
-      console.log(`[GATING] Overall Score: ${(result.decision.overallScore * 100).toFixed(1)}%`);
+      console.log(
+        `[GATING] Overall Score: ${(result.decision.overallScore * 100).toFixed(1)}%`,
+      );
 
       if (result.violations.length > 0) {
-        console.log('[GATING] Violations:');
+        console.log("[GATING] Violations:");
         for (const violation of result.violations) {
           console.log(`  - ${violation}`);
         }

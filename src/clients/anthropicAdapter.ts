@@ -1,12 +1,12 @@
-import { spawn } from 'child_process';
-import { Logger } from '../shared/logger.js';
+import { spawn } from "child_process";
+import { Logger } from "../shared/logger.js";
 
 export interface AnthropicChatPayload {
   model?: string;
   max_tokens?: number;
   system?: string;
   messages: Array<{
-    role: 'user' | 'assistant';
+    role: "user" | "assistant";
     content: string;
   }>;
   temperature?: number;
@@ -30,7 +30,7 @@ export interface AnthropicResponse {
 }
 
 export interface AnthropicError {
-  type: 'error';
+  type: "error";
   error: {
     type: string;
     message: string;
@@ -45,7 +45,7 @@ export interface CallOptions {
   agentRole?: string;
 }
 
-export type ErrorClassification = 'TRANSIENT' | 'PERMANENT' | 'POLICY';
+export type ErrorClassification = "TRANSIENT" | "PERMANENT" | "POLICY";
 
 export interface AdapterResult {
   success: boolean;
@@ -69,19 +69,22 @@ export class AnthropicAdapter {
   private readonly clientPath: string;
   private logger: Logger;
 
-  constructor(clientPath = 'tools/anthropic_client.sh') {
+  constructor(clientPath = "tools/anthropic_client.sh") {
     this.clientPath = clientPath;
-    this.logger = new Logger({ level: 'info' });
+    this.logger = new Logger({ level: "info" });
   }
 
   /**
    * Call Anthropic API via the tools/anthropic_client.sh wrapper
    */
-  async callAnthropic(payload: AnthropicChatPayload, opts: CallOptions = {}): Promise<AdapterResult> {
+  async callAnthropic(
+    payload: AnthropicChatPayload,
+    opts: CallOptions = {},
+  ): Promise<AdapterResult> {
     const startTime = Date.now();
-    const runId = opts.runId || process.env.RUN_ID || 'unknown';
-    const itemId = opts.itemId || 'unknown';
-    const agentRole = opts.agentRole || 'unknown';
+    const runId = opts.runId || process.env.RUN_ID || "unknown";
+    const itemId = opts.itemId || "unknown";
+    const agentRole = opts.agentRole || "unknown";
 
     try {
       // Prepare the payload for the wrapper script
@@ -91,11 +94,11 @@ export class AnthropicAdapter {
       const env: Record<string, string> = {
         ...process.env,
         // Ensure critical environment variables are explicitly set
-        ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY || '',
-        ANTHROPIC_API_KEY_BACKUP: process.env.ANTHROPIC_API_KEY_BACKUP || '',
-        DRY_RUN: process.env.DRY_RUN || 'false',
-        FEATURE_LLM_QA: process.env.FEATURE_LLM_QA || 'true',
-        LLM_MODEL: 'claude-3-5-sonnet-latest', // Force Anthropic model
+        ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY || "",
+        ANTHROPIC_API_KEY_BACKUP: process.env.ANTHROPIC_API_KEY_BACKUP || "",
+        DRY_RUN: process.env.DRY_RUN || "false",
+        FEATURE_LLM_QA: process.env.FEATURE_LLM_QA || "true",
+        LLM_MODEL: "claude-3-5-sonnet-latest", // Force Anthropic model
         LLM_TIMEOUT_MS: (opts.timeoutMs || 180000).toString(),
         RUN_ID: runId,
         ITEM_ID: itemId,
@@ -119,7 +122,7 @@ export class AnthropicAdapter {
           // Extract JSON from stdout (wrapper includes log messages)
           const jsonStart = result.stdout.indexOf('{"id":');
           if (jsonStart === -1) {
-            throw new Error('No JSON response found in wrapper output');
+            throw new Error("No JSON response found in wrapper output");
           }
           const jsonStr = result.stdout.substring(jsonStart);
 
@@ -149,17 +152,16 @@ export class AnthropicAdapter {
             retries: 0,
           };
         } catch (parseError) {
-
           return {
             success: false,
             error: {
-              type: 'error',
+              type: "error",
               error: {
-                type: 'parse_error',
+                type: "parse_error",
                 message: `Failed to parse response: ${parseError}`,
               },
             },
-            errorClass: 'PERMANENT',
+            errorClass: "PERMANENT",
             latencyMs,
           };
         }
@@ -172,10 +174,10 @@ export class AnthropicAdapter {
           errorResponse = JSON.parse(result.stdout || result.stderr);
         } catch {
           errorResponse = {
-            type: 'error',
+            type: "error",
             error: {
-              type: 'wrapper_error',
-              message: result.stderr || 'Unknown error from wrapper script',
+              type: "wrapper_error",
+              message: result.stderr || "Unknown error from wrapper script",
             },
           };
         }
@@ -214,20 +216,20 @@ export class AnthropicAdapter {
         latencyMs,
         retries: 0,
         success: false,
-        errorClass: 'PERMANENT',
+        errorClass: "PERMANENT",
         errorMessage: String(executionError),
       });
 
       return {
         success: false,
         error: {
-          type: 'error',
+          type: "error",
           error: {
-            type: 'execution_error',
+            type: "execution_error",
             message: String(executionError),
           },
         },
-        errorClass: 'PERMANENT',
+        errorClass: "PERMANENT",
         latencyMs,
       };
     }
@@ -236,7 +238,7 @@ export class AnthropicAdapter {
   private preparePayload(payload: AnthropicChatPayload): string {
     // Convert to the format expected by tools/anthropic_client.sh
     const wrapperPayload: any = {
-      model: 'claude-3-5-sonnet-20241022', // Force Anthropic model, ignore payload.model
+      model: "claude-3-5-sonnet-20241022", // Force Anthropic model, ignore payload.model
       max_tokens: payload.max_tokens || 1000,
       messages: payload.messages,
       temperature: payload.temperature,
@@ -249,29 +251,32 @@ export class AnthropicAdapter {
     return JSON.stringify(wrapperPayload);
   }
 
-  private async executeWrapper(payload: string, env: Record<string, string>): Promise<{
+  private async executeWrapper(
+    payload: string,
+    env: Record<string, string>,
+  ): Promise<{
     exitCode: number;
     stdout: string;
     stderr: string;
   }> {
     return new Promise((resolve) => {
-      const child = spawn('bash', [this.clientPath, '--chat'], {
+      const child = spawn("bash", [this.clientPath, "--chat"], {
         env,
-        stdio: ['pipe', 'pipe', 'pipe'],
+        stdio: ["pipe", "pipe", "pipe"],
       });
 
-      let stdout = '';
-      let stderr = '';
+      let stdout = "";
+      let stderr = "";
 
-      child.stdout.on('data', (data) => {
+      child.stdout.on("data", (data) => {
         stdout += data.toString();
       });
 
-      child.stderr.on('data', (data) => {
+      child.stderr.on("data", (data) => {
         stderr += data.toString();
       });
 
-      child.on('close', (exitCode) => {
+      child.on("close", (exitCode) => {
         resolve({
           exitCode: exitCode || 0,
           stdout,
@@ -288,19 +293,22 @@ export class AnthropicAdapter {
   private classifyError(exitCode: number, stderr: string): ErrorClassification {
     // Map exit codes to error classifications
     if (exitCode === 1) {
-      if (stderr.includes('BUDGET EXCEEDED') || stderr.includes('POLICY VIOLATION')) {
-        return 'POLICY';
+      if (
+        stderr.includes("BUDGET EXCEEDED") ||
+        stderr.includes("POLICY VIOLATION")
+      ) {
+        return "POLICY";
       }
-      if (stderr.includes('rate_limit') || stderr.includes('server_error')) {
-        return 'TRANSIENT';
+      if (stderr.includes("rate_limit") || stderr.includes("server_error")) {
+        return "TRANSIENT";
       }
     }
 
     if (exitCode === 2) {
-      return 'PERMANENT'; // Authentication, configuration errors
+      return "PERMANENT"; // Authentication, configuration errors
     }
 
-    return 'PERMANENT'; // Default to permanent for unknown errors
+    return "PERMANENT"; // Default to permanent for unknown errors
   }
 
   private calculateCost(response: AnthropicResponse, model?: string): number {
@@ -309,15 +317,15 @@ export class AnthropicAdapter {
     const { input_tokens, output_tokens } = response.usage;
 
     // Cost per 1K tokens (approximate rates as of 2024)
-    let inputCostPer1k = 0.003;  // Default to Sonnet pricing
+    let inputCostPer1k = 0.003; // Default to Sonnet pricing
     let outputCostPer1k = 0.015;
 
-    const modelName = model || response.model || '';
+    const modelName = model || response.model || "";
 
-    if (modelName.includes('haiku')) {
+    if (modelName.includes("haiku")) {
       inputCostPer1k = 0.00025;
       outputCostPer1k = 0.00125;
-    } else if (modelName.includes('opus')) {
+    } else if (modelName.includes("opus")) {
       inputCostPer1k = 0.015;
       outputCostPer1k = 0.075;
     }
@@ -342,7 +350,7 @@ export class AnthropicAdapter {
     // Emit structured logs compatible with existing logging infrastructure
     const logEntry = {
       timestamp: new Date().toISOString(),
-      component: 'anthropic_adapter',
+      component: "anthropic_adapter",
       run_id: data.runId,
       item_id: data.itemId,
       agent_role: data.agentRole,
@@ -364,7 +372,7 @@ export class AnthropicAdapter {
  */
 export async function callAnthropic(
   payload: AnthropicChatPayload,
-  opts: CallOptions = {}
+  opts: CallOptions = {},
 ): Promise<AdapterResult> {
   const adapter = new AnthropicAdapter();
   return adapter.callAnthropic(payload, opts);
@@ -380,7 +388,10 @@ export class LLMAdapter {
     this.adapter = new AnthropicAdapter();
   }
 
-  async chatJSONOnly(userPrompt: string, systemPrompt?: string): Promise<{
+  async chatJSONOnly(
+    userPrompt: string,
+    systemPrompt?: string,
+  ): Promise<{
     text: string;
     usage?: { input_tokens?: number; output_tokens?: number } | undefined;
     model?: string | undefined;
@@ -388,13 +399,15 @@ export class LLMAdapter {
     status?: number | undefined;
   }> {
     const policy = "반드시 유효한 JSON만 출력. 코드펜스/설명/추가텍스트 금지.";
-    const finalSystemPrompt = systemPrompt ? `${systemPrompt}\n${policy}` : policy;
+    const finalSystemPrompt = systemPrompt
+      ? `${systemPrompt}\n${policy}`
+      : policy;
 
     const payload: AnthropicChatPayload = {
-      model: process.env.LLM_MODEL || 'claude-3-5-sonnet-latest',
+      model: process.env.LLM_MODEL || "claude-3-5-sonnet-latest",
       max_tokens: 800,
       system: finalSystemPrompt,
-      messages: [{ role: 'user', content: userPrompt }],
+      messages: [{ role: "user", content: userPrompt }],
     };
 
     // Implement retry logic similar to original
@@ -403,20 +416,23 @@ export class LLMAdapter {
 
     for (let i = 0; i < maxRetries; i++) {
       if (i > 0) {
-        await new Promise(resolve => setTimeout(resolve, backoffs[i]));
+        await new Promise((resolve) => setTimeout(resolve, backoffs[i]));
       }
 
       const result = await this.adapter.callAnthropic(payload);
 
       if (result.success && result.data) {
-        const text = result.data.content.map(c => c.text || '').join('\n').trim();
+        const text = result.data.content
+          .map((c) => c.text || "")
+          .join("\n")
+          .trim();
 
         // LLM response received
 
         // Check if it's a valid JSON (could start with [ for arrays)
-        if (!text.startsWith('{') && !text.startsWith('[')) {
+        if (!text.startsWith("{") && !text.startsWith("[")) {
           if (i === maxRetries - 1) {
-            throw new Error('Non-JSON response after all retries');
+            throw new Error("Non-JSON response after all retries");
           }
           continue; // Retry
         }
@@ -428,14 +444,14 @@ export class LLMAdapter {
           latency_ms: result.latencyMs,
           status: 200,
         };
-      } else if (result.errorClass === 'TRANSIENT' && i < maxRetries - 1) {
+      } else if (result.errorClass === "TRANSIENT" && i < maxRetries - 1) {
         continue; // Retry transient errors
       } else {
-        const errorMsg = result.error?.error.message || 'Unknown error';
+        const errorMsg = result.error?.error.message || "Unknown error";
         throw new Error(`LLM chat failed: ${errorMsg}`);
       }
     }
 
-    throw new Error('LLM chat failed after all retries');
+    throw new Error("LLM chat failed after all retries");
   }
 }

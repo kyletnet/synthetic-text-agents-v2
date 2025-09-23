@@ -4,15 +4,15 @@
  */
 
 export enum CircuitState {
-  CLOSED = 'CLOSED',     // Normal operation
-  OPEN = 'OPEN',         // Circuit is open, rejecting calls
-  HALF_OPEN = 'HALF_OPEN' // Testing if service has recovered
+  CLOSED = "CLOSED", // Normal operation
+  OPEN = "OPEN", // Circuit is open, rejecting calls
+  HALF_OPEN = "HALF_OPEN", // Testing if service has recovered
 }
 
 export interface CircuitBreakerConfig {
-  failureThreshold: number;        // Number of failures before opening circuit
-  successThreshold: number;        // Number of successes in half-open to close circuit
-  timeout: number;                 // Time in ms to wait before trying half-open
+  failureThreshold: number; // Number of failures before opening circuit
+  successThreshold: number; // Number of successes in half-open to close circuit
+  timeout: number; // Time in ms to wait before trying half-open
   monitor?: (event: CircuitBreakerEvent) => void;
 }
 
@@ -41,10 +41,10 @@ export class CircuitBreakerError extends Error {
   constructor(
     public circuitName: string,
     public state: CircuitState,
-    message: string
+    message: string,
   ) {
     super(message);
-    this.name = 'CircuitBreakerError';
+    this.name = "CircuitBreakerError";
   }
 }
 
@@ -65,7 +65,7 @@ export class CircuitBreaker {
 
   constructor(
     private name: string,
-    private config: CircuitBreakerConfig
+    private config: CircuitBreakerConfig,
   ) {}
 
   /**
@@ -75,12 +75,12 @@ export class CircuitBreaker {
     // Check if circuit should remain open
     if (this.state === CircuitState.OPEN) {
       if (this.shouldAttemptReset()) {
-        this.setState(CircuitState.HALF_OPEN, 'Attempting reset after timeout');
+        this.setState(CircuitState.HALF_OPEN, "Attempting reset after timeout");
       } else {
         throw new CircuitBreakerError(
           this.name,
           this.state,
-          `Circuit breaker is OPEN. Next attempt at ${this.nextAttemptTime?.toISOString()}`
+          `Circuit breaker is OPEN. Next attempt at ${this.nextAttemptTime?.toISOString()}`,
         );
       }
     }
@@ -91,7 +91,6 @@ export class CircuitBreaker {
       const result = await operation();
       this.onSuccess();
       return result;
-
     } catch (error) {
       this.onFailure(error);
       throw error;
@@ -111,7 +110,8 @@ export class CircuitBreaker {
       lastFailureTime: this.lastFailureTime,
       lastSuccessTime: this.lastSuccessTime,
       uptime: Date.now() - this.startTime,
-      failureRate: this.totalRequests > 0 ? this.failureCount / this.totalRequests : 0
+      failureRate:
+        this.totalRequests > 0 ? this.failureCount / this.totalRequests : 0,
     };
   }
 
@@ -125,7 +125,7 @@ export class CircuitBreaker {
   /**
    * Force circuit to open (for testing or manual intervention)
    */
-  forceOpen(reason: string = 'Manual intervention'): void {
+  forceOpen(reason: string = "Manual intervention"): void {
     this.setState(CircuitState.OPEN, reason);
     this.scheduleNextAttempt();
   }
@@ -133,7 +133,7 @@ export class CircuitBreaker {
   /**
    * Force circuit to close (for testing or manual intervention)
    */
-  forceClose(reason: string = 'Manual intervention'): void {
+  forceClose(reason: string = "Manual intervention"): void {
     this.setState(CircuitState.CLOSED, reason);
     this.resetCounts();
   }
@@ -158,7 +158,10 @@ export class CircuitBreaker {
 
     if (this.state === CircuitState.HALF_OPEN) {
       if (this.consecutiveSuccesses >= this.config.successThreshold) {
-        this.setState(CircuitState.CLOSED, 'Sufficient successes in half-open state');
+        this.setState(
+          CircuitState.CLOSED,
+          "Sufficient successes in half-open state",
+        );
         this.resetCounts();
       }
     }
@@ -173,9 +176,15 @@ export class CircuitBreaker {
     this.consecutiveSuccesses = 0;
     this.lastFailureTime = new Date();
 
-    if (this.state === CircuitState.CLOSED || this.state === CircuitState.HALF_OPEN) {
+    if (
+      this.state === CircuitState.CLOSED ||
+      this.state === CircuitState.HALF_OPEN
+    ) {
       if (this.consecutiveFailures >= this.config.failureThreshold) {
-        this.setState(CircuitState.OPEN, `Failure threshold reached: ${this.consecutiveFailures} consecutive failures`);
+        this.setState(
+          CircuitState.OPEN,
+          `Failure threshold reached: ${this.consecutiveFailures} consecutive failures`,
+        );
         this.scheduleNextAttempt();
       }
     }
@@ -185,7 +194,10 @@ export class CircuitBreaker {
    * Check if we should attempt to reset the circuit
    */
   private shouldAttemptReset(): boolean {
-    return this.nextAttemptTime !== undefined && Date.now() >= this.nextAttemptTime.getTime();
+    return (
+      this.nextAttemptTime !== undefined &&
+      Date.now() >= this.nextAttemptTime.getTime()
+    );
   }
 
   /**
@@ -208,7 +220,7 @@ export class CircuitBreaker {
       previousState,
       timestamp: new Date(),
       reason,
-      metrics: this.getMetrics()
+      metrics: this.getMetrics(),
     };
 
     // Notify monitor if configured
@@ -216,11 +228,13 @@ export class CircuitBreaker {
       try {
         this.config.monitor(event);
       } catch (error) {
-        console.error('Circuit breaker monitor error:', error);
+        console.error("Circuit breaker monitor error:", error);
       }
     }
 
-    console.log(`[CircuitBreaker:${this.name}] ${previousState} → ${newState}: ${reason}`);
+    console.log(
+      `[CircuitBreaker:${this.name}] ${previousState} → ${newState}: ${reason}`,
+    );
   }
 
   /**
@@ -248,7 +262,7 @@ export class CircuitBreakerRegistry {
    */
   getCircuitBreaker(
     name: string,
-    config?: Partial<CircuitBreakerConfig>
+    config?: Partial<CircuitBreakerConfig>,
   ): CircuitBreaker {
     if (!this.circuitBreakers.has(name)) {
       const mergedConfig: CircuitBreakerConfig = {
@@ -256,7 +270,7 @@ export class CircuitBreakerRegistry {
         successThreshold: 3,
         timeout: 30000, // 30 seconds
         ...this.globalConfig,
-        ...config
+        ...config,
       };
 
       this.circuitBreakers.set(name, new CircuitBreaker(name, mergedConfig));
@@ -300,11 +314,11 @@ export class CircuitBreakerRegistry {
       circuitDetails: circuits.map(([name, circuit]) => ({
         name,
         state: circuit.getState(),
-        metrics: circuit.getMetrics()
-      }))
+        metrics: circuit.getMetrics(),
+      })),
     };
 
-    stats.circuitDetails.forEach(circuit => {
+    stats.circuitDetails.forEach((circuit) => {
       switch (circuit.state) {
         case CircuitState.OPEN:
           stats.openCircuits++;
@@ -325,7 +339,7 @@ export class CircuitBreakerRegistry {
    * Reset all circuit breakers
    */
   resetAll(): void {
-    this.circuitBreakers.forEach(circuit => circuit.reset());
+    this.circuitBreakers.forEach((circuit) => circuit.reset());
   }
 }
 
@@ -337,7 +351,9 @@ let globalRegistry: CircuitBreakerRegistry;
 /**
  * Initialize global circuit breaker registry
  */
-export function initializeCircuitBreakers(config?: Partial<CircuitBreakerConfig>): CircuitBreakerRegistry {
+export function initializeCircuitBreakers(
+  config?: Partial<CircuitBreakerConfig>,
+): CircuitBreakerRegistry {
   globalRegistry = new CircuitBreakerRegistry(config);
   return globalRegistry;
 }
@@ -357,7 +373,7 @@ export function getCircuitBreakerRegistry(): CircuitBreakerRegistry {
  */
 export function getCircuitBreaker(
   name: string,
-  config?: Partial<CircuitBreakerConfig>
+  config?: Partial<CircuitBreakerConfig>,
 ): CircuitBreaker {
   return getCircuitBreakerRegistry().getCircuitBreaker(name, config);
 }
@@ -367,9 +383,13 @@ export function getCircuitBreaker(
  */
 export function circuitBreaker(
   name: string,
-  config?: Partial<CircuitBreakerConfig>
+  config?: Partial<CircuitBreakerConfig>,
 ) {
-  return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+  return function (
+    target: any,
+    propertyKey: string,
+    descriptor: PropertyDescriptor,
+  ) {
     const originalMethod = descriptor.value;
 
     descriptor.value = async function (...args: any[]) {
@@ -387,7 +407,7 @@ export function circuitBreaker(
 export function withCircuitBreaker<T extends (...args: any[]) => Promise<any>>(
   fn: T,
   name: string,
-  config?: Partial<CircuitBreakerConfig>
+  config?: Partial<CircuitBreakerConfig>,
 ): T {
   const circuit = getCircuitBreaker(name, config);
 

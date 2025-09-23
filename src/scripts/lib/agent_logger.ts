@@ -1,5 +1,5 @@
-import { writeFileSync, appendFileSync, existsSync, mkdirSync } from 'fs';
-import { join } from 'path';
+import { writeFileSync, appendFileSync, existsSync, mkdirSync } from "fs";
+import { join } from "path";
 
 /**
  * Agent Logger
@@ -25,8 +25,8 @@ export interface BaseLogEntry {
 
   // Operation context
   operation: string;
-  status: 'started' | 'completed' | 'failed' | 'retrying' | 'skipped';
-  error_type?: 'TRANSIENT' | 'PERMANENT' | 'POLICY';
+  status: "started" | "completed" | "failed" | "retrying" | "skipped";
+  error_type?: "TRANSIENT" | "PERMANENT" | "POLICY";
   error_message?: string;
 
   // Data context
@@ -35,7 +35,7 @@ export interface BaseLogEntry {
   context_size?: number;
 
   // Metadata
-  log_level: 'trace' | 'debug' | 'info' | 'warn' | 'error';
+  log_level: "trace" | "debug" | "info" | "warn" | "error";
   correlation_id?: string;
   parent_trace_id?: string;
 }
@@ -92,10 +92,14 @@ export class AgentLogger {
       flush_interval_ms: config.flush_interval_ms || 5000,
       max_buffer_size: config.max_buffer_size || 100,
       compress_old_logs: config.compress_old_logs || false,
-      retention_days: config.retention_days || 30
+      retention_days: config.retention_days || 30,
     };
 
-    this.logsDir = join(this.config.base_dir || process.cwd(), 'logs', 'agents');
+    this.logsDir = join(
+      this.config.base_dir || process.cwd(),
+      "logs",
+      "agents",
+    );
     this.ensureDirectoryExists();
     this.startFlushTimer();
   }
@@ -109,11 +113,15 @@ export class AgentLogger {
   /**
    * Create a new trace context for a run/item
    */
-  createTraceContext(runId: string, itemId: string, sessionId?: string): TraceContext {
+  createTraceContext(
+    runId: string,
+    itemId: string,
+    sessionId?: string,
+  ): TraceContext {
     const ctx: any = {
       run_id: runId,
       item_id: itemId,
-      correlation_id: this.generateCorrelationId()
+      correlation_id: this.generateCorrelationId(),
     };
     if (typeof sessionId === "string") ctx.session_id = sessionId;
     return ctx;
@@ -127,9 +135,10 @@ export class AgentLogger {
       run_id: parent.run_id,
       item_id: parent.item_id,
       correlation_id: this.generateCorrelationId(),
-      parent_trace_id: parent.correlation_id
+      parent_trace_id: parent.correlation_id,
     };
-    if (typeof parent.session_id === "string") ctx.session_id = parent.session_id;
+    if (typeof parent.session_id === "string")
+      ctx.session_id = parent.session_id;
     return ctx;
   }
 
@@ -142,7 +151,7 @@ export class AgentLogger {
     agentRole: string,
     operation: string,
     inputData?: any,
-    additionalFields?: Partial<AgentOperationLog>
+    additionalFields?: Partial<AgentOperationLog>,
   ): string {
     const correlationId = this.generateCorrelationId();
 
@@ -153,17 +162,19 @@ export class AgentLogger {
       agent_id: agentId,
       agent_role: agentRole,
       operation,
-      status: 'started',
+      status: "started",
       cost_usd: 0,
       latency_ms: 0,
       retries: 0,
-      log_level: 'info',
+      log_level: "info",
       correlation_id: correlationId,
       context_size: inputData ? JSON.stringify(inputData).length : 0,
-      ...additionalFields
+      ...additionalFields,
     };
-    if (typeof context.session_id === "string") logEntry.session_id = context.session_id;
-    if (typeof context.correlation_id === "string") logEntry.parent_trace_id = context.correlation_id;
+    if (typeof context.session_id === "string")
+      logEntry.session_id = context.session_id;
+    if (typeof context.correlation_id === "string")
+      logEntry.parent_trace_id = context.correlation_id;
     if (inputData) {
       logEntry.input_data = this.sanitizeData(inputData);
       logEntry.input_hash = this.calculateHash(inputData);
@@ -191,7 +202,7 @@ export class AgentLogger {
       confidence_score?: number;
       validation_result?: any;
     },
-    additionalFields?: Partial<AgentOperationLog>
+    additionalFields?: Partial<AgentOperationLog>,
   ): void {
     const latencyMs = Date.now() - startTime;
 
@@ -202,25 +213,33 @@ export class AgentLogger {
       agent_id: agentId,
       agent_role: agentRole,
       operation,
-      status: 'completed',
+      status: "completed",
       cost_usd: result.cost_usd || 0,
       latency_ms: latencyMs,
       retries: 0,
-      log_level: 'info',
-      ...additionalFields
+      log_level: "info",
+      ...additionalFields,
     };
-    if (typeof context.session_id === "string") logEntry.session_id = context.session_id;
-    if (typeof context.correlation_id === "string") logEntry.correlation_id = context.correlation_id;
-    if (typeof context.parent_trace_id === "string") logEntry.parent_trace_id = context.parent_trace_id;
-    if (typeof result.tokens_in === "number") logEntry.tokens_in = result.tokens_in;
-    if (typeof result.tokens_out === "number") logEntry.tokens_out = result.tokens_out;
+    if (typeof context.session_id === "string")
+      logEntry.session_id = context.session_id;
+    if (typeof context.correlation_id === "string")
+      logEntry.correlation_id = context.correlation_id;
+    if (typeof context.parent_trace_id === "string")
+      logEntry.parent_trace_id = context.parent_trace_id;
+    if (typeof result.tokens_in === "number")
+      logEntry.tokens_in = result.tokens_in;
+    if (typeof result.tokens_out === "number")
+      logEntry.tokens_out = result.tokens_out;
     if (result.output_data) {
       logEntry.output_data = this.sanitizeData(result.output_data);
       logEntry.output_hash = this.calculateHash(result.output_data);
     }
-    if (typeof result.quality_score === "number") logEntry.quality_score = result.quality_score;
-    if (typeof result.confidence_score === "number") logEntry.confidence_score = result.confidence_score;
-    if (result.validation_result) logEntry.validation_result = result.validation_result;
+    if (typeof result.quality_score === "number")
+      logEntry.quality_score = result.quality_score;
+    if (typeof result.confidence_score === "number")
+      logEntry.confidence_score = result.confidence_score;
+    if (result.validation_result)
+      logEntry.validation_result = result.validation_result;
 
     this.addToBuffer(logEntry);
   }
@@ -236,7 +255,7 @@ export class AgentLogger {
     startTime: number,
     error: Error,
     retryCount: number = 0,
-    additionalFields?: Partial<AgentOperationLog>
+    additionalFields?: Partial<AgentOperationLog>,
   ): void {
     const latencyMs = Date.now() - startTime;
     const errorType = this.classifyError(error);
@@ -248,18 +267,21 @@ export class AgentLogger {
       agent_id: agentId,
       agent_role: agentRole,
       operation,
-      status: retryCount > 0 ? 'retrying' : 'failed',
+      status: retryCount > 0 ? "retrying" : "failed",
       cost_usd: 0,
       latency_ms: latencyMs,
       retries: retryCount,
-      log_level: 'error',
+      log_level: "error",
       error_type: errorType,
       error_message: error.message,
-      ...additionalFields
+      ...additionalFields,
     };
-    if (typeof context.session_id === "string") logEntry.session_id = context.session_id;
-    if (typeof context.correlation_id === "string") logEntry.correlation_id = context.correlation_id;
-    if (typeof context.parent_trace_id === "string") logEntry.parent_trace_id = context.parent_trace_id;
+    if (typeof context.session_id === "string")
+      logEntry.session_id = context.session_id;
+    if (typeof context.correlation_id === "string")
+      logEntry.correlation_id = context.correlation_id;
+    if (typeof context.parent_trace_id === "string")
+      logEntry.parent_trace_id = context.parent_trace_id;
 
     this.addToBuffer(logEntry);
   }
@@ -277,27 +299,30 @@ export class AgentLogger {
       success: boolean;
       output_data?: any;
     },
-    additionalFields?: Partial<AgentOperationLog>
+    additionalFields?: Partial<AgentOperationLog>,
   ): void {
     const logEntry: any = {
       timestamp: new Date().toISOString(),
       run_id: context.run_id,
       item_id: context.item_id,
-      agent_id: 'workflow_orchestrator',
-      agent_role: 'orchestrator',
-      operation: 'workflow_step',
-      status: stepResult.success ? 'completed' : 'failed',
+      agent_id: "workflow_orchestrator",
+      agent_role: "orchestrator",
+      operation: "workflow_step",
+      status: stepResult.success ? "completed" : "failed",
       cost_usd: stepResult.cost_usd,
       latency_ms: stepResult.duration_ms,
       retries: 0,
-      log_level: 'info',
+      log_level: "info",
       workflow_step: workflowStep,
       dependencies: agentsInvolved,
-      ...additionalFields
+      ...additionalFields,
     };
-    if (typeof context.session_id === "string") logEntry.session_id = context.session_id;
-    if (typeof context.correlation_id === "string") logEntry.correlation_id = context.correlation_id;
-    if (stepResult.output_data) logEntry.output_data = this.sanitizeData(stepResult.output_data);
+    if (typeof context.session_id === "string")
+      logEntry.session_id = context.session_id;
+    if (typeof context.correlation_id === "string")
+      logEntry.correlation_id = context.correlation_id;
+    if (stepResult.output_data)
+      logEntry.output_data = this.sanitizeData(stepResult.output_data);
 
     this.addToBuffer(logEntry);
   }
@@ -318,24 +343,26 @@ export class AgentLogger {
           avg_latency: number;
         };
       };
-    }
+    },
   ): void {
     const logEntry: any = {
       timestamp: new Date().toISOString(),
       run_id: context.run_id,
       item_id: context.item_id,
-      agent_id: 'performance_tracker',
-      agent_role: 'tracker',
-      operation: 'performance_summary',
-      status: 'completed',
+      agent_id: "performance_tracker",
+      agent_role: "tracker",
+      operation: "performance_summary",
+      status: "completed",
       cost_usd: metrics.total_cost_usd,
       latency_ms: metrics.total_duration_ms,
       retries: 0,
-      log_level: 'info',
-      output_data: metrics.agent_breakdown
+      log_level: "info",
+      output_data: metrics.agent_breakdown,
     };
-    if (typeof context.session_id === "string") logEntry.session_id = context.session_id;
-    if (typeof context.correlation_id === "string") logEntry.correlation_id = context.correlation_id;
+    if (typeof context.session_id === "string")
+      logEntry.session_id = context.session_id;
+    if (typeof context.correlation_id === "string")
+      logEntry.correlation_id = context.correlation_id;
 
     this.addToBuffer(logEntry);
   }
@@ -374,7 +401,7 @@ export class AgentLogger {
     // Write to separate files per run
     for (const [runId, logs] of logsByRun) {
       const logFile = join(this.logsDir, `${runId}.jsonl`);
-      const logLines = logs.map(log => JSON.stringify(log)).join('\n') + '\n';
+      const logLines = logs.map((log) => JSON.stringify(log)).join("\n") + "\n";
 
       try {
         if (existsSync(logFile)) {
@@ -414,18 +441,26 @@ export class AgentLogger {
   /**
    * Classify error type for logging
    */
-  private classifyError(error: Error): 'TRANSIENT' | 'PERMANENT' | 'POLICY' {
+  private classifyError(error: Error): "TRANSIENT" | "PERMANENT" | "POLICY" {
     const message = error.message.toLowerCase();
 
-    if (message.includes('pii') || message.includes('policy') || message.includes('license')) {
-      return 'POLICY';
+    if (
+      message.includes("pii") ||
+      message.includes("policy") ||
+      message.includes("license")
+    ) {
+      return "POLICY";
     }
 
-    if (message.includes('429') || message.includes('timeout') || message.includes('network')) {
-      return 'TRANSIENT';
+    if (
+      message.includes("429") ||
+      message.includes("timeout") ||
+      message.includes("network")
+    ) {
+      return "TRANSIENT";
     }
 
-    return 'PERMANENT';
+    return "PERMANENT";
   }
 
   /**
@@ -439,9 +474,13 @@ export class AgentLogger {
    * Calculate hash of data for consistency checking
    */
   private calculateHash(data: any): string {
-    const crypto = require('crypto');
+    const crypto = require("crypto");
     const jsonString = JSON.stringify(data, Object.keys(data).sort());
-    return crypto.createHash('sha256').update(jsonString).digest('hex').substring(0, 16);
+    return crypto
+      .createHash("sha256")
+      .update(jsonString)
+      .digest("hex")
+      .substring(0, 16);
   }
 
   /**
@@ -455,15 +494,21 @@ export class AgentLogger {
 
       // Remove potential PII patterns
       const sanitized = jsonString
-        .replace(/\b\d{6}-\d{7}\b/g, '[SSN_REDACTED]')
-        .replace(/\b\d{3}-\d{2}-\d{4}\b/g, '[SSN_REDACTED]')
-        .replace(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g, '[EMAIL_REDACTED]')
-        .replace(/\b\d{4}[\s-]?\d{4}[\s-]?\d{4}[\s-]?\d{4}\b/g, '[CARD_REDACTED]');
+        .replace(/\b\d{6}-\d{7}\b/g, "[SSN_REDACTED]")
+        .replace(/\b\d{3}-\d{2}-\d{4}\b/g, "[SSN_REDACTED]")
+        .replace(
+          /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g,
+          "[EMAIL_REDACTED]",
+        )
+        .replace(
+          /\b\d{4}[\s-]?\d{4}[\s-]?\d{4}[\s-]?\d{4}\b/g,
+          "[CARD_REDACTED]",
+        );
 
       return JSON.parse(sanitized);
     } catch (error) {
-      console.warn('Failed to sanitize data for logging:', error);
-      return '[SANITIZATION_FAILED]';
+      console.warn("Failed to sanitize data for logging:", error);
+      return "[SANITIZATION_FAILED]";
     }
   }
 
@@ -484,24 +529,35 @@ export class AgentLogger {
     try {
       const logFiles = criteria.run_id
         ? [`${criteria.run_id}.jsonl`]
-        : require('fs').readdirSync(this.logsDir).filter((f: string) => f.endsWith('.jsonl'));
+        : require("fs")
+            .readdirSync(this.logsDir)
+            .filter((f: string) => f.endsWith(".jsonl"));
 
       for (const file of logFiles) {
         const filePath = join(this.logsDir, file);
         if (!existsSync(filePath)) continue;
 
-        const content = require('fs').readFileSync(filePath, 'utf-8');
-        const lines = content.trim().split('\n').filter((line: string) => line.trim());
+        const content = require("fs").readFileSync(filePath, "utf-8");
+        const lines = content
+          .trim()
+          .split("\n")
+          .filter((line: string) => line.trim());
 
         for (const line of lines) {
           try {
             const entry = JSON.parse(line) as AgentOperationLog;
 
             // Apply filters
-            if (criteria.agent_role && entry.agent_role !== criteria.agent_role) continue;
-            if (criteria.operation && entry.operation !== criteria.operation) continue;
+            if (criteria.agent_role && entry.agent_role !== criteria.agent_role)
+              continue;
+            if (criteria.operation && entry.operation !== criteria.operation)
+              continue;
             if (criteria.status && entry.status !== criteria.status) continue;
-            if (criteria.since && new Date(entry.timestamp) < new Date(criteria.since)) continue;
+            if (
+              criteria.since &&
+              new Date(entry.timestamp) < new Date(criteria.since)
+            )
+              continue;
 
             results.push(entry);
 
@@ -514,10 +570,13 @@ export class AgentLogger {
         }
       }
     } catch (error) {
-      console.error('Failed to query logs:', error);
+      console.error("Failed to query logs:", error);
     }
 
-    return results.sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
+    return results.sort(
+      (a, b) =>
+        new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime(),
+    );
   }
 
   /**
@@ -546,7 +605,7 @@ export class AgentLogger {
           total_time: 0,
           avg_latency: 0,
           success_rate: 0,
-          error_count: 0
+          error_count: 0,
         };
       }
 
@@ -554,7 +613,7 @@ export class AgentLogger {
       summary[role].total_cost += log.cost_usd;
       summary[role].total_time += log.latency_ms;
 
-      if (log.status === 'failed') {
+      if (log.status === "failed") {
         summary[role].error_count++;
       }
     }
@@ -562,8 +621,12 @@ export class AgentLogger {
     // Calculate averages and rates
     for (const role of Object.keys(summary)) {
       const data = summary[role];
-      data.avg_latency = data.total_calls > 0 ? data.total_time / data.total_calls : 0;
-      data.success_rate = data.total_calls > 0 ? (data.total_calls - data.error_count) / data.total_calls : 0;
+      data.avg_latency =
+        data.total_calls > 0 ? data.total_time / data.total_calls : 0;
+      data.success_rate =
+        data.total_calls > 0
+          ? (data.total_calls - data.error_count) / data.total_calls
+          : 0;
     }
 
     return summary;
@@ -600,22 +663,42 @@ export function createOperationTracker(
   context: TraceContext,
   agentId: string,
   agentRole: string,
-  operation: string
+  operation: string,
 ) {
   const logger = getAgentLogger();
   const startTime = Date.now();
 
-  const correlationId = logger.logOperationStart(context, agentId, agentRole, operation);
+  const correlationId = logger.logOperationStart(
+    context,
+    agentId,
+    agentRole,
+    operation,
+  );
 
   return {
     complete: (result: any) => {
-      logger.logOperationComplete(context, agentId, agentRole, operation, startTime, result);
+      logger.logOperationComplete(
+        context,
+        agentId,
+        agentRole,
+        operation,
+        startTime,
+        result,
+      );
     },
 
     fail: (error: Error, retryCount: number = 0) => {
-      logger.logOperationFailure(context, agentId, agentRole, operation, startTime, error, retryCount);
+      logger.logOperationFailure(
+        context,
+        agentId,
+        agentRole,
+        operation,
+        startTime,
+        error,
+        retryCount,
+      );
     },
 
-    correlationId
+    correlationId,
   };
 }

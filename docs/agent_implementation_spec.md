@@ -1,4 +1,5 @@
 # Agent Implementation Specification
+
 ## Meta-Adaptive Expert Orchestration System
 
 ---
@@ -6,11 +7,14 @@
 ## 1. Agent 정의 원칙
 
 ### 1.1 기능적 역할 기반 정의
+
 각 Agent는 학문적 분류가 아닌 시스템 내 구체적 기능으로 정의됩니다.
+
 - **예시**: "Psychology Expert" → "Customer Emotion Analyzer & Response Strategy Planner"
 - **목적**: Claude Code가 명확한 구현 목표를 가질 수 있도록
 
 ### 1.2 Agent 독립성과 협업 균형
+
 - **독립성**: 각 Agent는 독립적으로 실행 가능한 완전한 기능 단위
 - **협업**: 표준화된 인터페이스를 통해 다른 Agent와 정보 교환
 - **확장성**: 새로운 Agent 추가 시 기존 Agent 수정 최소화
@@ -20,14 +24,17 @@
 ## 2. Core Engine Agents (4개) 상세 명세
 
 ### 2.1 Meta-Controller Agent
+
 **업무 역할**: 전체 프로세스의 지휘자 및 전략 수립자
-**핵심 책임**: 
+**핵심 책임**:
+
 - 사용자 요구사항 분석 및 복잡도 평가
 - 최적 전문가 조합 결정 (5개 vs 8개 Agent)
 - Expert Council 협의 진행 및 조율
 - Agent 간 충돌 해결 및 최종 결정
 
 **입력 인터페이스**:
+
 ```python
 class MetaControllerInput:
     user_requirements: str          # 사용자 요구사항
@@ -38,6 +45,7 @@ class MetaControllerInput:
 ```
 
 **출력 인터페이스**:
+
 ```python
 class MetaControllerOutput:
     expert_combination: list       # 선택된 전문가 조합
@@ -47,11 +55,12 @@ class MetaControllerOutput:
 ```
 
 **핵심 프롬프트 템플릿**:
+
 ```
 당신은 Meta-Controller로서 다음 QA 생성 요청을 분석하고 최적의 전문가 팀을 구성해야 합니다.
 
 요청 내용: {user_requirements}
-도메인: {domain_context}  
+도메인: {domain_context}
 품질 목표: {quality_target}/10
 수량 목표: {quantity_target}개
 
@@ -69,18 +78,22 @@ class MetaControllerOutput:
 ```
 
 **구현 로직**:
+
 - 복잡도 7점 이상 → 8개 Agent 총동원
 - 복잡도 5-6점 → 7개 Agent (Cognitive Scientist 제외)
 - 복잡도 4점 이하 → 5개 Agent (Core + 1개 Domain)
 
 ### 2.2 Prompt Architect Agent
+
 **업무 역할**: Expert Council의 조언을 통합하여 최적의 QA 생성 프롬프트 설계
 **핵심 책임**:
+
 - Expert Council의 다양한 관점을 하나의 프롬프트로 통합
 - 생성 목표에 최적화된 프롬프트 구조 설계
 - QA 품질과 다양성의 균형점 확보
 
 **입력 인터페이스**:
+
 ```python
 class PromptArchitectInput:
     expert_recommendations: dict   # 각 전문가의 조언
@@ -90,12 +103,13 @@ class PromptArchitectInput:
 ```
 
 **핵심 프롬프트 템플릿**:
+
 ```
 당신은 Prompt Architect로서 다음 전문가들의 조언을 통합하여 최적의 QA 생성 프롬프트를 설계해야 합니다.
 
 전문가 조언:
 - Psychology Specialist: {psychology_advice}
-- Linguistics Engineer: {linguistics_advice}  
+- Linguistics Engineer: {linguistics_advice}
 - Domain Consultant: {domain_advice}
 - Cognitive Scientist: {cognitive_advice}
 
@@ -108,14 +122,17 @@ class PromptArchitectInput:
 [QA Generator가 바로 사용할 수 있는 완성된 프롬프트]
 ```
 
-### 2.3 QA Generator Agent  
+### 2.3 QA Generator Agent
+
 **업무 역할**: 설계된 프롬프트를 기반으로 고품질 QA 대량 생성
 **핵심 책임**:
+
 - Prompt Architect가 설계한 프롬프트 정확한 실행
 - 목표 수량의 QA를 일관된 품질로 생성
 - 생성 과정에서 다양성 확보 (중복 방지)
 
 **입력 인터페이스**:
+
 ```python
 class QAGeneratorInput:
     optimized_prompt: str         # 최적화된 생성 프롬프트
@@ -125,6 +142,7 @@ class QAGeneratorInput:
 ```
 
 **핵심 프롬프트 템플릿**:
+
 ```
 다음은 전문가 팀이 설계한 최적화된 QA 생성 지시사항입니다:
 
@@ -148,13 +166,16 @@ class QAGeneratorInput:
 ```
 
 ### 2.4 Quality Auditor Agent
+
 **업무 역할**: 생성된 QA의 다층 품질 검증 및 개선점 도출
 **핵심 책임**:
+
 - 전문성, 실용성, 언어 품질 등 다각도 검증
 - 목표 기준 미달 QA 식별 및 개선 방안 제시
 - 전체 QA 세트의 일관성 및 다양성 평가
 
 **입력 인터페이스**:
+
 ```python
 class QualityAuditorInput:
     generated_qa_set: list        # 생성된 QA 목록
@@ -164,10 +185,11 @@ class QualityAuditorInput:
 ```
 
 **품질 검증 기준**:
+
 ```
 Level 1: 구조적 품질 (형식, 완성도, 길이)
 - Q와 A가 명확히 구분되는가?
-- 질문이 모호하지 않고 구체적인가?  
+- 질문이 모호하지 않고 구체적인가?
 - 답변이 실행 가능한 수준으로 상세한가?
 
 Level 2: 전문성 품질 (도메인 정확성, 용어 사용)
@@ -191,13 +213,16 @@ Level 4: 차별성 품질 (새로운 가치, 통찰)
 ## 3. Expert Council Agents (4개) 상세 명세
 
 ### 3.1 Psychology Specialist Agent
+
 **업무 역할**: 인간 심리 및 의사결정 패턴 분석 전문가
 **전문성 영역**:
+
 - 고객/직원의 감정 상태 분석 및 대응 전략
 - 의사결정 과정에서의 인지 편향 고려
 - 상황별 동기 부여 및 설득 메커니즘
 
 **핵심 프롬프트 템플릿**:
+
 ```
 당신은 Psychology Specialist로서 다음 QA 생성 상황을 심리학적 관점에서 분석해야 합니다.
 
@@ -218,14 +243,17 @@ Level 4: 차별성 품질 (새로운 가치, 통찰)
 - QA 설계 조언: [프롬프트에 반영해야 할 심리학적 요소]
 ```
 
-### 3.2 Linguistics Engineer Agent  
+### 3.2 Linguistics Engineer Agent
+
 **업무 역할**: LLM 최적화 및 언어 구조 설계 전문가
 **전문성 영역**:
+
 - LLM이 이해하기 쉬운 프롬프트 구조 설계
 - 자연어 처리 관점에서의 최적화
 - 다국어 및 전문 용어 처리
 
 **핵심 프롬프트 템플릿**:
+
 ```
 당신은 Linguistics Engineer로서 LLM 성능 최적화 관점에서 QA 생성을 분석해야 합니다.
 
@@ -247,10 +275,12 @@ Level 4: 차별성 품질 (새로운 가치, 통찰)
 ```
 
 ### 3.3 Domain Consultant Agent
+
 **업무 역할**: 특정 도메인의 전문성 및 실무 지식 제공
 **전문성 영역**: 상황에 따라 동적 결정 (CS, 마케팅, 세일즈, 의료, 법률 등)
 
 **핵심 프롬프트 템플릿** (CS 도메인 예시):
+
 ```
 당신은 고객서비스(CS) Domain Consultant로서 다음 QA 생성 과제에 전문적 조언을 제공해야 합니다.
 
@@ -272,13 +302,16 @@ Level 4: 차별성 품질 (새로운 가치, 통찰)
 ```
 
 ### 3.4 Cognitive Scientist Agent
+
 **업무 역할**: 인간 사고 과정 및 학습 패턴 분석 전문가  
 **전문성 영역**:
+
 - 전문가의 사고 과정 모델링
 - 암묵적 지식의 명시화 방법론
 - 효과적인 지식 전달 구조 설계
 
 **핵심 프롬프트 템플릿**:
+
 ```
 당신은 Cognitive Scientist로서 전문가의 사고 과정을 분석하고 이를 QA 구조로 변환하는 방법을 제안해야 합니다.
 
@@ -304,11 +337,13 @@ Level 4: 차별성 품질 (새로운 가치, 통찰)
 ## 4. 동적 전문가 확장 시스템
 
 ### 4.1 50개 기본 전문가 Pool
+
 **Category A: 핵심 전문성 (10개)**
+
 ```python
 CORE_EXPERTS = {
     "psychology": "인간 심리 및 행동 분석",
-    "linguistics": "언어 구조 및 LLM 최적화", 
+    "linguistics": "언어 구조 및 LLM 최적화",
     "cognitive_science": "사고 과정 및 학습 모델링",
     "behavioral_economics": "의사결정 및 경제 심리",
     "communication_theory": "효과적 소통 전략",
@@ -321,11 +356,12 @@ CORE_EXPERTS = {
 ```
 
 **Category B: 도메인 전문성 (25개)**
+
 ```python
 DOMAIN_EXPERTS = {
     # 업계별 (15개)
     "healthcare": "의료 및 건강관리",
-    "finance": "금융 및 투자", 
+    "finance": "금융 및 투자",
     "legal": "법률 및 규정",
     "education": "교육 및 학습",
     "retail": "소매 및 상거래",
@@ -334,15 +370,15 @@ DOMAIN_EXPERTS = {
     "consulting": "컨설팅 및 전략",
     "media": "미디어 및 콘텐츠",
     "real_estate": "부동산",
-    "automotive": "자동차 및 모빌리티", 
+    "automotive": "자동차 및 모빌리티",
     "hospitality": "숙박 및 서비스",
     "logistics": "물류 및 운송",
     "energy": "에너지 및 환경",
     "agriculture": "농업 및 식품",
-    
+
     # 기능별 (10개)
     "customer_service": "고객 서비스 및 지원",
-    "marketing": "마케팅 및 브랜딩", 
+    "marketing": "마케팅 및 브랜딩",
     "sales": "영업 및 세일즈",
     "hr": "인사 및 조직 관리",
     "operations": "운영 및 프로세스",
@@ -355,15 +391,16 @@ DOMAIN_EXPERTS = {
 ```
 
 **Category C: 스타일 전문성 (15개)**
+
 ```python
 STYLE_EXPERTS = {
     "empathy": "공감적 소통",
-    "authority": "권위적 지시", 
+    "authority": "권위적 지시",
     "innovation": "혁신적 사고",
     "efficiency": "효율성 중심",
     "collaboration": "협업적 접근",
     "analytical": "분석적 논리",
-    "creative": "창의적 발상", 
+    "creative": "창의적 발상",
     "strategic": "전략적 사고",
     "practical": "실용적 접근",
     "educational": "교육적 설명",
@@ -376,10 +413,12 @@ STYLE_EXPERTS = {
 ```
 
 ### 4.2 Deep Specialization 자동 생성 로직
+
 **트리거 조건**: 기본 전문가로 충분하지 않은 고도로 특화된 상황
 **생성 방식**: 기본 전문가 + 특화 맥락 → 새로운 전문가 Agent
 
 **자동 생성 프롬프트**:
+
 ```
 다음 상황에서 필요한 초특화 전문가를 생성해야 합니다:
 
@@ -389,7 +428,7 @@ STYLE_EXPERTS = {
 
 생성할 전문가 사양:
 1. 전문가 명: [기본 전문가 + 특화 분야]
-2. 전문성 범위: [구체적 지식 영역] 
+2. 전문성 범위: [구체적 지식 영역]
 3. 핵심 역량: [이 전문가만의 고유 능력]
 4. 프롬프트 템플릿: [이 전문가가 사용할 표준 프롬프트]
 
@@ -402,14 +441,17 @@ STYLE_EXPERTS = {
 ## 5. Agent 품질 관리
 
 ### 5.1 Performance Guardian 통합 방식
+
 **독립적 Agent**: 다른 Agent들의 성과를 객관적으로 평가
 **핵심 기능**:
+
 - 각 Agent의 기여도 실시간 측정
-- Agent 간 협업 효율성 모니터링  
+- Agent 간 협업 효율성 모니터링
 - 전체 시스템 성능 균형 유지
 - 성능 저하 시 원인 진단 및 개선안 제시
 
 ### 5.2 Agent별 성과 측정 기준
+
 **Meta-Controller**: 전문가 조합 적절성, 전략 수립 정확성
 **Prompt Architect**: 프롬프트 품질, 전문가 조언 통합도
 **QA Generator**: 생성 속도, 품질 일관성, 다양성 확보
@@ -417,12 +459,14 @@ STYLE_EXPERTS = {
 **Expert Council**: 조언의 전문성, 실용성, 협업 기여도
 
 ### 5.3 협업 충돌 해결 메커니즘
+
 **충돌 유형별 해결 방식**:
+
 ```
 Type 1: 전문가 간 의견 상충
 해결: Meta-Controller가 사용자 요구사항 기반으로 우선순위 결정
 
-Type 2: 품질 vs 효율성 트레이드오프  
+Type 2: 품질 vs 효율성 트레이드오프
 해결: "성능 > 복잡성" 원칙에 따라 품질 우선 선택
 
 Type 3: 전문성 vs 일반성 균형
@@ -430,11 +474,11 @@ Type 3: 전문성 vs 일반성 균형
 
 충돌 해결 프로세스:
 1. 충돌 감지 (Performance Guardian)
-2. 조율 시도 (Meta-Controller)  
+2. 조율 시도 (Meta-Controller)
 3. 우선순위 적용 (시스템 원칙 기반)
 4. 결과 검증 (Quality Auditor)
 ```
 
 ---
 
-*이 명세서는 Claude Code가 각 Agent를 정확히 구현할 수 있도록 상세한 기능 정의와 프롬프트 템플릿을 제공합니다. 구체적인 기술 구현 방법은 Technical Architecture Guide를 참조하십시오.*
+_이 명세서는 Claude Code가 각 Agent를 정확히 구현할 수 있도록 상세한 기능 정의와 프롬프트 템플릿을 제공합니다. 구체적인 기술 구현 방법은 Technical Architecture Guide를 참조하십시오._

@@ -3,9 +3,9 @@
  * Scans and collects core fields from session reports, baseline reports, and LLM analysis
  */
 
-import { promises as fs } from 'fs';
-import { glob } from 'glob';
-import { SessionData } from './types.js';
+import { promises as fs } from "fs";
+import { glob } from "glob";
+import { SessionData } from "./types.js";
 
 export interface SessionCollection {
   session_report?: SessionData;
@@ -22,9 +22,11 @@ export interface SessionCollection {
 /**
  * Parse session report markdown to extract summary block
  */
-async function parseSessionReport(filePath: string): Promise<SessionData | null> {
+async function parseSessionReport(
+  filePath: string,
+): Promise<SessionData | null> {
   try {
-    const content = await fs.readFile(filePath, 'utf-8');
+    const content = await fs.readFile(filePath, "utf-8");
 
     // Find the summary block
     const summaryMatch = content.match(/```\n(SESSION_ID:.*?)\n```/s);
@@ -33,35 +35,35 @@ async function parseSessionReport(filePath: string): Promise<SessionData | null>
       return null;
     }
 
-    const summaryLines = summaryMatch[1].split('\n');
+    const summaryLines = summaryMatch[1].split("\n");
     const data: any = {};
 
     for (const line of summaryLines) {
-      const [key, ...valueParts] = line.split(': ');
+      const [key, ...valueParts] = line.split(": ");
       if (key && valueParts.length > 0) {
-        const value = valueParts.join(': ').trim();
+        const value = valueParts.join(": ").trim();
 
         // Convert to appropriate types
         switch (key) {
-          case 'DRY_RUN':
-            data[key.toLowerCase()] = value === 'true';
+          case "DRY_RUN":
+            data[key.toLowerCase()] = value === "true";
             break;
-          case 'OFFLINE_MODE':
-            data[key.toLowerCase().replace('_', '_')] = value === 'true';
+          case "OFFLINE_MODE":
+            data[key.toLowerCase().replace("_", "_")] = value === "true";
             break;
-          case 'BUDGET_USD':
-          case 'COST_USD':
-          case 'PASS_RATE':
-          case 'MEAN_SCORE':
+          case "BUDGET_USD":
+          case "COST_USD":
+          case "PASS_RATE":
+          case "MEAN_SCORE":
             data[key.toLowerCase()] = parseFloat(value) || 0;
             break;
-          case 'DURATION_MS':
-          case 'PANEL_SIZE':
-          case 'TOKENS_EST':
-          case 'CASES_TOTAL':
-          case 'CASES_PASSED':
-          case 'P50_MS':
-          case 'P95_MS':
+          case "DURATION_MS":
+          case "PANEL_SIZE":
+          case "TOKENS_EST":
+          case "CASES_TOTAL":
+          case "CASES_PASSED":
+          case "P50_MS":
+          case "P95_MS":
             data[key.toLowerCase()] = parseInt(value) || 0;
             break;
           default:
@@ -71,26 +73,26 @@ async function parseSessionReport(filePath: string): Promise<SessionData | null>
     }
 
     return {
-      session_id: data.session_id || '',
-      run_id: data.run_id || '',
-      target: data.target || '',
-      profile: data.profile || 'dev',
-      mode: data.mode || '',
+      session_id: data.session_id || "",
+      run_id: data.run_id || "",
+      target: data.target || "",
+      profile: data.profile || "dev",
+      mode: data.mode || "",
       dry_run: data.dry_run || false,
       offline_mode: data.offline_mode || false,
       budget_usd: data.budget_usd || 0,
       cost_usd: data.cost_usd || 0,
       duration_ms: data.duration_ms || 0,
-      model_id: data.model_id || '',
+      model_id: data.model_id || "",
       cases_total: data.cases_total || 0,
       cases_passed: data.cases_passed || 0,
       pass_rate: data.pass_rate || 0,
       mean_score: data.mean_score || 0,
       p50_ms: data.p50_ms || 0,
       p95_ms: data.p95_ms || 0,
-      result: data.result || '',
-      run_state: data.run_state || '',
-      timestamp: data.timestamp || new Date().toISOString()
+      result: data.result || "",
+      run_state: data.run_state || "",
+      timestamp: data.timestamp || new Date().toISOString(),
     };
   } catch (error) {
     console.error(`Error parsing session report ${filePath}:`, error);
@@ -103,8 +105,8 @@ async function parseSessionReport(filePath: string): Promise<SessionData | null>
  */
 async function parseBaselineReport(filePath: string): Promise<any | null> {
   try {
-    const content = await fs.readFile(filePath, 'utf-8');
-    const lines = content.trim().split('\n');
+    const content = await fs.readFile(filePath, "utf-8");
+    const lines = content.trim().split("\n");
 
     if (lines.length === 0) {
       return null;
@@ -122,7 +124,7 @@ async function parseBaselineReport(filePath: string): Promise<any | null> {
       pii_hits: summary.pii_license_metrics?.pii_hits || 0,
       license_violations: summary.pii_license_metrics?.license_violations || 0,
       total_items: lines.length,
-      timestamp: summary.timestamp || new Date().toISOString()
+      timestamp: summary.timestamp || new Date().toISOString(),
     };
   } catch (error) {
     console.error(`Error parsing baseline report ${filePath}:`, error);
@@ -135,7 +137,7 @@ async function parseBaselineReport(filePath: string): Promise<any | null> {
  */
 async function parseLLMAnalysis(filePath: string): Promise<any | null> {
   try {
-    const content = await fs.readFile(filePath, 'utf-8');
+    const content = await fs.readFile(filePath, "utf-8");
     const analysis = JSON.parse(content);
 
     return {
@@ -147,7 +149,7 @@ async function parseLLMAnalysis(filePath: string): Promise<any | null> {
       p50_latency_ms: analysis.summary?.p50_latency_ms || 0,
       p95_latency_ms: analysis.summary?.p95_latency_ms || 0,
       cost_metrics: analysis.cost_metrics || {},
-      timestamp: analysis.timestamp || new Date().toISOString()
+      timestamp: analysis.timestamp || new Date().toISOString(),
     };
   } catch (error) {
     console.error(`Error parsing LLM analysis ${filePath}:`, error);
@@ -170,7 +172,7 @@ async function findMostRecentFile(pattern: string): Promise<string | null> {
       files.map(async (file) => {
         const stats = await fs.stat(file);
         return { file, mtime: stats.mtime };
-      })
+      }),
     );
 
     fileStats.sort((a, b) => b.mtime.getTime() - a.mtime.getTime());
@@ -189,43 +191,51 @@ export async function collectSessionData(): Promise<SessionCollection> {
     files_found: {
       session_report: null,
       baseline_report: null,
-      llm_analysis: null
+      llm_analysis: null,
     },
-    collection_timestamp: new Date().toISOString()
+    collection_timestamp: new Date().toISOString(),
   };
 
   try {
     // Find most recent session report
-    const sessionReportFile = await findMostRecentFile('reports/session_report.md');
+    const sessionReportFile = await findMostRecentFile(
+      "reports/session_report.md",
+    );
     if (sessionReportFile) {
       collection.files_found.session_report = sessionReportFile;
-      collection.session_report = await parseSessionReport(sessionReportFile) || undefined;
+      collection.session_report =
+        (await parseSessionReport(sessionReportFile)) || undefined;
     }
 
     // Find most recent baseline report
-    const baselineReportFile = await findMostRecentFile('reports/baseline_report.jsonl');
+    const baselineReportFile = await findMostRecentFile(
+      "reports/baseline_report.jsonl",
+    );
     if (baselineReportFile) {
       collection.files_found.baseline_report = baselineReportFile;
-      collection.baseline_report = await parseBaselineReport(baselineReportFile);
+      collection.baseline_report =
+        await parseBaselineReport(baselineReportFile);
     }
 
     // Find most recent LLM analysis
-    const llmAnalysisFile = await findMostRecentFile('reports/LLM_ANALYSIS_*.json');
+    const llmAnalysisFile = await findMostRecentFile(
+      "reports/LLM_ANALYSIS_*.json",
+    );
     if (llmAnalysisFile) {
       collection.files_found.llm_analysis = llmAnalysisFile;
       collection.llm_analysis = await parseLLMAnalysis(llmAnalysisFile);
     }
 
-    console.log('Session data collection completed:', {
+    console.log("Session data collection completed:", {
       session_report: !!collection.session_report,
       baseline_report: !!collection.baseline_report,
       llm_analysis: !!collection.llm_analysis,
-      files_found: collection.files_found
+      files_found: collection.files_found,
     });
 
     return collection;
   } catch (error) {
-    console.error('Error during session data collection:', error);
+    console.error("Error during session data collection:", error);
     throw error;
   }
 }
@@ -236,18 +246,18 @@ export async function collectSessionData(): Promise<SessionCollection> {
 if (import.meta.url === `file://${process.argv[1]}`) {
   const command = process.argv[2];
 
-  if (command === 'collect') {
+  if (command === "collect") {
     collectSessionData()
       .then((collection) => {
-        console.log('Collection Result:');
+        console.log("Collection Result:");
         console.log(JSON.stringify(collection, null, 2));
       })
       .catch((error) => {
-        console.error('Collection failed:', error);
+        console.error("Collection failed:", error);
         process.exit(1);
       });
   } else {
-    console.log('Usage: node collect_session.js collect');
+    console.log("Usage: node collect_session.js collect");
     process.exit(1);
   }
 }

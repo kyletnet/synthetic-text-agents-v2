@@ -2,9 +2,9 @@
  * observability_exporter.ts — Export and render observability data from run logs
  */
 
-import { promises as fs } from 'fs';
-import { join } from 'path';
-import { globSync } from 'glob';
+import { promises as fs } from "fs";
+import { join } from "path";
+import { globSync } from "glob";
 
 interface TraceEntry {
   timestamp: string;
@@ -21,34 +21,40 @@ interface TraceEntry {
   level?: string;
   // New fields for top-level span identification
   parentId?: string | null;
-  span_kind?: 'root' | 'child';
+  span_kind?: "root" | "child";
   is_root?: boolean;
   op_id?: string; // For merging retries of same logical operation
   [key: string]: any;
 }
 
 interface TraceTree {
-  runs: Record<string, {
-    run_id: string;
-    start_time: string;
-    end_time: string;
-    duration_ms: number;
-    total_cost_usd: number;
-    operations: TraceEntry[];
-    topLevelOps?: TraceEntry[]; // Top-level operations only
-    agents: Record<string, {
-      agent_id: string;
-      operations: number;
+  runs: Record<
+    string,
+    {
+      run_id: string;
+      start_time: string;
+      end_time: string;
+      duration_ms: number;
       total_cost_usd: number;
-      total_latency_ms: number;
-    }>;
-    summary: {
-      total_operations: number;
-      successful_operations: number;
-      failed_operations: number;
-      components: string[];
-    };
-  }>;
+      operations: TraceEntry[];
+      topLevelOps?: TraceEntry[]; // Top-level operations only
+      agents: Record<
+        string,
+        {
+          agent_id: string;
+          operations: number;
+          total_cost_usd: number;
+          total_latency_ms: number;
+        }
+      >;
+      summary: {
+        total_operations: number;
+        successful_operations: number;
+        failed_operations: number;
+        components: string[];
+      };
+    }
+  >;
   global_summary: {
     total_runs: number;
     total_operations: number;
@@ -67,7 +73,7 @@ interface TraceTree {
 }
 
 interface ExportOptions {
-  format: 'json' | 'csv' | 'html';
+  format: "json" | "csv" | "html";
   includeMetrics: boolean;
   includeTimeline: boolean;
   filterByComponent?: string[];
@@ -83,21 +89,24 @@ interface RenderOptions {
   title: string;
   includeStats: boolean;
   includeTimeline: boolean;
-  theme?: 'light' | 'dark';
+  theme?: "light" | "dark";
 }
 
 export class ObservabilityExporter {
-  async exportTrace(runLogsDir: string, options: ExportOptions): Promise<TraceTree> {
-    const logFiles = globSync(join(runLogsDir, '*.jsonl'));
+  async exportTrace(
+    runLogsDir: string,
+    options: ExportOptions,
+  ): Promise<TraceTree> {
+    const logFiles = globSync(join(runLogsDir, "*.jsonl"));
     const traceTree: TraceTree = {
       runs: {},
       global_summary: {
         total_runs: 0,
         total_operations: 0,
         total_cost_usd: 0,
-        total_duration_ms: 0
+        total_duration_ms: 0,
       },
-      timeline: []
+      timeline: [],
     };
 
     for (const logFile of logFiles) {
@@ -113,24 +122,32 @@ export class ObservabilityExporter {
   private async processLogFile(
     logFile: string,
     traceTree: TraceTree,
-    options: ExportOptions
+    options: ExportOptions,
   ): Promise<void> {
     try {
-      const content = await fs.readFile(logFile, 'utf8');
-      const lines = content.trim().split('\n').filter(line => line.trim());
+      const content = await fs.readFile(logFile, "utf8");
+      const lines = content
+        .trim()
+        .split("\n")
+        .filter((line) => line.trim());
 
       for (const line of lines) {
         try {
           const entry: TraceEntry = JSON.parse(line);
 
           // Apply filters
-          if (options.filterByComponent &&
-              !options.filterByComponent.includes(entry.component)) {
+          if (
+            options.filterByComponent &&
+            !options.filterByComponent.includes(entry.component)
+          ) {
             continue;
           }
 
-          if (options.filterByRunId && entry.run_id &&
-              !options.filterByRunId.includes(entry.run_id)) {
+          if (
+            options.filterByRunId &&
+            entry.run_id &&
+            !options.filterByRunId.includes(entry.run_id)
+          ) {
             continue;
           }
 
@@ -145,7 +162,7 @@ export class ObservabilityExporter {
           }
 
           // Group by run_id (use canonical if provided)
-          const runId = options.canonicalRunId || entry.run_id || 'unknown';
+          const runId = options.canonicalRunId || entry.run_id || "unknown";
           if (!traceTree.runs[runId]) {
             traceTree.runs[runId] = {
               run_id: runId,
@@ -159,8 +176,8 @@ export class ObservabilityExporter {
                 total_operations: 0,
                 successful_operations: 0,
                 failed_operations: 0,
-                components: []
-              }
+                components: [],
+              },
             };
           }
 
@@ -181,15 +198,19 @@ export class ObservabilityExporter {
           const isTopLevel = this.isTopLevelSpan(entry);
           if (isTopLevel) {
             // Check if this is a retry of an existing operation
-            const existingOpIndex = run.topLevelOps?.findIndex(op =>
-              entry.op_id && op.op_id === entry.op_id
+            const existingOpIndex = run.topLevelOps?.findIndex(
+              (op) => entry.op_id && op.op_id === entry.op_id,
             );
 
             if (!run.topLevelOps) {
               run.topLevelOps = [];
             }
 
-            if (existingOpIndex !== undefined && existingOpIndex >= 0 && entry.op_id) {
+            if (
+              existingOpIndex !== undefined &&
+              existingOpIndex >= 0 &&
+              entry.op_id
+            ) {
               // Merge retry into existing operation (keep latest status/cost)
               run.topLevelOps[existingOpIndex] = entry;
             } else {
@@ -199,11 +220,11 @@ export class ObservabilityExporter {
 
             // Recompute summary based on unique top-level operations
             run.summary.total_operations = run.topLevelOps.length;
-            run.summary.successful_operations = run.topLevelOps.filter(op =>
-              op.status === 'completed' || op.status === 'success'
+            run.summary.successful_operations = run.topLevelOps.filter(
+              (op) => op.status === "completed" || op.status === "success",
             ).length;
-            run.summary.failed_operations = run.topLevelOps.filter(op =>
-              op.status === 'failed' || op.status === 'error'
+            run.summary.failed_operations = run.topLevelOps.filter(
+              (op) => op.status === "failed" || op.status === "error",
             ).length;
           }
 
@@ -224,7 +245,7 @@ export class ObservabilityExporter {
                 agent_id: entry.agent_id,
                 operations: 0,
                 total_cost_usd: 0,
-                total_latency_ms: 0
+                total_latency_ms: 0,
               };
             }
 
@@ -233,7 +254,6 @@ export class ObservabilityExporter {
             if (entry.cost_usd) agent.total_cost_usd += entry.cost_usd;
             if (entry.latency_ms) agent.total_latency_ms += entry.latency_ms;
           }
-
         } catch (parseError) {
           console.warn(`Failed to parse log line: ${line.slice(0, 100)}...`);
         }
@@ -245,10 +265,10 @@ export class ObservabilityExporter {
 
   private isTopLevelSpan(entry: TraceEntry): boolean {
     // Check for explicit span_kind
-    if (entry.span_kind === 'root') {
+    if (entry.span_kind === "root") {
       return true;
     }
-    if (entry.span_kind === 'child') {
+    if (entry.span_kind === "child") {
       return false;
     }
 
@@ -292,10 +312,16 @@ export class ObservabilityExporter {
 
       // Find most expensive and slowest operations
       for (const op of run.operations) {
-        if (op.cost_usd && (!mostExpensive || op.cost_usd > (mostExpensive.cost_usd || 0))) {
+        if (
+          op.cost_usd &&
+          (!mostExpensive || op.cost_usd > (mostExpensive.cost_usd || 0))
+        ) {
           mostExpensive = op;
         }
-        if (op.latency_ms && (!slowest || op.latency_ms > (slowest.latency_ms || 0))) {
+        if (
+          op.latency_ms &&
+          (!slowest || op.latency_ms > (slowest.latency_ms || 0))
+        ) {
           slowest = op;
         }
       }
@@ -323,7 +349,7 @@ export class ObservabilityExporter {
       for (const op of run.operations) {
         allOperations.push({
           timestamp: op.timestamp,
-          event: op.operation || op.level || 'operation',
+          event: op.operation || op.level || "operation",
           run_id: run.run_id,
           component: op.component,
           details: {
@@ -331,32 +357,41 @@ export class ObservabilityExporter {
             agent_role: op.agent_role,
             status: op.status,
             cost_usd: op.cost_usd,
-            latency_ms: op.latency_ms
-          }
+            latency_ms: op.latency_ms,
+          },
         });
       }
     }
 
     // Sort by timestamp
-    allOperations.sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
+    allOperations.sort(
+      (a, b) =>
+        new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime(),
+    );
     traceTree.timeline = allOperations;
   }
 
-  async renderHTML(traceData: TraceTree, options: RenderOptions): Promise<string> {
-    const theme = options.theme || 'light';
-    const themeColors = theme === 'dark' ? {
-      bg: '#1a1a1a',
-      text: '#ffffff',
-      card: '#2d2d2d',
-      border: '#404040',
-      accent: '#4f46e5'
-    } : {
-      bg: '#ffffff',
-      text: '#000000',
-      card: '#f8fafc',
-      border: '#e2e8f0',
-      accent: '#4f46e5'
-    };
+  async renderHTML(
+    traceData: TraceTree,
+    options: RenderOptions,
+  ): Promise<string> {
+    const theme = options.theme || "light";
+    const themeColors =
+      theme === "dark"
+        ? {
+            bg: "#1a1a1a",
+            text: "#ffffff",
+            card: "#2d2d2d",
+            border: "#404040",
+            accent: "#4f46e5",
+          }
+        : {
+            bg: "#ffffff",
+            text: "#000000",
+            card: "#f8fafc",
+            border: "#e2e8f0",
+            accent: "#4f46e5",
+          };
 
     return `
 <!DOCTYPE html>
@@ -420,11 +455,11 @@ export class ObservabilityExporter {
             <p>Generated: ${new Date().toISOString()}</p>
         </div>
 
-        ${options.includeStats ? this.renderStats(traceData, themeColors) : ''}
+        ${options.includeStats ? this.renderStats(traceData, themeColors) : ""}
 
         ${this.renderRunDetails(traceData)}
 
-        ${options.includeTimeline ? this.renderTimeline(traceData) : ''}
+        ${options.includeTimeline ? this.renderTimeline(traceData) : ""}
     </div>
 
     <script>
@@ -468,9 +503,14 @@ export class ObservabilityExporter {
     let html = '<div class="card"><h2>Run Details</h2>';
 
     for (const [runId, run] of Object.entries(traceData.runs)) {
-      const successRate = run.summary.total_operations > 0
-        ? (run.summary.successful_operations / run.summary.total_operations * 100).toFixed(1)
-        : '0';
+      const successRate =
+        run.summary.total_operations > 0
+          ? (
+              (run.summary.successful_operations /
+                run.summary.total_operations) *
+              100
+            ).toFixed(1)
+          : "0";
 
       html += `
         <div class="card">
@@ -483,7 +523,7 @@ export class ObservabilityExporter {
                     <strong>Total Cost:</strong> $${run.total_cost_usd.toFixed(4)}
                 </div>
                 <div>
-                    <strong>Components:</strong> ${run.summary.components.join(', ')}<br>
+                    <strong>Components:</strong> ${run.summary.components.join(", ")}<br>
                     <strong>Agents:</strong> ${Object.keys(run.agents).length}<br>
                     <strong>Started:</strong> ${new Date(run.start_time).toLocaleString()}<br>
                     <strong>Ended:</strong> ${new Date(run.end_time).toLocaleString()}
@@ -506,26 +546,30 @@ export class ObservabilityExporter {
                         </tr>
                     </thead>
                     <tbody>
-                        ${Object.values(run.agents).map(agent => `
+                        ${Object.values(run.agents)
+                          .map(
+                            (agent) => `
                             <tr>
                                 <td>${agent.agent_id}</td>
                                 <td>${agent.operations}</td>
                                 <td>$${agent.total_cost_usd.toFixed(4)}</td>
                                 <td>${agent.total_latency_ms}ms</td>
                             </tr>
-                        `).join('')}
+                        `,
+                          )
+                          .join("")}
                     </tbody>
                 </table>
             </div>
         </div>`;
     }
 
-    html += '</div>';
+    html += "</div>";
     return html;
   }
 
   private renderTimeline(traceData: TraceTree): string {
-    if (!traceData.timeline.length) return '';
+    if (!traceData.timeline.length) return "";
 
     let html = `
         <div class="card">
@@ -536,12 +580,16 @@ export class ObservabilityExporter {
 
             <div id="timeline-details" class="expandable">`;
 
-    for (const event of traceData.timeline.slice(0, 100)) { // Limit to first 100 events
-      const statusClass = event.details.status === 'completed' || event.details.status === 'success'
-        ? 'status-success'
-        : event.details.status === 'failed' || event.details.status === 'error'
-        ? 'status-failed'
-        : 'status-pending';
+    for (const event of traceData.timeline.slice(0, 100)) {
+      // Limit to first 100 events
+      const statusClass =
+        event.details.status === "completed" ||
+        event.details.status === "success"
+          ? "status-success"
+          : event.details.status === "failed" ||
+              event.details.status === "error"
+            ? "status-failed"
+            : "status-pending";
 
       html += `
         <div class="timeline-item">
@@ -549,15 +597,15 @@ export class ObservabilityExporter {
             <div><strong>${event.component}</strong> - ${event.event}</div>
             <div class="timeline-details">
                 Run: ${event.run_id} |
-                ${event.details.agent_id ? `Agent: ${event.details.agent_id} | ` : ''}
-                <span class="${statusClass}">${event.details.status || 'unknown'}</span>
-                ${event.details.cost_usd ? ` | $${event.details.cost_usd.toFixed(4)}` : ''}
-                ${event.details.latency_ms ? ` | ${event.details.latency_ms}ms` : ''}
+                ${event.details.agent_id ? `Agent: ${event.details.agent_id} | ` : ""}
+                <span class="${statusClass}">${event.details.status || "unknown"}</span>
+                ${event.details.cost_usd ? ` | $${event.details.cost_usd.toFixed(4)}` : ""}
+                ${event.details.latency_ms ? ` | ${event.details.latency_ms}ms` : ""}
             </div>
         </div>`;
     }
 
-    html += '</div></div>';
+    html += "</div></div>";
     return html;
   }
 }

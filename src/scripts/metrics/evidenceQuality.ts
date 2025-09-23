@@ -1,4 +1,4 @@
-import { readFileSync } from 'fs';
+import { readFileSync } from "fs";
 
 interface EvidenceConfig {
   hit_rate: {
@@ -55,7 +55,7 @@ interface QAItem {
 function hasEvidence(item: QAItem, requiredFields: string[]): boolean {
   for (const field of requiredFields) {
     const value = (item as any)[field];
-    if (!value || (typeof value === 'string' && value.trim().length === 0)) {
+    if (!value || (typeof value === "string" && value.trim().length === 0)) {
       return false;
     }
   }
@@ -66,22 +66,28 @@ function hasEvidence(item: QAItem, requiredFields: string[]): boolean {
  * Extract the best evidence text from available fields
  */
 function extractEvidenceText(item: QAItem): string {
-  return item.evidence_text || item.evidence || '';
+  return item.evidence_text || item.evidence || "";
 }
 
 /**
  * Calculate n-gram overlap between two texts
  */
-function calculateNgramOverlap(text1: string, text2: string, n: number = 3): number {
-  const tokens1 = text1.toLowerCase()
-    .replace(/[^\w\s가-힣]/g, ' ')
+function calculateNgramOverlap(
+  text1: string,
+  text2: string,
+  n: number = 3,
+): number {
+  const tokens1 = text1
+    .toLowerCase()
+    .replace(/[^\w\s가-힣]/g, " ")
     .split(/\s+/)
-    .filter(t => t.length > 0);
+    .filter((t) => t.length > 0);
 
-  const tokens2 = text2.toLowerCase()
-    .replace(/[^\w\s가-힣]/g, ' ')
+  const tokens2 = text2
+    .toLowerCase()
+    .replace(/[^\w\s가-힣]/g, " ")
     .split(/\s+/)
-    .filter(t => t.length > 0);
+    .filter((t) => t.length > 0);
 
   if (tokens1.length < n || tokens2.length < n) {
     return 0;
@@ -91,14 +97,16 @@ function calculateNgramOverlap(text1: string, text2: string, n: number = 3): num
   const ngrams2 = new Set<string>();
 
   for (let i = 0; i <= tokens1.length - n; i++) {
-    ngrams1.add(tokens1.slice(i, i + n).join(' '));
+    ngrams1.add(tokens1.slice(i, i + n).join(" "));
   }
 
   for (let i = 0; i <= tokens2.length - n; i++) {
-    ngrams2.add(tokens2.slice(i, i + n).join(' '));
+    ngrams2.add(tokens2.slice(i, i + n).join(" "));
   }
 
-  const intersection = new Set([...ngrams1].filter(ngram => ngrams2.has(ngram)));
+  const intersection = new Set(
+    [...ngrams1].filter((ngram) => ngrams2.has(ngram)),
+  );
   const union = new Set([...ngrams1, ...ngrams2]);
 
   return union.size > 0 ? intersection.size / union.size : 0;
@@ -149,7 +157,7 @@ function calculateCosineSimilarity(text1: string, text2: string): number {
 function calculateSnippetAlignment(
   answer: string,
   evidence: string,
-  config: EvidenceConfig
+  config: EvidenceConfig,
 ): number {
   if (!evidence || evidence.trim().length === 0) {
     return 0;
@@ -163,8 +171,8 @@ function calculateSnippetAlignment(
 
   // Weighted combination
   const alignmentScore =
-    (ngramOverlap * config.snippet_alignment.ngram_overlap_weight) +
-    (cosineSim * config.snippet_alignment.embedding_weight);
+    ngramOverlap * config.snippet_alignment.ngram_overlap_weight +
+    cosineSim * config.snippet_alignment.embedding_weight;
 
   return Math.min(alignmentScore, 1.0); // Cap at 1.0
 }
@@ -193,11 +201,10 @@ function calculateMean(values: number[]): number {
  */
 export function calculateEvidenceQuality(
   qaItems: QAItem[],
-  configPath: string = 'baseline_config.json'
+  configPath: string = "baseline_config.json",
 ): EvidenceQualityMetrics {
-
   // Load configuration
-  const configText = readFileSync(configPath, 'utf-8');
+  const configText = readFileSync(configPath, "utf-8");
   const fullConfig = JSON.parse(configText);
   const config: EvidenceConfig = fullConfig.evidence_quality;
 
@@ -214,30 +221,42 @@ export function calculateEvidenceQuality(
 
   for (let i = 0; i < qaItems.length; i++) {
     const item = qaItems[i];
-    const hasEvidenceFields = hasEvidence(item, config.hit_rate.required_fields);
+    const hasEvidenceFields = hasEvidence(
+      item,
+      config.hit_rate.required_fields,
+    );
 
     if (hasEvidenceFields) {
       itemsWithEvidence++;
 
       // Calculate snippet alignment
       const evidenceText = extractEvidenceText(item);
-      const alignmentScore = calculateSnippetAlignment(item.qa.a, evidenceText, config);
+      const alignmentScore = calculateSnippetAlignment(
+        item.qa.a,
+        evidenceText,
+        config,
+      );
       alignmentScores.push(alignmentScore);
 
       // Track failed alignments
       if (alignmentScore < config.snippet_alignment.min_similarity) {
         failedAlignments.push({
           index: item.index || i,
-          question: item.qa.q.substring(0, 100) + (item.qa.q.length > 100 ? '...' : ''),
-          answer: item.qa.a.substring(0, 100) + (item.qa.a.length > 100 ? '...' : ''),
-          evidence: evidenceText.substring(0, 100) + (evidenceText.length > 100 ? '...' : ''),
-          alignment_score: alignmentScore
+          question:
+            item.qa.q.substring(0, 100) + (item.qa.q.length > 100 ? "..." : ""),
+          answer:
+            item.qa.a.substring(0, 100) + (item.qa.a.length > 100 ? "..." : ""),
+          evidence:
+            evidenceText.substring(0, 100) +
+            (evidenceText.length > 100 ? "..." : ""),
+          alignment_score: alignmentScore,
         });
       }
     }
   }
 
-  const evidencePresenceRate = qaItems.length > 0 ? itemsWithEvidence / qaItems.length : 0;
+  const evidencePresenceRate =
+    qaItems.length > 0 ? itemsWithEvidence / qaItems.length : 0;
   const itemsMissingEvidence = qaItems.length - itemsWithEvidence;
 
   // Calculate alignment statistics
@@ -260,51 +279,65 @@ export function calculateEvidenceQuality(
       mean: meanAlignment,
       median: medianAlignment,
       p95: p95Alignment,
-      scores: alignmentScores
+      scores: alignmentScores,
     },
     failed_alignments: failedAlignments.slice(0, 5), // Limit for reporting
-    alert_triggered: alertTriggered
+    alert_triggered: alertTriggered,
   };
 }
 
 /**
  * Generate evidence quality report
  */
-export function generateEvidenceReport(metrics: EvidenceQualityMetrics): string {
+export function generateEvidenceReport(
+  metrics: EvidenceQualityMetrics,
+): string {
   const lines: string[] = [];
 
-  lines.push('## Evidence Quality Analysis');
-  lines.push('');
+  lines.push("## Evidence Quality Analysis");
+  lines.push("");
 
   // Summary metrics
-  lines.push('### Evidence Presence');
+  lines.push("### Evidence Presence");
   lines.push(`- **Total Items**: ${metrics.total_items}`);
   lines.push(`- **Items with Evidence**: ${metrics.items_with_evidence}`);
   lines.push(`- **Items Missing Evidence**: ${metrics.items_missing_evidence}`);
-  lines.push(`- **Evidence Presence Rate**: ${(metrics.evidence_presence_rate * 100).toFixed(1)}%`);
-  lines.push('');
+  lines.push(
+    `- **Evidence Presence Rate**: ${(metrics.evidence_presence_rate * 100).toFixed(1)}%`,
+  );
+  lines.push("");
 
   // Alignment metrics
-  lines.push('### Snippet Alignment Quality');
-  lines.push(`- **Mean Alignment Score**: ${metrics.snippet_alignment.mean.toFixed(3)}`);
-  lines.push(`- **Median Alignment Score**: ${metrics.snippet_alignment.median.toFixed(3)}`);
-  lines.push(`- **95th Percentile**: ${metrics.snippet_alignment.p95.toFixed(3)}`);
-  lines.push(`- **Alert Status**: ${metrics.alert_triggered ? '⚠️ QUALITY ISSUES' : '✅ NORMAL'}`);
-  lines.push('');
+  lines.push("### Snippet Alignment Quality");
+  lines.push(
+    `- **Mean Alignment Score**: ${metrics.snippet_alignment.mean.toFixed(3)}`,
+  );
+  lines.push(
+    `- **Median Alignment Score**: ${metrics.snippet_alignment.median.toFixed(3)}`,
+  );
+  lines.push(
+    `- **95th Percentile**: ${metrics.snippet_alignment.p95.toFixed(3)}`,
+  );
+  lines.push(
+    `- **Alert Status**: ${metrics.alert_triggered ? "⚠️ QUALITY ISSUES" : "✅ NORMAL"}`,
+  );
+  lines.push("");
 
   // Failed alignments
   if (metrics.failed_alignments.length > 0) {
-    lines.push('### Failed Alignments (Low Quality Evidence)');
-    lines.push('| Index | Question | Answer | Evidence | Score |');
-    lines.push('|-------|----------|--------|----------|-------|');
+    lines.push("### Failed Alignments (Low Quality Evidence)");
+    lines.push("| Index | Question | Answer | Evidence | Score |");
+    lines.push("|-------|----------|--------|----------|-------|");
 
     for (const failure of metrics.failed_alignments) {
-      lines.push(`| ${failure.index} | ${failure.question} | ${failure.answer} | ${failure.evidence} | ${failure.alignment_score.toFixed(3)} |`);
+      lines.push(
+        `| ${failure.index} | ${failure.question} | ${failure.answer} | ${failure.evidence} | ${failure.alignment_score.toFixed(3)} |`,
+      );
     }
-    lines.push('');
+    lines.push("");
   }
 
-  return lines.join('\n');
+  return lines.join("\n");
 }
 
 /**
@@ -314,31 +347,38 @@ if (import.meta.url === new URL(process.argv[1], "file://").href) {
   // Test with sample data
   const sampleQA: QAItem[] = [
     {
-      qa: { q: "물이 어떤 상태로 존재하나요?", a: "물은 고체, 액체, 기체 상태로 존재합니다." },
-      evidence: "물은 세 가지 상태로 존재할 수 있습니다. 고체 상태인 얼음, 액체 상태인 물, 그리고 기체 상태인 수증기입니다.",
+      qa: {
+        q: "물이 어떤 상태로 존재하나요?",
+        a: "물은 고체, 액체, 기체 상태로 존재합니다.",
+      },
+      evidence:
+        "물은 세 가지 상태로 존재할 수 있습니다. 고체 상태인 얼음, 액체 상태인 물, 그리고 기체 상태인 수증기입니다.",
       evidence_idx: 0,
-      index: 0
+      index: 0,
     },
     {
-      qa: { q: "식물은 어떻게 자라나요?", a: "식물은 뿌리로 물을 흡수하고 잎으로 광합성을 합니다." },
+      qa: {
+        q: "식물은 어떻게 자라나요?",
+        a: "식물은 뿌리로 물을 흡수하고 잎으로 광합성을 합니다.",
+      },
       evidence: "식물은 뿌리로 물을 흡수하고 잎으로 광합성을 합니다.",
       evidence_idx: 1,
-      index: 1
+      index: 1,
     },
     {
       qa: { q: "동물은 무엇을 먹나요?", a: "동물은 다양한 먹이를 먹습니다." },
       // Missing evidence
-      index: 2
-    }
+      index: 2,
+    },
   ];
 
   try {
     const metrics = calculateEvidenceQuality(sampleQA);
-    console.log('Evidence Quality Metrics:');
+    console.log("Evidence Quality Metrics:");
     console.log(JSON.stringify(metrics, null, 2));
-    console.log('\nReport:');
+    console.log("\nReport:");
     console.log(generateEvidenceReport(metrics));
   } catch (error) {
-    console.error('Error calculating evidence quality:', error);
+    console.error("Error calculating evidence quality:", error);
   }
 }

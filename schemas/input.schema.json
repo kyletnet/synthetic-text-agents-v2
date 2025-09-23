@@ -26,7 +26,14 @@
     "domainContext": {
       "type": "string",
       "description": "Domain-specific context",
-      "enum": ["general", "education", "business", "technical", "medical", "legal"],
+      "enum": [
+        "general",
+        "education",
+        "business",
+        "technical",
+        "medical",
+        "legal"
+      ],
       "default": "general"
     },
     "qualityTarget": {

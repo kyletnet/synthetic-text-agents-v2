@@ -1,5 +1,5 @@
-import { readFile } from 'fs/promises';
-import type { RAGConfig } from '../rag/service.js';
+import { readFile } from "fs/promises";
+import type { RAGConfig } from "../rag/service.js";
 
 export interface FeatureFlags {
   rag: {
@@ -55,15 +55,15 @@ export class ConfigService {
   private static async loadConfig(configPath?: string): Promise<AppConfig> {
     const paths = [
       configPath,
-      '.claude/settings.local.json',
-      '.claude/settings.json',
+      ".claude/settings.local.json",
+      ".claude/settings.json",
     ].filter(Boolean) as string[];
 
     let loadedConfig: Partial<AppConfig> = {};
 
     for (const path of paths) {
       try {
-        const content = await readFile(path, 'utf-8');
+        const content = await readFile(path, "utf-8");
         const parsed = JSON.parse(content);
         loadedConfig = { ...loadedConfig, ...parsed };
       } catch {
@@ -74,13 +74,20 @@ export class ConfigService {
     return {
       features: {
         rag: {
-          enabled: loadedConfig.features?.rag?.enabled ?? DEFAULT_CONFIG.features.rag.enabled,
-          topK: loadedConfig.features?.rag?.topK ?? DEFAULT_CONFIG.features.rag.topK,
-          minScore: loadedConfig.features?.rag?.minScore ?? DEFAULT_CONFIG.features.rag.minScore,
+          enabled:
+            loadedConfig.features?.rag?.enabled ??
+            DEFAULT_CONFIG.features.rag.enabled,
+          topK:
+            loadedConfig.features?.rag?.topK ??
+            DEFAULT_CONFIG.features.rag.topK,
+          minScore:
+            loadedConfig.features?.rag?.minScore ??
+            DEFAULT_CONFIG.features.rag.minScore,
         },
       },
       telemetry: {
-        logRag: loadedConfig.telemetry?.logRag ?? DEFAULT_CONFIG.telemetry.logRag,
+        logRag:
+          loadedConfig.telemetry?.logRag ?? DEFAULT_CONFIG.telemetry.logRag,
       },
     };
   }
@@ -99,12 +106,9 @@ export class ConfigService {
       enabled: ragFeature.enabled,
       topK: ragFeature.topK,
       minScore: ragFeature.minScore,
-      indexPaths: [
-        'docs/',
-        'src/',
-        'CLAUDE.md',
-        'README.md',
-      ].filter(path => path), // Filter out any empty paths
+      indexPaths: ["docs/", "src/", "CLAUDE.md", "README.md"].filter(
+        (path) => path,
+      ), // Filter out any empty paths
     };
   }
 

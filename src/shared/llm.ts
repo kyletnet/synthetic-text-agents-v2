@@ -13,11 +13,14 @@ export type ChatResult = {
 export class LLM {
   private adapter: LLMAdapter;
 
-  constructor(){
+  constructor() {
     this.adapter = new LLMAdapter();
   }
 
-  async chatJSONOnly(userPrompt: string, systemPrompt?: string): Promise<ChatResult> {
+  async chatJSONOnly(
+    userPrompt: string,
+    systemPrompt?: string,
+  ): Promise<ChatResult> {
     return this.adapter.chatJSONOnly(userPrompt, systemPrompt);
   }
 }
