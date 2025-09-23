@@ -163,8 +163,10 @@ jobs:
 
           EOF
 
-          # Append old changelog (skip header)
-          tail -n +9 CHANGELOG.md >> changelog_temp.md
+          # Append old changelog if it exists (skip header)
+          if [ -f CHANGELOG.md ]; then
+            tail -n +9 CHANGELOG.md >> changelog_temp.md || echo "No existing changelog content"
+          fi
           mv changelog_temp.md CHANGELOG.md
 
       - name: Commit version bump
@@ -213,15 +215,21 @@ jobs:
           draft: false
           prerelease: false
 
-      - name: Upload build artifacts
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./dist
-          asset_name: build-artifacts.zip
-          asset_content_type: application/zip
+      - name: Create and upload build artifacts
+        run: |
+          # Create a zip file of build artifacts
+          zip -r build-artifacts.zip dist/ dist-export/ || echo "Some directories may not exist"
+
+          # Upload as release asset if zip exists
+          if [ -f build-artifacts.zip ]; then
+            curl -X POST \
+              -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+              -H "Content-Type: application/zip" \
+              --data-binary @build-artifacts.zip \
+              "${{ steps.create_release.outputs.upload_url }}?name=build-artifacts.zip&label=Build%20Artifacts"
+          else
+            echo "No build artifacts to upload"
+          fi
 
       - name: Push changes
         run: |
