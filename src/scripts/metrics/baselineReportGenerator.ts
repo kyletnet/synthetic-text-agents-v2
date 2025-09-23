@@ -19,7 +19,9 @@ export async function prewriteSessionMeta(meta: { profile: string; mode: string;
     ].join('\n');
     // append or ensure presence without wiping rest of file
     let prev = '';
-    try { prev = await fs.readFile(SESSION_REPORT, 'utf8'); } catch {}
+    try { prev = await fs.readFile(SESSION_REPORT, 'utf8'); } catch {
+      // File doesn't exist - use empty string for prev
+    }
     const merged = prev.includes('PROFILE:') ? prev : (prev ? prev + '\n' + block + '\n' : block + '\n');
     await fs.writeFile(SESSION_REPORT + '.tmp', merged, 'utf8');
     await fs.rename(SESSION_REPORT + '.tmp', SESSION_REPORT);
@@ -1057,7 +1059,9 @@ export async function generateBaselineReports(
     prev = prev.replace(/CASES_TOTAL:\s*\d+/g, `CASES_TOTAL: ${casesTotal}`);
     await fs.writeFile(SESSION_REPORT + '.tmp', prev, 'utf8');
     await fs.rename(SESSION_REPORT + '.tmp', SESSION_REPORT);
-  } catch {}
+  } catch {
+    // Best effort update - continue if file operations fail
+  }
 
   // Initialize threshold manager and perform gating evaluation
   let thresholdManager: ThresholdManager | undefined;

@@ -240,7 +240,7 @@ async function main() {
         await cli.testSingleVariant(args[1], args[2]);
         break;
 
-      case 'compare':
+      case 'compare': {
         if (args.length < 3) {
           console.error('Usage: compare <variant1,variant2,...> <topic>');
           process.exit(1);
@@ -248,6 +248,7 @@ async function main() {
         const variants = args[1].split(',');
         await cli.compareVariants(variants, args[2]);
         break;
+      }
 
       case 'batch':
         if (args.length < 2) {

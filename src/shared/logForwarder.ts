@@ -469,12 +469,13 @@ export class LogForwarder extends EventEmitter {
           headers['X-API-Key'] = target.authentication.credentials.apikey;
           break;
 
-        case 'basic':
+        case 'basic': {
           const basic = Buffer.from(
             `${target.authentication.credentials.username}:${target.authentication.credentials.password}`
           ).toString('base64');
           headers['Authorization'] = `Basic ${basic}`;
           break;
+        }
 
         case 'bearer':
           headers['Authorization'] = `Bearer ${target.authentication.credentials.token}`;

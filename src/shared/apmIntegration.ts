@@ -407,23 +407,26 @@ export class APMIntegration {
       };
 
       switch (this.config.provider) {
-        case 'datadog':
+        case 'datadog': {
           const datadogProvider = new DatadogProvider();
           await datadogProvider.initialize(providerConfig);
           this.providers.set('datadog', datadogProvider);
           break;
+        }
 
-        case 'newrelic':
+        case 'newrelic': {
           const newrelicProvider = new NewRelicProvider();
           await newrelicProvider.initialize(providerConfig);
           this.providers.set('newrelic', newrelicProvider);
           break;
+        }
 
-        case 'prometheus':
+        case 'prometheus': {
           const prometheusProvider = new PrometheusProvider();
           await prometheusProvider.initialize(providerConfig);
           this.providers.set('prometheus', prometheusProvider);
           break;
+        }
       }
 
       // Set up metric forwarding from performance monitor

@@ -372,6 +372,7 @@ export class InputValidator {
    */
   private removeDangerousCharacters(input: string): string {
     // Remove null bytes and other control characters
+    // eslint-disable-next-line no-control-regex
     return input.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '');
   }
 
@@ -530,7 +531,7 @@ export const CommonSchemas = {
   fileUpload: z.object({
     name: z.string().max(255),
     size: z.number().positive().max(10 * 1024 * 1024), // 10MB
-    type: z.string().regex(/^[a-zA-Z0-9\/\-\+]+$/)
+    type: z.string().regex(/^[a-zA-Z0-9/+-]+$/)
   })
 };
 

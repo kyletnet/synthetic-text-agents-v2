@@ -333,12 +333,13 @@ export class CheckpointManager {
         itemsToProcess = this.getItemsAfterIndex(checkpoint.progress.last_processed_index, checkpoint.progress.total_items);
         break;
 
-      case 'partial_restart':
+      case 'partial_restart': {
         // Restart from last stable checkpoint
         const stablePoint = this.findLastStablePoint(checkpoint);
         itemsToProcess = this.getItemsAfterIndex(stablePoint, checkpoint.progress.total_items);
         recoveredState = this.cleanStateForPartialRestart(recoveredState, stablePoint);
         break;
+      }
 
       case 'restart':
         // Full restart
