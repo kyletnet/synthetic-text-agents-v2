@@ -1,0 +1,14 @@
+node_modules/
+dist/
+dist-export/
+test-results/
+coverage/
+*.log
+.env
+.env.local
+.env.production
+.env.staging
+.next/
+*.min.js
+*.min.css
+package-lock.json
