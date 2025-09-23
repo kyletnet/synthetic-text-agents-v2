@@ -1,5 +1,6 @@
 import { spawn } from 'child_process';
 import { promisify } from 'util';
+import { Logger } from '../shared/logger.js';
 
 export interface AnthropicChatPayload {
   model?: string;
@@ -67,9 +68,11 @@ export interface AdapterResult {
  */
 export class AnthropicAdapter {
   private readonly clientPath: string;
+  private logger: Logger;
 
   constructor(clientPath = 'tools/anthropic_client.sh') {
     this.clientPath = clientPath;
+    this.logger = new Logger({ level: 'info' });
   }
 
   /**
@@ -353,7 +356,7 @@ export class AnthropicAdapter {
     };
 
     // Log to structured format (similar to existing RUN_LOGS pattern)
-    console.log(`[ADAPTER_TELEMETRY] ${JSON.stringify(logEntry)}`);
+    this.logger.info(`[ADAPTER_TELEMETRY] ${JSON.stringify(logEntry)}`);
   }
 }
 

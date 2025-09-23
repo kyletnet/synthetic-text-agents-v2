@@ -212,7 +212,7 @@ export class CognitiveScientist extends BaseAgent {
 
   private async modelExpertThinking(
     request: CognitiveAnalysisRequest,
-    context?: AgentContext
+    _context?: AgentContext
   ): Promise<ExpertThinkingModel> {
     
     const cognitiveArchitecture = await this.buildCognitiveArchitecture(request);

@@ -1,0 +1,256 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  NODE_VERSION: '18.x'
+
+jobs:
+  security-scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run secret scanning
+        run: |
+          # Check for hardcoded secrets
+          if grep -r "sk-ant-" . --exclude-dir=node_modules --exclude-dir=.git; then
+            echo "❌ Found hardcoded Anthropic API keys"
+            exit 1
+          fi
+
+          if grep -r "sk-[a-zA-Z0-9]" . --exclude-dir=node_modules --exclude-dir=.git | grep -v "your_.*_key_here" | grep -v "example" | grep -v "placeholder"; then
+            echo "❌ Found potential hardcoded API keys"
+            exit 1
+          fi
+
+          echo "✅ No hardcoded secrets found"
+
+      - name: Check environment files
+        run: |
+          # Ensure .env files don't contain real keys
+          for env_file in .env .env.local .env.development .env.staging .env.production; do
+            if [ -f "$env_file" ]; then
+              if grep -E "(sk-ant-api|sk-[a-zA-Z0-9]{20})" "$env_file" | grep -v "your_.*_key_here" | grep -v "placeholder"; then
+                echo "❌ Found real API keys in $env_file"
+                exit 1
+              fi
+            fi
+          done
+          echo "✅ Environment files are secure"
+
+  lint-and-format:
+    name: Lint and Format Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        run: npm run lint
+
+      - name: Check TypeScript compilation
+        run: npm run typecheck
+
+      - name: Check code formatting
+        run: npx prettier --check .
+
+  test:
+    name: Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+
+      - name: Run tests with coverage
+        run: npm run test:coverage
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: false
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    needs: [security-scan, lint-and-format, test]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build application
+        run: npm run build
+
+      - name: Build export package
+        run: npm run build:export
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: |
+            dist/
+            reports/
+          retention-days: 7
+
+  vulnerability-scan:
+    name: Vulnerability Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run npm audit
+        run: |
+          npm audit --audit-level=moderate
+          if [ $? -ne 0 ]; then
+            echo "❌ High or critical vulnerabilities found"
+            npm audit --audit-level=moderate --json > audit-results.json
+            exit 1
+          fi
+          echo "✅ No high or critical vulnerabilities found"
+
+      - name: Upload audit results
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: audit-results
+          path: audit-results.json
+
+  staging-deploy:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: [build, vulnerability-scan]
+    if: github.ref == 'refs/heads/develop'
+    environment: staging
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts
+
+      - name: Deploy to staging
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY_STAGING }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD_STAGING }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET_STAGING }}
+        run: |
+          echo "🚀 Deploying to staging environment..."
+          # Add actual deployment commands here
+          echo "✅ Staging deployment completed"
+
+      - name: Run smoke tests
+        env:
+          STAGING_URL: ${{ secrets.STAGING_URL }}
+        run: |
+          # Basic smoke test
+          curl -f $STAGING_URL/api/health || exit 1
+          echo "✅ Smoke tests passed"
+
+  production-deploy:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: [build, vulnerability-scan]
+    if: github.ref == 'refs/heads/main'
+    environment: production
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts
+
+      - name: Pre-deployment checks
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY_PROD }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD_PROD }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET_PROD }}
+          ENCRYPTION_KEY: ${{ secrets.ENCRYPTION_KEY_PROD }}
+        run: |
+          echo "🔍 Running pre-deployment checks..."
+
+          # Verify all required secrets are present
+          if [ -z "$ANTHROPIC_API_KEY" ]; then
+            echo "❌ ANTHROPIC_API_KEY not set"
+            exit 1
+          fi
+
+          if [ -z "$DB_PASSWORD" ]; then
+            echo "❌ DB_PASSWORD not set"
+            exit 1
+          fi
+
+          echo "✅ All required secrets are present"
+
+      - name: Deploy to production
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY_PROD }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD_PROD }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET_PROD }}
+          ENCRYPTION_KEY: ${{ secrets.ENCRYPTION_KEY_PROD }}
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN_PROD }}
+          DATADOG_API_KEY: ${{ secrets.DATADOG_API_KEY_PROD }}
+        run: |
+          echo "🚀 Deploying to production environment..."
+          # Add actual deployment commands here
+          echo "✅ Production deployment completed"
+
+      - name: Run production smoke tests
+        env:
+          PRODUCTION_URL: ${{ secrets.PRODUCTION_URL }}
+        run: |
+          # Production smoke tests
+          curl -f $PRODUCTION_URL/api/health || exit 1
+          curl -f $PRODUCTION_URL/api/ready || exit 1
+          echo "✅ Production smoke tests passed"

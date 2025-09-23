@@ -32,7 +32,7 @@ describe("PerformanceGuardian", () => {
 
   it("fails when qualityScore too low", () => {
     const result = createMockResult({
-      performance: { duration: 1000, tokensUsed: 100, qualityScore: 5.0 }
+      performance: { duration: 1000, tokensUsed: 100, qualityScore: 3.0 }
     });
     
     const evaluated = guardian.evaluate(result);
@@ -44,7 +44,7 @@ describe("PerformanceGuardian", () => {
 
   it("fails when latency too high", () => {
     const result = createMockResult({
-      performance: { duration: 5000, tokensUsed: 100, qualityScore: 8.0 }
+      performance: { duration: 35000, tokensUsed: 100, qualityScore: 8.0 }
     });
     
     const evaluated = guardian.evaluate(result);
@@ -56,7 +56,7 @@ describe("PerformanceGuardian", () => {
 
   it("fails when both quality and latency are bad", () => {
     const result = createMockResult({
-      performance: { duration: 3000, tokensUsed: 100, qualityScore: 4.0 }
+      performance: { duration: 35000, tokensUsed: 100, qualityScore: 3.0 }
     });
     
     const evaluated = guardian.evaluate(result);

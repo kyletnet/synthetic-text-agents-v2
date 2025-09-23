@@ -3,9 +3,15 @@ import 'dotenv/config';
 import { Orchestrator } from '../core/orchestrator.js';
 import { QARequest } from '../shared/types.js';
 import { prewriteSessionMeta } from '../scripts/metrics/baselineReportGenerator.js';
+import { initializeSystem } from '../core/systemInitializer.js';
 
 async function main() {
   console.log('🚀 Starting Synthetic Text Agents System...\n');
+
+  // Initialize production infrastructure first
+  console.log('🔧 Initializing production infrastructure...');
+  await initializeSystem();
+
   const orchestrator = new Orchestrator();
 
   try {

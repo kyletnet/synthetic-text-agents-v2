@@ -195,14 +195,16 @@ legacy/          # Deprecated code (excluded from builds)
 ## Prompting Conventions for Claude Code Sessions
 
 ### Context Loading
-Always start sessions by loading key documents:
+**MANDATORY**: Always start sessions by loading key documents:
 ```
-@docs/claude_md_file.md
-@docs/technical_architecture_guide.md 
-@docs/agent_implementation_spec.md
-@docs/system_blueprint.md
-@docs/final_documentation_strategy.md
+@CLAUDE.md                           # System philosophy (THIS FILE)
+@LLM_DEVELOPMENT_CONTRACT.md         # Development contract (REQUIRED)
+@DEVELOPMENT_STANDARDS.md            # Standards enforcement
+@docs/llm_friendly_summary.md        # Technical architecture
+@HANDOFF_NAVIGATION.md               # Navigation guide
 ```
+
+**CRITICAL**: Before ANY code modification, these files MUST be referenced. Failure to follow standards results in system degradation.
 
 ### Implementation Requests
 - Reference specific sections: "Based on agent_implementation_spec.md section 2.1, implement MetaController class"
@@ -287,11 +289,17 @@ Before marking implementation complete:
 
 ## Development Workflow
 
+**MANDATORY: Follow DEVELOPMENT_STANDARDS.md for all code changes**
+
 1. **Agent Design**: Reference implementation specs, define clear responsibilities
-2. **Core Implementation**: Extend BaseAgent, implement required interface methods
-3. **Integration**: Connect to communication bus, add performance monitoring
-4. **Testing**: Unit tests, integration tests, performance benchmarks
-5. **Documentation**: Update agent specs, add usage examples
+2. **Standards Compliance**: Import Logger, use TypeScript strict, add _ prefix for unused vars
+3. **Core Implementation**: Extend BaseAgent, implement required interface methods with proper types
+4. **Integration**: Connect to communication bus, add performance monitoring, structured logging
+5. **Testing**: Unit tests, integration tests, performance benchmarks (all must pass)
+6. **Quality Gates**: `npm run typecheck && npm run lint && npm run test` must pass
+7. **Documentation**: `npm run docs:refresh` after changes, update agent specs
+
+**Auto-Enforcement**: Pre-commit hooks prevent standard violations. Zero new ESLint warnings allowed.
 
 ## Quality Assurance Process
 

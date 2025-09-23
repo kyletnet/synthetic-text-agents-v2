@@ -365,7 +365,10 @@ export class AgentLogger {
       if (!logsByRun.has(entry.run_id)) {
         logsByRun.set(entry.run_id, []);
       }
-      logsByRun.get(entry.run_id)!.push(entry);
+      const runLogs = logsByRun.get(entry.run_id);
+      if (runLogs) {
+        runLogs.push(entry);
+      }
     }
 
     // Write to separate files per run

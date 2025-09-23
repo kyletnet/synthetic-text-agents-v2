@@ -1,0 +1,78 @@
+#!/bin/bash
+# Enhanced pre-commit hook with comprehensive standards enforcement
+
+set -euo pipefail
+
+echo "🔒 Enhanced Standards Enforcement (v2.0)"
+
+# 1. TypeScript Standards
+echo "🔍 TypeScript validation..."
+npm run typecheck || {
+    echo "❌ TypeScript errors detected. Fix before committing."
+    exit 1
+}
+
+# 2. ESLint Standards (zero new warnings)
+echo "🔍 ESLint validation..."
+npm run lint || {
+    echo "❌ ESLint issues detected. Run 'npm run lint:fix' first."
+    exit 1
+}
+
+# 3. Test Suite
+echo "🔍 Test suite validation..."
+npm run test || {
+    echo "❌ Tests failed. Fix before committing."
+    exit 1
+}
+
+# 4. Environment Consistency Check
+echo "🔍 Environment consistency..."
+if ! diff -q .env .env.example > /dev/null 2>&1; then
+    echo "⚠️  .env and .env.example structure differs"
+    echo "   This is usually OK, but verify configuration consistency"
+fi
+
+# 5. Documentation Freshness
+echo "🔍 Documentation freshness..."
+if git diff --cached --name-only | grep -E "(CLAUDE\.md|src/|scripts/)" > /dev/null; then
+    echo "📝 Code changes detected, updating documentation..."
+    npm run docs:refresh
+
+    # Stage the updated docs
+    git add docs/ SYSTEM_MAP.md apps/fe-web/docs/
+    echo "✅ Documentation automatically updated"
+fi
+
+# 6. Standards Compliance for Shell Scripts
+echo "🔍 Shell script standards..."
+staged_shell_files=$(git diff --cached --name-only | grep '\.sh$' || true)
+if [ -n "$staged_shell_files" ]; then
+    echo "🔧 Checking shell scripts for standards compliance..."
+    for file in $staged_shell_files; do
+        if [ -f "$file" ]; then
+            # Check for proper error handling
+            if ! grep -q "set -" "$file"; then
+                echo "❌ $file: Missing 'set -euo pipefail' or similar"
+                exit 1
+            fi
+
+            # Check for logging consistency
+            if grep -q "echo" "$file" && ! grep -q "printf.*\\\033" "$file"; then
+                echo "⚠️  $file: Consider using structured logging functions"
+            fi
+        fi
+    done
+fi
+
+# 7. API Client Consistency Check
+echo "🔍 API client consistency..."
+if [ -f "tools/anthropic_client.sh" ] && [ -f "src/clients/anthropicAdapter.ts" ]; then
+    echo "ℹ️  Both shell and TypeScript API clients detected"
+    echo "   Ensure they use consistent configuration and error handling"
+fi
+
+echo "✅ All standards checks passed!"
+echo "🚀 Commit approved"
+
+exit 0

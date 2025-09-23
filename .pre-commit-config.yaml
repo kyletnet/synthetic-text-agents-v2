@@ -1,0 +1,269 @@
+# Pre-commit Configuration for Production Standards Enforcement
+# Install with: pre-commit install
+
+repos:
+  # Code Quality Checks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      # File and format checks
+      - id: trailing-whitespace
+        args: [--markdown-linebreak-ext=md]
+      - id: end-of-file-fixer
+      - id: check-yaml
+        args: [--allow-multiple-documents]
+      - id: check-json
+      - id: check-toml
+      - id: check-merge-conflict
+      - id: check-case-conflict
+
+      # Security checks
+      - id: detect-private-key
+      - id: check-added-large-files
+        args: [--maxkb=1000]
+
+      # Code style
+      - id: mixed-line-ending
+        args: [--fix=lf]
+
+  # TypeScript Type Checking (CRITICAL)
+  - repo: local
+    hooks:
+      - id: typescript-check
+        name: TypeScript Type Check
+        entry: npm run typecheck
+        language: system
+        files: '\.(ts|tsx)$'
+        pass_filenames: false
+        always_run: false
+
+  # ESLint (Code Quality)
+  - repo: local
+    hooks:
+      - id: eslint-check
+        name: ESLint Check
+        entry: npm run lint
+        language: system
+        files: '\.(ts|tsx|js|jsx)$'
+        pass_filenames: false
+
+  # Test Coverage Enforcement
+  - repo: local
+    hooks:
+      - id: test-coverage
+        name: Test Coverage Check
+        entry: npm run coverage:check
+        language: system
+        pass_filenames: false
+        always_run: true
+
+  # Secret Scanning (SECURITY CRITICAL)
+  - repo: local
+    hooks:
+      - id: secret-scan
+        name: Secret Scanner
+        entry: bash
+        args:
+          - -c
+          - |
+            set -e
+            echo "🔒 Scanning for secrets..."
+
+            # Check for API keys and tokens
+            if grep -r -E "(sk-ant-|sk-[a-zA-Z0-9]{32,}|xoxb-|xoxp-|xoxa-|xoxr-)" --include="*.ts" --include="*.js" --include="*.json" --include="*.md" --exclude-dir=node_modules --exclude-dir=.git .; then
+              echo "❌ Potential API keys detected!"
+              echo "Please use environment variables for sensitive data."
+              exit 1
+            fi
+
+            # Check for hardcoded passwords
+            if grep -r -E "(password|passwd|pwd)\s*[:=]\s*['\"][^'\"]{8,}" --include="*.ts" --include="*.js" --include="*.json" --exclude-dir=node_modules --exclude-dir=.git .; then
+              echo "❌ Potential hardcoded passwords detected!"
+              exit 1
+            fi
+
+            # Check for private keys
+            if grep -r -E "-----BEGIN.*PRIVATE KEY-----" --include="*" --exclude-dir=node_modules --exclude-dir=.git .; then
+              echo "❌ Private keys detected!"
+              exit 1
+            fi
+
+            echo "✅ Secret scan passed"
+        language: system
+        always_run: true
+
+  # Environment Variable Validation
+  - repo: local
+    hooks:
+      - id: env-validation
+        name: Environment Variables Check
+        entry: bash
+        args:
+          - -c
+          - |
+            set -e
+            echo "🌍 Validating environment configuration..."
+
+            # Check if .env.example exists and is up to date
+            if [ ! -f ".env.example" ]; then
+              echo "❌ .env.example file missing!"
+              echo "Please create .env.example with all required environment variables."
+              exit 1
+            fi
+
+            # Check for ANTHROPIC_API_KEY in code files (should only be in env)
+            if grep -r "ANTHROPIC_API_KEY.*=" --include="*.ts" --include="*.js" --exclude-dir=node_modules --exclude-dir=.git . | grep -v ".env"; then
+              echo "❌ ANTHROPIC_API_KEY found in source code!"
+              echo "API keys should only be in .env files."
+              exit 1
+            fi
+
+            echo "✅ Environment validation passed"
+        language: system
+        files: '\.(ts|js|json|env)$'
+
+  # Production Readiness Check
+  - repo: local
+    hooks:
+      - id: production-readiness
+        name: Production Readiness Check
+        entry: bash
+        args:
+          - -c
+          - |
+            set -e
+            echo "🏭 Checking production readiness..."
+
+            # Check if required infrastructure files exist
+            required_files=(
+              "src/shared/performanceMonitoring.ts"
+              "src/shared/errorTracking.ts"
+              "src/shared/circuitBreaker.ts"
+              "src/shared/rateLimiter.ts"
+              "src/shared/inputValidation.ts"
+              ".github/workflows/ci.yml"
+              "vitest.config.ts"
+            )
+
+            for file in "${required_files[@]}"; do
+              if [ ! -f "$file" ]; then
+                echo "❌ Required infrastructure file missing: $file"
+                exit 1
+              fi
+            done
+
+            # Check if package.json has required scripts
+            required_scripts=("typecheck" "lint" "test" "ci:quality")
+            for script in "${required_scripts[@]}"; do
+              if ! grep -q "\"$script\":" package.json; then
+                echo "❌ Required npm script missing: $script"
+                exit 1
+              fi
+            done
+
+            echo "✅ Production readiness check passed"
+        language: system
+        always_run: true
+
+  # Documentation Consistency
+  - repo: local
+    hooks:
+      - id: docs-consistency
+        name: Documentation Consistency Check
+        entry: bash
+        args:
+          - -c
+          - |
+            set -e
+            echo "📚 Checking documentation consistency..."
+
+            # Check if CHANGELOG.md exists and follows format
+            if [ ! -f "CHANGELOG.md" ]; then
+              echo "❌ CHANGELOG.md missing!"
+              echo "Please maintain a changelog following Semantic Versioning."
+              exit 1
+            fi
+
+            # Check if version in package.json matches CHANGELOG
+            package_version=$(node -p "require('./package.json').version")
+            if ! grep -q "$package_version" CHANGELOG.md; then
+              echo "⚠️  Warning: package.json version ($package_version) not found in CHANGELOG.md"
+              echo "Please update CHANGELOG.md when bumping version."
+            fi
+
+            echo "✅ Documentation consistency check passed"
+        language: system
+        files: '(CHANGELOG\.md|package\.json|README\.md)$'
+
+  # Performance Check
+  - repo: local
+    hooks:
+      - id: performance-check
+        name: Performance Check
+        entry: bash
+        args:
+          - -c
+          - |
+            set -e
+            echo "⚡ Running performance checks..."
+
+            # Check for performance anti-patterns
+            if grep -r -E "(console\.log|console\.error|console\.warn)" --include="*.ts" --include="*.js" --exclude-dir=node_modules --exclude-dir=tests --exclude="*.test.*" --exclude="*.spec.*" src/; then
+              echo "⚠️  Warning: console.* statements found in source code"
+              echo "Consider using the Logger class for production logging."
+            fi
+
+            # Check for sync file operations in source
+            if grep -r -E "\.readFileSync|\.writeFileSync" --include="*.ts" --include="*.js" --exclude-dir=node_modules --exclude-dir=tests src/; then
+              echo "❌ Synchronous file operations detected in source code!"
+              echo "Please use async file operations for better performance."
+              exit 1
+            fi
+
+            echo "✅ Performance check passed"
+        language: system
+        files: 'src/.*\.(ts|js)$'
+
+  # Bundle Size Check
+  - repo: local
+    hooks:
+      - id: bundle-check
+        name: Bundle Size Check
+        entry: bash
+        args:
+          - -c
+          - |
+            set -e
+            echo "📦 Checking bundle requirements..."
+
+            # Build the project to ensure it compiles
+            echo "Building project..."
+            npm run build
+
+            # Check if build succeeded
+            if [ $? -eq 0 ]; then
+              echo "✅ Build successful"
+            else
+              echo "❌ Build failed!"
+              exit 1
+            fi
+        language: system
+        pass_filenames: false
+        stages: [push]
+
+# Default stages for all hooks
+default_stages: [commit]
+
+# Performance settings
+minimum_pre_commit_version: '2.20.0'
+default_language_version:
+  node: '18.18.0'
+
+# Fail fast on first error
+fail_fast: true
+
+# Additional settings
+ci:
+  autofix_commit_msg: 'style: auto-fix pre-commit issues [skip ci]'
+  autofix_prs: true
+  autoupdate_schedule: monthly
