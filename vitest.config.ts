@@ -64,7 +64,7 @@ export default defineConfig({
     // Setup files
     setupFiles: ["./tests/setup.ts"],
 
-    // Reporters
+    // Reporters (removing ui dependency issue)
     reporter: ["verbose", "html", "json"],
     outputFile: {
       html: "./test-results/index.html",
