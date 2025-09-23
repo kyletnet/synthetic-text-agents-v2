@@ -177,7 +177,7 @@ export class DeadLetterQueue {
         if (a.priority !== b.priority) {
           return a.priority - b.priority; // Lower number = higher priority
         }
-        return (a.nextRetryTime!.getTime() - b.nextRetryTime!.getTime());
+        return ((a.nextRetryTime?.getTime() ?? 0) - (b.nextRetryTime?.getTime() ?? 0));
       });
   }
 

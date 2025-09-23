@@ -107,14 +107,14 @@ export abstract class BaseAgent implements IBaseAgent {
 
   protected abstract handle(content: unknown, context?: AgentContext): Promise<unknown>;
 
-  protected async assessConfidence(result: unknown, context?: AgentContext): Promise<number> {
+  protected async assessConfidence(_result: unknown, _context?: AgentContext): Promise<number> {
     return 0.8;
   }
 
   protected async explainReasoning(
     input: unknown,
-    output: unknown, 
-    context?: AgentContext
+    output: unknown,
+    _context?: AgentContext
   ): Promise<string> {
     return `Agent ${this.id} processed ${typeof input} input and produced ${typeof output} output using ${this.specialization} expertise.`;
   }

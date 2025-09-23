@@ -262,7 +262,11 @@ export class CircuitBreakerRegistry {
       this.circuitBreakers.set(name, new CircuitBreaker(name, mergedConfig));
     }
 
-    return this.circuitBreakers.get(name)!;
+    const circuitBreaker = this.circuitBreakers.get(name);
+    if (!circuitBreaker) {
+      throw new Error(`Circuit breaker '${name}' not found`);
+    }
+    return circuitBreaker;
   }
 
   /**

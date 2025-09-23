@@ -1,0 +1,44 @@
+version: 2
+updates:
+  # Enable version updates for npm
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 10
+    reviewers:
+      - "kyletnet"
+    assignees:
+      - "kyletnet"
+    commit-message:
+      prefix: "deps"
+      include: "scope"
+    # Group minor and patch updates
+    groups:
+      production-dependencies:
+        dependency-type: "production"
+        update-types:
+          - "minor"
+          - "patch"
+      development-dependencies:
+        dependency-type: "development"
+        update-types:
+          - "minor"
+          - "patch"
+    # Auto-merge safe updates
+    allow:
+      - dependency-type: "direct:production"
+        update-type: "version-update:semver-patch"
+      - dependency-type: "direct:development"
+        update-type: "version-update:semver-patch"
+
+  # Frontend app dependencies
+  - package-ecosystem: "npm"
+    directory: "/apps/fe-web"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "deps(fe)"

@@ -124,7 +124,7 @@ export class SessionReportManager {
           try {
             const lastEntry = JSON.parse(lines[lines.length - 1]);
             lastRunId = lastEntry.run_id;
-          } catch (e) {
+          } catch (_e) {
             // Ignore parse errors
           }
         }
@@ -183,7 +183,7 @@ export class SessionReportManager {
       // Clean up tmp file on error
       try {
         fs.unlinkSync(tmpPath);
-      } catch (e) {
+      } catch (_e) {
         // Ignore cleanup errors
       }
       throw error;
@@ -305,7 +305,7 @@ ${this.getDLQStatus(fields.DLQ_COUNT || 0)}
               const statA = fs.statSync(path.join(dlqDir, a));
               const statB = fs.statSync(path.join(dlqDir, b));
               return statB.mtime.getTime() - statA.mtime.getTime();
-            } catch (e) {
+            } catch (_e) {
               return 0;
             }
           })

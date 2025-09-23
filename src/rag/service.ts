@@ -167,10 +167,12 @@ export class RAGService {
 
       // Remove old chunks from corpus if document existed
       if (this.documentIndex.has(path)) {
-        const oldDoc = this.documentIndex.get(path)!;
-        this.corpus = this.corpus.filter(chunk => 
-          !oldDoc.chunks.some(oldChunk => oldChunk.id === chunk.id)
-        );
+        const oldDoc = this.documentIndex.get(path);
+        if (oldDoc) {
+          this.corpus = this.corpus.filter(chunk =>
+            !oldDoc.chunks.some(oldChunk => oldChunk.id === chunk.id)
+          );
+        }
       }
 
       // Add new chunks to corpus
@@ -204,7 +206,16 @@ export class RAGService {
   async removeDocument(path: string): Promise<void> {
     if (!this.config.enabled || !this.documentIndex.has(path)) return;
 
-    const docIndex = this.documentIndex.get(path)!;
+    const docIndex = this.documentIndex.get(path);
+    if (!docIndex) {
+      await this.logger.trace({
+        level: 'warn',
+        agentId: 'rag-service',
+        action: 'document_remove_failed',
+        data: { path, reason: 'Document not found in index' },
+      });
+      return;
+    }
     
     // Remove chunks from corpus
     this.corpus = this.corpus.filter(chunk => 

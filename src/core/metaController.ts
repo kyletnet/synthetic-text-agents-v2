@@ -259,7 +259,7 @@ export class MetaController extends BaseAgent {
 
   private async selectOptimalAgents(
     analysis: ComplexityAnalysis,
-    request: QARequest
+    _request: QARequest
   ): Promise<ExpertSummons> {
     const { score, factors } = analysis;
 

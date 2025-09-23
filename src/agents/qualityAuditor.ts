@@ -1,6 +1,5 @@
 import { BaseAgent } from '../core/baseAgent.js';
-import { AgentMessage, AgentResult, AgentContext } from '../shared/types.js';
-import { wordCount, difficultyScore } from '../shared/metrics.js';
+import { AgentContext } from '../shared/types.js';
 import { Logger } from '../shared/logger.js';
 
 export class QualityAuditor extends BaseAgent {
@@ -8,7 +7,7 @@ export class QualityAuditor extends BaseAgent {
     super('quality-auditor', 'QualityAuditor', ['quality-assessment', 'metrics'], new Logger()); 
   }
 
-  protected async handle(content: unknown, context?: AgentContext): Promise<unknown> {
+  protected async handle(content: unknown, _context?: AgentContext): Promise<unknown> {
     let input: any;
 
     // Parse input - could be JSON string or plain text

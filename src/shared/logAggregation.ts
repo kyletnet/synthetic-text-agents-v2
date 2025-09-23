@@ -471,14 +471,20 @@ export class LogAggregator extends EventEmitter {
     if (!this.logIndex.has(serviceKey)) {
       this.logIndex.set(serviceKey, []);
     }
-    this.logIndex.get(serviceKey)!.push(logEntry);
+    const serviceEntries = this.logIndex.get(serviceKey);
+    if (serviceEntries) {
+      serviceEntries.push(logEntry);
+    }
 
     // Index by level
     const levelKey = `level:${logEntry.level}`;
     if (!this.logIndex.has(levelKey)) {
       this.logIndex.set(levelKey, []);
     }
-    this.logIndex.get(levelKey)!.push(logEntry);
+    const levelEntries = this.logIndex.get(levelKey);
+    if (levelEntries) {
+      levelEntries.push(logEntry);
+    }
 
     // Index by trace ID if present
     if (logEntry.traceId) {
@@ -486,7 +492,10 @@ export class LogAggregator extends EventEmitter {
       if (!this.logIndex.has(traceKey)) {
         this.logIndex.set(traceKey, []);
       }
-      this.logIndex.get(traceKey)!.push(logEntry);
+      const traceEntries = this.logIndex.get(traceKey);
+      if (traceEntries) {
+        traceEntries.push(logEntry);
+      }
     }
 
     this.metrics.indexSize = this.logIndex.size;
@@ -626,7 +635,8 @@ export class LogAggregator extends EventEmitter {
             lastOccurrence: log.timestamp
           });
         }
-        const errorData = errorMessages.get(key)!;
+        const errorData = errorMessages.get(key);
+        if (!errorData) continue;
         errorData.count++;
         errorData.services.add(log.service);
         if (log.timestamp > errorData.lastOccurrence) {
@@ -639,7 +649,8 @@ export class LogAggregator extends EventEmitter {
         if (!slowOperations.has(key)) {
           slowOperations.set(key, { totalDuration: 0, count: 0 });
         }
-        const opData = slowOperations.get(key)!;
+        const opData = slowOperations.get(key);
+        if (!opData) continue;
         opData.totalDuration += log.duration;
         opData.count++;
       }

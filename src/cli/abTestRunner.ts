@@ -5,7 +5,6 @@ import { Orchestrator } from '../core/orchestrator.js';
 import { QARequest } from '../shared/types.js';
 import { Logger } from '../shared/logger.js';
 import * as fs from 'fs';
-import * as path from 'path';
 
 interface TestConfig {
   testId: string;

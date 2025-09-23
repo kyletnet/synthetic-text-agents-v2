@@ -226,7 +226,7 @@ export class DomainConsultant extends BaseAgent {
 
   public async assembleDomainExpertise(
     request: DomainConsultationRequest,
-    context?: AgentContext
+    _context?: AgentContext
   ): Promise<DomainExpertise> {
     const USE_LLM = String(process.env.FEATURE_LLM_DOMAIN_CONSULTANT||'false').toLowerCase()==='true';
     
@@ -538,7 +538,7 @@ export class DomainConsultant extends BaseAgent {
     return patterns;
   }
 
-  private async deriveExpertInsights(request: DomainConsultationRequest, domainData: any) {
+  private async deriveExpertInsights(request: DomainConsultationRequest, _domainData: any) {
     const emergingTrends = this.identifyEmergingTrends(request.domain);
     const advancedTechniques = this.compileAdvancedTechniques(request);
     const lessonsLearned = this.gatherLessonsLearned(request);
@@ -583,7 +583,7 @@ export class DomainConsultant extends BaseAgent {
     return techniques;
   }
 
-  private gatherLessonsLearned(request: DomainConsultationRequest): string[] {
+  private gatherLessonsLearned(_request: DomainConsultationRequest): string[] {
     return [
       'start with customer needs and work backwards',
       'invest in team training and development',
@@ -595,7 +595,7 @@ export class DomainConsultant extends BaseAgent {
     ];
   }
 
-  private identifyPitfalls(request: DomainConsultationRequest): string[] {
+  private identifyPitfalls(_request: DomainConsultationRequest): string[] {
     return [
       'ignoring customer feedback and market signals',
       'over-complicating simple processes',
@@ -640,7 +640,7 @@ export class DomainConsultant extends BaseAgent {
     };
   }
 
-  private createDecisionFrameworks(request: DomainConsultationRequest, domainExpertise: DomainExpertise) {
+  private createDecisionFrameworks(request: DomainConsultationRequest, _domainExpertise: DomainExpertise) {
     const frameworks = [];
 
     // Generic decision framework
@@ -679,7 +679,7 @@ export class DomainConsultant extends BaseAgent {
     return frameworks;
   }
 
-  private defineMethodologies(request: DomainConsultationRequest, domainExpertise: DomainExpertise) {
+  private defineMethodologies(_request: DomainConsultationRequest, _domainExpertise: DomainExpertise) {
     const methodologies = [];
 
     // Generic methodology
@@ -734,7 +734,7 @@ export class DomainConsultant extends BaseAgent {
     };
   }
 
-  private defineQuestionTypes(request: DomainConsultationRequest, domainExpertise: DomainExpertise) {
+  private defineQuestionTypes(_request: DomainConsultationRequest, _domainExpertise: DomainExpertise) {
     const questionTypes = [];
 
     questionTypes.push({
@@ -761,7 +761,7 @@ export class DomainConsultant extends BaseAgent {
     return questionTypes;
   }
 
-  private createAnswerPatterns(request: DomainConsultationRequest, domainExpertise: DomainExpertise) {
+  private createAnswerPatterns(_request: DomainConsultationRequest, domainExpertise: DomainExpertise) {
     const patterns = [];
 
     patterns.push({
@@ -791,8 +791,8 @@ export class DomainConsultant extends BaseAgent {
   }
 
   private async generateImplementationRecommendations(
-    request: DomainConsultationRequest,
-    domainExpertise: DomainExpertise
+    _request: DomainConsultationRequest,
+    _domainExpertise: DomainExpertise
   ) {
     return {
       expertiseIntegration: [
@@ -824,7 +824,7 @@ export class DomainConsultant extends BaseAgent {
 
   private async conductRiskAssessment(
     request: DomainConsultationRequest,
-    domainExpertise: DomainExpertise
+    _domainExpertise: DomainExpertise
   ) {
     const risks = [];
 

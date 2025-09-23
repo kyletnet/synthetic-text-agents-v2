@@ -1,5 +1,4 @@
 import { spawn } from 'child_process';
-import { promisify } from 'util';
 import { Logger } from '../shared/logger.js';
 
 export interface AnthropicChatPayload {

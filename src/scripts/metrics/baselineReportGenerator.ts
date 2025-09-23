@@ -25,7 +25,7 @@ export async function prewriteSessionMeta(meta: { profile: string; mode: string;
     const merged = prev.includes('PROFILE:') ? prev : (prev ? prev + '\n' + block + '\n' : block + '\n');
     await fs.writeFile(SESSION_REPORT + '.tmp', merged, 'utf8');
     await fs.rename(SESSION_REPORT + '.tmp', SESSION_REPORT);
-  } catch (e) {
+  } catch (_e) {
     // best-effort; don't block pipeline
   }
 }
@@ -296,9 +296,9 @@ function loadDLQSummary(outputDir: string): DLQSummary {
 function convertToExportFormat(
   records: BaselineMetricsRecord[],
   summary: BaselineMetricsSummary,
-  gating?: GatingResult
+  _gating?: GatingResult
 ): BaselineExportRecord[] {
-  return records.map((record, index) => {
+  return records.map((record, _index) => {
     // Determine result status
     let result: 'PASS' | 'WARN' | 'PARTIAL' | 'FAIL' = 'PASS';
     if (record.alert_flags.length > 0) {
@@ -468,7 +468,7 @@ function extractThresholdMetrics(summary: BaselineMetricsSummary, records: Basel
 /**
  * Generate gate mapping banner
  */
-function generateGateMappingBanner(profile: string, autocalibrationEnabled: boolean): string[] {
+function _generateGateMappingBanner(profile: string, autocalibrationEnabled: boolean): string[] {
   const lines: string[] = [];
 
   lines.push('---');
@@ -490,7 +490,7 @@ function generateGateMappingBanner(profile: string, autocalibrationEnabled: bool
 /**
  * Generate KPI trends section
  */
-function generateKPITrends(trends: { [key: string]: HistoricalTrend }): string[] {
+function _generateKPITrends(trends: { [key: string]: HistoricalTrend }): string[] {
   const lines: string[] = [];
 
   lines.push('## 📈 KPI Trends (Last 10 Runs)');
@@ -530,7 +530,7 @@ function generateKPITrends(trends: { [key: string]: HistoricalTrend }): string[]
 /**
  * Generate DLQ summary section
  */
-function generateDLQSummary(dlqSummary: DLQSummary): string[] {
+function _generateDLQSummary(dlqSummary: DLQSummary): string[] {
   const lines: string[] = [];
 
   lines.push('## 🔄 DLQ (Dead Letter Queue) Status');
@@ -760,9 +760,9 @@ function generateMarkdownReport(
   gating?: GatingResult,
   calibrationResults?: CalibrationResult[],
   thresholdManager?: ThresholdManager,
-  trends?: { [key: string]: HistoricalTrend },
-  dlqSummary?: any,
-  previousSummary?: BaselineMetricsSummary
+  _trends?: { [key: string]: HistoricalTrend },
+  _dlqSummary?: any,
+  _previousSummary?: BaselineMetricsSummary
 ): string {
   const lines: string[] = [];
 

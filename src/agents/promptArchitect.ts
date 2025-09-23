@@ -1,5 +1,5 @@
 import { BaseAgent } from '../core/baseAgent.js';
-import { AgentMessage, AgentResult, AgentContext } from '../shared/types.js';
+import { AgentContext } from '../shared/types.js';
 import { inferRulesFromFeedback, mergeRules, rulesHumanSummary, type PromptSpec } from '../shared/rulesEngine.js';
 import { Logger } from '../shared/logger.js';
 

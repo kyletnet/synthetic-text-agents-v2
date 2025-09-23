@@ -28,7 +28,10 @@ export class MessageBus implements AgentCommunication {
         this.messageQueues.set(validatedMessage.receiver, []);
       }
 
-      const queue = this.messageQueues.get(validatedMessage.receiver)!;
+      const queue = this.messageQueues.get(validatedMessage.receiver);
+      if (!queue) {
+        throw new Error(`Failed to get message queue for receiver: ${validatedMessage.receiver}`);
+      }
       queue.push(validatedMessage);
       
       queue.sort((a, b) => b.priority - a.priority);

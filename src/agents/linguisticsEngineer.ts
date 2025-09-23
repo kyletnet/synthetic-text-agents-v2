@@ -148,7 +148,7 @@ export class LinguisticsEngineer extends BaseAgent {
 
   private async optimizeForLLM(
     request: LinguisticsAnalysisRequest,
-    context?: AgentContext
+    _context?: AgentContext
   ): Promise<LLMOptimization> {
     const modelCharacteristics = this.analyzeLLMCharacteristics(request.targetLLM);
     const promptStructure = await this.optimizePromptStructure(request, modelCharacteristics);
@@ -795,7 +795,7 @@ export class LinguisticsEngineer extends BaseAgent {
       
       const tokenEst = result.llmOptimization.tokenOptimization.estimatedTokens;
       const efficiency = result.llmOptimization.tokenOptimization.efficiencyScore;
-      const avgLangScore = (
+      const _avgLangScore = (
         result.languageQuality.clarity.score +
         result.languageQuality.consistency.score +
         result.languageQuality.precision.score +

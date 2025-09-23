@@ -115,7 +115,7 @@ export class PsychologySpecialist extends BaseAgent {
 
   private async conductPsychologyAnalysis(
     request: PsychologyAnalysisRequest,
-    context?: AgentContext
+    _context?: AgentContext
   ): Promise<PsychologyInsights> {
     const userPsychology = await this.analyzeUserPsychology(request);
     const communicationStrategy = await this.developCommunicationStrategy(request, userPsychology);
@@ -672,7 +672,7 @@ export class PsychologySpecialist extends BaseAgent {
 
   private async generateRecommendations(
     analysis: PsychologyInsights,
-    request: PsychologyAnalysisRequest
+    _request: PsychologyAnalysisRequest
   ): Promise<PsychologyRecommendations> {
     
     const qaDesignPrinciples = this.generateQADesignPrinciples(analysis);
@@ -895,7 +895,7 @@ export class PsychologySpecialist extends BaseAgent {
 
   private async createImplementationGuidance(
     analysis: PsychologyInsights,
-    request: PsychologyAnalysisRequest
+    _request: PsychologyAnalysisRequest
   ) {
     const questionFormulation = this.generateQuestionFormulationGuidance(analysis);
     const answerToneGuidance = this.generateAnswerToneGuidance(analysis);

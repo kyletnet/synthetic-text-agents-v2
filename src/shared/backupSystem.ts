@@ -475,7 +475,7 @@ export class BackupSystem extends EventEmitter {
 
     try {
       const filesToRestore = request.files
-        ? backup.files.filter(f => request.files!.includes(f.path))
+        ? backup.files.filter(f => request.files?.includes(f.path) ?? false)
         : backup.files;
 
       result.totalFiles = filesToRestore.length;

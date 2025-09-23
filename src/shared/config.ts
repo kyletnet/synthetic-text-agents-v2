@@ -1,5 +1,4 @@
 import { readFile } from 'fs/promises';
-import { join } from 'path';
 import type { RAGConfig } from '../rag/service.js';
 
 export interface FeatureFlags {

@@ -208,7 +208,10 @@ export class PerformanceMonitor extends EventEmitter {
       this.metrics.set(key, []);
     }
 
-    this.metrics.get(key)!.push(metric);
+    const metricArray = this.metrics.get(key);
+    if (metricArray) {
+      metricArray.push(metric);
+    }
     this.emit('metric:recorded', metric);
 
     // Apply sampling

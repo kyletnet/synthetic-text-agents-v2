@@ -7,7 +7,7 @@ const INDUSTRY_HINTS:Record<string,string>={
   "construction_safety":"산안법, 불시점검, 출입통제, 중대재해, 원청/하청 책임, 사고보고, 로그보존"
 };
 
-function sys(domain?:string){
+function sys(_domain?:string){
   return [
     "당신은 문서 근거 기반 상황형 QA를 생성하는 전문가입니다.",
     "반드시 JSON 하나로만 출력하십시오. SCHEMA.json을 만족해야 합니다.",

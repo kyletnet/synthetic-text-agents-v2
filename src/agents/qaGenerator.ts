@@ -1,7 +1,6 @@
 import { BaseAgent } from '../core/baseAgent.js';
-import { AgentMessage, AgentResult, AgentContext } from '../shared/types.js';
-import { flag, str } from '../shared/env.js';
-import { generateJSON } from '../shared/llmAdapter.js';
+import { AgentContext } from '../shared/types.js';
+import { flag } from '../shared/env.js';
 import { applyRulesToPrompt } from '../shared/rulesEngine.js';
 import { Logger } from '../shared/logger.js';
 import { LLM } from '../shared/llm.js';

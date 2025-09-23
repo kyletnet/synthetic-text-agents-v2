@@ -1,5 +1,4 @@
 import { readFileSync } from 'fs';
-import { join } from 'path';
 
 interface DuplicationConfig {
   ngram_range: number[];

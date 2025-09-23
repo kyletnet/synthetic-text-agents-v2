@@ -6,8 +6,8 @@
  * Integrates all the new systems: thresholds, DLQ, budget, manifest, etc.
  */
 
-import { execSync, spawn } from 'child_process';
-import { existsSync, readFileSync, writeFileSync, mkdirSync, readdirSync } from 'fs';
+import { execSync } from 'child_process';
+import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'fs';
 import { join } from 'path';
 
 // Import our new systems

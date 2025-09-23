@@ -185,8 +185,8 @@ export class DLQManager {
 
     try {
       writeFileSync(filePath, line, { flag: 'a' });
-    } catch (error) {
-      console.error(`Failed to write DLQ item to ${filePath}:`, error);
+    } catch (_error) {
+      console.error(`Failed to write DLQ item to ${filePath}:`, _error);
     }
   }
 
@@ -216,13 +216,13 @@ export class DLQManager {
                 new Date(item.next_retry_timestamp) <= now) {
               pendingItems.push(item);
             }
-          } catch (error) {
+          } catch (_error) {
             console.warn(`Failed to parse DLQ line: ${line}`);
           }
         }
       }
-    } catch (error) {
-      console.error('Failed to get pending retries:', error);
+    } catch (_error) {
+      console.error('Failed to get pending retries:', _error);
     }
 
     return pendingItems;
@@ -286,7 +286,7 @@ export class DLQManager {
           } else {
             updatedLines.push(line);
           }
-        } catch (error) {
+        } catch (_error) {
           updatedLines.push(line); // Keep malformed lines as-is
         }
       }
@@ -296,8 +296,8 @@ export class DLQManager {
       }
 
       writeFileSync(filePath, updatedLines.join('\n') + '\n');
-    } catch (error) {
-      console.error(`Failed to update DLQ item ${updatedItem.id}:`, error);
+    } catch (_error) {
+      console.error(`Failed to update DLQ item ${updatedItem.id}:`, _error);
     }
   }
 
@@ -320,7 +320,7 @@ export class DLQManager {
           if (item.id !== itemId) {
             filteredLines.push(line);
           }
-        } catch (error) {
+        } catch (_error) {
           filteredLines.push(line); // Keep malformed lines as-is
         }
       }
@@ -331,8 +331,8 @@ export class DLQManager {
       } else {
         writeFileSync(filePath, filteredLines.join('\n') + '\n');
       }
-    } catch (error) {
-      console.error(`Failed to remove DLQ item ${itemId}:`, error);
+    } catch (_error) {
+      console.error(`Failed to remove DLQ item ${itemId}:`, _error);
     }
   }
 
@@ -343,8 +343,8 @@ export class DLQManager {
     try {
       return require('fs').readdirSync(this.dlqDir)
         .filter((file: string) => file.endsWith('.jsonl'));
-    } catch (error) {
-      console.error('Failed to list DLQ files:', error);
+    } catch (_error) {
+      console.error('Failed to list DLQ files:', _error);
       return [];
     }
   }
@@ -395,13 +395,13 @@ export class DLQManager {
             if (item.retry_count > 0) {
               stats.success_after_retry++;
             }
-          } catch (error) {
+          } catch (_error) {
             // Skip malformed lines
           }
         }
       }
-    } catch (error) {
-      console.error('Failed to calculate DLQ stats:', error);
+    } catch (_error) {
+      console.error('Failed to calculate DLQ stats:', _error);
     }
 
     return stats;
@@ -433,7 +433,7 @@ export class DLQManager {
             } else {
               removedCount++;
             }
-          } catch (error) {
+          } catch (_error) {
             remainingLines.push(line); // Keep malformed lines
           }
         }
@@ -444,8 +444,8 @@ export class DLQManager {
           writeFileSync(filePath, remainingLines.join('\n') + '\n');
         }
       }
-    } catch (error) {
-      console.error('Failed to cleanup old DLQ entries:', error);
+    } catch (_error) {
+      console.error('Failed to cleanup old DLQ entries:', _error);
     }
 
     return removedCount;

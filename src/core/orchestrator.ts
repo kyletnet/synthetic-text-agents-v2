@@ -1,5 +1,4 @@
-import { BaseAgent } from './baseAgent.js';
-import { AgentMessage, QARequest, QAResponse, AgentContext } from '../shared/types.js';
+import { QARequest, QAResponse, AgentContext } from '../shared/types.js';
 import { AgentRegistry } from '../shared/registry.js';
 import { MessageBus } from '../shared/bus.js';
 import { Logger } from '../shared/logger.js';

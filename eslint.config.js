@@ -27,7 +27,7 @@ export default [
       '@typescript-eslint/prefer-optional-chain': 'warn',
 
       // General code quality (essential only)
-      'no-console': ['warn', { 'allow': ['warn', 'error'] }],
+      'no-console': ['warn', { 'allow': ['warn', 'error', 'info', 'log'] }],
       'no-debugger': 'error',
       'no-var': 'error',
       'prefer-const': 'warn',

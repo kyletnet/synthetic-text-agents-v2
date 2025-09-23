@@ -1,4 +1,4 @@
-import { QARequest, QAResponse, AgentContext } from '../shared/types.js';
+import { QARequest, QAResponse } from '../shared/types.js';
 import { Orchestrator } from './orchestrator.js';
 import { Logger } from '../shared/logger.js';
 import { appendJSONL } from '../shared/jsonl.js';
@@ -48,10 +48,10 @@ export class ABTestManager {
       id: 'conservative',
       name: 'Conservative Approach',
       description: '최소한의 에이전트로 빠른 처리',
-      agentSelection: (complexity: number, domain?: string) => {
+      agentSelection: (_complexity: number, _domain?: string) => {
         const agents = ['qa-generator', 'quality-auditor'];
-        if (complexity >= 7) agents.push('prompt-architect');
-        if (domain && domain !== 'general') agents.push('domain-consultant');
+        if (_complexity >= 7) agents.push('prompt-architect');
+        if (_domain && _domain !== 'general') agents.push('domain-consultant');
         return agents;
       },
       enabled: true
@@ -62,12 +62,12 @@ export class ABTestManager {
       id: 'balanced',
       name: 'Balanced Approach',
       description: '복잡도에 따른 균형잡힌 에이전트 선택',
-      agentSelection: (complexity: number, domain?: string) => {
+      agentSelection: (_complexity: number, _domain?: string) => {
         const agents = ['meta-controller', 'quality-auditor'];
-        if (complexity >= 6) agents.push('prompt-architect', 'qa-generator');
-        if (complexity >= 8) agents.push('psychology-specialist', 'linguistics-engineer');
-        if (domain && domain !== 'general') agents.push('domain-consultant');
-        if (complexity >= 9) agents.push('cognitive-scientist');
+        if (_complexity >= 6) agents.push('prompt-architect', 'qa-generator');
+        if (_complexity >= 8) agents.push('psychology-specialist', 'linguistics-engineer');
+        if (_domain && _domain !== 'general') agents.push('domain-consultant');
+        if (_complexity >= 9) agents.push('cognitive-scientist');
         return agents;
       },
       enabled: true
@@ -78,7 +78,7 @@ export class ABTestManager {
       id: 'comprehensive',
       name: 'Comprehensive Approach',
       description: '모든 전문가 에이전트 동원하여 최고 품질',
-      agentSelection: (complexity: number, domain?: string) => {
+      agentSelection: (_complexity: number, _domain?: string) => {
         return [
           'meta-controller',
           'prompt-architect',
@@ -98,12 +98,12 @@ export class ABTestManager {
       id: 'specialist',
       name: 'Specialist Focused',
       description: '도메인과 언어학 전문가 중심',
-      agentSelection: (complexity: number, domain?: string) => {
+      agentSelection: (_complexity: number, _domain?: string) => {
         const agents = ['qa-generator', 'quality-auditor', 'linguistics-engineer'];
-        if (domain && domain !== 'general') {
+        if (_domain && _domain !== 'general') {
           agents.push('domain-consultant', 'cognitive-scientist');
         }
-        if (complexity >= 8) agents.push('psychology-specialist');
+        if (_complexity >= 8) agents.push('psychology-specialist');
         return agents;
       },
       enabled: true

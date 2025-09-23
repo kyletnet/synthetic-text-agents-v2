@@ -1,6 +1,5 @@
 import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { join } from 'path';
-import { Logger } from '../../shared/logger.js';
 
 /**
  * Budget Guardian

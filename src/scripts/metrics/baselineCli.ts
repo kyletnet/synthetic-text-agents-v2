@@ -7,7 +7,6 @@
 // Prefer ESM-friendly import that works in ts-node and esbuild bundle.
 import { generateBaselineReports, prewriteSessionMeta } from './baselineReportGenerator.js';
 import { readFileSync } from 'fs';
-import { join } from 'path';
 
 interface CLIArgs {
   data?: string;

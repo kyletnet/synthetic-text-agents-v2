@@ -1,0 +1,35 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "🔍 Running pre-commit checks..."
+
+# Check TypeScript compilation
+echo "📝 Checking TypeScript compilation..."
+npm run typecheck
+if [ $? -ne 0 ]; then
+  echo "❌ TypeScript compilation failed. Please fix TypeScript errors before committing."
+  exit 1
+fi
+
+# Run ESLint check (warnings allowed, only errors block)
+echo "🔧 Running ESLint..."
+npm run lint --silent
+ESLINT_EXIT_CODE=$?
+
+# Allow warnings (exit code 1) but block on errors (exit code 2)
+if [ $ESLINT_EXIT_CODE -eq 2 ]; then
+  echo "❌ ESLint found critical errors. Please fix before committing."
+  exit 1
+elif [ $ESLINT_EXIT_CODE -eq 1 ]; then
+  echo "⚠️ ESLint found warnings but allowing commit. Consider fixing warnings."
+fi
+
+# Run tests
+echo "🧪 Running tests..."
+npm test --silent
+if [ $? -ne 0 ]; then
+  echo "❌ Tests failed. Please fix failing tests before committing."
+  exit 1
+fi
+
+echo "✅ All pre-commit checks passed!"

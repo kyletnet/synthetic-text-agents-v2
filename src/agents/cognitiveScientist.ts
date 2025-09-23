@@ -557,7 +557,7 @@ export class CognitiveScientist extends BaseAgent {
     return knowledge;
   }
 
-  private analyzeKnowledgeOrganization(request: CognitiveAnalysisRequest) {
+  private analyzeKnowledgeOrganization(_request: CognitiveAnalysisRequest) {
     return {
       hierarchies: [
         'conceptual frameworks organizing domain knowledge',
@@ -586,7 +586,7 @@ export class CognitiveScientist extends BaseAgent {
     };
   }
 
-  private identifyTacitKnowledge(request: CognitiveAnalysisRequest) {
+  private identifyTacitKnowledge(_request: CognitiveAnalysisRequest) {
     return {
       intuitions: [
         'sense of when situations require immediate attention',
@@ -627,7 +627,7 @@ export class CognitiveScientist extends BaseAgent {
     };
   }
 
-  private modelProblemIdentification(request: CognitiveAnalysisRequest) {
+  private modelProblemIdentification(_request: CognitiveAnalysisRequest) {
     return {
       cueRecognition: [
         'stakeholder behavior changes indicating issues',
@@ -650,7 +650,7 @@ export class CognitiveScientist extends BaseAgent {
     };
   }
 
-  private modelSolutionGeneration(request: CognitiveAnalysisRequest) {
+  private modelSolutionGeneration(_request: CognitiveAnalysisRequest) {
     return {
       searchStrategies: [
         'systematic exploration of solution alternatives',
@@ -673,7 +673,7 @@ export class CognitiveScientist extends BaseAgent {
     };
   }
 
-  private modelEvaluation(request: CognitiveAnalysisRequest) {
+  private modelEvaluation(_request: CognitiveAnalysisRequest) {
     return {
       criteria: [
         'feasibility and resource requirements',
@@ -715,7 +715,7 @@ export class CognitiveScientist extends BaseAgent {
     };
   }
 
-  private designKnowledgeExternalization(request: CognitiveAnalysisRequest, expertModel: ExpertThinkingModel) {
+  private designKnowledgeExternalization(_request: CognitiveAnalysisRequest, _expertModel: ExpertThinkingModel) {
     return {
       explicitationMethods: [
         'think-aloud protocols during problem solving',
@@ -748,7 +748,7 @@ export class CognitiveScientist extends BaseAgent {
     };
   }
 
-  private createLearningDesign(request: CognitiveAnalysisRequest, expertModel: ExpertThinkingModel) {
+  private createLearningDesign(_request: CognitiveAnalysisRequest, _expertModel: ExpertThinkingModel) {
     return {
       scaffoldingStrategies: [
         'progressive complexity introduction',
@@ -781,7 +781,7 @@ export class CognitiveScientist extends BaseAgent {
     };
   }
 
-  private developAdaptiveInstruction(request: CognitiveAnalysisRequest, expertModel: ExpertThinkingModel) {
+  private developAdaptiveInstruction(_request: CognitiveAnalysisRequest, _expertModel: ExpertThinkingModel) {
     return {
       expertiseAssessment: [
         'prior knowledge and experience evaluation',
@@ -828,7 +828,7 @@ export class CognitiveScientist extends BaseAgent {
     };
   }
 
-  private designQuestionFormulation(request: CognitiveAnalysisRequest, expertModel: ExpertThinkingModel) {
+  private designQuestionFormulation(_request: CognitiveAnalysisRequest, _expertModel: ExpertThinkingModel) {
     return {
       cognitiveLoad: {
         intrinsicLoad: [
@@ -893,7 +893,7 @@ export class CognitiveScientist extends BaseAgent {
     };
   }
 
-  private designAnswerStructuring(request: CognitiveAnalysisRequest, expertModel: ExpertThinkingModel) {
+  private designAnswerStructuring(_request: CognitiveAnalysisRequest, _expertModel: ExpertThinkingModel) {
     return {
       cognitiveFlow: {
         informationSequencing: [
@@ -959,8 +959,8 @@ export class CognitiveScientist extends BaseAgent {
   }
 
   private async createImplementationGuidance(
-    request: CognitiveAnalysisRequest,
-    expertModel: ExpertThinkingModel
+    _request: CognitiveAnalysisRequest,
+    _expertModel: ExpertThinkingModel
   ) {
     return {
       thinkingProcessIntegration: [
@@ -991,8 +991,8 @@ export class CognitiveScientist extends BaseAgent {
   }
 
   private async establishValidationMethods(
-    request: CognitiveAnalysisRequest,
-    expertModel: ExpertThinkingModel
+    _request: CognitiveAnalysisRequest,
+    _expertModel: ExpertThinkingModel
   ) {
     return {
       expertiseAccuracy: [

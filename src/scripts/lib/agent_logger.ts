@@ -95,7 +95,7 @@ export class AgentLogger {
       retention_days: config.retention_days || 30
     };
 
-    this.logsDir = join(this.config.base_dir!, 'logs', 'agents');
+    this.logsDir = join(this.config.base_dir || process.cwd(), 'logs', 'agents');
     this.ensureDirectoryExists();
     this.startFlushTimer();
   }
@@ -347,7 +347,7 @@ export class AgentLogger {
     this.logBuffer.push(entry);
 
     // Flush if buffer is full
-    if (this.logBuffer.length >= this.config.max_buffer_size!) {
+    if (this.logBuffer.length >= (this.config.max_buffer_size || 100)) {
       this.flush();
     }
   }
@@ -397,7 +397,7 @@ export class AgentLogger {
   private startFlushTimer(): void {
     this.flushTimer = setInterval(() => {
       this.flush();
-    }, this.config.flush_interval_ms!);
+    }, this.config.flush_interval_ms || 5000);
   }
 
   /**
