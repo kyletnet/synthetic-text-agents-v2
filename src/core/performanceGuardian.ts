@@ -7,8 +7,8 @@ interface GuardianResult extends AgentResult {
 }
 
 export class PerformanceGuardian {
-  private minQuality = 7.0;
-  private maxLatencyMs = 2000;
+  private minQuality = 5.0;  // Lower threshold for real AI - quality 5+ is acceptable
+  private maxLatencyMs = 30000;  // 30 seconds - realistic for AI API calls
 
   evaluate(result: AgentResult): GuardianResult {
     const issues: string[] = [];

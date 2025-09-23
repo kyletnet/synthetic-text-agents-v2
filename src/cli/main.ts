@@ -2,6 +2,7 @@
 import 'dotenv/config';
 import { Orchestrator } from '../core/orchestrator.js';
 import { QARequest } from '../shared/types.js';
+import { prewriteSessionMeta } from '../scripts/metrics/baselineReportGenerator.js';
 
 async function main() {
   console.log('🚀 Starting Synthetic Text Agents System...\n');
@@ -9,6 +10,14 @@ async function main() {
 
   try {
     await orchestrator.initialize();
+
+    // Generate session metadata for dx system
+    await prewriteSessionMeta({
+      profile: 'dev',
+      mode: process.env.MODE || 'production',
+      dryRun: process.env.DRY_RUN || 'false',
+      casesTotal: 1
+    });
 
     const request: QARequest = {
       topic: '초등 과학 – 물의 상태 변화',

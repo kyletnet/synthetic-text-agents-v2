@@ -354,7 +354,7 @@ export function generatePiiLicenseReport(metrics: PiiLicenseMetrics): string {
 /**
  * CLI entry point for testing
  */
-if (require.main === module) {
+if (import.meta.url === new URL(process.argv[1], "file://").href) {
   // Test with sample data including potential violations
   const sampleQA: QAItem[] = [
     {

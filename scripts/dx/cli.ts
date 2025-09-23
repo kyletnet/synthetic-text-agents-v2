@@ -4,6 +4,7 @@
  * Orchestrates the complete diagnostic loop: collect→analyze→calibrate→gate→report
  */
 
+import 'dotenv/config';
 import { program } from 'commander';
 import { collectSessionData } from './collect_session.js';
 import { checkConsistency } from './check_consistency.js';

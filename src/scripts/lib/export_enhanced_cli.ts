@@ -126,7 +126,7 @@ function showUsage() {
 }
 
 // Run if this is the main module
-if (require.main === module) {
+if (import.meta.url === new URL(process.argv[1], "file://").href) {
   main().catch(error => {
     console.error('Fatal error:', error);
     process.exit(1);

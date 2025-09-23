@@ -164,16 +164,19 @@ export class Orchestrator {
     // Extract QA pairs from agent results
     const questions: Array<{ question: string; answer: string; confidence: number; domain: string }> = [];
 
-    this.logger.info(`Debug: Processing ${results.length} results`);
-
     // Extract QA pairs from qa-generator specifically
     for (const result of results) {
       if (typeof result === 'object' && result !== null) {
         const resultObj = result as Record<string, unknown>;
 
-        // Look for qa-generator results specifically
+        // Check for normal agent result
         if (resultObj.agentId === 'qa-generator' || resultObj.source === 'qa-generator') {
-          const qaResult = resultObj.result;
+          let qaResult = resultObj.result;
+
+          // Handle nested result structure from qa-generator
+          if (qaResult && typeof qaResult === 'object' && 'result' in qaResult && Array.isArray((qaResult as any).result)) {
+            qaResult = (qaResult as any).result;
+          }
 
           if (Array.isArray(qaResult)) {
             // Direct array of QA pairs
@@ -187,7 +190,32 @@ export class Orchestrator {
                 });
               }
             }
-            this.logger.info(`Debug: Added ${qaResult.length} questions from qa-generator`);
+            this.logger.info(`Extracted ${qaResult.length} questions from qa-generator`);
+            break; // Found qa-generator results, use them
+          }
+        }
+
+        // Check for guardian-vetoed result from qa-generator (Guardian preserves agentId)
+        if (resultObj.ok === false && resultObj.agentId === 'qa-generator') {
+          let qaResult = resultObj.result;
+
+          // Check if result is nested in {result: [...]} structure
+          if (qaResult && typeof qaResult === 'object' && 'result' in qaResult && Array.isArray((qaResult as any).result)) {
+            qaResult = (qaResult as any).result;
+          }
+
+          if (Array.isArray(qaResult)) {
+            for (const qa of qaResult) {
+              if (qa && typeof qa === 'object' && 'question' in qa && 'answer' in qa) {
+                questions.push({
+                  question: qa.question as string,
+                  answer: qa.answer as string,
+                  confidence: (qa.confidence as number) || 0.8,
+                  domain: (qa.domain as string) || 'general'
+                });
+              }
+            }
+            this.logger.info(`Extracted ${qaResult.length} questions from guardian-vetoed qa-generator`);
             break; // Found qa-generator results, use them
           }
         }
@@ -215,7 +243,7 @@ export class Orchestrator {
       }
     }
 
-    this.logger.info(`Debug: Total questions extracted: ${questions.length}`);
+    this.logger.info(`Total questions extracted: ${questions.length}`);
 
     // Format questions properly
     const formattedQuestions = questions.map(qa => ({

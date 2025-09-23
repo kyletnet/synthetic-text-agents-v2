@@ -1,5 +1,5 @@
 import { BaseAgent } from './baseAgent.js';
-import { TaskRequest, AgentContext, TaskRequestSchema } from '../shared/types.js';
+import { QARequest, AgentContext, QARequestSchema } from '../shared/types.js';
 import { Logger } from '../shared/logger.js';
 
 export interface ComplexityAnalysis {
@@ -63,22 +63,22 @@ export class MetaController extends BaseAgent {
     };
   }
 
-  private parseTaskRequest(content: unknown): TaskRequest {
+  private parseTaskRequest(content: unknown): QARequest {
     if (typeof content === 'object' && content !== null) {
-      return TaskRequestSchema.parse(content);
+      return QARequestSchema.parse(content);
     }
-    
+
     throw new Error('Invalid task request format');
   }
 
-  private async analyzeComplexity(request: TaskRequest, context?: AgentContext): Promise<ComplexityAnalysis> {
+  private async analyzeComplexity(request: QARequest, context?: AgentContext): Promise<ComplexityAnalysis> {
     const start = Date.now();
 
     await this.logger.trace({
       level: 'debug',
       agentId: this.id,
       action: 'complexity_analysis_started',
-      data: { taskId: request.id, domain: request.domain },
+      data: { taskId: context?.taskId || 'unknown', domain: request.domainContext || 'general' },
     });
 
     const factors = {
@@ -105,7 +105,7 @@ export class MetaController extends BaseAgent {
       agentId: this.id,
       action: 'complexity_analysis_completed',
       data: { 
-        taskId: request.id,
+        taskId: context?.taskId || 'unknown',
         complexityScore: score,
         recommendedAgentCount: recommendedAgents.length,
       },
@@ -115,11 +115,12 @@ export class MetaController extends BaseAgent {
     return analysis;
   }
 
-  private assessDomainSpecificity(request: TaskRequest): number {
+  private assessDomainSpecificity(request: QARequest): number {
     const specializedDomains = ['healthcare', 'legal', 'finance', 'scientific'];
-    const isSpecialized = specializedDomains.includes(request.domain.toLowerCase());
-    
-    const hasSpecialization = !!request.specialization;
+    const domain = request.domainContext || 'general';
+    const isSpecialized = specializedDomains.includes(domain.toLowerCase());
+
+    const hasSpecialization = domain !== 'general';
     const qualityTarget = request.qualityTarget || 8;
     
     let score = 3;
@@ -130,22 +131,22 @@ export class MetaController extends BaseAgent {
     return Math.min(score, 5);
   }
 
-  private assessTechnicalDepth(request: TaskRequest): number {
-    const description = request.description.toLowerCase();
+  private assessTechnicalDepth(request: QARequest): number {
+    const topic = request.topic.toLowerCase();
     const technicalKeywords = [
       'implementation', 'algorithm', 'architecture', 'integration',
       'protocol', 'framework', 'api', 'system', 'technical'
     ];
     
-    const keywordCount = technicalKeywords.filter(keyword => 
-      description.includes(keyword)
+    const keywordCount = technicalKeywords.filter(keyword =>
+      topic.includes(keyword)
     ).length;
     
     return Math.min(Math.ceil(keywordCount / 2) + 1, 5);
   }
 
-  private assessUserComplexity(request: TaskRequest): number {
-    const quantity = request.quantity || 100;
+  private assessUserComplexity(request: QARequest): number {
+    const quantity = request.count || 5;
     const qualityTarget = request.qualityTarget || 8;
     
     let score = 2;
@@ -157,15 +158,15 @@ export class MetaController extends BaseAgent {
     return Math.min(score, 5);
   }
 
-  private assessInnovationRequirement(request: TaskRequest): number {
-    const description = request.description.toLowerCase();
+  private assessInnovationRequirement(request: QARequest): number {
+    const topic = request.topic.toLowerCase();
     const innovationKeywords = [
       'novel', 'innovative', 'creative', 'unique', 'breakthrough',
       'cutting-edge', 'pioneering', 'revolutionary', 'new approach'
     ];
     
-    const hasInnovation = innovationKeywords.some(keyword => 
-      description.includes(keyword)
+    const hasInnovation = innovationKeywords.some(keyword =>
+      topic.includes(keyword)
     );
     
     const qualityTarget = request.qualityTarget || 8;
@@ -176,15 +177,15 @@ export class MetaController extends BaseAgent {
     return Math.min(score, 5);
   }
 
-  private assessInterdisciplinaryNeeds(request: TaskRequest): number {
-    const description = request.description.toLowerCase();
+  private assessInterdisciplinaryNeeds(request: QARequest): number {
+    const topic = request.topic.toLowerCase();
     const disciplines = [
       'psychology', 'linguistics', 'cognitive', 'behavioral',
       'social', 'cultural', 'economic', 'technical', 'creative'
     ];
     
-    const disciplineCount = disciplines.filter(discipline => 
-      description.includes(discipline)
+    const disciplineCount = disciplines.filter(discipline =>
+      topic.includes(discipline)
     ).length;
     
     return Math.min(disciplineCount + 1, 5);
@@ -258,7 +259,7 @@ export class MetaController extends BaseAgent {
 
   private async selectOptimalAgents(
     analysis: ComplexityAnalysis,
-    request: TaskRequest
+    request: QARequest
   ): Promise<ExpertSummons> {
     const { score, factors } = analysis;
 
@@ -310,7 +311,7 @@ export class MetaController extends BaseAgent {
   }
 
   private async defineQualityGates(
-    request: TaskRequest,
+    request: QARequest,
     analysis: ComplexityAnalysis
   ): Promise<number[]> {
     const target = request.qualityTarget || 8;

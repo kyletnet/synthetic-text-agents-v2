@@ -68,7 +68,7 @@ export interface AdapterResult {
 export class AnthropicAdapter {
   private readonly clientPath: string;
 
-  constructor(clientPath = './tools/anthropic_client.sh') {
+  constructor(clientPath = 'tools/anthropic_client.sh') {
     this.clientPath = clientPath;
   }
 
@@ -88,11 +88,19 @@ export class AnthropicAdapter {
       // Set environment variables for the wrapper
       const env: Record<string, string> = {
         ...process.env,
+        // Ensure critical environment variables are explicitly set
+        ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY || '',
+        ANTHROPIC_API_KEY_BACKUP: process.env.ANTHROPIC_API_KEY_BACKUP || '',
+        DRY_RUN: process.env.DRY_RUN || 'false',
+        FEATURE_LLM_QA: process.env.FEATURE_LLM_QA || 'true',
+        LLM_MODEL: 'claude-3-5-sonnet-latest', // Force Anthropic model
         LLM_TIMEOUT_MS: (opts.timeoutMs || 180000).toString(),
         RUN_ID: runId,
         ITEM_ID: itemId,
         AGENT_ROLE: agentRole,
       };
+
+      // Environment variables configured for wrapper
 
       if (opts.budgetCents) {
         env.LLM_COST_CAP_USD = (opts.budgetCents / 100).toString();
@@ -106,7 +114,16 @@ export class AnthropicAdapter {
       // Parse and classify the response
       if (result.exitCode === 0) {
         try {
-          const response: AnthropicResponse = JSON.parse(result.stdout);
+          // Extract JSON from stdout (wrapper includes log messages)
+          const jsonStart = result.stdout.indexOf('{"id":');
+          if (jsonStart === -1) {
+            throw new Error('No JSON response found in wrapper output');
+          }
+          const jsonStr = result.stdout.substring(jsonStart);
+
+          // JSON extracted successfully
+
+          const response: AnthropicResponse = JSON.parse(jsonStr);
 
           // Extract cost information from usage
           const cost = this.calculateCost(response, payload.model);
@@ -130,6 +147,7 @@ export class AnthropicAdapter {
             retries: 0,
           };
         } catch (parseError) {
+
           return {
             success: false,
             error: {
@@ -159,6 +177,8 @@ export class AnthropicAdapter {
             },
           };
         }
+
+        // Wrapper script failed
 
         // Log error telemetry
         this.logTelemetry({
@@ -214,7 +234,7 @@ export class AnthropicAdapter {
   private preparePayload(payload: AnthropicChatPayload): string {
     // Convert to the format expected by tools/anthropic_client.sh
     const wrapperPayload: any = {
-      model: payload.model || 'claude-3-5-sonnet-20241022',
+      model: 'claude-3-5-sonnet-20241022', // Force Anthropic model, ignore payload.model
       max_tokens: payload.max_tokens || 1000,
       messages: payload.messages,
       temperature: payload.temperature,
@@ -389,7 +409,10 @@ export class LLMAdapter {
       if (result.success && result.data) {
         const text = result.data.content.map(c => c.text || '').join('\n').trim();
 
-        if (!text.startsWith('{')) {
+        // LLM response received
+
+        // Check if it's a valid JSON (could start with [ for arrays)
+        if (!text.startsWith('{') && !text.startsWith('[')) {
           if (i === maxRetries - 1) {
             throw new Error('Non-JSON response after all retries');
           }
