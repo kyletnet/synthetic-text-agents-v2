@@ -1,6 +1,6 @@
 {
   "name": "meta-adaptive-expert-orchestration",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "AI-powered QA generation using 8-Agent collaboration",
   "main": "dist/cli/main.js",
   "type": "module",
