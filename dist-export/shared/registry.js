@@ -11,25 +11,25 @@ import { MetaController } from "../core/metaController.js";
 // Re-export BaseAgent for convenience
 export { BaseAgent };
 export class AgentRegistry {
-    agents = new Map();
-    constructor() {
-        // Register core agents
-        this.register(new PromptArchitect());
-        this.register(new QAGenerator());
-        this.register(new QualityAuditor());
-        // Register expert council agents
-        this.register(new PsychologySpecialist(new Logger()));
-        this.register(new LinguisticsEngineer(new Logger()));
-        this.register(new DomainConsultant(new Logger()));
-        this.register(new CognitiveScientist(new Logger()));
-        // Register meta-controller as a comprehensive orchestrator
-        this.register(new MetaController(new Logger()));
-    }
-    register(agent) {
-        this.agents.set(agent.id, agent);
-    }
-    getAgent(id) {
-        return this.agents.get(id);
-    }
+  agents = new Map();
+  constructor() {
+    // Register core agents
+    this.register(new PromptArchitect());
+    this.register(new QAGenerator());
+    this.register(new QualityAuditor());
+    // Register expert council agents
+    this.register(new PsychologySpecialist(new Logger()));
+    this.register(new LinguisticsEngineer(new Logger()));
+    this.register(new DomainConsultant(new Logger()));
+    this.register(new CognitiveScientist(new Logger()));
+    // Register meta-controller as a comprehensive orchestrator
+    this.register(new MetaController(new Logger()));
+  }
+  register(agent) {
+    this.agents.set(agent.id, agent);
+  }
+  getAgent(id) {
+    return this.agents.get(id);
+  }
 }
 //# sourceMappingURL=registry.js.map

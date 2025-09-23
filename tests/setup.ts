@@ -10,7 +10,7 @@ beforeAll(() => {
   // Set up test environment variables
   process.env.NODE_ENV = "test";
   process.env.ENVIRONMENT = "test";
-  process.env.ANTHROPIC_API_KEY = "sk-ant-test-key-for-testing-only";
+  process.env.ANTHROPIC_API_KEY = "test-key-placeholder-for-testing-only";
   process.env.OPENAI_API_KEY = "sk-test-key-for-testing-only";
 
   // Disable real API calls in tests

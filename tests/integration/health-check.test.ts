@@ -10,7 +10,7 @@ import { TestUtils } from "../setup";
 describe("Health Check Integration", () => {
   beforeEach(() => {
     // Reset environment for each test
-    process.env.ANTHROPIC_API_KEY = "sk-ant-test-key";
+    process.env.ANTHROPIC_API_KEY = "test-key-placeholder";
     process.env.NODE_ENV = "test";
     process.env.ENVIRONMENT = "test";
   });

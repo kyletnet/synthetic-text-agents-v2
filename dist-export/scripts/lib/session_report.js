@@ -1,151 +1,153 @@
 import * as fs from "fs";
 import * as path from "path";
 export class SessionReportManager {
-    finalWriteCompleted = false;
-    /**
-     * Enforce cases total consistency - if CASES_TOTAL is 0, RESULT cannot be PASS
-     */
-    static enforceCasesTotal(fields) {
-        if (fields.CASES_TOTAL === 0 &&
-            fields.MODE === "smoke" &&
-            fields.RESULT === "PASS") {
-            // Even smoke mode should have some cases if it actually ran
-            fields.RESULT = "FAIL";
-            fields.NOTES = `${fields.NOTES || ""} | zero_cases_detected`.trim();
-        }
-        return fields;
+  finalWriteCompleted = false;
+  /**
+   * Enforce cases total consistency - if CASES_TOTAL is 0, RESULT cannot be PASS
+   */
+  static enforceCasesTotal(fields) {
+    if (
+      fields.CASES_TOTAL === 0 &&
+      fields.MODE === "smoke" &&
+      fields.RESULT === "PASS"
+    ) {
+      // Even smoke mode should have some cases if it actually ran
+      fields.RESULT = "FAIL";
+      fields.NOTES = `${fields.NOTES || ""} | zero_cases_detected`.trim();
     }
-    /**
-     * Map RUN_STATE to RESULT for consistency
-     */
-    static mapRunStateToResult(runState) {
-        switch (runState) {
-            case "SUCCESS":
-                return "PASS";
-            case "FAIL":
-                return "FAIL";
-            case "SKIPPED":
-                return "SKIPPED";
-            case "QUEUED":
-            case "RUNNING":
-                return "FAIL"; // Unexpected termination
-            default:
-                return "SKIPPED";
-        }
+    return fields;
+  }
+  /**
+   * Map RUN_STATE to RESULT for consistency
+   */
+  static mapRunStateToResult(runState) {
+    switch (runState) {
+      case "SUCCESS":
+        return "PASS";
+      case "FAIL":
+        return "FAIL";
+      case "SKIPPED":
+        return "SKIPPED";
+      case "QUEUED":
+      case "RUNNING":
+        return "FAIL"; // Unexpected termination
+      default:
+        return "SKIPPED";
     }
-    /**
-     * Validate and sanitize field values
-     */
-    static validateFields(fields) {
-        const validated = { ...fields };
-        // Ensure numeric fields are valid
-        validated.CASES_TOTAL = Math.max(0, Number(validated.CASES_TOTAL) || 0);
-        validated.CASES_PASSED = Math.max(0, Number(validated.CASES_PASSED) || 0);
-        validated.WARNINGS = Math.max(0, Number(validated.WARNINGS) || 0);
-        validated.DURATION_MS = Math.max(0, Number(validated.DURATION_MS) || 0);
-        validated.PANEL_SIZE = Math.max(1, Number(validated.PANEL_SIZE) || 1);
-        validated.TOKENS_EST = Math.max(0, Number(validated.TOKENS_EST) || 0);
-        // Ensure string fields are not undefined
-        validated.BUDGET_USD = validated.BUDGET_USD || "0.00";
-        validated.COST_USD = validated.COST_USD || "0.00";
-        validated.PASS_RATE = validated.PASS_RATE || "0.00";
-        validated.MEAN_SCORE = validated.MEAN_SCORE || "0.00";
-        validated.P50_MS = validated.P50_MS || "0";
-        validated.P95_MS = validated.P95_MS || "0";
-        validated.TOP_FAIL_REASONS = validated.TOP_FAIL_REASONS || "[]";
-        validated.ERROR_CLASS = validated.ERROR_CLASS || "";
-        validated.CHANGED_FILES = validated.CHANGED_FILES || "[]";
-        validated.NOTES = validated.NOTES || "";
-        // Enforce consistency rules
-        return this.enforceCasesTotal(validated);
+  }
+  /**
+   * Validate and sanitize field values
+   */
+  static validateFields(fields) {
+    const validated = { ...fields };
+    // Ensure numeric fields are valid
+    validated.CASES_TOTAL = Math.max(0, Number(validated.CASES_TOTAL) || 0);
+    validated.CASES_PASSED = Math.max(0, Number(validated.CASES_PASSED) || 0);
+    validated.WARNINGS = Math.max(0, Number(validated.WARNINGS) || 0);
+    validated.DURATION_MS = Math.max(0, Number(validated.DURATION_MS) || 0);
+    validated.PANEL_SIZE = Math.max(1, Number(validated.PANEL_SIZE) || 1);
+    validated.TOKENS_EST = Math.max(0, Number(validated.TOKENS_EST) || 0);
+    // Ensure string fields are not undefined
+    validated.BUDGET_USD = validated.BUDGET_USD || "0.00";
+    validated.COST_USD = validated.COST_USD || "0.00";
+    validated.PASS_RATE = validated.PASS_RATE || "0.00";
+    validated.MEAN_SCORE = validated.MEAN_SCORE || "0.00";
+    validated.P50_MS = validated.P50_MS || "0";
+    validated.P95_MS = validated.P95_MS || "0";
+    validated.TOP_FAIL_REASONS = validated.TOP_FAIL_REASONS || "[]";
+    validated.ERROR_CLASS = validated.ERROR_CLASS || "";
+    validated.CHANGED_FILES = validated.CHANGED_FILES || "[]";
+    validated.NOTES = validated.NOTES || "";
+    // Enforce consistency rules
+    return this.enforceCasesTotal(validated);
+  }
+  /**
+   * Get DLQ information
+   */
+  static getDLQInfo() {
+    const dlqDir = "reports/dlq";
+    const indexPath = path.join(dlqDir, "index.jsonl");
+    let count = 0;
+    let lastRunId;
+    try {
+      if (fs.existsSync(indexPath)) {
+        const lines = fs
+          .readFileSync(indexPath, "utf-8")
+          .trim()
+          .split("\n")
+          .filter((line) => line.trim());
+        count = lines.length;
+        if (lines.length > 0) {
+          try {
+            const lastEntry = JSON.parse(lines[lines.length - 1]);
+            lastRunId = lastEntry.run_id;
+          } catch (_e) {
+            // Ignore parse errors
+          }
+        }
+      }
+    } catch (e) {
+      // Ignore file system errors
     }
-    /**
-     * Get DLQ information
-     */
-    static getDLQInfo() {
-        const dlqDir = "reports/dlq";
-        const indexPath = path.join(dlqDir, "index.jsonl");
-        let count = 0;
-        let lastRunId;
-        try {
-            if (fs.existsSync(indexPath)) {
-                const lines = fs
-                    .readFileSync(indexPath, "utf-8")
-                    .trim()
-                    .split("\n")
-                    .filter((line) => line.trim());
-                count = lines.length;
-                if (lines.length > 0) {
-                    try {
-                        const lastEntry = JSON.parse(lines[lines.length - 1]);
-                        lastRunId = lastEntry.run_id;
-                    }
-                    catch (_e) {
-                        // Ignore parse errors
-                    }
-                }
-            }
-        }
-        catch (e) {
-            // Ignore file system errors
-        }
-        const info = { count };
-        if (typeof lastRunId === "string")
-            info.lastRunId = lastRunId;
-        return info;
+    const info = { count };
+    if (typeof lastRunId === "string") info.lastRunId = lastRunId;
+    return info;
+  }
+  /**
+   * Atomic write with tmp/rename pattern
+   */
+  writeSessionReportFinal(fields) {
+    if (this.finalWriteCompleted) {
+      console.warn(
+        "[SESSION_REPORT] Final write already completed, skipping duplicate write",
+      );
+      return;
     }
-    /**
-     * Atomic write with tmp/rename pattern
-     */
-    writeSessionReportFinal(fields) {
-        if (this.finalWriteCompleted) {
-            console.warn("[SESSION_REPORT] Final write already completed, skipping duplicate write");
-            return;
-        }
-        // Validate and sanitize fields
-        const validatedFields = SessionReportManager.validateFields(fields);
-        // Ensure RUN_STATE/RESULT consistency
-        if (validatedFields.RUN_STATE && !validatedFields.RESULT) {
-            validatedFields.RESULT = SessionReportManager.mapRunStateToResult(validatedFields.RUN_STATE);
-        }
-        // Get DLQ information
-        const dlqInfo = SessionReportManager.getDLQInfo();
-        validatedFields.DLQ_COUNT = dlqInfo.count;
-        if (dlqInfo.lastRunId)
-            validatedFields.LAST_DLQ_RUN_ID = dlqInfo.lastRunId;
-        // Ensure reports directory exists
-        const reportsDir = "reports";
-        if (!fs.existsSync(reportsDir)) {
-            fs.mkdirSync(reportsDir, { recursive: true });
-        }
-        // Generate report content
-        const reportContent = this.generateReportContent(validatedFields);
-        // Atomic write: tmp -> rename
-        const finalPath = path.join(reportsDir, "session_report.md");
-        const tmpPath = `${finalPath}.tmp.${process.pid}`;
-        try {
-            fs.writeFileSync(tmpPath, reportContent, "utf-8");
-            fs.renameSync(tmpPath, finalPath);
-            this.finalWriteCompleted = true;
-            console.log(`[SESSION_REPORT] Final report written atomically: ${finalPath}`);
-        }
-        catch (error) {
-            // Clean up tmp file on error
-            try {
-                fs.unlinkSync(tmpPath);
-            }
-            catch (_e) {
-                // Ignore cleanup errors
-            }
-            throw error;
-        }
+    // Validate and sanitize fields
+    const validatedFields = SessionReportManager.validateFields(fields);
+    // Ensure RUN_STATE/RESULT consistency
+    if (validatedFields.RUN_STATE && !validatedFields.RESULT) {
+      validatedFields.RESULT = SessionReportManager.mapRunStateToResult(
+        validatedFields.RUN_STATE,
+      );
     }
-    /**
-     * Generate the complete session report content
-     */
-    generateReportContent(fields) {
-        const timestamp = new Date().toISOString();
-        return `# Session Report
+    // Get DLQ information
+    const dlqInfo = SessionReportManager.getDLQInfo();
+    validatedFields.DLQ_COUNT = dlqInfo.count;
+    if (dlqInfo.lastRunId) validatedFields.LAST_DLQ_RUN_ID = dlqInfo.lastRunId;
+    // Ensure reports directory exists
+    const reportsDir = "reports";
+    if (!fs.existsSync(reportsDir)) {
+      fs.mkdirSync(reportsDir, { recursive: true });
+    }
+    // Generate report content
+    const reportContent = this.generateReportContent(validatedFields);
+    // Atomic write: tmp -> rename
+    const finalPath = path.join(reportsDir, "session_report.md");
+    const tmpPath = `${finalPath}.tmp.${process.pid}`;
+    try {
+      fs.writeFileSync(tmpPath, reportContent, "utf-8");
+      fs.renameSync(tmpPath, finalPath);
+      this.finalWriteCompleted = true;
+      console.log(
+        `[SESSION_REPORT] Final report written atomically: ${finalPath}`,
+      );
+    } catch (error) {
+      // Clean up tmp file on error
+      try {
+        fs.unlinkSync(tmpPath);
+      } catch (_e) {
+        // Ignore cleanup errors
+      }
+      throw error;
+    }
+  }
+  /**
+   * Generate the complete session report content
+   */
+  generateReportContent(fields) {
+    const timestamp = new Date().toISOString();
+    return `# Session Report
 
 ## Summary Block (Copy for Operational Reviews)
 
@@ -206,125 +208,127 @@ LAST_DLQ_RUN_ID: ${fields.LAST_DLQ_RUN_ID || ""}
 
 ${this.getDLQStatus(fields.DLQ_COUNT || 0)}
 `;
+  }
+  /**
+   * Get number of entrypoints
+   */
+  getEntrypointCount() {
+    try {
+      const content = fs.readFileSync("scripts/entrypoints.jsonl", "utf-8");
+      return content
+        .trim()
+        .split("\n")
+        .filter((line) => line.trim())
+        .length.toString();
+    } catch (e) {
+      return "unknown";
     }
-    /**
-     * Get number of entrypoints
-     */
-    getEntrypointCount() {
-        try {
-            const content = fs.readFileSync("scripts/entrypoints.jsonl", "utf-8");
-            return content
-                .trim()
-                .split("\n")
-                .filter((line) => line.trim())
-                .length.toString();
-        }
-        catch (e) {
-            return "unknown";
-        }
+  }
+  /**
+   * Get git status
+   */
+  getGitStatus() {
+    try {
+      if (typeof require !== "undefined") {
+        const { execSync } = require("child_process");
+        const output = execSync(
+          'git status --porcelain 2>/dev/null || echo ""',
+          { encoding: "utf-8" },
+        );
+        return output
+          .trim()
+          .split("\n")
+          .filter((line) => line.trim())
+          .length.toString();
+      }
+      return "unknown";
+    } catch (e) {
+      return "unknown";
     }
-    /**
-     * Get git status
-     */
-    getGitStatus() {
-        try {
-            if (typeof require !== "undefined") {
-                const { execSync } = require("child_process");
-                const output = execSync('git status --porcelain 2>/dev/null || echo ""', { encoding: "utf-8" });
-                return output
-                    .trim()
-                    .split("\n")
-                    .filter((line) => line.trim())
-                    .length.toString();
+  }
+  /**
+   * Get DLQ status description
+   */
+  getDLQStatus(dlqCount) {
+    if (dlqCount === 0) {
+      return "No failed runs in DLQ";
+    }
+    const dlqDir = "reports/dlq";
+    try {
+      if (fs.existsSync(dlqDir)) {
+        const entries = fs
+          .readdirSync(dlqDir)
+          .filter(
+            (name) =>
+              name !== "index.jsonl" &&
+              fs.statSync(path.join(dlqDir, name)).isDirectory(),
+          )
+          .sort((a, b) => {
+            try {
+              const statA = fs.statSync(path.join(dlqDir, a));
+              const statB = fs.statSync(path.join(dlqDir, b));
+              return statB.mtime.getTime() - statA.mtime.getTime();
+            } catch (_e) {
+              return 0;
             }
-            return "unknown";
-        }
-        catch (e) {
-            return "unknown";
-        }
-    }
-    /**
-     * Get DLQ status description
-     */
-    getDLQStatus(dlqCount) {
-        if (dlqCount === 0) {
-            return "No failed runs in DLQ";
-        }
-        const dlqDir = "reports/dlq";
-        try {
-            if (fs.existsSync(dlqDir)) {
-                const entries = fs
-                    .readdirSync(dlqDir)
-                    .filter((name) => name !== "index.jsonl" &&
-                    fs.statSync(path.join(dlqDir, name)).isDirectory())
-                    .sort((a, b) => {
-                    try {
-                        const statA = fs.statSync(path.join(dlqDir, a));
-                        const statB = fs.statSync(path.join(dlqDir, b));
-                        return statB.mtime.getTime() - statA.mtime.getTime();
-                    }
-                    catch (_e) {
-                        return 0;
-                    }
-                })
-                    .slice(0, 3);
-                return `Failed runs in DLQ: ${dlqCount}
+          })
+          .slice(0, 3);
+        return `Failed runs in DLQ: ${dlqCount}
 Latest DLQ entries:
 ${entries.map((entry) => `- ${entry}`).join("\n")}`;
-            }
-        }
-        catch (e) {
-            // Ignore errors
-        }
-        return `Failed runs in DLQ: ${dlqCount}`;
+      }
+    } catch (e) {
+      // Ignore errors
     }
+    return `Failed runs in DLQ: ${dlqCount}`;
+  }
 }
 // CLI interface for Node.js execution
 if (typeof require !== "undefined" && require.main === module) {
-    const args = process.argv.slice(2);
-    if (args.length === 0) {
-        console.error("Usage: node session_report.js --write-final --session-id <id> --result <result> ...");
-        process.exit(1);
+  const args = process.argv.slice(2);
+  if (args.length === 0) {
+    console.error(
+      "Usage: node session_report.js --write-final --session-id <id> --result <result> ...",
+    );
+    process.exit(1);
+  }
+  const fields = {};
+  for (let i = 0; i < args.length; i += 2) {
+    const key = args[i]?.replace("--", "").replace(/-/g, "_").toUpperCase();
+    const value = args[i + 1];
+    if (key && value !== undefined) {
+      // Handle special field types
+      if (["DRY_RUN", "OFFLINE_MODE", "RETRY_FROM_DLQ"].includes(key)) {
+        fields[key] = value.toLowerCase() === "true";
+      } else if (
+        [
+          "DURATION_MS",
+          "PANEL_SIZE",
+          "TOKENS_EST",
+          "CASES_TOTAL",
+          "CASES_PASSED",
+          "WARNINGS",
+          "RETRY_COUNT",
+        ].includes(key)
+      ) {
+        fields[key] = parseInt(value, 10) || 0;
+      } else {
+        fields[key] = value;
+      }
     }
-    const fields = {};
-    for (let i = 0; i < args.length; i += 2) {
-        const key = args[i]?.replace("--", "").replace(/-/g, "_").toUpperCase();
-        const value = args[i + 1];
-        if (key && value !== undefined) {
-            // Handle special field types
-            if (["DRY_RUN", "OFFLINE_MODE", "RETRY_FROM_DLQ"].includes(key)) {
-                fields[key] = value.toLowerCase() === "true";
-            }
-            else if ([
-                "DURATION_MS",
-                "PANEL_SIZE",
-                "TOKENS_EST",
-                "CASES_TOTAL",
-                "CASES_PASSED",
-                "WARNINGS",
-                "RETRY_COUNT",
-            ].includes(key)) {
-                fields[key] = parseInt(value, 10) || 0;
-            }
-            else {
-                fields[key] = value;
-            }
-        }
+  }
+  if (args.includes("--write-final")) {
+    const manager = new SessionReportManager();
+    try {
+      manager.writeSessionReportFinal(fields);
+      console.log("Session report written successfully");
+    } catch (error) {
+      console.error("Failed to write session report:", error);
+      process.exit(1);
     }
-    if (args.includes("--write-final")) {
-        const manager = new SessionReportManager();
-        try {
-            manager.writeSessionReportFinal(fields);
-            console.log("Session report written successfully");
-        }
-        catch (error) {
-            console.error("Failed to write session report:", error);
-            process.exit(1);
-        }
-    }
-    else {
-        console.error("No action specified. Use --write-final");
-        process.exit(1);
-    }
+  } else {
+    console.error("No action specified. Use --write-final");
+    process.exit(1);
+  }
 }
 //# sourceMappingURL=session_report.js.map

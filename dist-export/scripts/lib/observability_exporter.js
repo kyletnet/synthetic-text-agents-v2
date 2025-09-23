@@ -5,240 +5,252 @@ import { promises as fs } from "fs";
 import { join } from "path";
 import { globSync } from "glob";
 export class ObservabilityExporter {
-    async exportTrace(runLogsDir, options) {
-        const logFiles = globSync(join(runLogsDir, "*.jsonl"));
-        const traceTree = {
-            runs: {},
-            global_summary: {
-                total_runs: 0,
-                total_operations: 0,
-                total_cost_usd: 0,
-                total_duration_ms: 0,
-            },
-            timeline: [],
-        };
-        for (const logFile of logFiles) {
-            await this.processLogFile(logFile, traceTree, options);
-        }
-        this.computeGlobalSummary(traceTree);
-        this.buildTimeline(traceTree, options);
-        return traceTree;
+  async exportTrace(runLogsDir, options) {
+    const logFiles = globSync(join(runLogsDir, "*.jsonl"));
+    const traceTree = {
+      runs: {},
+      global_summary: {
+        total_runs: 0,
+        total_operations: 0,
+        total_cost_usd: 0,
+        total_duration_ms: 0,
+      },
+      timeline: [],
+    };
+    for (const logFile of logFiles) {
+      await this.processLogFile(logFile, traceTree, options);
     }
-    async processLogFile(logFile, traceTree, options) {
+    this.computeGlobalSummary(traceTree);
+    this.buildTimeline(traceTree, options);
+    return traceTree;
+  }
+  async processLogFile(logFile, traceTree, options) {
+    try {
+      const content = await fs.readFile(logFile, "utf8");
+      const lines = content
+        .trim()
+        .split("\n")
+        .filter((line) => line.trim());
+      for (const line of lines) {
         try {
-            const content = await fs.readFile(logFile, "utf8");
-            const lines = content
-                .trim()
-                .split("\n")
-                .filter((line) => line.trim());
-            for (const line of lines) {
-                try {
-                    const entry = JSON.parse(line);
-                    // Apply filters
-                    if (options.filterByComponent &&
-                        !options.filterByComponent.includes(entry.component)) {
-                        continue;
-                    }
-                    if (options.filterByRunId &&
-                        entry.run_id &&
-                        !options.filterByRunId.includes(entry.run_id)) {
-                        continue;
-                    }
-                    if (options.timeRange) {
-                        const entryTime = new Date(entry.timestamp);
-                        const startTime = new Date(options.timeRange.start);
-                        const endTime = new Date(options.timeRange.end);
-                        if (entryTime < startTime || entryTime > endTime) {
-                            continue;
-                        }
-                    }
-                    // Group by run_id (use canonical if provided)
-                    const runId = options.canonicalRunId || entry.run_id || "unknown";
-                    if (!traceTree.runs[runId]) {
-                        traceTree.runs[runId] = {
-                            run_id: runId,
-                            start_time: entry.timestamp,
-                            end_time: entry.timestamp,
-                            duration_ms: 0,
-                            total_cost_usd: 0,
-                            operations: [],
-                            agents: {},
-                            summary: {
-                                total_operations: 0,
-                                successful_operations: 0,
-                                failed_operations: 0,
-                                components: [],
-                            },
-                        };
-                    }
-                    const run = traceTree.runs[runId];
-                    // Update run metadata
-                    if (entry.timestamp < run.start_time) {
-                        run.start_time = entry.timestamp;
-                    }
-                    if (entry.timestamp > run.end_time) {
-                        run.end_time = entry.timestamp;
-                    }
-                    // Add operation (all entries for full trace)
-                    run.operations.push(entry);
-                    // Count only top-level spans as operations
-                    const isTopLevel = this.isTopLevelSpan(entry);
-                    if (isTopLevel) {
-                        // Check if this is a retry of an existing operation
-                        const existingOpIndex = run.topLevelOps?.findIndex((op) => entry.op_id && op.op_id === entry.op_id);
-                        if (!run.topLevelOps) {
-                            run.topLevelOps = [];
-                        }
-                        if (existingOpIndex !== undefined &&
-                            existingOpIndex >= 0 &&
-                            entry.op_id) {
-                            // Merge retry into existing operation (keep latest status/cost)
-                            run.topLevelOps[existingOpIndex] = entry;
-                        }
-                        else {
-                            // New top-level operation
-                            run.topLevelOps.push(entry);
-                        }
-                        // Recompute summary based on unique top-level operations
-                        run.summary.total_operations = run.topLevelOps.length;
-                        run.summary.successful_operations = run.topLevelOps.filter((op) => op.status === "completed" || op.status === "success").length;
-                        run.summary.failed_operations = run.topLevelOps.filter((op) => op.status === "failed" || op.status === "error").length;
-                    }
-                    // Track components
-                    if (!run.summary.components.includes(entry.component)) {
-                        run.summary.components.push(entry.component);
-                    }
-                    // Track costs
-                    if (entry.cost_usd) {
-                        run.total_cost_usd += entry.cost_usd;
-                    }
-                    // Track agent stats
-                    if (entry.agent_id) {
-                        if (!run.agents[entry.agent_id]) {
-                            run.agents[entry.agent_id] = {
-                                agent_id: entry.agent_id,
-                                operations: 0,
-                                total_cost_usd: 0,
-                                total_latency_ms: 0,
-                            };
-                        }
-                        const agent = run.agents[entry.agent_id];
-                        agent.operations++;
-                        if (entry.cost_usd)
-                            agent.total_cost_usd += entry.cost_usd;
-                        if (entry.latency_ms)
-                            agent.total_latency_ms += entry.latency_ms;
-                    }
-                }
-                catch (parseError) {
-                    console.warn(`Failed to parse log line: ${line.slice(0, 100)}...`);
-                }
+          const entry = JSON.parse(line);
+          // Apply filters
+          if (
+            options.filterByComponent &&
+            !options.filterByComponent.includes(entry.component)
+          ) {
+            continue;
+          }
+          if (
+            options.filterByRunId &&
+            entry.run_id &&
+            !options.filterByRunId.includes(entry.run_id)
+          ) {
+            continue;
+          }
+          if (options.timeRange) {
+            const entryTime = new Date(entry.timestamp);
+            const startTime = new Date(options.timeRange.start);
+            const endTime = new Date(options.timeRange.end);
+            if (entryTime < startTime || entryTime > endTime) {
+              continue;
             }
-        }
-        catch (error) {
-            console.warn(`Failed to process log file ${logFile}: ${error}`);
-        }
-    }
-    isTopLevelSpan(entry) {
-        // Check for explicit span_kind
-        if (entry.span_kind === "root") {
-            return true;
-        }
-        if (entry.span_kind === "child") {
-            return false;
-        }
-        // Check for explicit is_root flag
-        if (entry.is_root === true) {
-            return true;
-        }
-        if (entry.is_root === false) {
-            return false;
-        }
-        // Check for parentId (null/undefined means root)
-        if (entry.parentId === null || entry.parentId === undefined) {
-            return true;
-        }
-        // Default: treat as top-level if no span markers present (v1 logs)
-        // But we'll handle this in the checker by setting SKIP instead
-        return false;
-    }
-    computeGlobalSummary(traceTree) {
-        const summary = traceTree.global_summary;
-        summary.total_runs = Object.keys(traceTree.runs).length;
-        let mostExpensive;
-        let slowest;
-        for (const run of Object.values(traceTree.runs)) {
-            // Compute run duration
-            const startTime = new Date(run.start_time).getTime();
-            const endTime = new Date(run.end_time).getTime();
-            run.duration_ms = endTime - startTime;
-            // Round run cost to 2 decimal places for consistency
-            run.total_cost_usd = Math.round(run.total_cost_usd * 100) / 100;
-            summary.total_operations += run.summary.total_operations;
-            summary.total_cost_usd += run.total_cost_usd;
-            summary.total_duration_ms += run.duration_ms;
-            // Find most expensive and slowest operations
-            for (const op of run.operations) {
-                if (op.cost_usd &&
-                    (!mostExpensive || op.cost_usd > (mostExpensive.cost_usd || 0))) {
-                    mostExpensive = op;
-                }
-                if (op.latency_ms &&
-                    (!slowest || op.latency_ms > (slowest.latency_ms || 0))) {
-                    slowest = op;
-                }
-            }
-        }
-        // Round global summary cost to 2 decimal places
-        summary.total_cost_usd = Math.round(summary.total_cost_usd * 100) / 100;
-        if (mostExpensive)
-            summary.most_expensive_operation = mostExpensive;
-        if (slowest)
-            summary.slowest_operation = slowest;
-    }
-    buildTimeline(traceTree, options) {
-        if (!options.includeTimeline)
-            return;
-        const allOperations = [];
-        for (const run of Object.values(traceTree.runs)) {
-            for (const op of run.operations) {
-                allOperations.push({
-                    timestamp: op.timestamp,
-                    event: op.operation || op.level || "operation",
-                    run_id: run.run_id,
-                    component: op.component,
-                    details: {
-                        agent_id: op.agent_id,
-                        agent_role: op.agent_role,
-                        status: op.status,
-                        cost_usd: op.cost_usd,
-                        latency_ms: op.latency_ms,
-                    },
-                });
-            }
-        }
-        // Sort by timestamp
-        allOperations.sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
-        traceTree.timeline = allOperations;
-    }
-    async renderHTML(traceData, options) {
-        const theme = options.theme || "light";
-        const themeColors = theme === "dark"
-            ? {
-                bg: "#1a1a1a",
-                text: "#ffffff",
-                card: "#2d2d2d",
-                border: "#404040",
-                accent: "#4f46e5",
-            }
-            : {
-                bg: "#ffffff",
-                text: "#000000",
-                card: "#f8fafc",
-                border: "#e2e8f0",
-                accent: "#4f46e5",
+          }
+          // Group by run_id (use canonical if provided)
+          const runId = options.canonicalRunId || entry.run_id || "unknown";
+          if (!traceTree.runs[runId]) {
+            traceTree.runs[runId] = {
+              run_id: runId,
+              start_time: entry.timestamp,
+              end_time: entry.timestamp,
+              duration_ms: 0,
+              total_cost_usd: 0,
+              operations: [],
+              agents: {},
+              summary: {
+                total_operations: 0,
+                successful_operations: 0,
+                failed_operations: 0,
+                components: [],
+              },
             };
-        return `
+          }
+          const run = traceTree.runs[runId];
+          // Update run metadata
+          if (entry.timestamp < run.start_time) {
+            run.start_time = entry.timestamp;
+          }
+          if (entry.timestamp > run.end_time) {
+            run.end_time = entry.timestamp;
+          }
+          // Add operation (all entries for full trace)
+          run.operations.push(entry);
+          // Count only top-level spans as operations
+          const isTopLevel = this.isTopLevelSpan(entry);
+          if (isTopLevel) {
+            // Check if this is a retry of an existing operation
+            const existingOpIndex = run.topLevelOps?.findIndex(
+              (op) => entry.op_id && op.op_id === entry.op_id,
+            );
+            if (!run.topLevelOps) {
+              run.topLevelOps = [];
+            }
+            if (
+              existingOpIndex !== undefined &&
+              existingOpIndex >= 0 &&
+              entry.op_id
+            ) {
+              // Merge retry into existing operation (keep latest status/cost)
+              run.topLevelOps[existingOpIndex] = entry;
+            } else {
+              // New top-level operation
+              run.topLevelOps.push(entry);
+            }
+            // Recompute summary based on unique top-level operations
+            run.summary.total_operations = run.topLevelOps.length;
+            run.summary.successful_operations = run.topLevelOps.filter(
+              (op) => op.status === "completed" || op.status === "success",
+            ).length;
+            run.summary.failed_operations = run.topLevelOps.filter(
+              (op) => op.status === "failed" || op.status === "error",
+            ).length;
+          }
+          // Track components
+          if (!run.summary.components.includes(entry.component)) {
+            run.summary.components.push(entry.component);
+          }
+          // Track costs
+          if (entry.cost_usd) {
+            run.total_cost_usd += entry.cost_usd;
+          }
+          // Track agent stats
+          if (entry.agent_id) {
+            if (!run.agents[entry.agent_id]) {
+              run.agents[entry.agent_id] = {
+                agent_id: entry.agent_id,
+                operations: 0,
+                total_cost_usd: 0,
+                total_latency_ms: 0,
+              };
+            }
+            const agent = run.agents[entry.agent_id];
+            agent.operations++;
+            if (entry.cost_usd) agent.total_cost_usd += entry.cost_usd;
+            if (entry.latency_ms) agent.total_latency_ms += entry.latency_ms;
+          }
+        } catch (parseError) {
+          console.warn(`Failed to parse log line: ${line.slice(0, 100)}...`);
+        }
+      }
+    } catch (error) {
+      console.warn(`Failed to process log file ${logFile}: ${error}`);
+    }
+  }
+  isTopLevelSpan(entry) {
+    // Check for explicit span_kind
+    if (entry.span_kind === "root") {
+      return true;
+    }
+    if (entry.span_kind === "child") {
+      return false;
+    }
+    // Check for explicit is_root flag
+    if (entry.is_root === true) {
+      return true;
+    }
+    if (entry.is_root === false) {
+      return false;
+    }
+    // Check for parentId (null/undefined means root)
+    if (entry.parentId === null || entry.parentId === undefined) {
+      return true;
+    }
+    // Default: treat as top-level if no span markers present (v1 logs)
+    // But we'll handle this in the checker by setting SKIP instead
+    return false;
+  }
+  computeGlobalSummary(traceTree) {
+    const summary = traceTree.global_summary;
+    summary.total_runs = Object.keys(traceTree.runs).length;
+    let mostExpensive;
+    let slowest;
+    for (const run of Object.values(traceTree.runs)) {
+      // Compute run duration
+      const startTime = new Date(run.start_time).getTime();
+      const endTime = new Date(run.end_time).getTime();
+      run.duration_ms = endTime - startTime;
+      // Round run cost to 2 decimal places for consistency
+      run.total_cost_usd = Math.round(run.total_cost_usd * 100) / 100;
+      summary.total_operations += run.summary.total_operations;
+      summary.total_cost_usd += run.total_cost_usd;
+      summary.total_duration_ms += run.duration_ms;
+      // Find most expensive and slowest operations
+      for (const op of run.operations) {
+        if (
+          op.cost_usd &&
+          (!mostExpensive || op.cost_usd > (mostExpensive.cost_usd || 0))
+        ) {
+          mostExpensive = op;
+        }
+        if (
+          op.latency_ms &&
+          (!slowest || op.latency_ms > (slowest.latency_ms || 0))
+        ) {
+          slowest = op;
+        }
+      }
+    }
+    // Round global summary cost to 2 decimal places
+    summary.total_cost_usd = Math.round(summary.total_cost_usd * 100) / 100;
+    if (mostExpensive) summary.most_expensive_operation = mostExpensive;
+    if (slowest) summary.slowest_operation = slowest;
+  }
+  buildTimeline(traceTree, options) {
+    if (!options.includeTimeline) return;
+    const allOperations = [];
+    for (const run of Object.values(traceTree.runs)) {
+      for (const op of run.operations) {
+        allOperations.push({
+          timestamp: op.timestamp,
+          event: op.operation || op.level || "operation",
+          run_id: run.run_id,
+          component: op.component,
+          details: {
+            agent_id: op.agent_id,
+            agent_role: op.agent_role,
+            status: op.status,
+            cost_usd: op.cost_usd,
+            latency_ms: op.latency_ms,
+          },
+        });
+      }
+    }
+    // Sort by timestamp
+    allOperations.sort(
+      (a, b) =>
+        new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime(),
+    );
+    traceTree.timeline = allOperations;
+  }
+  async renderHTML(traceData, options) {
+    const theme = options.theme || "light";
+    const themeColors =
+      theme === "dark"
+        ? {
+            bg: "#1a1a1a",
+            text: "#ffffff",
+            card: "#2d2d2d",
+            border: "#404040",
+            accent: "#4f46e5",
+          }
+        : {
+            bg: "#ffffff",
+            text: "#000000",
+            card: "#f8fafc",
+            border: "#e2e8f0",
+            accent: "#4f46e5",
+          };
+    return `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -315,10 +327,10 @@ export class ObservabilityExporter {
     </script>
 </body>
 </html>`;
-    }
-    renderStats(traceData, colors) {
-        const summary = traceData.global_summary;
-        return `
+  }
+  renderStats(traceData, colors) {
+    const summary = traceData.global_summary;
+    return `
         <div class="card">
             <h2>Global Summary</h2>
             <div class="grid">
@@ -340,16 +352,19 @@ export class ObservabilityExporter {
                 </div>
             </div>
         </div>`;
-    }
-    renderRunDetails(traceData) {
-        let html = '<div class="card"><h2>Run Details</h2>';
-        for (const [runId, run] of Object.entries(traceData.runs)) {
-            const successRate = run.summary.total_operations > 0
-                ? ((run.summary.successful_operations /
-                    run.summary.total_operations) *
-                    100).toFixed(1)
-                : "0";
-            html += `
+  }
+  renderRunDetails(traceData) {
+    let html = '<div class="card"><h2>Run Details</h2>';
+    for (const [runId, run] of Object.entries(traceData.runs)) {
+      const successRate =
+        run.summary.total_operations > 0
+          ? (
+              (run.summary.successful_operations /
+                run.summary.total_operations) *
+              100
+            ).toFixed(1)
+          : "0";
+      html += `
         <div class="card">
             <h3>Run: ${runId}</h3>
             <div class="grid">
@@ -384,27 +399,28 @@ export class ObservabilityExporter {
                     </thead>
                     <tbody>
                         ${Object.values(run.agents)
-                .map((agent) => `
+                          .map(
+                            (agent) => `
                             <tr>
                                 <td>${agent.agent_id}</td>
                                 <td>${agent.operations}</td>
                                 <td>$${agent.total_cost_usd.toFixed(4)}</td>
                                 <td>${agent.total_latency_ms}ms</td>
                             </tr>
-                        `)
-                .join("")}
+                        `,
+                          )
+                          .join("")}
                     </tbody>
                 </table>
             </div>
         </div>`;
-        }
-        html += "</div>";
-        return html;
     }
-    renderTimeline(traceData) {
-        if (!traceData.timeline.length)
-            return "";
-        let html = `
+    html += "</div>";
+    return html;
+  }
+  renderTimeline(traceData) {
+    if (!traceData.timeline.length) return "";
+    let html = `
         <div class="card">
             <h2>Timeline</h2>
             <button class="expand-btn" onclick="toggleExpand('timeline-details')">
@@ -412,16 +428,17 @@ export class ObservabilityExporter {
             </button>
 
             <div id="timeline-details" class="expandable">`;
-        for (const event of traceData.timeline.slice(0, 100)) {
-            // Limit to first 100 events
-            const statusClass = event.details.status === "completed" ||
-                event.details.status === "success"
-                ? "status-success"
-                : event.details.status === "failed" ||
-                    event.details.status === "error"
-                    ? "status-failed"
-                    : "status-pending";
-            html += `
+    for (const event of traceData.timeline.slice(0, 100)) {
+      // Limit to first 100 events
+      const statusClass =
+        event.details.status === "completed" ||
+        event.details.status === "success"
+          ? "status-success"
+          : event.details.status === "failed" ||
+              event.details.status === "error"
+            ? "status-failed"
+            : "status-pending";
+      html += `
         <div class="timeline-item">
             <div class="timeline-time">${new Date(event.timestamp).toLocaleTimeString()}</div>
             <div><strong>${event.component}</strong> - ${event.event}</div>
@@ -433,9 +450,9 @@ export class ObservabilityExporter {
                 ${event.details.latency_ms ? ` | ${event.details.latency_ms}ms` : ""}
             </div>
         </div>`;
-        }
-        html += "</div></div>";
-        return html;
     }
+    html += "</div></div>";
+    return html;
+  }
 }
 //# sourceMappingURL=observability_exporter.js.map

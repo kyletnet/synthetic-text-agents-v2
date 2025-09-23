@@ -1,10 +1,9 @@
 import fs from "fs";
 import path from "path";
 export function appendJSONL(filePath, obj) {
-    const dir = path.dirname(filePath);
-    if (!fs.existsSync(dir))
-        fs.mkdirSync(dir, { recursive: true });
-    const line = JSON.stringify(obj) + "\n";
-    fs.appendFileSync(filePath, line, "utf8");
+  const dir = path.dirname(filePath);
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+  const line = JSON.stringify(obj) + "\n";
+  fs.appendFileSync(filePath, line, "utf8");
 }
 //# sourceMappingURL=jsonl.js.map

@@ -14,29 +14,33 @@
  * - Raw run logs
  */
 interface ConsistencyResult {
-    run_id_match: "PASS" | "FAIL";
-    cost_check: "PASS" | "WARN" | "FAIL";
-    duration_check: "PASS" | "FAIL";
-    operations_check: "PASS" | "FAIL" | "SKIP";
-    components_seen: string[];
-    notes: string[];
-    exit: 0 | 1;
-    details?: {
-        session_data: any;
-        html_data: any;
-        logs_aggregated: any;
-    };
+  run_id_match: "PASS" | "FAIL";
+  cost_check: "PASS" | "WARN" | "FAIL";
+  duration_check: "PASS" | "FAIL";
+  operations_check: "PASS" | "FAIL" | "SKIP";
+  components_seen: string[];
+  notes: string[];
+  exit: 0 | 1;
+  details?: {
+    session_data: any;
+    html_data: any;
+    logs_aggregated: any;
+  };
 }
 export declare class ObservabilityConsistencyChecker {
-    checkConsistency(sessionPath: string, htmlPath: string, logsDir: string): Promise<ConsistencyResult>;
-    private parseSessionReport;
-    private parseObservabilityHtml;
-    private aggregateRunLogs;
-    private checkRunIdMatch;
-    private checkCostConsistency;
-    private checkDurationConsistency;
-    private checkOperationsConsistency;
-    private checkComponents;
+  checkConsistency(
+    sessionPath: string,
+    htmlPath: string,
+    logsDir: string,
+  ): Promise<ConsistencyResult>;
+  private parseSessionReport;
+  private parseObservabilityHtml;
+  private aggregateRunLogs;
+  private checkRunIdMatch;
+  private checkCostConsistency;
+  private checkDurationConsistency;
+  private checkOperationsConsistency;
+  private checkComponents;
 }
 declare function main(): Promise<void>;
 export { main };
