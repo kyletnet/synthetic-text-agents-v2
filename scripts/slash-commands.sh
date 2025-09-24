@@ -258,6 +258,34 @@ case "${1:-}" in
         print_success "Linting complete"
         ;;
 
+    "audit"|"/audit")
+        print_header "10-Point Refactor Audit (Full)"
+        print_status "Running complete structural and operational audit..."
+        npm run refactor:audit
+        print_success "Full audit complete - check findings above"
+        ;;
+
+    "audit-auto"|"/audit-auto")
+        print_header "Smart Auto Audit"
+        print_status "Detecting audit triggers and running if needed..."
+        npm run refactor:audit:auto
+        print_success "Smart audit complete"
+        ;;
+
+    "audit-p1"|"/audit-p1")
+        print_header "Critical Issues Audit (P1)"
+        print_status "Checking critical LLM and runtime issues..."
+        npm run refactor:audit:p1
+        print_success "P1 critical audit complete"
+        ;;
+
+    "audit-detect"|"/audit-detect")
+        print_header "Audit Trigger Detection"
+        print_status "Checking if audit is needed..."
+        npm run refactor:audit:detect
+        print_success "Trigger detection complete"
+        ;;
+
     "commit"|"/commit")
         print_header "Smart Commit & Push"
 
@@ -307,6 +335,12 @@ Updates on $timestamp
         echo "  /build  - Build TypeScript project"
         echo "  /test   - Run test suite"
         echo "  /lint   - Fix linting issues"
+        echo ""
+        echo -e "${BLUE}Refactor Audit Commands:${NC}"
+        echo "  /audit       - Full 10-point structural audit (~2s)"
+        echo "  /audit-auto  - Smart auto-audit with trigger detection"
+        echo "  /audit-p1    - Critical issues only (LLM, runtime)"
+        echo "  /audit-detect- Just check if audit is needed"
         echo ""
         echo -e "${BLUE}Usage:${NC}"
         echo "  bash scripts/slash-commands.sh <command>"
