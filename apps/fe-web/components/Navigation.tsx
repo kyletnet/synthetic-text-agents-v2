@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Upload, Play, FileText, BarChart3, Home } from "lucide-react";
+import { Upload, Play, FileText, BarChart3, Home, Activity } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
@@ -30,6 +30,11 @@ const navItems = [
     name: "Dashboard",
     href: "/dashboard",
     icon: BarChart3,
+  },
+  {
+    name: "Baseline",
+    href: "/baseline",
+    icon: Activity,
   },
 ];
 

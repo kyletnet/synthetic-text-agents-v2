@@ -93,16 +93,25 @@
     }
   },
   "coverage_metrics": {
-    "min_entity_coverage": 0.7,
-    "min_section_coverage": 0.6,
-    "critical_entity_weight": 2.0,
+    "entity_extraction": {
+      "method": "rake_ngram",
+      "top_k": 20,
+      "min_phrase_length": 1,
+      "max_phrase_length": 3
+    },
+    "section_mapping": {
+      "min_evidence_length": 50,
+      "section_overlap_threshold": 0.3
+    },
     "alert_thresholds": {
-      "overall_score_min": 0.6
+      "entity_coverage_rate_min": 0.5,
+      "section_coverage_rate_min": 0.5,
+      "uncovered_important_entities_max": 10
     }
   },
   "evidence_quality": {
     "hit_rate": {
-      "required_fields": ["evidence", "evidence_text"]
+      "required_fields": ["evidence"]
     },
     "snippet_alignment": {
       "similarity_method": "ngram_jaccard",

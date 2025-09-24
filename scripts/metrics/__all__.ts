@@ -297,8 +297,19 @@ export async function calculateAllBaselineMetrics(
     configPath = "baseline_config.json",
     sessionId = `baseline_${Date.now()}`,
     budgetLimit = 0,
-    sourceTexts = [],
+    sourceTexts: optionalSourceTexts = [],
   } = options;
+
+  // Extract source texts from QA items if not provided
+  let sourceTexts: string[] = optionalSourceTexts;
+  if (sourceTexts.length === 0) {
+    sourceTexts = qaItems
+      .map(item => item.source_text)
+      .filter((text): text is string => text != null && text.trim().length > 0);
+
+    // Remove duplicates
+    sourceTexts = [...new Set(sourceTexts)];
+  }
 
   console.log(
     `\n🔍 Calculating baseline v1.5 metrics for ${qaItems.length} items...`,
@@ -315,11 +326,13 @@ export async function calculateAllBaselineMetrics(
   const qtypeMetrics = analyzeQuestionTypeDistribution(qaItems, configPath);
 
   console.log("📊 Calculating coverage metrics...");
+  console.log(`   Source texts found: ${sourceTexts.length}`);
   const coverageMetrics = calculateCoverageMetrics(
     qaItems,
     sourceTexts,
     configPath,
   );
+  console.log(`   Coverage result: Entity=${coverageMetrics.entity_coverage.coverage_rate}, Section=${coverageMetrics.section_coverage.coverage_rate}`);
 
   console.log("📊 Calculating evidence quality...");
   const evidenceMetrics = calculateEvidenceQuality(qaItems, configPath);

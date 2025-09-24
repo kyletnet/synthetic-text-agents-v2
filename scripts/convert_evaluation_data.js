@@ -24,32 +24,57 @@ function convertEvaluationData(inputPath, outputPath) {
     // Process each data item
     evaluationData.data.forEach((item, itemIndex) => {
         const { id, date, paragraphs } = item;
+
+        // Validate required fields
+        if (!paragraphs || !paragraphs.qas) {
+            console.warn(`⚠️  Skipping item ${itemIndex}: missing paragraphs or qas`);
+            return;
+        }
+
         const { context, qas } = paragraphs;
 
-        // Combine all context paragraphs into source text
-        const sourceText = context.join(' ');
+        // Combine all context paragraphs into source text with better formatting
+        const sourceText = Array.isArray(context) ?
+            context.map(p => p.trim()).filter(p => p.length > 0).join(' ') :
+            (context || '').toString().trim();
+
+        // Validate context exists
+        if (!sourceText || sourceText.length === 0) {
+            console.warn(`⚠️  Skipping item ${itemIndex}: empty context`);
+            return;
+        }
+
+        // Validate QA arrays
+        if (!Array.isArray(qas.questions) || !Array.isArray(qas.answers)) {
+            console.warn(`⚠️  Skipping item ${itemIndex}: invalid QA format`);
+            return;
+        }
 
         // Process each Q&A pair
         qas.questions.forEach((question, qaIndex) => {
             const answer = qas.answers[qaIndex];
 
-            if (question && answer) {
+            if (question && answer && question.trim() && answer.trim()) {
                 const convertedItem = {
                     qa: {
                         q: question.trim(),
                         a: answer.trim()
                     },
-                    evidence: sourceText, // Use full context as evidence
+                    evidence: sourceText,
+                    evidence_text: sourceText, // Compatibility field
                     source_text: sourceText,
-                    cost_usd: 0.001, // Default cost
-                    latency_ms: 150 + Math.random() * 100, // Simulated latency
+                    evidence_idx: itemIndex, // Add evidence index for tracking
+                    cost_usd: 0.001,
+                    latency_ms: Math.round(150 + Math.random() * 100), // Round to integer
                     index: totalQuestions,
-                    // Metadata from original
+                    // Enhanced metadata
                     metadata: {
-                        original_id: id,
-                        date: date,
+                        original_id: id || `item_${itemIndex}`,
+                        date: date || new Date().toISOString(),
                         qa_pair_index: qaIndex,
-                        keywords: qas.keywords ? qas.keywords[qaIndex] : undefined
+                        source_length: sourceText.length,
+                        keywords: qas.keywords ? qas.keywords[qaIndex] : undefined,
+                        conversion_timestamp: new Date().toISOString()
                     }
                 };
 

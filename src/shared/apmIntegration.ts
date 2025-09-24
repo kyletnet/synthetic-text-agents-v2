@@ -3,6 +3,7 @@
  * Provides unified interface for multiple APM providers
  */
 
+import { EventEmitter } from 'events';
 import {
   PerformanceMonitor,
   APMConfig,
@@ -261,6 +262,7 @@ export class PrometheusProvider implements APMProvider {
   private logger: Logger;
   private prom: any;
   private metrics: Map<string, any> = new Map();
+  private static defaultMetricsInitialized = false;
 
   constructor() {
     this.logger = new Logger({ level: "info" });
@@ -272,6 +274,12 @@ export class PrometheusProvider implements APMProvider {
     try {
       this.prom = require("prom-client");
 
+      // Clear registry in test environment to prevent metric conflicts
+      if (process.env.NODE_ENV === "test" || process.env.VITEST === "true") {
+        this.prom.register.clear();
+        PrometheusProvider.defaultMetricsInitialized = false;
+      }
+
       // Set default labels
       this.prom.register.setDefaultLabels({
         service: config.serviceName,
@@ -279,11 +287,14 @@ export class PrometheusProvider implements APMProvider {
         version: config.version,
       });
 
-      // Collect default metrics
-      this.prom.collectDefaultMetrics({
-        prefix: "synthetic_agents_",
-        timeout: 5000,
-      });
+      // Only collect default metrics once to prevent duplicates
+      if (!PrometheusProvider.defaultMetricsInitialized) {
+        this.prom.collectDefaultMetrics({
+          prefix: "synthetic_agents_",
+          timeout: 5000,
+        });
+        PrometheusProvider.defaultMetricsInitialized = true;
+      }
 
       this.logger.info("Prometheus metrics initialized successfully");
     } catch (error) {
@@ -360,6 +371,8 @@ export class PrometheusProvider implements APMProvider {
   async shutdown(): Promise<void> {
     if (this.prom) {
       this.prom.register.clear();
+      this.metrics.clear();
+      PrometheusProvider.defaultMetricsInitialized = false;
     }
   }
 
@@ -402,13 +415,14 @@ export class PrometheusProvider implements APMProvider {
 /**
  * APM Integration Manager
  */
-export class APMIntegration {
+export class APMIntegration extends EventEmitter {
   private providers: Map<string, APMProvider> = new Map();
   private config: APMConfig;
   private logger: Logger;
   private performanceMonitor: PerformanceMonitor;
 
   constructor(config: APMConfig, performanceMonitor: PerformanceMonitor) {
+    super();
     this.config = config;
     this.performanceMonitor = performanceMonitor;
     this.logger = new Logger({ level: "info" });
@@ -533,6 +547,8 @@ export class APMIntegration {
     for (const provider of this.providers.values()) {
       try {
         await provider.recordMetric(metric);
+        // Emit event for testing purposes
+        this.emit("metric:send", metric);
       } catch (error) {
         this.logger.error(
           `Failed to record metric with provider ${provider.name}:`,

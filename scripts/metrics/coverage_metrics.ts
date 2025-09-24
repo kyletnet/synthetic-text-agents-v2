@@ -63,26 +63,40 @@ function extractKeyPhrases(
   minLength: number,
   maxLength: number,
 ): string[] {
-  // Normalize text
+  // Normalize text - improved Korean handling
   const normalized = text
     .toLowerCase()
-    .replace(/[^\w\s가-힣]/g, " ")
+    .replace(/[^\w\s가-힣ㄱ-ㅎㅏ-ㅣ]/g, " ")  // Include Korean syllables and letters
     .replace(/\s+/g, " ")
     .trim();
 
-  const words = normalized.split(" ").filter((word) => word.length > 1);
+  console.log(`[DEBUG] Original text length: ${text.length}, normalized length: ${normalized.length}`);
+
+  const words = normalized.split(" ").filter((word) => {
+    // Better Korean word filtering
+    const isValid = word.length > 1 && (
+      /[가-힣]/.test(word) ||  // Contains Korean
+      /[a-zA-Z]/.test(word)     // Contains English
+    );
+    return isValid;
+  });
+
+  console.log(`[DEBUG] Extracted words: ${words.length}, sample: ${words.slice(0, 5).join(", ")}`);
+
   const phrases: string[] = [];
 
   // Extract n-gram phrases
   for (let n = minLength; n <= maxLength; n++) {
     for (let i = 0; i <= words.length - n; i++) {
       const phrase = words.slice(i, i + n).join(" ");
-      if (phrase.length > 3) {
-        // Minimum phrase length
+      // Relaxed minimum phrase length for Korean
+      if (phrase.length > 2 && (/[가-힣]/.test(phrase) || phrase.length > 3)) {
         phrases.push(phrase);
       }
     }
   }
+
+  console.log(`[DEBUG] Total phrases extracted: ${phrases.length}`);
 
   // Score phrases by frequency and return top ones
   const phraseFreq = new Map<string, number>();
@@ -90,9 +104,13 @@ function extractKeyPhrases(
     phraseFreq.set(phrase, (phraseFreq.get(phrase) || 0) + 1);
   });
 
-  return Array.from(phraseFreq.entries())
+  const result = Array.from(phraseFreq.entries())
     .sort((a, b) => b[1] - a[1])
     .map(([phrase]) => phrase);
+
+  console.log(`[DEBUG] Top 10 phrases: ${result.slice(0, 10).join(", ")}`);
+
+  return result;
 }
 
 /**
@@ -136,17 +154,40 @@ function extractSourceEntities(
  * Check if an entity is covered in QA items
  */
 function isEntityCovered(entity: string, qaItems: QAItem[]): boolean {
-  const entityLower = entity.toLowerCase();
+  const entityLower = entity.toLowerCase().trim();
+
+  console.log(`[DEBUG] Checking entity coverage: "${entityLower}"`);
 
   for (const item of qaItems) {
     const questionText = item.qa.q.toLowerCase();
     const answerText = item.qa.a.toLowerCase();
 
+    // Check for exact phrase match
     if (
       questionText.includes(entityLower) ||
       answerText.includes(entityLower)
     ) {
+      console.log(`[DEBUG] Entity "${entityLower}" found in QA item ${item.index || 'unknown'}`);
       return true;
+    }
+
+    // Check for partial word matches for Korean
+    if (/[가-힣]/.test(entityLower)) {
+      const entityWords = entityLower.split(/\s+/);
+      const allTexts = [questionText, answerText].join(" ");
+
+      let matchCount = 0;
+      for (const word of entityWords) {
+        if (word.length > 1 && allTexts.includes(word)) {
+          matchCount++;
+        }
+      }
+
+      // If more than half the words match, consider it covered
+      if (matchCount > 0 && matchCount / entityWords.length >= 0.5) {
+        console.log(`[DEBUG] Entity "${entityLower}" partially matched (${matchCount}/${entityWords.length} words)`);
+        return true;
+      }
     }
   }
 
@@ -214,19 +255,21 @@ function isSectionCovered(
   const sectionWords = new Set(
     section
       .toLowerCase()
-      .replace(/[^\w\s가-힣]/g, " ")
+      .replace(/[^\w\s가-힣ㄱ-ㅎㅏ-ㅣ]/g, " ")  // Improved Korean regex
       .split(/\s+/)
-      .filter((w) => w.length > 1),
+      .filter((w) => w.length > 1 && (/[가-힣]/.test(w) || /[a-zA-Z]/.test(w))), // Better word filtering
   );
+
+  console.log(`[DEBUG] Section analysis: ${sectionWords.size} unique words from section`);
 
   for (const item of qaItems) {
     if (item.evidence) {
       const evidenceWords = new Set(
         item.evidence
           .toLowerCase()
-          .replace(/[^\w\s가-힣]/g, " ")
+          .replace(/[^\w\s가-힣ㄱ-ㅎㅏ-ㅣ]/g, " ")  // Improved Korean regex
           .split(/\s+/)
-          .filter((w) => w.length > 1),
+          .filter((w) => w.length > 1 && (/[가-힣]/.test(w) || /[a-zA-Z]/.test(w))), // Better word filtering
       );
 
       // Calculate overlap
@@ -235,6 +278,8 @@ function isSectionCovered(
       );
       const overlap =
         intersection.size / Math.min(sectionWords.size, evidenceWords.size);
+
+      console.log(`[DEBUG] Section overlap: ${intersection.size} common words, overlap rate: ${overlap.toFixed(3)}`);
 
       if (overlap >= overlapThreshold) {
         return true;
@@ -294,6 +339,8 @@ export function calculateCoverageMetrics(
   sourceTexts: string[],
   configPath: string = "baseline_config.json",
 ): CoverageMetrics {
+  console.log(`[DEBUG] Coverage: qaItems=${qaItems.length}, sourceTexts=${sourceTexts.length}`);
+
   // Load configuration
   const configText = readFileSync(configPath, "utf-8");
   const fullConfig = JSON.parse(configText);
@@ -301,7 +348,9 @@ export function calculateCoverageMetrics(
 
   // Analyze entity and section coverage
   const entityCoverage = analyzeEntityCoverage(qaItems, sourceTexts, config);
+  console.log(`[DEBUG] Entity coverage: ${entityCoverage.coverage_rate}, entities: ${entityCoverage.total_entities}`);
   const sectionCoverage = analyzeSectionCoverage(qaItems, sourceTexts, config);
+  console.log(`[DEBUG] Section coverage: ${sectionCoverage.coverage_rate}, sections: ${sectionCoverage.total_sections}`);
 
   // Calculate overall score (weighted average)
   const overallScore =
