@@ -176,10 +176,16 @@ export class CircuitBreaker {
     this.consecutiveSuccesses = 0;
     this.lastFailureTime = new Date();
 
-    if (
-      this.state === CircuitState.CLOSED ||
-      this.state === CircuitState.HALF_OPEN
-    ) {
+    // In HALF_OPEN state, any failure immediately reopens the circuit
+    if (this.state === CircuitState.HALF_OPEN) {
+      this.setState(
+        CircuitState.OPEN,
+        "Failure occurred in half-open state",
+      );
+      this.scheduleNextAttempt();
+    }
+    // In CLOSED state, check if we've reached failure threshold
+    else if (this.state === CircuitState.CLOSED) {
       if (this.consecutiveFailures >= this.config.failureThreshold) {
         this.setState(
           CircuitState.OPEN,

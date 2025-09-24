@@ -337,20 +337,17 @@ describe("CircuitBreakerRegistry", () => {
     expect(circuit1).toBe(circuit2);
   });
 
-  it("should apply global config to new circuits", () => {
+  it("should apply global config to new circuits", async () => {
     const circuit = registry.getCircuitBreaker("test-service");
 
     // Trigger enough failures to test the global config
     const failOperation = vi.fn().mockRejectedValue(new Error("failed"));
 
     // Should need 5 failures (global config) instead of default 3
-    const executeFailures = async () => {
-      for (let i = 0; i < 5; i++) {
-        await expect(circuit.execute(failOperation)).rejects.toThrow();
-      }
-    };
+    for (let i = 0; i < 5; i++) {
+      await expect(circuit.execute(failOperation)).rejects.toThrow();
+    }
 
-    expect(executeFailures()).resolves.not.toThrow();
     expect(circuit.getState()).toBe(CircuitState.OPEN);
   });
 
