@@ -177,7 +177,7 @@ export class SystemInitializer {
     }
 
     try {
-      const _errorTracker = initializeErrorTracking({
+      initializeErrorTracking({
         sampleRate: this.config.environment === "production" ? 0.1 : 1.0,
       });
 

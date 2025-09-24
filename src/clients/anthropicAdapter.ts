@@ -120,11 +120,27 @@ export class AnthropicAdapter {
       if (result.exitCode === 0) {
         try {
           // Extract JSON from stdout (wrapper includes log messages)
-          const jsonStart = result.stdout.indexOf('{"id":');
+          // Look for the first occurrence of JSON starting with {
+          const jsonStart = result.stdout.indexOf('{');
           if (jsonStart === -1) {
             throw new Error("No JSON response found in wrapper output");
           }
-          const jsonStr = result.stdout.substring(jsonStart);
+
+          // Extract JSON by finding the complete JSON object
+          let braceCount = 0;
+          let jsonEnd = jsonStart;
+          for (let i = jsonStart; i < result.stdout.length; i++) {
+            const char = result.stdout[i];
+            if (char === '{') braceCount++;
+            else if (char === '}') braceCount--;
+
+            if (braceCount === 0) {
+              jsonEnd = i + 1;
+              break;
+            }
+          }
+
+          const jsonStr = result.stdout.substring(jsonStart, jsonEnd);
 
           // JSON extracted successfully
 
@@ -430,9 +446,12 @@ export class LLMAdapter {
         // LLM response received
 
         // Check if it's a valid JSON (could start with [ for arrays)
-        if (!text.startsWith("{") && !text.startsWith("[")) {
+        // Also try to parse to validate JSON structure
+        try {
+          JSON.parse(text);
+        } catch {
           if (i === maxRetries - 1) {
-            throw new Error("Non-JSON response after all retries");
+            throw new Error(`Non-JSON response after all retries. Response: ${text.substring(0, 200)}`);
           }
           continue; // Retry
         }

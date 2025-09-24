@@ -308,6 +308,18 @@ export class Orchestrator {
             domain: "demo",
           });
         }
+      } else if (process.env.OFFLINE_MODE === "true") {
+        // Runtime Guardrail: Graceful degradation in offline mode
+        this.logger.warn("OFFLINE_MODE: Creating fallback questions");
+        const qaCount = 3;
+        for (let i = 0; i < qaCount; i++) {
+          questions.push({
+            question: `Offline Question ${i + 1}: System operating in offline mode without API connectivity.`,
+            answer: `Offline Answer ${i + 1}: This content was generated in offline mode. Configure API keys for AI-generated content.`,
+            confidence: 0.6,
+            domain: "offline-fallback",
+          });
+        }
       } else {
         // In real mode, this is a critical error
         throw new Error(

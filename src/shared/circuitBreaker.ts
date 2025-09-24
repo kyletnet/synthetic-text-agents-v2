@@ -170,7 +170,7 @@ export class CircuitBreaker {
   /**
    * Handle failed operation
    */
-  private onFailure(error: unknown): void {
+  private onFailure(_error: unknown): void {
     this.failureCount++;
     this.consecutiveFailures++;
     this.consecutiveSuccesses = 0;

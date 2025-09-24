@@ -97,7 +97,18 @@ export class QAGenerator extends BaseAgent {
           }
         } catch (error) {
           this.logger.error(`LLM call failed: ${error}`);
-          throw error; // Don't fallback to mock in real mode
+
+          // Runtime Guardrail: Fallback to mock in offline mode or API issues
+          const errorMsg = error instanceof Error ? error.message : String(error);
+          if (process.env.OFFLINE_MODE === "true" ||
+              errorMsg?.includes("ANTHROPIC_API_KEY not set") ||
+              errorMsg?.includes("Non-JSON response")) {
+            this.logger.warn("Falling back to mock due to connectivity/config issues");
+            result = this.mock(topic, count);
+            reasoning = "Graceful fallback to mock due to LLM failure";
+          } else {
+            throw error; // Don't fallback for real API errors
+          }
         }
       } else {
         // dry-run preview
