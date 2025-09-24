@@ -266,11 +266,13 @@ describe("PerformanceMonitor", () => {
   });
 
   describe("Event Handling", () => {
-    it("should emit events for metric recording", (done) => {
-      monitor.on("metric:recorded", (metric) => {
-        expect(metric.name).toBe("test.event");
-        expect(metric.value).toBe(123);
-        done();
+    it("should emit events for metric recording", async () => {
+      const eventPromise = new Promise((resolve) => {
+        monitor.on("metric:recorded", (metric) => {
+          expect(metric.name).toBe("test.event");
+          expect(metric.value).toBe(123);
+          resolve(metric);
+        });
       });
 
       monitor.recordMetric({
@@ -279,6 +281,8 @@ describe("PerformanceMonitor", () => {
         unit: "count",
         timestamp: new Date(),
       });
+
+      await eventPromise;
     });
 
     it("should emit events for transaction lifecycle", () => {

@@ -10,7 +10,7 @@ import { TestUtils } from "../setup";
 describe("Health Check Integration", () => {
   beforeEach(() => {
     // Reset environment for each test
-    process.env.ANTHROPIC_API_KEY = "test-key-placeholder";
+    process.env.ANTHROPIC_API_KEY = "sk-ant-test-key-for-integration-tests";
     process.env.NODE_ENV = "test";
     process.env.ENVIRONMENT = "test";
   });
@@ -24,7 +24,7 @@ describe("Health Check Integration", () => {
 
       const healthData = await response.json();
       expect(healthData).toMatchObject({
-        status: expect.oneOf(["healthy", "degraded"]),
+        status: expect.stringMatching(/^(healthy|degraded)$/),
         timestamp: expect.any(String),
         uptime: expect.any(Number),
         version: expect.any(String),
@@ -68,9 +68,9 @@ describe("Health Check Integration", () => {
     it("should handle health check errors gracefully", async () => {
       // Mock a failure scenario
       const originalMemoryUsage = process.memoryUsage;
-      process.memoryUsage = () => {
+      process.memoryUsage = (() => {
         throw new Error("Memory check failed");
-      };
+      }) as typeof process.memoryUsage;
 
       const request = TestUtils.createMockRequest();
       const response = await healthHandler(request);
@@ -141,12 +141,11 @@ describe("Health Check Integration", () => {
       const healthRequest = TestUtils.createMockRequest();
       const readyRequest = TestUtils.createMockRequest();
 
-      const [healthResponse, readyResponse] = await Promise.all([
+      const [_healthResponse, readyResponse] = await Promise.all([
         healthHandler(healthRequest),
         readyHandler(readyRequest),
       ]);
 
-      const healthData = await healthResponse.json();
       const readyData = await readyResponse.json();
 
       // Ready should be stricter - not ready while health might be degraded

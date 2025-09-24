@@ -110,4 +110,10 @@ export default defineConfig({
     "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV || "test"),
     "process.env.VITEST": JSON.stringify("true"),
   },
+
+  // ESBuild options for decorator support
+  esbuild: {
+    target: "ES2022",
+    keepNames: true,
+  },
 });
