@@ -54,31 +54,36 @@ jobs:
             exit 0
           fi
 
-          # Check commit messages for release indicators
-          COMMITS=$(git log --oneline HEAD~1..HEAD)
-          echo "📝 Recent commits: $COMMITS"
+          # Get the commit message
+          COMMIT_MESSAGE=$(git log -1 --pretty=%B)
+          echo "📝 Current commit message: $COMMIT_MESSAGE"
 
-          # Debug commit analysis
-          echo "🔍 Checking for release indicators..."
+          # Check for explicit release tag first
+          if echo "$COMMIT_MESSAGE" | grep -q "\[release\]"; then
+            echo "🎯 [release] tag found - processing release"
 
-          if echo "$COMMITS" | grep -E "(feat|fix|BREAKING CHANGE|!:)"; then
-            echo "✅ Release indicator found!"
-
-            if echo "$COMMITS" | grep -E "(BREAKING CHANGE|!:)"; then
+            # Check commit messages for release indicators
+            if echo "$COMMIT_MESSAGE" | grep -E "(BREAKING CHANGE|!:)"; then
               echo "🚨 Breaking change detected -> MAJOR release"
               echo "should_release=true" >> $GITHUB_OUTPUT
               echo "version_type=major" >> $GITHUB_OUTPUT
-            elif echo "$COMMITS" | grep "feat"; then
+            elif echo "$COMMIT_MESSAGE" | grep "feat"; then
               echo "🚀 Feature detected -> MINOR release"
               echo "should_release=true" >> $GITHUB_OUTPUT
               echo "version_type=minor" >> $GITHUB_OUTPUT
-            else
+            elif echo "$COMMIT_MESSAGE" | grep "fix"; then
               echo "🔧 Fix detected -> PATCH release"
+              echo "should_release=true" >> $GITHUB_OUTPUT
+              echo "version_type=patch" >> $GITHUB_OUTPUT
+            else
+              echo "📦 Manual release -> PATCH release"
               echo "should_release=true" >> $GITHUB_OUTPUT
               echo "version_type=patch" >> $GITHUB_OUTPUT
             fi
           else
-            echo "❌ No release indicators found (feat|fix|BREAKING CHANGE|!:)"
+            echo "❌ No [release] tag found - skipping release"
+            echo "ℹ️  To trigger a release, add [release] to your commit message"
+            echo "ℹ️  Example: 'fix: resolve critical bug [release]'"
             echo "should_release=false" >> $GITHUB_OUTPUT
           fi
 
