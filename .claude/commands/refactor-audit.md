@@ -1,47 +1,84 @@
 # /refactor-audit
 
-10-Point Structural and Operational Refactoring Audit for LLM-powered QA systems.
+**Smart Hybrid Refactor System** - Intelligent code analysis with automated fixes and guided confirmations.
 
-## 기능 (Features)
+## 🎯 Core Features
 
-1. **Prioritized Audit**: Execute critical issues first (P0→P1→P2)
-2. **Modular Execution**: Run specific priority levels only
-3. **Automated Detection**: Smart detection of when audit is needed
-4. **Lightweight Reports**: Focused findings without heavy processing
-5. **Integration Ready**: Works with existing CI/CD pipeline
+- **🤖 Smart Automation**: Auto-fixes safe issues (docs, imports, formatting)
+- **🔶 Guided Confirmation**: Interactive review for structural changes
+- **🧠 Learning System**: Adapts safety criteria based on your decisions
+- **🔄 Rollback Support**: Safe recovery from any changes
+- **📊 Context Recovery**: Resume interrupted sessions seamlessly
 
 ## 사용법 (Usage)
 
+### Main Commands (All You Need!)
+
 ```bash
-# Full audit (all priorities)
-npm run refactor:audit
+# 1. Analyze + Auto-fix safe issues
+/refactor-audit
 
-# Priority-specific audits
-npm run refactor:audit:p1    # Critical only
-npm run refactor:audit:p2    # High priority only
-npm run refactor:audit:p3    # Maintainability only
+# 2. Review items needing confirmation
+/refactor-confirm
+```
 
-# Auto-detect mode (runs when needed)
-npm run refactor:audit:auto
+### Advanced Options
+
+```bash
+# Simulation mode (no changes)
+/refactor-audit --simulate
+
+# Rollback last changes
+/refactor-audit --rollback
+
+# View system status
+/refactor-summary
+
+# Show next recommended action
+/refactor-next
 ```
 
 ## 검사 항목 (Audit Categories)
 
 ### Priority 1: Critical for LLM-Powered QA Systems
-1. **Execution Flow Consistency** - Slash/CLI/API/Web interface alignment
-2. **Schema Structure Validation** - Config and report format verification
-3. **LLM Input/Context Flow Alignment** - Prompt and agent coordination consistency
-4. **Runtime Guardrails** - Error boundaries, circuit breakers, fallbacks
+
+1. **Execution Flow Consistency**
+   - Ensure slash commands, CLI scripts, API routes, and web interfaces all invoke the same core logic (e.g. runCouncil, baseline, reproduce).
+   - Identify any silent divergences or dead execution branches.
+
+2. **Schema Structure Validation**
+   - Validate that configuration and report files (e.g. baseline_config.json, baseline_report.jsonl, output.jsonl) follow expected key and structure formats.
+   - Compare against TypeScript types (e.g. coverage_metrics.ts) or defined JSONSchemas.
+
+3. **LLM Input/Context Flow Alignment**
+   - Verify that prompts, context injection, and agent coordination are consistent across runs.
+   - Ensure that evaluation flows reflect the actual user-provided or synthetic data.
+
+4. **Runtime Guardrails**
+   - Detect missing error boundaries, circuit breakers, fallback logic, timeouts, and safety defaults.
 
 ### Priority 2: Core Structure and Developer Trust
-5. **Import/Export and Type Consistency** - Duplicate types, stale imports
-6. **Routing and Directory Integrity** - Route conflicts, directory structure
-7. **Slash Command to Execution Mapping** - Command file linkage validation
+
+5. **Import/Export and Type Consistency**
+   - Identify mismatched imports, duplicate types, redundant utility functions, and stale npm scripts.
+
+6. **Routing and Directory Integrity**
+   - Ensure app/api vs pages/api routes are not conflicting.
+   - Validate test and report directory structures (e.g. seed, regression, smoke).
+
+7. **Slash Command to Execution Mapping**
+   - Confirm that every .claude/commands/*.md is linked to a valid, executable command file and properly configured for Cursor session persistence.
 
 ### Priority 3: Long-Term Maintainability
-8. **Naming and Cognitive Clarity** - Module responsibility clarity
-9. **Report Format and Output Quality** - Baseline report completeness
-10. **Release Safety and Changelog Integrity** - CI/CD flow validation
+
+8. **Naming and Cognitive Clarity**
+   - Evaluate whether developers and LLMs can intuitively understand module responsibilities and naming consistency (e.g. AgentRunner vs AgentCoordinator).
+
+9. **Report Format and Output Quality**
+   - Verify that baseline reports and evaluation outputs contain all expected keys with correct formats (e.g. evidence, confidence, qtype, etc).
+
+10. **Release Safety and Changelog Integrity**
+    - Audit GitHub Actions release flows, semantic version tagging, changelog generation, and publish step consistency.
 
 ## 자동화 조건 (Auto-Trigger Conditions)
 
