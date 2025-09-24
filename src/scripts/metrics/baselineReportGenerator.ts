@@ -46,7 +46,7 @@ export async function prewriteSessionMeta(meta: {
     // best-effort; don't block pipeline
   }
 }
-import { calculateAllBaselineMetrics } from "./__all__";
+import { calculateAllBaselineMetrics } from "./__all__.js";
 import {
   createThresholdManager,
   ThresholdManager,

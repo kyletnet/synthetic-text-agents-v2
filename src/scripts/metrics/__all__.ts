@@ -1,10 +1,10 @@
 import { readFileSync, existsSync } from "fs";
-import { calculateDuplicationMetrics } from "./duplicationMetrics";
-import { analyzeQuestionTypeDistribution } from "./qtypeDistribution";
-import { calculateCoverageMetrics } from "./coverageMetrics";
-import { calculateEvidenceQuality } from "./evidenceQuality";
-import { detectHallucinations } from "./hallucinationRules";
-import { scanPiiAndLicense } from "./piiLicenseScan";
+import { calculateDuplicationMetrics } from "./duplicationMetrics.js";
+import { analyzeQuestionTypeDistribution } from "./qtypeDistribution.js";
+import { calculateCoverageMetrics } from "./coverageMetrics.js";
+import { calculateEvidenceQuality } from "./evidenceQuality.js";
+import { detectHallucinations } from "./hallucinationRules.js";
+import { scanPiiAndLicense } from "./piiLicenseScan.js";
 
 interface BaselineMetricsRecord {
   // Metadata
