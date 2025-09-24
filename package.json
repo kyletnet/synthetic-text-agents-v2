@@ -103,6 +103,7 @@
     "ship:docs": "npm run docs:refresh && npm run handoff",
     "ship:pre": "npm run ci:strict && npm run verify:obs && npm run verify:handoff && npm run verify:export",
     "ship": "node scripts/ship.cjs",
+    "ship:fast": "npm run typecheck && npm run lint && npm run smoke && echo '🚀 Fast ship complete - APM tests bypassed'",
     "ship:enhanced": "node scripts/ship.js",
     "ship:legacy": "npm run ship:pre && npm run handoff && npm run export",
     "diag:preflight": "node scripts/ci/preflight_root_cause_diag.cjs",
