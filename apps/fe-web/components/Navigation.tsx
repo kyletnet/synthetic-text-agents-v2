@@ -2,7 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Upload, Play, FileText, BarChart3, Home, Activity } from "lucide-react";
+import {
+  Upload,
+  Play,
+  FileText,
+  BarChart3,
+  Home,
+  Activity,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [

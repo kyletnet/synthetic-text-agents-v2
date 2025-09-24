@@ -46,7 +46,7 @@ export class SafetyAnalyzer {
     this.stateManager = new SmartRefactorStateManager(rootDir);
   }
 
-  analyzeItem(item: FixItem): { safety: SafetyScore, criteria: string[] } {
+  analyzeItem(item: FixItem): { safety: SafetyScore; criteria: string[] } {
     const criteria: string[] = [];
 
     // File count analysis
@@ -58,11 +58,11 @@ export class SafetyAnalyzer {
 
     // Cross-module analysis
     const crossModule = this.detectCrossModuleImpact(item);
-    criteria.push(`cross-module: ${crossModule ? 'yes' : 'no'}`);
+    criteria.push(`cross-module: ${crossModule ? "yes" : "no"}`);
 
     // Build impact analysis
     const buildImpact = this.detectBuildImpact(item);
-    criteria.push(`build-impact: ${buildImpact ? 'yes' : 'no'}`);
+    criteria.push(`build-impact: ${buildImpact ? "yes" : "no"}`);
 
     // Test coverage
     const testCoverage = this.getTestCoverage(item.files);
@@ -73,11 +73,13 @@ export class SafetyAnalyzer {
     criteria.push(`rollback-difficulty: ${rollbackDifficulty.toFixed(2)}`);
 
     // External interface check
-    criteria.push(`external-interface: ${item.externalInterface ? 'yes' : 'no'}`);
+    criteria.push(
+      `external-interface: ${item.externalInterface ? "yes" : "no"}`,
+    );
 
     // Critical path check
     const criticalPath = this.touchesCriticalPath(item);
-    criteria.push(`critical-path: ${criticalPath ? 'yes' : 'no'}`);
+    criteria.push(`critical-path: ${criticalPath ? "yes" : "no"}`);
 
     const safety: SafetyScore = {
       fileCount,
@@ -93,8 +95,8 @@ export class SafetyAnalyzer {
         rollbackDifficulty,
         externalInterface: item.externalInterface,
         rollbackSupported: item.rollbackSupported,
-        criticalPath
-      })
+        criticalPath,
+      }),
     };
 
     return { safety, criteria };
@@ -106,14 +108,14 @@ export class SafetyAnalyzer {
   }
 
   private isAutoSafe(factors: {
-    fileCountOk: boolean,
-    crossModule: boolean,
-    buildImpact: boolean,
-    testCoverage: number,
-    rollbackDifficulty: number,
-    externalInterface: boolean,
-    rollbackSupported: boolean,
-    criticalPath: boolean
+    fileCountOk: boolean;
+    crossModule: boolean;
+    buildImpact: boolean;
+    testCoverage: number;
+    rollbackDifficulty: number;
+    externalInterface: boolean;
+    rollbackSupported: boolean;
+    criticalPath: boolean;
   }): boolean {
     // Hard requirements for auto-fix
     if (!factors.fileCountOk) return false;
@@ -132,30 +134,32 @@ export class SafetyAnalyzer {
 
   private detectCrossModuleImpact(item: FixItem): boolean {
     // Simple heuristic: files in different directories under src/
-    const srcFiles = item.files.filter(f => f.startsWith('src/'));
+    const srcFiles = item.files.filter((f) => f.startsWith("src/"));
     if (srcFiles.length < 2) return false;
 
-    const modules = new Set(srcFiles.map(f => {
-      const parts = f.split('/');
-      return parts.length > 2 ? parts[1] : 'root'; // src/agents, src/core, etc.
-    }));
+    const modules = new Set(
+      srcFiles.map((f) => {
+        const parts = f.split("/");
+        return parts.length > 2 ? parts[1] : "root"; // src/agents, src/core, etc.
+      }),
+    );
 
     return modules.size > 1;
   }
 
   private detectBuildImpact(item: FixItem): boolean {
     const buildFiles = [
-      'tsconfig.json',
-      'tsconfig.build.json',
-      'package.json',
-      'vite.config.ts',
-      'webpack.config.js',
-      '.eslintrc.js',
-      '.eslintrc.json'
+      "tsconfig.json",
+      "tsconfig.build.json",
+      "package.json",
+      "vite.config.ts",
+      "webpack.config.js",
+      ".eslintrc.js",
+      ".eslintrc.json",
     ];
 
-    return item.files.some(file =>
-      buildFiles.some(buildFile => file.endsWith(buildFile))
+    return item.files.some((file) =>
+      buildFiles.some((buildFile) => file.endsWith(buildFile)),
     );
   }
 
@@ -175,13 +179,13 @@ export class SafetyAnalyzer {
   private hasCorrespondingTest(file: string): boolean {
     // Look for corresponding test files
     const testPatterns = [
-      file.replace(/\.ts$/, '.test.ts'),
-      file.replace(/\.ts$/, '.spec.ts'),
-      file.replace(/src\//, 'tests/').replace(/\.ts$/, '.test.ts'),
-      file.replace(/src\//, 'test/').replace(/\.ts$/, '.test.ts')
+      file.replace(/\.ts$/, ".test.ts"),
+      file.replace(/\.ts$/, ".spec.ts"),
+      file.replace(/src\//, "tests/").replace(/\.ts$/, ".test.ts"),
+      file.replace(/src\//, "test/").replace(/\.ts$/, ".test.ts"),
     ];
 
-    return testPatterns.some(pattern => existsSync(pattern));
+    return testPatterns.some((pattern) => existsSync(pattern));
   }
 
   private estimateRollbackDifficulty(item: FixItem): number {
@@ -191,10 +195,10 @@ export class SafetyAnalyzer {
     difficulty += Math.min(item.files.length * 0.1, 0.3);
 
     // Certain change types are harder to rollback
-    if (item.changeType.includes('rename')) difficulty += 0.3;
-    if (item.changeType.includes('move')) difficulty += 0.3;
-    if (item.changeType.includes('delete')) difficulty += 0.5;
-    if (item.changeType.includes('structure')) difficulty += 0.4;
+    if (item.changeType.includes("rename")) difficulty += 0.3;
+    if (item.changeType.includes("move")) difficulty += 0.3;
+    if (item.changeType.includes("delete")) difficulty += 0.5;
+    if (item.changeType.includes("structure")) difficulty += 0.4;
 
     // Cross-module changes harder to rollback
     if (this.detectCrossModuleImpact(item)) difficulty += 0.2;
@@ -204,75 +208,91 @@ export class SafetyAnalyzer {
 
   private touchesCriticalPath(item: FixItem): boolean {
     const criticalPaths = [
-      'src/core/',
-      'src/orchestrator',
-      'src/shared/types',
-      'src/shared/logger',
-      'package.json',
-      'tsconfig'
+      "src/core/",
+      "src/orchestrator",
+      "src/shared/types",
+      "src/shared/logger",
+      "package.json",
+      "tsconfig",
     ];
 
-    return item.files.some(file =>
-      criticalPaths.some(critical => file.includes(critical))
+    return item.files.some((file) =>
+      criticalPaths.some((critical) => file.includes(critical)),
     );
   }
 
   // Category-specific safety rules
   getCategorySafetyRules(): Record<string, (item: FixItem) => boolean> {
     return {
-      'documentation-formatting': (item) => {
-        return item.files.every(f => f.endsWith('.md') || f.includes('docs/')) && item.files.length <= 10;
+      "documentation-formatting": (item) => {
+        return (
+          item.files.every((f) => f.endsWith(".md") || f.includes("docs/")) &&
+          item.files.length <= 10
+        );
       },
 
-      'unused-import-removal': (item) => {
-        const threshold = this.getLearnedThreshold('import-cleanup');
-        return item.files.length <= threshold &&
-               item.files.every(f => f.endsWith('.ts') || f.endsWith('.tsx'));
+      "unused-import-removal": (item) => {
+        const threshold = this.getLearnedThreshold("import-cleanup");
+        return (
+          item.files.length <= threshold &&
+          item.files.every((f) => f.endsWith(".ts") || f.endsWith(".tsx"))
+        );
       },
 
-      'duplicate-export-cleanup': (item) => {
-        const threshold = this.getLearnedThreshold('export-duplication');
-        return item.files.length <= threshold && !this.detectCrossModuleImpact(item);
+      "duplicate-export-cleanup": (item) => {
+        const threshold = this.getLearnedThreshold("export-duplication");
+        return (
+          item.files.length <= threshold && !this.detectCrossModuleImpact(item)
+        );
       },
 
-      'report-format-normalization': (item) => {
-        return item.files.every(f => f.includes('reports/') || f.endsWith('.jsonl')) && item.files.length <= 5;
+      "report-format-normalization": (item) => {
+        return (
+          item.files.every(
+            (f) => f.includes("reports/") || f.endsWith(".jsonl"),
+          ) && item.files.length <= 5
+        );
       },
 
-      'package-json-script-add': (item) => {
-        return item.files.length === 1 &&
-               item.files[0] === 'package.json' &&
-               item.changeType === 'add-script';
+      "package-json-script-add": (item) => {
+        return (
+          item.files.length === 1 &&
+          item.files[0] === "package.json" &&
+          item.changeType === "add-script"
+        );
       },
 
-      'agent-inheritance': (item) => {
+      "agent-inheritance": (item) => {
         // Never auto-fix - always needs confirmation
         return false;
       },
 
-      'tsconfig-modification': (item) => {
+      "tsconfig-modification": (item) => {
         // Never auto-fix - always needs confirmation
         return false;
       },
 
-      'routing-unification': (item) => {
+      "routing-unification": (item) => {
         // Never auto-fix - always needs confirmation
         return false;
-      }
+      },
     };
   }
 
-  isAutoFixableByCategory(item: FixItem): { autoSafe: boolean, reason: string } {
+  isAutoFixableByCategory(item: FixItem): {
+    autoSafe: boolean;
+    reason: string;
+  } {
     const rules = this.getCategorySafetyRules();
     const rule = rules[item.category];
 
     if (!rule) {
-      return { autoSafe: false, reason: 'unknown-category' };
+      return { autoSafe: false, reason: "unknown-category" };
     }
 
     const categoryResult = rule(item);
     if (!categoryResult) {
-      return { autoSafe: false, reason: 'category-rule-failed' };
+      return { autoSafe: false, reason: "category-rule-failed" };
     }
 
     // Also check general safety
@@ -280,20 +300,27 @@ export class SafetyAnalyzer {
 
     return {
       autoSafe: safety.autoSafe,
-      reason: safety.autoSafe ? 'passed-all-checks' : `failed: ${criteria.join(', ')}`
+      reason: safety.autoSafe
+        ? "passed-all-checks"
+        : `failed: ${criteria.join(", ")}`,
     };
   }
 
-  generateDecisionLog(item: FixItem, decision: 'auto-fix' | 'confirm'): string {
+  generateDecisionLog(item: FixItem, decision: "auto-fix" | "confirm"): string {
     const { safety, criteria } = this.analyzeItem(item);
     const categoryCheck = this.isAutoFixableByCategory(item);
 
-    if (decision === 'auto-fix') {
-      return `✅ ${item.category} (Safe: ${criteria.join(', ')})`;
+    if (decision === "auto-fix") {
+      return `✅ ${item.category} (Safe: ${criteria.join(", ")})`;
     } else {
-      return `❌ ${item.category} (Risk: ${categoryCheck.reason}, ${criteria.filter(c =>
-        c.includes('yes') || c.includes('high') || parseFloat(c.split(':')[1]) < 50
-      ).join(', ')})`;
+      return `❌ ${item.category} (Risk: ${categoryCheck.reason}, ${criteria
+        .filter(
+          (c) =>
+            c.includes("yes") ||
+            c.includes("high") ||
+            parseFloat(c.split(":")[1]) < 50,
+        )
+        .join(", ")})`;
     }
   }
 
@@ -304,7 +331,7 @@ export class SafetyAnalyzer {
       crossModuleImpact: safety.crossModule,
       buildImpact: safety.buildImpact,
       testCoverage: safety.testCoverage,
-      rollbackDifficulty: safety.rollbackDifficulty
+      rollbackDifficulty: safety.rollbackDifficulty,
     };
   }
 }

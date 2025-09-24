@@ -25,6 +25,7 @@ Interactive confirmation for structural refactoring changes.
 ## Actions
 
 Interactive confirmation loop with:
+
 - **Preview**: Show exactly what will change
 - **Apply**: Confirm and apply the change
 - **Skip**: Skip this item for now

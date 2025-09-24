@@ -66,22 +66,26 @@ function extractKeyPhrases(
   // Normalize text - improved Korean handling
   const normalized = text
     .toLowerCase()
-    .replace(/[^\w\s가-힣ㄱ-ㅎㅏ-ㅣ]/g, " ")  // Include Korean syllables and letters
+    .replace(/[^\w\s가-힣ㄱ-ㅎㅏ-ㅣ]/g, " ") // Include Korean syllables and letters
     .replace(/\s+/g, " ")
     .trim();
 
-  console.log(`[DEBUG] Original text length: ${text.length}, normalized length: ${normalized.length}`);
+  console.log(
+    `[DEBUG] Original text length: ${text.length}, normalized length: ${normalized.length}`,
+  );
 
   const words = normalized.split(" ").filter((word) => {
     // Better Korean word filtering
-    const isValid = word.length > 1 && (
-      /[가-힣]/.test(word) ||  // Contains Korean
-      /[a-zA-Z]/.test(word)     // Contains English
-    );
+    const isValid =
+      word.length > 1 &&
+      (/[가-힣]/.test(word) || // Contains Korean
+        /[a-zA-Z]/.test(word)); // Contains English
     return isValid;
   });
 
-  console.log(`[DEBUG] Extracted words: ${words.length}, sample: ${words.slice(0, 5).join(", ")}`);
+  console.log(
+    `[DEBUG] Extracted words: ${words.length}, sample: ${words.slice(0, 5).join(", ")}`,
+  );
 
   const phrases: string[] = [];
 
@@ -167,7 +171,9 @@ function isEntityCovered(entity: string, qaItems: QAItem[]): boolean {
       questionText.includes(entityLower) ||
       answerText.includes(entityLower)
     ) {
-      console.log(`[DEBUG] Entity "${entityLower}" found in QA item ${item.index || 'unknown'}`);
+      console.log(
+        `[DEBUG] Entity "${entityLower}" found in QA item ${item.index || "unknown"}`,
+      );
       return true;
     }
 
@@ -185,7 +191,9 @@ function isEntityCovered(entity: string, qaItems: QAItem[]): boolean {
 
       // If more than half the words match, consider it covered
       if (matchCount > 0 && matchCount / entityWords.length >= 0.5) {
-        console.log(`[DEBUG] Entity "${entityLower}" partially matched (${matchCount}/${entityWords.length} words)`);
+        console.log(
+          `[DEBUG] Entity "${entityLower}" partially matched (${matchCount}/${entityWords.length} words)`,
+        );
         return true;
       }
     }
@@ -255,21 +263,25 @@ function isSectionCovered(
   const sectionWords = new Set(
     section
       .toLowerCase()
-      .replace(/[^\w\s가-힣ㄱ-ㅎㅏ-ㅣ]/g, " ")  // Improved Korean regex
+      .replace(/[^\w\s가-힣ㄱ-ㅎㅏ-ㅣ]/g, " ") // Improved Korean regex
       .split(/\s+/)
       .filter((w) => w.length > 1 && (/[가-힣]/.test(w) || /[a-zA-Z]/.test(w))), // Better word filtering
   );
 
-  console.log(`[DEBUG] Section analysis: ${sectionWords.size} unique words from section`);
+  console.log(
+    `[DEBUG] Section analysis: ${sectionWords.size} unique words from section`,
+  );
 
   for (const item of qaItems) {
     if (item.evidence) {
       const evidenceWords = new Set(
         item.evidence
           .toLowerCase()
-          .replace(/[^\w\s가-힣ㄱ-ㅎㅏ-ㅣ]/g, " ")  // Improved Korean regex
+          .replace(/[^\w\s가-힣ㄱ-ㅎㅏ-ㅣ]/g, " ") // Improved Korean regex
           .split(/\s+/)
-          .filter((w) => w.length > 1 && (/[가-힣]/.test(w) || /[a-zA-Z]/.test(w))), // Better word filtering
+          .filter(
+            (w) => w.length > 1 && (/[가-힣]/.test(w) || /[a-zA-Z]/.test(w)),
+          ), // Better word filtering
       );
 
       // Calculate overlap
@@ -279,7 +291,9 @@ function isSectionCovered(
       const overlap =
         intersection.size / Math.min(sectionWords.size, evidenceWords.size);
 
-      console.log(`[DEBUG] Section overlap: ${intersection.size} common words, overlap rate: ${overlap.toFixed(3)}`);
+      console.log(
+        `[DEBUG] Section overlap: ${intersection.size} common words, overlap rate: ${overlap.toFixed(3)}`,
+      );
 
       if (overlap >= overlapThreshold) {
         return true;
@@ -339,7 +353,9 @@ export function calculateCoverageMetrics(
   sourceTexts: string[],
   configPath: string = "baseline_config.json",
 ): CoverageMetrics {
-  console.log(`[DEBUG] Coverage: qaItems=${qaItems.length}, sourceTexts=${sourceTexts.length}`);
+  console.log(
+    `[DEBUG] Coverage: qaItems=${qaItems.length}, sourceTexts=${sourceTexts.length}`,
+  );
 
   // Load configuration
   const configText = readFileSync(configPath, "utf-8");
@@ -348,9 +364,13 @@ export function calculateCoverageMetrics(
 
   // Analyze entity and section coverage
   const entityCoverage = analyzeEntityCoverage(qaItems, sourceTexts, config);
-  console.log(`[DEBUG] Entity coverage: ${entityCoverage.coverage_rate}, entities: ${entityCoverage.total_entities}`);
+  console.log(
+    `[DEBUG] Entity coverage: ${entityCoverage.coverage_rate}, entities: ${entityCoverage.total_entities}`,
+  );
   const sectionCoverage = analyzeSectionCoverage(qaItems, sourceTexts, config);
-  console.log(`[DEBUG] Section coverage: ${sectionCoverage.coverage_rate}, sections: ${sectionCoverage.total_sections}`);
+  console.log(
+    `[DEBUG] Section coverage: ${sectionCoverage.coverage_rate}, sections: ${sectionCoverage.total_sections}`,
+  );
 
   // Calculate overall score (weighted average)
   const overallScore =

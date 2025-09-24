@@ -8,15 +8,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.1.0] - 2025-09-24
 
 ### Added
+
 - Automated release workflow
 - Enhanced production readiness
 
 ### Changed
+
 - Improved CI/CD pipeline stability
 
 ### Fixed
-- ESLint warnings and TypeScript strict mode compliance
 
+- ESLint warnings and TypeScript strict mode compliance
 
 - 2305933 docs: auto-update system documentation
 - a6b5639 fix: convert ship.js to ship.cjs for CommonJS compatibility
@@ -41,19 +43,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - fcefdc9 fix: resolve code formatting issues
 - d89e3b6 feat: complete production deployment setup
 
-
 ## [1.0.3] - 2025-09-23
 
 ### Added
+
 - Automated release workflow
 - Enhanced production readiness
 
 ### Changed
+
 - Improved CI/CD pipeline stability
 
 ### Fixed
-- ESLint warnings and TypeScript strict mode compliance
 
+- ESLint warnings and TypeScript strict mode compliance
 
 ### Added
 

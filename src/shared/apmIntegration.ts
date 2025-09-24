@@ -3,7 +3,7 @@
  * Provides unified interface for multiple APM providers
  */
 
-import { EventEmitter } from 'events';
+import { EventEmitter } from "events";
 import {
   PerformanceMonitor,
   APMConfig,

@@ -48,12 +48,18 @@ class SmartRefactorAuditor {
 
   constructor(rootDir: string = process.cwd()) {
     this.rootDir = rootDir;
-    this.auditor = new RefactorAuditor({ priority: "ALL", verbose: false, autoFix: false });
+    this.auditor = new RefactorAuditor({
+      priority: "ALL",
+      verbose: false,
+      autoFix: false,
+    });
     this.stateManager = new SmartRefactorStateManager(rootDir);
     this.safetyAnalyzer = new SafetyAnalyzer(rootDir);
   }
 
-  async runSmartAudit(config: AuditConfig = { priority: "ALL", verbose: false, autoFix: true }): Promise<void> {
+  async runSmartAudit(
+    config: AuditConfig = { priority: "ALL", verbose: false, autoFix: true },
+  ): Promise<void> {
     console.log("🔍 Starting Smart Refactor Audit...");
 
     // Check for incomplete session first
@@ -84,7 +90,9 @@ class SmartRefactorAuditor {
       // Store items needing confirmation
       if (needsConfirm.length > 0) {
         this.stateManager.setPendingConfirmations(needsConfirm);
-        console.log(`\n🔶 ${needsConfirm.length} items need your confirmation → run /refactor-confirm`);
+        console.log(
+          `\n🔶 ${needsConfirm.length} items need your confirmation → run /refactor-confirm`,
+        );
       }
     } else {
       console.log("\n📋 SIMULATION MODE - No changes applied");
@@ -115,7 +123,7 @@ class SmartRefactorAuditor {
       files: finding.files || [],
       changeType: this.inferChangeType(finding),
       rollbackSupported: this.supportsRollback(finding),
-      externalInterface: this.affectsExternalInterface(finding)
+      externalInterface: this.affectsExternalInterface(finding),
     }));
   }
 
@@ -129,22 +137,22 @@ class SmartRefactorAuditor {
       "Routing Integrity": "routing-unification",
       "Naming Clarity": "naming-improvement",
       "Report Format": "report-format-normalization",
-      "Release Safety": "release-safety"
+      "Release Safety": "release-safety",
     };
 
-    return mapping[category] || category.toLowerCase().replace(/\s+/g, '-');
+    return mapping[category] || category.toLowerCase().replace(/\s+/g, "-");
   }
 
   private inferChangeType(finding: any): string {
     const description = finding.description.toLowerCase();
 
-    if (description.includes('duplicate')) return 'remove-duplicates';
-    if (description.includes('missing')) return 'add-missing';
-    if (description.includes('invalid')) return 'fix-invalid';
-    if (description.includes('inconsistent')) return 'standardize';
-    if (description.includes('unused')) return 'remove-unused';
+    if (description.includes("duplicate")) return "remove-duplicates";
+    if (description.includes("missing")) return "add-missing";
+    if (description.includes("invalid")) return "fix-invalid";
+    if (description.includes("inconsistent")) return "standardize";
+    if (description.includes("unused")) return "remove-unused";
 
-    return 'modify';
+    return "modify";
   }
 
   private supportsRollback(finding: any): boolean {
@@ -153,7 +161,7 @@ class SmartRefactorAuditor {
     const safeCategories = [
       "Import/Export Consistency",
       "Report Format",
-      "Naming Clarity"
+      "Naming Clarity",
     ];
 
     return safeCategories.includes(category);
@@ -162,20 +170,20 @@ class SmartRefactorAuditor {
   private affectsExternalInterface(finding: any): boolean {
     const files = finding.files || [];
     const externalFiles = [
-      'package.json',
-      'tsconfig.json',
-      'src/shared/types',
-      'src/cli/'
+      "package.json",
+      "tsconfig.json",
+      "src/shared/types",
+      "src/cli/",
     ];
 
     return files.some((file: string) =>
-      externalFiles.some(external => file.includes(external))
+      externalFiles.some((external) => file.includes(external)),
     );
   }
 
   private async categorizeItems(items: FixItem[]): Promise<{
-    autoFixable: FixItem[],
-    needsConfirm: ConfirmItem[]
+    autoFixable: FixItem[];
+    needsConfirm: ConfirmItem[];
   }> {
     const autoFixable: FixItem[] = [];
     const needsConfirm: ConfirmItem[] = [];
@@ -196,7 +204,7 @@ class SmartRefactorAuditor {
           description: item.description,
           files: item.files,
           impact: this.safetyAnalyzer.convertToImpactScore(safety),
-          risk
+          risk,
         });
       }
     }
@@ -232,7 +240,10 @@ class SmartRefactorAuditor {
 
         if (success) {
           // Log decision criteria
-          const decisionLog = this.safetyAnalyzer.generateDecisionLog(item, 'auto-fix');
+          const decisionLog = this.safetyAnalyzer.generateDecisionLog(
+            item,
+            "auto-fix",
+          );
           console.log(`  ${decisionLog}`);
 
           // Record in state
@@ -245,7 +256,7 @@ class SmartRefactorAuditor {
             appliedAt: new Date(),
             rollbackData,
             safety,
-            criteria: [decisionLog]
+            criteria: [decisionLog],
           });
 
           applied++;
@@ -253,9 +264,10 @@ class SmartRefactorAuditor {
 
         // Update progress
         const progress = Math.round((applied / progressMax) * 20); // 20 characters wide
-        const bar = '█'.repeat(progress) + '░'.repeat(20 - progress);
-        process.stdout.write(`\r🔧 Applying fixes... [${bar}] ${applied}/${progressMax}`);
-
+        const bar = "█".repeat(progress) + "░".repeat(20 - progress);
+        process.stdout.write(
+          `\r🔧 Applying fixes... [${bar}] ${applied}/${progressMax}`,
+        );
       } catch (error) {
         console.log(`\n❌ Failed to apply fix for ${item.title}: ${error}`);
       }
@@ -267,10 +279,10 @@ class SmartRefactorAuditor {
   private async createRollbackData(item: FixItem): Promise<any> {
     // In a real implementation, this would capture file contents before changes
     return {
-      files: item.files.map(file => ({
+      files: item.files.map((file) => ({
         path: file,
-        beforeContent: existsSync(file) ? readFileSync(file, 'utf-8') : null
-      }))
+        beforeContent: existsSync(file) ? readFileSync(file, "utf-8") : null,
+      })),
     };
   }
 
@@ -279,20 +291,22 @@ class SmartRefactorAuditor {
     // In reality, this would contain the actual fix logic for each category
 
     switch (item.category) {
-      case 'unused-import-removal':
+      case "unused-import-removal":
         return this.removeUnusedImports(item.files);
 
-      case 'duplicate-export-cleanup':
+      case "duplicate-export-cleanup":
         return this.removeDuplicateExports(item.files);
 
-      case 'report-format-normalization':
+      case "report-format-normalization":
         return this.normalizeReportFormats(item.files);
 
-      case 'documentation-formatting':
+      case "documentation-formatting":
         return this.formatDocumentation(item.files);
 
       default:
-        console.log(`  ⚠️ No fix implementation for category: ${item.category}`);
+        console.log(
+          `  ⚠️ No fix implementation for category: ${item.category}`,
+        );
         return false;
     }
   }
@@ -318,31 +332,42 @@ class SmartRefactorAuditor {
     return true;
   }
 
-  private showSimulationResults(autoFixable: FixItem[], needsConfirm: ConfirmItem[]): void {
+  private showSimulationResults(
+    autoFixable: FixItem[],
+    needsConfirm: ConfirmItem[],
+  ): void {
     if (autoFixable.length > 0) {
       console.log("\n✅ WOULD AUTO-FIX:");
-      autoFixable.forEach(item => {
-        const decisionLog = this.safetyAnalyzer.generateDecisionLog(item, 'auto-fix');
+      autoFixable.forEach((item) => {
+        const decisionLog = this.safetyAnalyzer.generateDecisionLog(
+          item,
+          "auto-fix",
+        );
         console.log(`  ${decisionLog}`);
       });
     }
 
     if (needsConfirm.length > 0) {
       console.log("\n🔶 WOULD NEED CONFIRMATION:");
-      needsConfirm.forEach(item => {
-        console.log(`  ❌ ${item.category} (Risk: ${item.risk}, ${item.files.length} files)`);
+      needsConfirm.forEach((item) => {
+        console.log(
+          `  ❌ ${item.category} (Risk: ${item.risk}, ${item.files.length} files)`,
+        );
       });
     }
   }
 
-  private async showCompletionSummary(autoFixable: FixItem[], needsConfirm: ConfirmItem[]): Promise<void> {
+  private async showCompletionSummary(
+    autoFixable: FixItem[],
+    needsConfirm: ConfirmItem[],
+  ): Promise<void> {
     console.log("\n" + "=".repeat(60));
     console.log("🎉 Smart Audit Complete");
     console.log("=".repeat(60));
 
     if (autoFixable.length > 0) {
       console.log(`✅ Auto-fixed ${autoFixable.length} issues:`);
-      autoFixable.slice(0, 3).forEach(item => {
+      autoFixable.slice(0, 3).forEach((item) => {
         console.log(`   • ${item.title}`);
       });
       if (autoFixable.length > 3) {
@@ -352,7 +377,7 @@ class SmartRefactorAuditor {
 
     if (needsConfirm.length > 0) {
       console.log(`\n🔶 ${needsConfirm.length} items need confirmation:`);
-      needsConfirm.forEach(item => {
+      needsConfirm.forEach((item) => {
         console.log(`   • ${item.title} (${item.risk} risk)`);
       });
       console.log(`\n💡 Run /refactor-confirm to review these items`);
@@ -363,8 +388,10 @@ class SmartRefactorAuditor {
     console.log(`\n🎯 Next action: ${nextAction}`);
 
     // Log location
-    const timestamp = new Date().toISOString().replace(/[:.]/g, '-').split('T')[0] + '-' +
-                     new Date().toISOString().split('T')[1].split('.')[0].replace(/:/g, '-');
+    const timestamp =
+      new Date().toISOString().replace(/[:.]/g, "-").split("T")[0] +
+      "-" +
+      new Date().toISOString().split("T")[1].split(".")[0].replace(/:/g, "-");
     console.log(`\n📁 All changes logged to: .refactor/logs/${timestamp}/`);
 
     console.log("=".repeat(60));
@@ -375,7 +402,9 @@ class SmartRefactorAuditor {
     // Check for incomplete session first
     const incompleteSession = this.stateManager.getIncompleteSession();
     if (incompleteSession) {
-      console.log("⚠️ You have an incomplete confirmation session. Resume? [y/N]:");
+      console.log(
+        "⚠️ You have an incomplete confirmation session. Resume? [y/N]:",
+      );
       // In real CLI, would wait for user input
       // For now, assume resume
       await this.resumeConfirmationSession(incompleteSession);
@@ -392,7 +421,9 @@ class SmartRefactorAuditor {
   }
 
   private async resumeConfirmationSession(items: ConfirmItem[]): Promise<void> {
-    console.log(`📋 Resuming session with ${items.length} remaining items...\n`);
+    console.log(
+      `📋 Resuming session with ${items.length} remaining items...\n`,
+    );
     await this.runConfirmationLoop(items);
   }
 
@@ -402,7 +433,9 @@ class SmartRefactorAuditor {
 
       console.log(`[${i + 1}/${items.length}] 🔧 ${item.title}`);
       console.log(`     Impact: ${item.files.length} files, ${item.risk} risk`);
-      console.log(`     Files: ${item.files.slice(0, 3).join(', ')}${item.files.length > 3 ? '...' : ''}`);
+      console.log(
+        `     Files: ${item.files.slice(0, 3).join(", ")}${item.files.length > 3 ? "..." : ""}`,
+      );
 
       // Save session progress
       this.stateManager.saveConfirmSession(items, i + 1);
@@ -416,8 +449,13 @@ class SmartRefactorAuditor {
       if (approved) {
         console.log(`     ✅ Applied: ${item.title}`);
         const decisionLog = this.safetyAnalyzer.generateDecisionLog(
-          { ...item, changeType: 'modify', rollbackSupported: true, externalInterface: false },
-          'auto-fix'
+          {
+            ...item,
+            changeType: "modify",
+            rollbackSupported: true,
+            externalInterface: false,
+          },
+          "auto-fix",
         );
         console.log(`     ${decisionLog}`);
       } else {
@@ -440,7 +478,9 @@ class SmartRefactorAuditor {
     console.log(`Auto-fixed items: ${summary.autoFixedCount}`);
     console.log(`Pending confirmations: ${summary.pendingConfirmCount}`);
     console.log(`Rollback points available: ${summary.rollbackPointsCount}`);
-    console.log(`Incomplete session: ${summary.hasIncompleteSession ? 'Yes' : 'No'}`);
+    console.log(
+      `Incomplete session: ${summary.hasIncompleteSession ? "Yes" : "No"}`,
+    );
     console.log();
     console.log(`🎯 Next action: ${nextAction}`);
   }
@@ -452,9 +492,11 @@ class SmartRefactorAuditor {
     console.log("=".repeat(40));
 
     if (criteria.length === 0) {
-      console.log("No learned criteria yet. Run more audits to build learning data.");
+      console.log(
+        "No learned criteria yet. Run more audits to build learning data.",
+      );
     } else {
-      criteria.forEach(criterion => {
+      criteria.forEach((criterion) => {
         console.log(`• ${criterion}`);
       });
     }
@@ -483,7 +525,7 @@ class SmartRefactorAuditor {
 
     if (preview.conflicts.length > 0) {
       console.log(`\n⚠️ Conflicts detected:`);
-      preview.conflicts.forEach(file => {
+      preview.conflicts.forEach((file) => {
         console.log(`   • ${file} (modified after rollback point)`);
       });
       console.log("\n❌ Rollback not safe - manual merge needed");
@@ -495,7 +537,10 @@ class SmartRefactorAuditor {
   syncState(): void {
     const changes = this.stateManager.detectOutOfSyncChanges();
 
-    if (changes.modifiedFiles.length === 0 && changes.deletedFiles.length === 0) {
+    if (
+      changes.modifiedFiles.length === 0 &&
+      changes.deletedFiles.length === 0
+    ) {
       console.log("✅ State is in sync");
       return;
     }
@@ -506,7 +551,7 @@ class SmartRefactorAuditor {
 
     if (changes.modifiedFiles.length > 0) {
       console.log(`\nModified files:`);
-      changes.modifiedFiles.slice(0, 5).forEach(file => {
+      changes.modifiedFiles.slice(0, 5).forEach((file) => {
         console.log(`   • ${file}`);
       });
       if (changes.modifiedFiles.length > 5) {
@@ -516,7 +561,7 @@ class SmartRefactorAuditor {
 
     if (changes.deletedFiles.length > 0) {
       console.log(`\nDeleted files:`);
-      changes.deletedFiles.forEach(file => {
+      changes.deletedFiles.forEach((file) => {
         console.log(`   • ${file}`);
       });
     }
@@ -547,9 +592,15 @@ class SmartRefactorAuditor {
     console.log("  /refactor-rollback-preview - Preview rollback impact");
     console.log();
     console.log("💡 HOW IT WORKS:");
-    console.log("• Safe fixes (docs, unused imports) are applied automatically");
-    console.log("• Risky fixes (config changes, inheritance) need your confirmation");
-    console.log("• System learns from your decisions to improve future automation");
+    console.log(
+      "• Safe fixes (docs, unused imports) are applied automatically",
+    );
+    console.log(
+      "• Risky fixes (config changes, inheritance) need your confirmation",
+    );
+    console.log(
+      "• System learns from your decisions to improve future automation",
+    );
     console.log("• All changes are logged and can be rolled back");
   }
 }
@@ -557,47 +608,47 @@ class SmartRefactorAuditor {
 // CLI execution
 async function main() {
   const args = process.argv.slice(2);
-  const command = args[0] || 'audit';
+  const command = args[0] || "audit";
 
   const auditor = new SmartRefactorAuditor();
 
   try {
     switch (command) {
-      case 'audit':
+      case "audit":
         const config = {
-          priority: 'ALL' as const,
-          verbose: args.includes('--verbose'),
-          autoFix: !args.includes('--no-auto-fix'),
-          simulate: args.includes('--simulate')
+          priority: "ALL" as const,
+          verbose: args.includes("--verbose"),
+          autoFix: !args.includes("--no-auto-fix"),
+          simulate: args.includes("--simulate"),
         };
         await auditor.runSmartAudit(config);
         break;
 
-      case 'confirm':
+      case "confirm":
         await auditor.runConfirmation();
         break;
 
-      case 'summary':
+      case "summary":
         auditor.getSummary();
         break;
 
-      case 'learned-criteria':
+      case "learned-criteria":
         auditor.getLearnedCriteria();
         break;
 
-      case 'reset-learning':
+      case "reset-learning":
         auditor.resetLearnedCriteria();
         break;
 
-      case 'rollback-preview':
+      case "rollback-preview":
         auditor.showRollbackPreview();
         break;
 
-      case 'sync':
+      case "sync":
         auditor.syncState();
         break;
 
-      case 'guide':
+      case "guide":
         auditor.showGuide();
         break;
 
@@ -606,7 +657,7 @@ async function main() {
         auditor.showGuide();
     }
   } catch (error) {
-    console.error('Error:', error);
+    console.error("Error:", error);
     process.exit(1);
   }
 }

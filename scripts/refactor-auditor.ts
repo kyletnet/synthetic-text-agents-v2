@@ -37,7 +37,9 @@ class RefactorAuditor {
   }
 
   async runAudit(): Promise<AuditFinding[]> {
-    console.log(`🔍 Starting Refactor Audit (Priority: ${this.config.priority})`);
+    console.log(
+      `🔍 Starting Refactor Audit (Priority: ${this.config.priority})`,
+    );
 
     if (this.config.priority === "P1" || this.config.priority === "ALL") {
       await this.auditP1Critical();
@@ -110,7 +112,8 @@ class RefactorAuditor {
       if (content) {
         if (content.includes("runCouncil")) coreInvocations.add("runCouncil");
         if (content.includes("baseline")) coreInvocations.add("baseline");
-        if (content.includes("processRequest")) coreInvocations.add("processRequest");
+        if (content.includes("processRequest"))
+          coreInvocations.add("processRequest");
       }
     }
 
@@ -120,19 +123,25 @@ class RefactorAuditor {
         priority: "HIGH",
         severity: "P0",
         title: "No Core Logic Invocations Found",
-        description: "Entry points don't seem to invoke consistent core orchestration logic",
+        description:
+          "Entry points don't seem to invoke consistent core orchestration logic",
         files: [...slashCommands, ...cliScripts, ...apiRoutes],
-        impact: "System may have divergent execution paths leading to inconsistent behavior",
-        recommendation: "Ensure all entry points call standardized orchestration functions (runCouncil, processRequest)"
+        impact:
+          "System may have divergent execution paths leading to inconsistent behavior",
+        recommendation:
+          "Ensure all entry points call standardized orchestration functions (runCouncil, processRequest)",
       });
     }
   }
 
   private async validateSchemaStructures(): Promise<void> {
     const configFiles = [
-      { file: "baseline_config.json", required: ["run_id", "routing_path", "quality_target"] },
+      {
+        file: "baseline_config.json",
+        required: ["run_id", "routing_path", "quality_target"],
+      },
       { file: "package.json", required: ["name", "version", "scripts"] },
-      { file: "tsconfig.json", required: ["compilerOptions", "include"] }
+      { file: "tsconfig.json", required: ["compilerOptions", "include"] },
     ];
 
     const reportFiles = glob.sync("reports/**/*.jsonl", { cwd: this.rootDir });
@@ -151,7 +160,9 @@ class RefactorAuditor {
           const parsed = JSON.parse(content);
 
           // Check required fields
-          const missing = configDef.required.filter(field => !(field in parsed));
+          const missing = configDef.required.filter(
+            (field) => !(field in parsed),
+          );
           if (missing.length > 0) {
             missingRequiredFields.push({ file: configDef.file, missing });
           }
@@ -160,15 +171,14 @@ class RefactorAuditor {
           if (configDef.file === "package.json") {
             const scripts = parsed.scripts || {};
             const criticalScripts = ["build", "test", "typecheck", "lint"];
-            const missingScripts = criticalScripts.filter(s => !scripts[s]);
+            const missingScripts = criticalScripts.filter((s) => !scripts[s]);
             if (missingScripts.length > 0) {
               invalidStructures.push({
                 file: configDef.file,
-                issue: `Missing critical scripts: ${missingScripts.join(", ")}`
+                issue: `Missing critical scripts: ${missingScripts.join(", ")}`,
               });
             }
           }
-
         } catch (error) {
           schemaIssues++;
           this.addFinding({
@@ -179,7 +189,8 @@ class RefactorAuditor {
             description: `Configuration file contains invalid JSON: ${error}`,
             files: [path],
             impact: "System configuration may fail at runtime",
-            recommendation: "Fix JSON syntax and validate against expected schema"
+            recommendation:
+              "Fix JSON syntax and validate against expected schema",
           });
         }
       } else if (configDef.required.length > 0) {
@@ -191,7 +202,7 @@ class RefactorAuditor {
           description: `Required configuration file not found`,
           files: [configDef.file],
           impact: "System may fail to initialize or operate correctly",
-          recommendation: `Create ${configDef.file} with required fields: ${configDef.required.join(", ")}`
+          recommendation: `Create ${configDef.file} with required fields: ${configDef.required.join(", ")}`,
         });
       }
     }
@@ -200,7 +211,7 @@ class RefactorAuditor {
     for (const reportFile of reportFiles) {
       const content = this.safeReadFile(reportFile);
       if (content) {
-        const lines = content.split("\n").filter(line => line.trim());
+        const lines = content.split("\n").filter((line) => line.trim());
         let lineNum = 0;
         for (const line of lines) {
           lineNum++;
@@ -208,17 +219,17 @@ class RefactorAuditor {
             const obj = JSON.parse(line);
             // Check for expected keys in reports
             const expectedKeys = ["timestamp", "run_id"];
-            const hasRequiredKeys = expectedKeys.some(key => key in obj);
+            const hasRequiredKeys = expectedKeys.some((key) => key in obj);
             if (!hasRequiredKeys) {
               invalidStructures.push({
                 file: reportFile,
-                issue: `Line ${lineNum} missing required keys: ${expectedKeys.join(" or ")}`
+                issue: `Line ${lineNum} missing required keys: ${expectedKeys.join(" or ")}`,
               });
             }
           } catch {
             invalidStructures.push({
               file: reportFile,
-              issue: `Line ${lineNum} contains invalid JSON`
+              issue: `Line ${lineNum} contains invalid JSON`,
             });
           }
         }
@@ -230,13 +241,15 @@ class RefactorAuditor {
       const content = this.safeReadFile(typeFile);
       if (content) {
         // Check for proper export structure
-        const hasExports = content.includes("export interface") || content.includes("export type");
+        const hasExports =
+          content.includes("export interface") ||
+          content.includes("export type");
         const hasImports = content.includes("import");
 
         if (!hasExports && content.length > 100) {
           invalidStructures.push({
             file: typeFile,
-            issue: "Type file should export interfaces or types"
+            issue: "Type file should export interfaces or types",
           });
         }
 
@@ -245,14 +258,23 @@ class RefactorAuditor {
         if (interfaces) {
           for (const interfaceMatch of interfaces) {
             const interfaceName = interfaceMatch.split(" ")[2];
-            const interfaceContent = this.extractInterfaceContent(content, interfaceName);
+            const interfaceContent = this.extractInterfaceContent(
+              content,
+              interfaceName,
+            );
 
             // Validate common required fields for domain objects
-            if (interfaceName.includes("Config") || interfaceName.includes("Setting")) {
-              if (!interfaceContent.includes("id") && !interfaceContent.includes("name")) {
+            if (
+              interfaceName.includes("Config") ||
+              interfaceName.includes("Setting")
+            ) {
+              if (
+                !interfaceContent.includes("id") &&
+                !interfaceContent.includes("name")
+              ) {
                 invalidStructures.push({
                   file: typeFile,
-                  issue: `Config interface ${interfaceName} should have id or name field`
+                  issue: `Config interface ${interfaceName} should have id or name field`,
                 });
               }
             }
@@ -269,9 +291,9 @@ class RefactorAuditor {
         severity: "P1",
         title: "Missing Required Configuration Fields",
         description: `${missingRequiredFields.length} config files missing required fields`,
-        files: missingRequiredFields.map(m => m.file),
+        files: missingRequiredFields.map((m) => m.file),
         impact: "Application may fail to start or behave unexpectedly",
-        recommendation: "Add missing required fields to configuration files"
+        recommendation: "Add missing required fields to configuration files",
       });
     }
 
@@ -282,14 +304,18 @@ class RefactorAuditor {
         severity: "P2",
         title: "Invalid Data Structures",
         description: `${invalidStructures.length} files have structural issues`,
-        files: invalidStructures.map(s => s.file),
+        files: invalidStructures.map((s) => s.file),
         impact: "Data processing and validation may fail",
-        recommendation: "Fix structural issues in data files and type definitions"
+        recommendation:
+          "Fix structural issues in data files and type definitions",
       });
     }
   }
 
-  private extractInterfaceContent(content: string, interfaceName: string): string {
+  private extractInterfaceContent(
+    content: string,
+    interfaceName: string,
+  ): string {
     const interfaceStart = content.indexOf(`interface ${interfaceName}`);
     if (interfaceStart === -1) return "";
 
@@ -309,13 +335,20 @@ class RefactorAuditor {
 
   private async checkLLMFlowAlignment(): Promise<void> {
     const agentFiles = glob.sync("src/agents/**/*.ts", { cwd: this.rootDir });
-    const promptFiles = glob.sync("**/*prompt*.ts", { cwd: this.rootDir, ignore: ["node_modules/**"] });
+    const promptFiles = glob.sync("**/*prompt*.ts", {
+      cwd: this.rootDir,
+      ignore: ["node_modules/**"],
+    });
 
     let inconsistentFlows = 0;
 
     for (const agentFile of agentFiles) {
       const content = this.safeReadFile(agentFile);
-      if (content && !content.includes("BaseAgent") && !content.includes("mock")) {
+      if (
+        content &&
+        !content.includes("BaseAgent") &&
+        !content.includes("mock")
+      ) {
         inconsistentFlows++;
       }
     }
@@ -329,7 +362,8 @@ class RefactorAuditor {
         description: `${inconsistentFlows} agents don't extend BaseAgent or implement consistent patterns`,
         files: agentFiles,
         impact: "Agent coordination and context flow may be unpredictable",
-        recommendation: "Ensure all agents extend BaseAgent and follow consistent prompt/context patterns"
+        recommendation:
+          "Ensure all agents extend BaseAgent and follow consistent prompt/context patterns",
       });
     }
   }
@@ -337,7 +371,7 @@ class RefactorAuditor {
   private async checkRuntimeGuardrails(): Promise<void> {
     const sourceFiles = glob.sync("src/**/*.ts", {
       cwd: this.rootDir,
-      ignore: ["**/*.test.ts", "**/*.spec.ts"]
+      ignore: ["**/*.test.ts", "**/*.spec.ts"],
     });
 
     let guardrailCoverage = 0;
@@ -349,17 +383,41 @@ class RefactorAuditor {
       const content = this.safeReadFile(file);
       if (content) {
         // More sophisticated guardrail detection
-        const hasErrorBoundary = content.includes("try") && content.includes("catch");
-        const hasCircuitBreaker = content.includes("CircuitBreaker") || content.includes("circuitBreaker");
-        const hasFallback = content.includes("fallback") || content.includes("defaultValue") || content.includes("|| ");
-        const hasTimeout = content.includes("timeout") || content.includes("setTimeout") || content.includes("AbortController");
-        const hasRetry = content.includes("retry") || content.includes("attempt");
-        const hasValidation = content.includes("validate") || content.includes("assert") || content.includes("schema");
+        const hasErrorBoundary =
+          content.includes("try") && content.includes("catch");
+        const hasCircuitBreaker =
+          content.includes("CircuitBreaker") ||
+          content.includes("circuitBreaker");
+        const hasFallback =
+          content.includes("fallback") ||
+          content.includes("defaultValue") ||
+          content.includes("|| ");
+        const hasTimeout =
+          content.includes("timeout") ||
+          content.includes("setTimeout") ||
+          content.includes("AbortController");
+        const hasRetry =
+          content.includes("retry") || content.includes("attempt");
+        const hasValidation =
+          content.includes("validate") ||
+          content.includes("assert") ||
+          content.includes("schema");
 
-        const guardrailCount = [hasErrorBoundary, hasCircuitBreaker, hasFallback, hasTimeout, hasRetry, hasValidation].filter(Boolean).length;
+        const guardrailCount = [
+          hasErrorBoundary,
+          hasCircuitBreaker,
+          hasFallback,
+          hasTimeout,
+          hasRetry,
+          hasValidation,
+        ].filter(Boolean).length;
 
         // Critical files need more protection (agents, core, API)
-        const isCritical = file.includes("agents/") || file.includes("core/") || file.includes("api/") || file.includes("orchestrator");
+        const isCritical =
+          file.includes("agents/") ||
+          file.includes("core/") ||
+          file.includes("api/") ||
+          file.includes("orchestrator");
 
         if (guardrailCount >= 1) {
           guardrailCoverage++;
@@ -386,8 +444,10 @@ class RefactorAuditor {
         title: "Insufficient Runtime Protection",
         description: `Only ${coveragePercent.toFixed(1)}% of source files have runtime protection mechanisms (Target: 60%+)`,
         files: vulnerableFiles.slice(0, 10),
-        impact: "System vulnerable to cascading failures and poor user experience",
-        recommendation: "Add error boundaries, circuit breakers, fallback logic, timeout handling, retry mechanisms, and input validation"
+        impact:
+          "System vulnerable to cascading failures and poor user experience",
+        recommendation:
+          "Add error boundaries, circuit breakers, fallback logic, timeout handling, retry mechanisms, and input validation",
       });
     }
 
@@ -400,7 +460,8 @@ class RefactorAuditor {
         description: `${criticalFiles.length} critical system files have insufficient guardrails (need 2+ mechanisms)`,
         files: criticalFiles,
         impact: "Core system components vulnerable to failures",
-        recommendation: "Critical files (agents, core, API) need multiple protection layers: error handling + timeout + validation + retry"
+        recommendation:
+          "Critical files (agents, core, API) need multiple protection layers: error handling + timeout + validation + retry",
       });
     }
   }
@@ -416,7 +477,9 @@ class RefactorAuditor {
       const content = this.safeReadFile(file);
       if (content) {
         // Enhanced duplicate export detection
-        const exportMatches = content.match(/export\s+(interface|type|class|function|const)\s+(\w+)/g);
+        const exportMatches = content.match(
+          /export\s+(interface|type|class|function|const)\s+(\w+)/g,
+        );
         if (exportMatches) {
           for (const match of exportMatches) {
             const parts = match.split(/\s+/);
@@ -429,16 +492,22 @@ class RefactorAuditor {
         }
 
         // More sophisticated unused import detection
-        const importLines = content.split("\n").filter(line => line.trim().startsWith("import"));
+        const importLines = content
+          .split("\n")
+          .filter((line) => line.trim().startsWith("import"));
         for (const importLine of importLines) {
           // Named imports
           const namedImports = importLine.match(/import\s*{\s*([^}]+)\s*}/);
           if (namedImports) {
-            const imports = namedImports[1].split(",").map(i => i.trim());
+            const imports = namedImports[1].split(",").map((i) => i.trim());
             for (const imp of imports) {
               const cleanImport = imp.replace(/\s+as\s+\w+/, "").trim();
               if (cleanImport && !content.includes(cleanImport)) {
-                unusedImports.push({ file, import: importLine, unused: cleanImport });
+                unusedImports.push({
+                  file,
+                  import: importLine,
+                  unused: cleanImport,
+                });
               }
             }
           }
@@ -457,7 +526,9 @@ class RefactorAuditor {
           if (fromMatch) {
             const importPath = fromMatch[1];
             if (importPath.startsWith("./") || importPath.startsWith("../")) {
-              const reverseImportPattern = new RegExp(`from\\s+['"].*${file.split('/').pop()?.replace('.ts', '')}.*['"]`);
+              const reverseImportPattern = new RegExp(
+                `from\\s+['"].*${file.split("/").pop()?.replace(".ts", "")}.*['"]`,
+              );
               const targetFile = this.resolveImportPath(file, importPath);
               const targetContent = this.safeReadFile(targetFile);
               if (targetContent && reverseImportPattern.test(targetContent)) {
@@ -471,12 +542,16 @@ class RefactorAuditor {
         const typeImports = content.match(/import\s+type\s*{\s*([^}]+)\s*}/g);
         if (typeImports) {
           for (const typeImport of typeImports) {
-            const types = typeImport.match(/{\s*([^}]+)\s*}/)?.[1].split(',').map(t => t.trim());
+            const types = typeImport
+              .match(/{\s*([^}]+)\s*}/)?.[1]
+              .split(",")
+              .map((t) => t.trim());
             if (types) {
               for (const type of types) {
-                const usagePattern = new RegExp(`\\b${type}\\b`, 'g');
+                const usagePattern = new RegExp(`\\b${type}\\b`, "g");
                 const matches = content.match(usagePattern) || [];
-                if (matches.length <= 1) { // Only the import itself
+                if (matches.length <= 1) {
+                  // Only the import itself
                   staleImports.push({ file, type, import: typeImport });
                 }
               }
@@ -497,7 +572,8 @@ class RefactorAuditor {
           description: `Type/interface/class "${name}" is exported from ${files.length} files`,
           files,
           impact: "Type conflicts, build issues, and developer confusion",
-          recommendation: "Consolidate duplicate exports into shared types file or use unique naming"
+          recommendation:
+            "Consolidate duplicate exports into shared types file or use unique naming",
         });
       }
     }
@@ -509,9 +585,10 @@ class RefactorAuditor {
         severity: "P2",
         title: "Unused Imports Detected",
         description: `${unusedImports.length} unused imports found across codebase`,
-        files: unusedImports.map(u => u.file),
+        files: unusedImports.map((u) => u.file),
         impact: "Bundle size bloat and code maintainability issues",
-        recommendation: "Remove unused imports to improve build performance and code clarity"
+        recommendation:
+          "Remove unused imports to improve build performance and code clarity",
       });
     }
 
@@ -522,27 +599,30 @@ class RefactorAuditor {
         severity: "P1",
         title: "Circular Import Dependencies",
         description: `${circularImports.length} potential circular imports detected`,
-        files: circularImports.flatMap(c => [c.file1, c.file2]),
+        files: circularImports.flatMap((c) => [c.file1, c.file2]),
         impact: "Build failures and runtime module loading issues",
-        recommendation: "Refactor to eliminate circular dependencies through abstraction or dependency inversion"
+        recommendation:
+          "Refactor to eliminate circular dependencies through abstraction or dependency inversion",
       });
     }
   }
 
   private resolveImportPath(currentFile: string, importPath: string): string {
     // Basic path resolution (can be enhanced)
-    const currentDir = currentFile.substring(0, currentFile.lastIndexOf('/'));
-    if (importPath.startsWith('./')) {
-      return join(currentDir, importPath.substring(2) + '.ts');
-    } else if (importPath.startsWith('../')) {
-      return join(currentDir, importPath + '.ts');
+    const currentDir = currentFile.substring(0, currentFile.lastIndexOf("/"));
+    if (importPath.startsWith("./")) {
+      return join(currentDir, importPath.substring(2) + ".ts");
+    } else if (importPath.startsWith("../")) {
+      return join(currentDir, importPath + ".ts");
     }
     return importPath;
   }
 
   private async checkRoutingIntegrity(): Promise<void> {
     const appRoutes = glob.sync("apps/**/app/**/*.ts", { cwd: this.rootDir });
-    const pageRoutes = glob.sync("apps/**/pages/**/*.ts", { cwd: this.rootDir });
+    const pageRoutes = glob.sync("apps/**/pages/**/*.ts", {
+      cwd: this.rootDir,
+    });
 
     // Check for conflicting routes
     const routeConflicts = [];
@@ -553,10 +633,12 @@ class RefactorAuditor {
         priority: "MEDIUM",
         severity: "P2",
         title: "Mixed Routing Patterns",
-        description: "Both app/ and pages/ directories exist, which may cause routing conflicts",
+        description:
+          "Both app/ and pages/ directories exist, which may cause routing conflicts",
         files: [...appRoutes, ...pageRoutes],
         impact: "Unpredictable routing behavior and potential conflicts",
-        recommendation: "Choose single routing pattern (app/ or pages/) and migrate accordingly"
+        recommendation:
+          "Choose single routing pattern (app/ or pages/) and migrate accordingly",
       });
     }
   }
@@ -580,8 +662,9 @@ class RefactorAuditor {
 
       // Check if command has npm script mapping
       const directScript = scripts[cmdName];
-      const relatedScripts = Object.keys(scripts).filter(script =>
-        script.includes(cmdName) || scripts[script].includes(cmdName)
+      const relatedScripts = Object.keys(scripts).filter(
+        (script) =>
+          script.includes(cmdName) || scripts[script].includes(cmdName),
       );
 
       if (!directScript && relatedScripts.length === 0) {
@@ -593,20 +676,28 @@ class RefactorAuditor {
       const scriptToCheck = directScript || scripts[relatedScripts[0]];
       if (scriptToCheck) {
         // Extract potential file references from script
-        const fileRefs = scriptToCheck.match(/(?:tsx?|node)\s+([^\s]+\.(?:ts|js|mjs|cjs))/g);
+        const fileRefs = scriptToCheck.match(
+          /(?:tsx?|node)\s+([^\s]+\.(?:ts|js|mjs|cjs))/g,
+        );
         if (fileRefs) {
           for (const ref of fileRefs) {
             const filePath = ref.split(/\s+/).pop();
             if (filePath && !existsSync(join(this.rootDir, filePath))) {
-              missingExecutables.push({ command: cmdName, script: scriptToCheck, missingFile: filePath });
+              missingExecutables.push({
+                command: cmdName,
+                script: scriptToCheck,
+                missingFile: filePath,
+              });
             }
           }
         }
       }
 
       // Check for command documentation completeness
-      const hasUsage = cmdContent.includes("## 사용법") || cmdContent.includes("## Usage");
-      const hasActions = cmdContent.includes("## Actions") || cmdContent.includes("## 기능");
+      const hasUsage =
+        cmdContent.includes("## 사용법") || cmdContent.includes("## Usage");
+      const hasActions =
+        cmdContent.includes("## Actions") || cmdContent.includes("## 기능");
       const hasBashCode = cmdContent.includes("```bash");
 
       if (!hasUsage || !hasActions || !hasBashCode) {
@@ -616,8 +707,8 @@ class RefactorAuditor {
           issues: [
             !hasUsage && "Missing usage section",
             !hasActions && "Missing actions section",
-            !hasBashCode && "Missing executable code"
-          ].filter(Boolean)
+            !hasBashCode && "Missing executable code",
+          ].filter(Boolean),
         });
       }
     }
@@ -632,7 +723,8 @@ class RefactorAuditor {
         description: `${unmappedCommands.length} slash commands don't have corresponding npm scripts`,
         files: unmappedCommands,
         impact: "Commands may not execute or have inconsistent behavior",
-        recommendation: "Add corresponding npm scripts in package.json for all slash commands"
+        recommendation:
+          "Add corresponding npm scripts in package.json for all slash commands",
       });
     }
 
@@ -643,9 +735,9 @@ class RefactorAuditor {
         severity: "P1",
         title: "Broken Script Executables",
         description: `${missingExecutables.length} npm scripts reference non-existent files`,
-        files: missingExecutables.map(m => `${m.command}: ${m.missingFile}`),
+        files: missingExecutables.map((m) => `${m.command}: ${m.missingFile}`),
         impact: "Commands will fail at runtime with file not found errors",
-        recommendation: "Fix script paths or create missing executable files"
+        recommendation: "Fix script paths or create missing executable files",
       });
     }
 
@@ -656,9 +748,10 @@ class RefactorAuditor {
         severity: "P2",
         title: "Incomplete Command Documentation",
         description: `${brokenMappings.length} slash commands have incomplete documentation`,
-        files: brokenMappings.map(b => b.file),
+        files: brokenMappings.map((b) => b.file),
         impact: "Developers may not understand how to use commands correctly",
-        recommendation: "Add missing sections: usage examples, action descriptions, and executable code blocks"
+        recommendation:
+          "Add missing sections: usage examples, action descriptions, and executable code blocks",
       });
     }
 
@@ -666,11 +759,13 @@ class RefactorAuditor {
     const slashScript = this.safeReadFile("scripts/slash-commands.sh");
     if (slashScript) {
       const commandsInScript = slashScript.match(/\$1.*=.*"([^"]+)"/g) || [];
-      const scriptCommands = commandsInScript.map(m => m.match(/"([^"]+)"/)?.[1]).filter(Boolean);
+      const scriptCommands = commandsInScript
+        .map((m) => m.match(/"([^"]+)"/)?.[1])
+        .filter(Boolean);
 
       const missingFromScript = slashCommands
-        .map(f => f.split("/").pop()?.replace(".md", ""))
-        .filter(cmd => cmd && !scriptCommands.includes(cmd));
+        .map((f) => f.split("/").pop()?.replace(".md", ""))
+        .filter((cmd) => cmd && !scriptCommands.includes(cmd));
 
       if (missingFromScript.length > 0) {
         this.addFinding({
@@ -680,8 +775,10 @@ class RefactorAuditor {
           title: "Commands Missing from Dispatcher",
           description: `${missingFromScript.length} commands not registered in slash-commands.sh`,
           files: ["scripts/slash-commands.sh"],
-          impact: "Commands may not be discoverable or executable via slash interface",
-          recommendation: "Add missing commands to scripts/slash-commands.sh dispatcher"
+          impact:
+            "Commands may not be discoverable or executable via slash interface",
+          recommendation:
+            "Add missing commands to scripts/slash-commands.sh dispatcher",
         });
       }
     }
@@ -697,7 +794,7 @@ class RefactorAuditor {
       /\\w*Manager\\w*/,
       /\\w*Handler\\w*/,
       /\\w*Helper\\w*/,
-      /\\w*Util\\w*/
+      /\\w*Util\\w*/,
     ];
 
     for (const file of sourceFiles) {
@@ -719,7 +816,8 @@ class RefactorAuditor {
         description: `${ambiguousNames.length} modules have ambiguous or unclear names`,
         files: ambiguousNames,
         impact: "Reduced developer productivity and cognitive overhead",
-        recommendation: "Use more specific, responsibility-clear naming conventions"
+        recommendation:
+          "Use more specific, responsibility-clear naming conventions",
       });
     }
   }
@@ -731,7 +829,7 @@ class RefactorAuditor {
     for (const reportFile of reportFiles) {
       const content = this.safeReadFile(reportFile);
       if (content) {
-        const lines = content.split("\\n").filter(line => line.trim());
+        const lines = content.split("\\n").filter((line) => line.trim());
         for (const line of lines) {
           try {
             const obj = JSON.parse(line);
@@ -757,13 +855,16 @@ class RefactorAuditor {
         description: `${invalidReports.length} report files don't follow expected JSONL format`,
         files: invalidReports,
         impact: "Analysis tools may fail to process reports correctly",
-        recommendation: "Ensure all reports follow structured JSONL format with required keys"
+        recommendation:
+          "Ensure all reports follow structured JSONL format with required keys",
       });
     }
   }
 
   private async checkReleaseSafety(): Promise<void> {
-    const ciFiles = glob.sync(".github/workflows/**/*.yml", { cwd: this.rootDir });
+    const ciFiles = glob.sync(".github/workflows/**/*.yml", {
+      cwd: this.rootDir,
+    });
     const hasPreCommitHooks = existsSync(join(this.rootDir, ".husky"));
     const packageJson = this.safeReadFile("package.json");
     const changelog = this.safeReadFile("CHANGELOG.md");
@@ -782,10 +883,18 @@ class RefactorAuditor {
         if (content.includes("release") || content.includes("publish")) {
           hasReleaseWorkflow = true;
         }
-        if (content.includes("test") || content.includes("vitest") || content.includes("jest")) {
+        if (
+          content.includes("test") ||
+          content.includes("vitest") ||
+          content.includes("jest")
+        ) {
           hasTestWorkflow = true;
         }
-        if (content.includes("security") || content.includes("vulnerability") || content.includes("audit")) {
+        if (
+          content.includes("security") ||
+          content.includes("vulnerability") ||
+          content.includes("audit")
+        ) {
           hasSecurityCheck = true;
         }
 
@@ -793,14 +902,16 @@ class RefactorAuditor {
         if (content.includes("release") || content.includes("deploy")) {
           const missingSteps = [];
           if (!content.includes("test")) missingSteps.push("tests");
-          if (!content.includes("lint") && !content.includes("eslint")) missingSteps.push("linting");
+          if (!content.includes("lint") && !content.includes("eslint"))
+            missingSteps.push("linting");
           if (!content.includes("build")) missingSteps.push("build");
-          if (!content.includes("typecheck") && !content.includes("tsc")) missingSteps.push("type-checking");
+          if (!content.includes("typecheck") && !content.includes("tsc"))
+            missingSteps.push("type-checking");
 
           if (missingSteps.length > 0) {
             safetyIssues.push({
               file: ciFile,
-              issue: `Release workflow missing: ${missingSteps.join(", ")}`
+              issue: `Release workflow missing: ${missingSteps.join(", ")}`,
             });
           }
         }
@@ -837,7 +948,7 @@ class RefactorAuditor {
         if (missingHooks.length > 0) {
           safetyIssues.push({
             file: ".husky/pre-commit",
-            issue: `Pre-commit missing: ${missingHooks.join(", ")}`
+            issue: `Pre-commit missing: ${missingHooks.join(", ")}`,
           });
         }
       }
@@ -850,24 +961,30 @@ class RefactorAuditor {
         { name: "typecheck", patterns: ["tsc", "type"] },
         { name: "lint", patterns: ["eslint", "lint"] },
         { name: "test", patterns: ["test", "vitest", "jest"] },
-        { name: "build", patterns: ["build", "tsc"] }
+        { name: "build", patterns: ["build", "tsc"] },
       ];
 
-      const missingScripts = requiredSafetyScripts.filter(req =>
-        !Object.keys(scripts).some(script =>
-          req.patterns.some(pattern => script.includes(pattern) || scripts[script].includes(pattern))
-        )
+      const missingScripts = requiredSafetyScripts.filter(
+        (req) =>
+          !Object.keys(scripts).some((script) =>
+            req.patterns.some(
+              (pattern) =>
+                script.includes(pattern) || scripts[script].includes(pattern),
+            ),
+          ),
       );
 
       if (missingScripts.length > 0) {
         safetyIssues.push({
           file: "package.json",
-          issue: `Missing scripts: ${missingScripts.map(s => s.name).join(", ")}`
+          issue: `Missing scripts: ${missingScripts.map((s) => s.name).join(", ")}`,
         });
       }
 
       // Check for ship/preflight workflow
-      const hasShipCommand = Object.keys(scripts).some(s => s.includes("ship") || s.includes("preflight"));
+      const hasShipCommand = Object.keys(scripts).some(
+        (s) => s.includes("ship") || s.includes("preflight"),
+      );
       if (!hasShipCommand) {
         criticalMissing.push("Ship/preflight command");
       }
@@ -878,19 +995,23 @@ class RefactorAuditor {
       criticalMissing.push("CHANGELOG.md");
     } else {
       const lines = changelog.split("\n");
-      const hasVersionEntries = lines.some(line => line.match(/##?\s+\[?\d+\.\d+\.\d+/));
-      const hasUnreleased = lines.some(line => line.toLowerCase().includes("unreleased"));
+      const hasVersionEntries = lines.some((line) =>
+        line.match(/##?\s+\[?\d+\.\d+\.\d+/),
+      );
+      const hasUnreleased = lines.some((line) =>
+        line.toLowerCase().includes("unreleased"),
+      );
 
       if (!hasVersionEntries) {
         safetyIssues.push({
           file: "CHANGELOG.md",
-          issue: "No version entries found"
+          issue: "No version entries found",
         });
       }
       if (!hasUnreleased) {
         safetyIssues.push({
           file: "CHANGELOG.md",
-          issue: "No 'Unreleased' section for tracking changes"
+          issue: "No 'Unreleased' section for tracking changes",
         });
       }
     }
@@ -902,7 +1023,7 @@ class RefactorAuditor {
       if (!version || !version.match(/^\d+\.\d+\.\d+/)) {
         safetyIssues.push({
           file: "package.json",
-          issue: "Version doesn't follow semantic versioning (x.y.z)"
+          issue: "Version doesn't follow semantic versioning (x.y.z)",
         });
       }
     }
@@ -917,7 +1038,8 @@ class RefactorAuditor {
         description: `Missing ${criticalMissing.length} critical release safety mechanisms: ${criticalMissing.join(", ")}`,
         files: [...ciFiles, "package.json", ".husky/pre-commit"],
         impact: "High risk of releasing broken, untested, or vulnerable code",
-        recommendation: "Implement missing safety mechanisms: automated testing, pre-commit hooks, release workflows, and security checks"
+        recommendation:
+          "Implement missing safety mechanisms: automated testing, pre-commit hooks, release workflows, and security checks",
       });
     }
 
@@ -928,9 +1050,10 @@ class RefactorAuditor {
         severity: "P1",
         title: "Release Safety Gaps",
         description: `${safetyIssues.length} release safety improvements needed`,
-        files: safetyIssues.map(s => s.file),
+        files: safetyIssues.map((s) => s.file),
         impact: "Moderate risk of releasing code with quality issues",
-        recommendation: "Address safety gaps in workflows, scripts, and documentation"
+        recommendation:
+          "Address safety gaps in workflows, scripts, and documentation",
       });
     }
   }
@@ -950,7 +1073,9 @@ class RefactorAuditor {
 
   private safeReadFile(filePath: string): string | null {
     try {
-      const fullPath = filePath.startsWith("/") ? filePath : join(this.rootDir, filePath);
+      const fullPath = filePath.startsWith("/")
+        ? filePath
+        : join(this.rootDir, filePath);
       return readFileSync(fullPath, "utf-8");
     } catch {
       return null;
@@ -962,9 +1087,9 @@ class RefactorAuditor {
   }
 
   private generateReport(): void {
-    const highPriority = this.findings.filter(f => f.priority === "HIGH");
-    const mediumPriority = this.findings.filter(f => f.priority === "MEDIUM");
-    const lowPriority = this.findings.filter(f => f.priority === "LOW");
+    const highPriority = this.findings.filter((f) => f.priority === "HIGH");
+    const mediumPriority = this.findings.filter((f) => f.priority === "MEDIUM");
+    const lowPriority = this.findings.filter((f) => f.priority === "LOW");
 
     console.log("\\n" + "=".repeat(80));
     console.log("🔍 REFACTOR AUDIT RESULTS");
@@ -984,7 +1109,9 @@ class RefactorAuditor {
         console.log(`Impact: ${finding.impact}`);
         console.log(`Recommendation: ${finding.recommendation}`);
         if (this.config.verbose) {
-          console.log(`Files: ${finding.files.slice(0, 3).join(", ")}${finding.files.length > 3 ? "..." : ""}`);
+          console.log(
+            `Files: ${finding.files.slice(0, 3).join(", ")}${finding.files.length > 3 ? "..." : ""}`,
+          );
         }
       }
     }
@@ -1001,7 +1128,8 @@ class RefactorAuditor {
     console.log("\\n" + "=".repeat(80));
 
     // Auto-trigger conditions
-    const shouldTriggerShip = highPriority.length === 0 && mediumPriority.length < 3;
+    const shouldTriggerShip =
+      highPriority.length === 0 && mediumPriority.length < 3;
     if (shouldTriggerShip) {
       console.log("✅ System health is good - ready for ship process");
     } else {
@@ -1021,7 +1149,9 @@ async function main() {
   const findings = await auditor.runAudit();
 
   // Exit with error code if high priority findings exist
-  const highPriorityCount = findings.filter(f => f.priority === "HIGH").length;
+  const highPriorityCount = findings.filter(
+    (f) => f.priority === "HIGH",
+  ).length;
   process.exit(highPriorityCount > 0 ? 1 : 0);
 }
 

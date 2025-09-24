@@ -99,11 +99,16 @@ export class QAGenerator extends BaseAgent {
           this.logger.error(`LLM call failed: ${error}`);
 
           // Runtime Guardrail: Fallback to mock in offline mode or API issues
-          const errorMsg = error instanceof Error ? error.message : String(error);
-          if (process.env.OFFLINE_MODE === "true" ||
-              errorMsg?.includes("ANTHROPIC_API_KEY not set") ||
-              errorMsg?.includes("Non-JSON response")) {
-            this.logger.warn("Falling back to mock due to connectivity/config issues");
+          const errorMsg =
+            error instanceof Error ? error.message : String(error);
+          if (
+            process.env.OFFLINE_MODE === "true" ||
+            errorMsg?.includes("ANTHROPIC_API_KEY not set") ||
+            errorMsg?.includes("Non-JSON response")
+          ) {
+            this.logger.warn(
+              "Falling back to mock due to connectivity/config issues",
+            );
             result = this.mock(topic, count);
             reasoning = "Graceful fallback to mock due to LLM failure";
           } else {

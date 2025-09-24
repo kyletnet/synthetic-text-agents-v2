@@ -21,6 +21,7 @@ tsx scripts/smart-refactor-auditor.ts summary
 ```
 
 Shows:
+
 - Auto-fixed items count
 - Pending confirmations count
 - Available rollback points

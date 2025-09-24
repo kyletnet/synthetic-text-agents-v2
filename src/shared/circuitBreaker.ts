@@ -178,10 +178,7 @@ export class CircuitBreaker {
 
     // In HALF_OPEN state, any failure immediately reopens the circuit
     if (this.state === CircuitState.HALF_OPEN) {
-      this.setState(
-        CircuitState.OPEN,
-        "Failure occurred in half-open state",
-      );
+      this.setState(CircuitState.OPEN, "Failure occurred in half-open state");
       this.scheduleNextAttempt();
     }
     // In CLOSED state, check if we've reached failure threshold

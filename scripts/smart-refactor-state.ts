@@ -91,8 +91,8 @@ export class SmartRefactorStateManager {
   private state!: RefactorState;
 
   constructor(rootDir: string = process.cwd()) {
-    this.stateDir = join(rootDir, '.refactor');
-    this.statePath = join(this.stateDir, 'state.json');
+    this.stateDir = join(rootDir, ".refactor");
+    this.statePath = join(this.stateDir, "state.json");
     this.ensureStateDir();
     this.loadState();
   }
@@ -103,7 +103,7 @@ export class SmartRefactorStateManager {
     }
 
     // Create logs directory
-    const logsDir = join(this.stateDir, 'logs');
+    const logsDir = join(this.stateDir, "logs");
     if (!existsSync(logsDir)) {
       mkdirSync(logsDir, { recursive: true });
     }
@@ -112,7 +112,7 @@ export class SmartRefactorStateManager {
   private loadState(): void {
     if (existsSync(this.statePath)) {
       try {
-        const content = readFileSync(this.statePath, 'utf-8');
+        const content = readFileSync(this.statePath, "utf-8");
         this.state = JSON.parse(content, this.dateReviver);
       } catch {
         this.state = this.getDefaultState();
@@ -123,7 +123,10 @@ export class SmartRefactorStateManager {
   }
 
   private dateReviver(key: string, value: any): any {
-    if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test(value)) {
+    if (
+      typeof value === "string" &&
+      /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test(value)
+    ) {
       return new Date(value);
     }
     return value;
@@ -138,13 +141,13 @@ export class SmartRefactorStateManager {
       rollbackStack: [],
       learnedCriteria: {
         fileCountThresholds: {
-          'import-cleanup': 5,
-          'export-duplication': 3,
-          'doc-formatting': 10
+          "import-cleanup": 5,
+          "export-duplication": 3,
+          "doc-formatting": 10,
         },
         categoryRiskAdjustments: {},
-        userApprovalHistory: []
-      }
+        userApprovalHistory: [],
+      },
     };
   }
 
@@ -158,7 +161,8 @@ export class SmartRefactorStateManager {
     if (!this.state.confirmSession) return false;
 
     const session = this.state.confirmSession;
-    const isRecent = Date.now() - session.timestamp.getTime() < 24 * 60 * 60 * 1000; // 24 hours
+    const isRecent =
+      Date.now() - session.timestamp.getTime() < 24 * 60 * 60 * 1000; // 24 hours
     const hasRemaining = session.currentIndex < session.items.length;
 
     return isRecent && hasRemaining;
@@ -175,7 +179,7 @@ export class SmartRefactorStateManager {
     this.state.confirmSession = {
       items,
       currentIndex,
-      timestamp: new Date()
+      timestamp: new Date(),
     };
     this.saveState();
   }
@@ -207,7 +211,7 @@ export class SmartRefactorStateManager {
     this.state.learnedCriteria.userApprovalHistory.push({
       item,
       approved,
-      timestamp: new Date()
+      timestamp: new Date(),
     });
 
     if (approved) {
@@ -219,13 +223,15 @@ export class SmartRefactorStateManager {
         appliedAt: new Date(),
         rollbackData: {}, // Will be filled by actual fix implementation
         safety: this.convertImpactToSafety(item.impact),
-        criteria: [`user-confirmed-${item.risk}-risk`]
+        criteria: [`user-confirmed-${item.risk}-risk`],
       };
       this.state.completedConfirm.push(fixRecord);
     }
 
     // Remove from pending
-    this.state.pendingConfirm = this.state.pendingConfirm.filter(p => p.id !== item.id);
+    this.state.pendingConfirm = this.state.pendingConfirm.filter(
+      (p) => p.id !== item.id,
+    );
     this.saveState();
   }
 
@@ -236,7 +242,7 @@ export class SmartRefactorStateManager {
       buildImpact: impact.buildImpact,
       testCoverage: impact.testCoverage,
       rollbackDifficulty: impact.rollbackDifficulty,
-      autoSafe: false // User confirmation required
+      autoSafe: false, // User confirmation required
     };
   }
 
@@ -247,7 +253,7 @@ export class SmartRefactorStateManager {
       timestamp: new Date(),
       description: `Before: ${fix.description}`,
       affectedFiles: fix.files,
-      changes: [] // Will be populated by actual fix implementation
+      changes: [], // Will be populated by actual fix implementation
     };
 
     this.state.rollbackStack.push(rollbackPoint);
@@ -259,18 +265,20 @@ export class SmartRefactorStateManager {
   }
 
   getLatestRollbackPoint(): RollbackPoint | null {
-    return this.state.rollbackStack[this.state.rollbackStack.length - 1] || null;
+    return (
+      this.state.rollbackStack[this.state.rollbackStack.length - 1] || null
+    );
   }
 
   getRollbackPreview(pointId?: string): {
-    point: RollbackPoint,
-    conflicts: string[],
-    safe: boolean
+    point: RollbackPoint;
+    conflicts: string[];
+    safe: boolean;
   } | null {
     let point: RollbackPoint | null = null;
 
     if (pointId) {
-      point = this.state.rollbackStack.find(p => p.id === pointId) || null;
+      point = this.state.rollbackStack.find((p) => p.id === pointId) || null;
     } else {
       point = this.getLatestRollbackPoint();
     }
@@ -278,10 +286,10 @@ export class SmartRefactorStateManager {
     if (!point) return null;
 
     // Detect conflicts (simplified)
-    const conflicts = point.affectedFiles.filter(file => {
+    const conflicts = point.affectedFiles.filter((file) => {
       // Check if file was modified after rollback point
       try {
-        const stats = require('fs').statSync(file);
+        const stats = require("fs").statSync(file);
         return stats.mtime > point!.timestamp;
       } catch {
         return false; // File doesn't exist, no conflict
@@ -291,7 +299,7 @@ export class SmartRefactorStateManager {
     return {
       point,
       conflicts,
-      safe: conflicts.length === 0
+      safe: conflicts.length === 0,
     };
   }
 
@@ -303,19 +311,35 @@ export class SmartRefactorStateManager {
     // Analyze patterns
     const recentHistory = history.slice(-10); // Last 10 decisions
 
-    for (const category of ['import-cleanup', 'export-duplication', 'doc-formatting']) {
-      const categoryDecisions = recentHistory.filter(h => h.item.category === category);
+    for (const category of [
+      "import-cleanup",
+      "export-duplication",
+      "doc-formatting",
+    ]) {
+      const categoryDecisions = recentHistory.filter(
+        (h) => h.item.category === category,
+      );
       if (categoryDecisions.length >= 3) {
-        const approvalRate = categoryDecisions.filter(d => d.approved).length / categoryDecisions.length;
+        const approvalRate =
+          categoryDecisions.filter((d) => d.approved).length /
+          categoryDecisions.length;
 
         if (approvalRate > 0.8) {
           // Increase threshold (more items can be auto-fixed)
-          const current = this.state.learnedCriteria.fileCountThresholds[category] || 3;
-          this.state.learnedCriteria.fileCountThresholds[category] = Math.min(current + 1, 10);
+          const current =
+            this.state.learnedCriteria.fileCountThresholds[category] || 3;
+          this.state.learnedCriteria.fileCountThresholds[category] = Math.min(
+            current + 1,
+            10,
+          );
         } else if (approvalRate < 0.3) {
           // Decrease threshold (be more conservative)
-          const current = this.state.learnedCriteria.fileCountThresholds[category] || 3;
-          this.state.learnedCriteria.fileCountThresholds[category] = Math.max(current - 1, 1);
+          const current =
+            this.state.learnedCriteria.fileCountThresholds[category] || 3;
+          this.state.learnedCriteria.fileCountThresholds[category] = Math.max(
+            current - 1,
+            1,
+          );
         }
       }
     }
@@ -331,7 +355,9 @@ export class SmartRefactorStateManager {
 
     const adjustments = this.state.learnedCriteria.categoryRiskAdjustments;
     for (const [category, adjustment] of Object.entries(adjustments)) {
-      summary.push(`${category}: risk adjusted by ${adjustment > 0 ? '+' : ''}${adjustment}`);
+      summary.push(
+        `${category}: risk adjusted by ${adjustment > 0 ? "+" : ""}${adjustment}`,
+      );
     }
 
     return summary;
@@ -344,15 +370,15 @@ export class SmartRefactorStateManager {
 
   // State Synchronization
   detectOutOfSyncChanges(): {
-    modifiedFiles: string[],
-    deletedFiles: string[],
-    summary: string
+    modifiedFiles: string[];
+    deletedFiles: string[];
+    summary: string;
   } {
     const allTrackedFiles = new Set<string>();
 
     // Collect all files we've touched
-    [...this.state.autoFixed, ...this.state.completedConfirm].forEach(fix => {
-      fix.files.forEach(file => allTrackedFiles.add(file));
+    [...this.state.autoFixed, ...this.state.completedConfirm].forEach((fix) => {
+      fix.files.forEach((file) => allTrackedFiles.add(file));
     });
 
     const modifiedFiles: string[] = [];
@@ -364,7 +390,7 @@ export class SmartRefactorStateManager {
       } else {
         // Check if modified after our last touch (simplified)
         try {
-          const stats = require('fs').statSync(file);
+          const stats = require("fs").statSync(file);
           const lastAudit = this.state.lastAudit;
           if (stats.mtime > lastAudit) {
             modifiedFiles.push(file);
@@ -378,7 +404,7 @@ export class SmartRefactorStateManager {
     return {
       modifiedFiles,
       deletedFiles,
-      summary: `${modifiedFiles.length} modified, ${deletedFiles.length} deleted since last audit`
+      summary: `${modifiedFiles.length} modified, ${deletedFiles.length} deleted since last audit`,
     };
   }
 
@@ -390,16 +416,16 @@ export class SmartRefactorStateManager {
 
   // Utility Methods
   getSummary(): {
-    autoFixedCount: number,
-    pendingConfirmCount: number,
-    rollbackPointsCount: number,
-    hasIncompleteSession: boolean
+    autoFixedCount: number;
+    pendingConfirmCount: number;
+    rollbackPointsCount: number;
+    hasIncompleteSession: boolean;
   } {
     return {
       autoFixedCount: this.state.autoFixed.length,
       pendingConfirmCount: this.state.pendingConfirm.length,
       rollbackPointsCount: this.state.rollbackStack.length,
-      hasIncompleteSession: this.hasIncompleteSession()
+      hasIncompleteSession: this.hasIncompleteSession(),
     };
   }
 
@@ -426,13 +452,17 @@ export class SmartRefactorStateManager {
     // Remove old entries (keep last 30 days)
     const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
 
-    this.state.autoFixed = this.state.autoFixed.filter(fix => fix.appliedAt > thirtyDaysAgo);
-    this.state.completedConfirm = this.state.completedConfirm.filter(fix => fix.appliedAt > thirtyDaysAgo);
+    this.state.autoFixed = this.state.autoFixed.filter(
+      (fix) => fix.appliedAt > thirtyDaysAgo,
+    );
+    this.state.completedConfirm = this.state.completedConfirm.filter(
+      (fix) => fix.appliedAt > thirtyDaysAgo,
+    );
 
     // Keep only recent learning history
     const history = this.state.learnedCriteria.userApprovalHistory;
     this.state.learnedCriteria.userApprovalHistory = history
-      .filter(entry => entry.timestamp > thirtyDaysAgo)
+      .filter((entry) => entry.timestamp > thirtyDaysAgo)
       .slice(-50); // Keep last 50 decisions max
   }
 

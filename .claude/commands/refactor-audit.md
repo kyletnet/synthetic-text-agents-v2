@@ -67,7 +67,7 @@
    - Validate test and report directory structures (e.g. seed, regression, smoke).
 
 7. **Slash Command to Execution Mapping**
-   - Confirm that every .claude/commands/*.md is linked to a valid, executable command file and properly configured for Cursor session persistence.
+   - Confirm that every .claude/commands/\*.md is linked to a valid, executable command file and properly configured for Cursor session persistence.
 
 ### Priority 3: Long-Term Maintainability
 

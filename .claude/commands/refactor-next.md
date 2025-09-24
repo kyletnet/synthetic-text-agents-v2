@@ -21,6 +21,7 @@ tsx scripts/smart-refactor-auditor.ts summary | grep "Next action"
 ```
 
 Possible recommendations:
+
 - Resume incomplete confirmation session
 - Review pending confirmations
 - Run new audit (if >24h since last)

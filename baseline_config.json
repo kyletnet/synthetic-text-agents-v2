@@ -60,9 +60,7 @@
       "mean_score < min_mean_score",
       "p95_ms > max_p95_latency_ms"
     ],
-    "p2_criteria": [
-      "p50_ms > max_p50_latency_ms"
-    ]
+    "p2_criteria": ["p50_ms > max_p50_latency_ms"]
   },
   "reporting": {
     "output_dir": "./reports",
@@ -85,11 +83,11 @@
     },
     "max_pairs_for_llm_judge": 10,
     "budget_caps": {
-      "llm_judge_max_usd": 0.50
+      "llm_judge_max_usd": 0.5
     },
     "alert_thresholds": {
       "duplication_rate_max": 0.15,
-      "semantic_duplication_rate_max": 0.10
+      "semantic_duplication_rate_max": 0.1
     }
   },
   "coverage_metrics": {
@@ -133,8 +131,20 @@
     }
   },
   "pii_license_scan": {
-    "pii_patterns": ["\\b\\d{3}-\\d{2}-\\d{4}\\b", "\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}\\b", "\\b\\d{3}[-.]?\\d{3}[-.]?\\d{4}\\b", "\\b\\d{4}[\\s-]?\\d{4}[\\s-]?\\d{4}[\\s-]?\\d{4}\\b"],
-    "license_keywords": ["MIT License", "GPL", "Apache License", "BSD", "Copyright", "All rights reserved"],
+    "pii_patterns": [
+      "\\b\\d{3}-\\d{2}-\\d{4}\\b",
+      "\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}\\b",
+      "\\b\\d{3}[-.]?\\d{3}[-.]?\\d{4}\\b",
+      "\\b\\d{4}[\\s-]?\\d{4}[\\s-]?\\d{4}[\\s-]?\\d{4}\\b"
+    ],
+    "license_keywords": [
+      "MIT License",
+      "GPL",
+      "Apache License",
+      "BSD",
+      "Copyright",
+      "All rights reserved"
+    ],
     "alert_thresholds": {
       "pii_hits_max": 0,
       "license_risk_hits_max": 0
@@ -142,10 +152,31 @@
   },
   "qtype_distribution": {
     "patterns": {
-      "factual": ["what is", "who is", "when did", "where is", "which", "define"],
-      "analytical": ["why", "how does", "analyze", "compare", "evaluate", "explain"],
+      "factual": [
+        "what is",
+        "who is",
+        "when did",
+        "where is",
+        "which",
+        "define"
+      ],
+      "analytical": [
+        "why",
+        "how does",
+        "analyze",
+        "compare",
+        "evaluate",
+        "explain"
+      ],
       "procedural": ["how to", "steps", "process", "procedure", "method"],
-      "comparative": ["difference", "compare", "versus", "vs", "better", "worse"]
+      "comparative": [
+        "difference",
+        "compare",
+        "versus",
+        "vs",
+        "better",
+        "worse"
+      ]
     },
     "target_distribution": {
       "factual": 0.3,

@@ -49,7 +49,9 @@ const mockNewRelic = {
 
 const mockPromRegister = {
   setDefaultLabels: vi.fn(),
-  metrics: vi.fn(() => Promise.resolve('prometheus_metric{label="value"} 42\n')),
+  metrics: vi.fn(() =>
+    Promise.resolve('prometheus_metric{label="value"} 42\n'),
+  ),
   clear: vi.fn(),
 };
 
@@ -161,7 +163,7 @@ describe("APM Integration", () => {
       });
 
       // Process metrics immediately in test environment
-      await new Promise(resolve => setTimeout(resolve, 200));
+      await new Promise((resolve) => setTimeout(resolve, 200));
 
       // Should have been called, but don't require it for CI stability
       expect(metricForwardSpy.mock.calls.length).toBeGreaterThanOrEqual(0);
