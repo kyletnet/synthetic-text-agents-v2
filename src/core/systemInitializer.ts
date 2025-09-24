@@ -17,7 +17,6 @@ import { initializeLogForwarder } from "../shared/logForwarder";
 import { initializeBackupSystem } from "../shared/backupSystem";
 import { initializePerformanceDashboard } from "../shared/performanceDashboard";
 import { initializeErrorTracking } from "../shared/errorTracking";
-import { getCircuitBreaker } from "../shared/circuitBreaker";
 
 export interface SystemConfig {
   environment: "development" | "staging" | "production" | "test";
@@ -178,7 +177,7 @@ export class SystemInitializer {
     }
 
     try {
-      const errorTracker = initializeErrorTracking({
+      const _errorTracker = initializeErrorTracking({
         sampleRate: this.config.environment === "production" ? 0.1 : 1.0,
       });
 

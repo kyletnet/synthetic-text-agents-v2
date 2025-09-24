@@ -16,6 +16,54 @@ import {
 } from "../../src/shared/apmIntegration";
 import { TestUtils } from "../setup";
 
+// Mock external APM modules at the top level for CommonJS require()
+const mockDD = {
+  init: vi.fn(),
+  dogstatsd: {
+    gauge: vi.fn(),
+  },
+  scope: vi.fn(() => ({
+    active: vi.fn(() => ({
+      setTag: vi.fn(),
+      finish: vi.fn(),
+      context: vi.fn(() => ({
+        toSpanId: vi.fn(() => "mock-span-id"),
+      })),
+    })),
+  })),
+  trace: vi.fn(() => ({
+    context: vi.fn(() => ({
+      toSpanId: vi.fn(() => "mock-span-id"),
+    })),
+  })),
+  shutdown: vi.fn(),
+};
+
+const mockNewRelic = {
+  recordMetric: vi.fn(),
+  noticeError: vi.fn(),
+  setTransactionName: vi.fn(),
+  addCustomAttribute: vi.fn(),
+  endTransaction: vi.fn(),
+};
+
+const mockPromRegister = {
+  setDefaultLabels: vi.fn(),
+  metrics: vi.fn(() => Promise.resolve('prometheus_metric{label="value"} 42\n')),
+  clear: vi.fn(),
+};
+
+const mockPromClient = {
+  register: mockPromRegister,
+  Gauge: vi.fn(),
+  Counter: vi.fn(),
+  Histogram: vi.fn(),
+};
+
+vi.mock("dd-trace", () => mockDD);
+vi.mock("newrelic", () => mockNewRelic);
+vi.mock("prom-client", () => mockPromClient);
+
 describe("APM Integration", () => {
   let performanceMonitor: PerformanceMonitor;
   let apmIntegration: APMIntegration;
@@ -168,31 +216,6 @@ describe("APM Integration", () => {
 
   describe("Datadog Provider", () => {
     it("should initialize with mocked dd-trace", async () => {
-      // Mock dd-trace module
-      const mockDD = {
-        init: vi.fn(),
-        dogstatsd: {
-          gauge: vi.fn(),
-        },
-        scope: vi.fn(() => ({
-          active: vi.fn(() => ({
-            setTag: vi.fn(),
-            finish: vi.fn(),
-            context: vi.fn(() => ({
-              toSpanId: vi.fn(() => "mock-span-id"),
-            })),
-          })),
-        })),
-        trace: vi.fn(() => ({
-          context: vi.fn(() => ({
-            toSpanId: vi.fn(() => "mock-span-id"),
-          })),
-        })),
-        shutdown: vi.fn(),
-      };
-
-      vi.doMock("dd-trace", () => mockDD);
-
       const provider = new DatadogProvider();
 
       await provider.initialize({

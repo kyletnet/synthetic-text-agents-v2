@@ -987,14 +987,14 @@ export class LinguisticsEngineer extends BaseAgent {
       const tokenEst = result.llmOptimization.tokenOptimization.estimatedTokens;
       const efficiency =
         result.llmOptimization.tokenOptimization.efficiencyScore;
-      const _avgLangScore =
+      const avgLangScore =
         (result.languageQuality.clarity.score +
           result.languageQuality.consistency.score +
           result.languageQuality.precision.score +
           result.languageQuality.naturalness.score) /
         4;
 
-      return `Linguistics Engineer optimized prompt structure for target LLM with ${tokenEst} estimated tokens (${(efficiency * 100).toFixed(0)}% efficiency). Language quality scores: Clarity ${result.languageQuality.clarity.score}/10, Consistency ${result.languageQuality.consistency.score}/10, Precision ${result.languageQuality.precision.score}/10, Naturalness ${result.languageQuality.naturalness.score}/10. Performance prediction: ${result.performancePredictions.generationQuality}/10 quality, ${result.performancePredictions.processingSpeed} processing speed.`;
+      return `Linguistics Engineer optimized prompt structure for target LLM with ${tokenEst} estimated tokens (${(efficiency * 100).toFixed(0)}% efficiency). Average language quality: ${avgLangScore.toFixed(1)}/10 (Clarity ${result.languageQuality.clarity.score}/10, Consistency ${result.languageQuality.consistency.score}/10, Precision ${result.languageQuality.precision.score}/10, Naturalness ${result.languageQuality.naturalness.score}/10). Performance prediction: ${result.performancePredictions.generationQuality}/10 quality, ${result.performancePredictions.processingSpeed} processing speed.`;
     }
 
     return super.explainReasoning(input, output, context);

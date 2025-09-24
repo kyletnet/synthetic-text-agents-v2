@@ -392,11 +392,11 @@ export class MetaController extends BaseAgent {
     const complexity = analysis.score;
 
     if (strategy === "full-council") {
-      return `Hybrid execution: Meta-Controller analysis → Parallel expert consultation (${selection.expertCouncil.length} experts) → Sequential core processing → Quality validation. Expected ${Math.ceil(complexity * 0.5)} rounds of refinement.`;
+      return `${collaborationApproach} execution: Meta-Controller analysis → Parallel expert consultation (${selection.expertCouncil.length} experts) → Sequential core processing → Quality validation. Expected ${Math.ceil(complexity * 0.5)} rounds of refinement.`;
     } else if (strategy === "standard") {
-      return `Sequential execution: Meta-Controller planning → Expert consultation (${selection.expertCouncil.length} experts) → Core processing → Quality review. Expected ${Math.ceil(complexity * 0.3)} refinement cycles.`;
+      return `${collaborationApproach} execution: Meta-Controller planning → Expert consultation (${selection.expertCouncil.length} experts) → Core processing → Quality review. Expected ${Math.ceil(complexity * 0.3)} refinement cycles.`;
     } else {
-      return `Streamlined execution: Meta-Controller oversight → Parallel core processing with domain consultation → Quality check. Single-pass execution expected.`;
+      return `${collaborationApproach} execution: Meta-Controller oversight → Parallel core processing with domain consultation → Quality check. Single-pass execution expected.`;
     }
   }
 
