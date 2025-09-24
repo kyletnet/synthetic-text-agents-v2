@@ -5,6 +5,32 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.4] - 2025-09-24
+
+- 2305933 docs: auto-update system documentation
+- a6b5639 fix: convert ship.js to ship.cjs for CommonJS compatibility
+- f87a3d9 fix: implement runtime guardrails and graceful degradation for LLM failures
+- 9b62a7c feat: implement enhanced /ship command with semantic versioning and GitHub releases
+- f53a75d chore: update test results after fixes
+- c784378 refactor: improve code quality and remove unused imports/variables
+- c2ab125 fix: resolve test configuration and execution issues
+- af20a1c fix: correct CircuitBreaker HALF_OPEN state behavior
+- 90de342 update test results
+- 3140698 sync: update with latest changes - 🤖 Generated with Claude Code
+- af28c98 docs: auto-update system documentation
+- cb21dd5 feat: real evaluation data integration and baseline testing (28 files)
+- b4a8f19 chore(release): v1.0.3
+- 59fcb01 fix: resolve Prettier formatting issues and add .prettierignore
+- 0fc5ed2 fix: refine secret scanning and formatting for CI/CD pipeline
+- 589328d chore(release): v1.0.2
+- 14f7d34 fix: resolve all root causes of GitHub Actions CI/CD failures
+- 5a4f3fa chore(release): v1.0.1
+- 7b4d5e5 fix: resolve GitHub Actions workflow failures completely
+- 01b68c2 fix: resolve GitHub Actions CI/CD pipeline failures
+- fcefdc9 fix: resolve code formatting issues
+- d89e3b6 feat: complete production deployment setup
+
+
 ## [1.0.3] - 2025-09-23
 
 ### Added
