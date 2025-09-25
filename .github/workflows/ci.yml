@@ -81,10 +81,10 @@ jobs:
         run: npm ci
 
       - name: Run ESLint
-        run: npm run lint || true
+        run: npm run dev:lint || true
 
       - name: Check TypeScript compilation
-        run: npm run typecheck
+        run: npm run dev:typecheck
 
       - name: Check code formatting
         run: npx prettier --check .
