@@ -3,16 +3,16 @@
  * Sync Health Reporter - 임시 해결책과 근본적 문제를 추적하고 보고
  */
 
-import { promises as fs } from 'fs';
-import { join } from 'path';
-import { exec } from 'child_process';
-import { promisify } from 'util';
+import { promises as fs } from "fs";
+import { join } from "path";
+import { exec } from "child_process";
+import { promisify } from "util";
 
 const execAsync = promisify(exec);
 
 interface HealthIssue {
-  type: 'TEMPORARY_FIX' | 'ROOT_CAUSE' | 'TECHNICAL_DEBT' | 'WARNING';
-  severity: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+  type: "TEMPORARY_FIX" | "ROOT_CAUSE" | "TECHNICAL_DEBT" | "WARNING";
+  severity: "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
   component: string;
   description: string;
   temporaryFix?: string;
@@ -23,7 +23,7 @@ interface HealthIssue {
 
 interface SyncHealthReport {
   timestamp: string;
-  overallHealth: 'EXCELLENT' | 'GOOD' | 'NEEDS_ATTENTION' | 'CRITICAL';
+  overallHealth: "EXCELLENT" | "GOOD" | "NEEDS_ATTENTION" | "CRITICAL";
   issues: HealthIssue[];
   temporaryFixes: number;
   rootCauseIssues: number;
@@ -40,7 +40,7 @@ class SyncHealthReporter {
   }
 
   async generateHealthReport(): Promise<SyncHealthReport> {
-    console.log('🔍 Analyzing system health and temporary fixes...\n');
+    console.log("🔍 Analyzing system health and temporary fixes...\n");
 
     await this.scanForTemporaryFixes();
     await this.scanForWarnings();
@@ -53,19 +53,22 @@ class SyncHealthReporter {
 
   private async scanForTemporaryFixes(): Promise<void> {
     // 1. Plugin Loader 임시 수정 확인
-    const pluginLoaderPath = join(this.projectRoot, 'src/shared/pluginLoader.ts');
+    const pluginLoaderPath = join(
+      this.projectRoot,
+      "src/shared/pluginLoader.ts",
+    );
     try {
-      const content = await fs.readFile(pluginLoaderPath, 'utf-8');
+      const content = await fs.readFile(pluginLoaderPath, "utf-8");
 
       // 완전 재구현된 경우 체크
-      if (content.includes('완전한 재구현')) {
+      if (content.includes("완전한 재구현")) {
         this.addIssue({
-          type: 'ROOT_CAUSE',
-          severity: 'LOW',
-          component: 'src/shared/pluginLoader.ts',
-          description: 'Plugin system 완전 재구현됨',
-          impact: '기능적 완전성 확보, 하지만 실제 플러그인 파일 부재',
-          handoffRequired: false
+          type: "ROOT_CAUSE",
+          severity: "LOW",
+          component: "src/shared/pluginLoader.ts",
+          description: "Plugin system 완전 재구현됨",
+          impact: "기능적 완전성 확보, 하지만 실제 플러그인 파일 부재",
+          handoffRequired: false,
         });
       }
     } catch (error) {
@@ -81,29 +84,35 @@ class SyncHealthReporter {
 
   private async scanForCommentedCode(): Promise<void> {
     try {
-      const { stdout } = await execAsync('find src scripts -name "*.ts" -exec grep -l "TEMPORARILY DISABLED\\|TODO.*FIX\\|HACK" {} \\;');
-      const files = stdout.trim().split('\n').filter(f => f);
+      const { stdout } = await execAsync(
+        'find src scripts -name "*.ts" -exec grep -l "TEMPORARILY DISABLED\\|TODO.*FIX\\|HACK" {} \\;',
+      );
+      const files = stdout
+        .trim()
+        .split("\n")
+        .filter((f) => f);
 
       for (const file of files) {
         try {
-          const content = await fs.readFile(file, 'utf-8');
-          const lines = content.split('\n');
+          const content = await fs.readFile(file, "utf-8");
+          const lines = content.split("\n");
 
           for (let i = 0; i < lines.length; i++) {
             const line = lines[i].toLowerCase();
-            if (line.includes('temporarily disabled') ||
-                line.includes('temporary stub') ||
-                line.includes('TODO.*FIX'.toLowerCase())) {
-
+            if (
+              line.includes("temporarily disabled") ||
+              line.includes("temporary stub") ||
+              line.includes("TODO.*FIX".toLowerCase())
+            ) {
               this.addIssue({
-                type: 'TEMPORARY_FIX',
-                severity: 'MEDIUM',
+                type: "TEMPORARY_FIX",
+                severity: "MEDIUM",
                 component: file,
                 description: `Line ${i + 1}: ${lines[i].trim()}`,
-                temporaryFix: '주석 처리 또는 임시 구현',
-                rootCauseFix: '완전한 기능 구현 필요',
-                impact: '기능 제한적, 향후 개발 필요',
-                handoffRequired: true
+                temporaryFix: "주석 처리 또는 임시 구현",
+                rootCauseFix: "완전한 기능 구현 필요",
+                impact: "기능 제한적, 향후 개발 필요",
+                handoffRequired: true,
               });
             }
           }
@@ -118,21 +127,26 @@ class SyncHealthReporter {
 
   private async scanForTodoComments(): Promise<void> {
     try {
-      const { stdout } = await execAsync('find src scripts -name "*.ts" -exec grep -n "TODO\\|FIXME\\|HACK\\|XXX" {} + | head -20');
-      const matches = stdout.trim().split('\n').filter(m => m);
+      const { stdout } = await execAsync(
+        'find src scripts -name "*.ts" -exec grep -n "TODO\\|FIXME\\|HACK\\|XXX" {} + | head -20',
+      );
+      const matches = stdout
+        .trim()
+        .split("\n")
+        .filter((m) => m);
 
       for (const match of matches) {
-        const [file, lineNum, ...rest] = match.split(':');
-        const comment = rest.join(':').trim();
+        const [file, lineNum, ...rest] = match.split(":");
+        const comment = rest.join(":").trim();
 
-        if (comment.includes('TODO') || comment.includes('FIXME')) {
+        if (comment.includes("TODO") || comment.includes("FIXME")) {
           this.addIssue({
-            type: 'TECHNICAL_DEBT',
-            severity: comment.includes('CRITICAL') ? 'HIGH' : 'LOW',
+            type: "TECHNICAL_DEBT",
+            severity: comment.includes("CRITICAL") ? "HIGH" : "LOW",
             component: file,
             description: `Line ${lineNum}: ${comment}`,
-            impact: 'Code quality and maintainability',
-            handoffRequired: comment.includes('FIXME')
+            impact: "Code quality and maintainability",
+            handoffRequired: comment.includes("FIXME"),
           });
         }
       }
@@ -144,15 +158,15 @@ class SyncHealthReporter {
   private async scanForWarnings(): Promise<void> {
     // TypeScript warnings
     try {
-      const { stderr } = await execAsync('npm run typecheck 2>&1 || true');
-      if (stderr && stderr.includes('warning')) {
+      const { stderr } = await execAsync("npm run typecheck 2>&1 || true");
+      if (stderr && stderr.includes("warning")) {
         this.addIssue({
-          type: 'WARNING',
-          severity: 'LOW',
-          component: 'TypeScript',
-          description: 'TypeScript warnings present',
-          impact: 'Code quality warnings exist',
-          handoffRequired: false
+          type: "WARNING",
+          severity: "LOW",
+          component: "TypeScript",
+          description: "TypeScript warnings present",
+          impact: "Code quality warnings exist",
+          handoffRequired: false,
         });
       }
     } catch (error) {
@@ -161,16 +175,16 @@ class SyncHealthReporter {
 
     // ESLint warnings
     try {
-      const { stdout } = await execAsync('npm run lint 2>&1 || true');
-      if (stdout && stdout.includes('warning')) {
+      const { stdout } = await execAsync("npm run lint 2>&1 || true");
+      if (stdout && stdout.includes("warning")) {
         const warningCount = (stdout.match(/warning/g) || []).length;
         this.addIssue({
-          type: 'WARNING',
-          severity: warningCount > 10 ? 'MEDIUM' : 'LOW',
-          component: 'ESLint',
+          type: "WARNING",
+          severity: warningCount > 10 ? "MEDIUM" : "LOW",
+          component: "ESLint",
           description: `${warningCount} ESLint warnings`,
-          impact: 'Code style and potential issues',
-          handoffRequired: warningCount > 20
+          impact: "Code style and potential issues",
+          handoffRequired: warningCount > 20,
         });
       }
     } catch (error) {
@@ -183,17 +197,23 @@ class SyncHealthReporter {
   }
 
   private compileReport(): SyncHealthReport {
-    const temporaryFixes = this.issues.filter(i => i.type === 'TEMPORARY_FIX').length;
-    const rootCauseIssues = this.issues.filter(i => i.type === 'ROOT_CAUSE').length;
-    const handoffItems = this.issues.filter(i => i.handoffRequired).length;
+    const temporaryFixes = this.issues.filter(
+      (i) => i.type === "TEMPORARY_FIX",
+    ).length;
+    const rootCauseIssues = this.issues.filter(
+      (i) => i.type === "ROOT_CAUSE",
+    ).length;
+    const handoffItems = this.issues.filter((i) => i.handoffRequired).length;
 
-    const criticalIssues = this.issues.filter(i => i.severity === 'CRITICAL').length;
-    const highIssues = this.issues.filter(i => i.severity === 'HIGH').length;
+    const criticalIssues = this.issues.filter(
+      (i) => i.severity === "CRITICAL",
+    ).length;
+    const highIssues = this.issues.filter((i) => i.severity === "HIGH").length;
 
-    let overallHealth: SyncHealthReport['overallHealth'] = 'EXCELLENT';
-    if (criticalIssues > 0) overallHealth = 'CRITICAL';
-    else if (highIssues > 2) overallHealth = 'NEEDS_ATTENTION';
-    else if (temporaryFixes > 5 || handoffItems > 3) overallHealth = 'GOOD';
+    let overallHealth: SyncHealthReport["overallHealth"] = "EXCELLENT";
+    if (criticalIssues > 0) overallHealth = "CRITICAL";
+    else if (highIssues > 2) overallHealth = "NEEDS_ATTENTION";
+    else if (temporaryFixes > 5 || handoffItems > 3) overallHealth = "GOOD";
 
     const recommendations = this.generateRecommendations();
 
@@ -204,42 +224,52 @@ class SyncHealthReporter {
       temporaryFixes,
       rootCauseIssues,
       handoffItems,
-      recommendations
+      recommendations,
     };
   }
 
   private generateRecommendations(): string[] {
     const recommendations: string[] = [];
 
-    const temporaryFixes = this.issues.filter(i => i.type === 'TEMPORARY_FIX');
+    const temporaryFixes = this.issues.filter(
+      (i) => i.type === "TEMPORARY_FIX",
+    );
     if (temporaryFixes.length > 0) {
-      recommendations.push(`🔧 ${temporaryFixes.length}개 임시 수정사항 검토 필요`);
+      recommendations.push(
+        `🔧 ${temporaryFixes.length}개 임시 수정사항 검토 필요`,
+      );
     }
 
-    const handoffItems = this.issues.filter(i => i.handoffRequired);
+    const handoffItems = this.issues.filter((i) => i.handoffRequired);
     if (handoffItems.length > 0) {
-      recommendations.push(`📋 ${handoffItems.length}개 항목 개발자 인수인계 필요`);
+      recommendations.push(
+        `📋 ${handoffItems.length}개 항목 개발자 인수인계 필요`,
+      );
     }
 
-    const criticalIssues = this.issues.filter(i => i.severity === 'CRITICAL');
+    const criticalIssues = this.issues.filter((i) => i.severity === "CRITICAL");
     if (criticalIssues.length > 0) {
-      recommendations.push(`🚨 ${criticalIssues.length}개 치명적 문제 즉시 해결 필요`);
+      recommendations.push(
+        `🚨 ${criticalIssues.length}개 치명적 문제 즉시 해결 필요`,
+      );
     }
 
     if (recommendations.length === 0) {
-      recommendations.push('✅ 모든 시스템이 안정적으로 작동 중입니다');
+      recommendations.push("✅ 모든 시스템이 안정적으로 작동 중입니다");
     }
 
     return recommendations;
   }
 
-  private async updateHandoffDocuments(report: SyncHealthReport): Promise<void> {
+  private async updateHandoffDocuments(
+    report: SyncHealthReport,
+  ): Promise<void> {
     // 1. 기존 HANDOFF_TECH_FIXES.md 업데이트
-    const handoffPath = join(this.projectRoot, 'HANDOFF_TECH_FIXES.md');
+    const handoffPath = join(this.projectRoot, "HANDOFF_TECH_FIXES.md");
 
-    let handoffContent = '';
+    let handoffContent = "";
     try {
-      handoffContent = await fs.readFile(handoffPath, 'utf-8');
+      handoffContent = await fs.readFile(handoffPath, "utf-8");
     } catch (error) {
       // 파일 없으면 새로 생성
     }
@@ -247,29 +277,32 @@ class SyncHealthReporter {
     // 건강 상태 섹션 추가
     const healthSection = this.generateHealthSection(report);
 
-    if (handoffContent.includes('## 🏥 **시스템 건강 상태**')) {
+    if (handoffContent.includes("## 🏥 **시스템 건강 상태**")) {
       // 기존 섹션 교체
       handoffContent = handoffContent.replace(
         /## 🏥 \*\*시스템 건강 상태\*\*[\s\S]*?(?=##|$)/,
-        healthSection
+        healthSection,
       );
     } else {
       // 새 섹션 추가
-      handoffContent += '\n\n' + healthSection;
+      handoffContent += "\n\n" + healthSection;
     }
 
     await fs.writeFile(handoffPath, handoffContent);
 
     // 2. 실시간 건강 상태 리포트 생성
-    const reportPath = join(this.projectRoot, 'reports/sync-health-report.json');
-    await fs.mkdir(join(this.projectRoot, 'reports'), { recursive: true });
+    const reportPath = join(
+      this.projectRoot,
+      "reports/sync-health-report.json",
+    );
+    await fs.mkdir(join(this.projectRoot, "reports"), { recursive: true });
     await fs.writeFile(reportPath, JSON.stringify(report, null, 2));
   }
 
   private generateHealthSection(report: SyncHealthReport): string {
     let section = `## 🏥 **시스템 건강 상태**
 
-_마지막 업데이트: ${new Date().toLocaleString('ko-KR')}_
+_마지막 업데이트: ${new Date().toLocaleString("ko-KR")}_
 
 ### 📊 **전체 상태: ${report.overallHealth}**
 
@@ -282,7 +315,7 @@ _마지막 업데이트: ${new Date().toLocaleString('ko-KR')}_
 
 `;
 
-    report.recommendations.forEach(rec => {
+    report.recommendations.forEach((rec) => {
       section += `- ${rec}\n`;
     });
 
@@ -290,22 +323,24 @@ _마지막 업데이트: ${new Date().toLocaleString('ko-KR')}_
       section += `\n### 📝 **상세 이슈 목록**\n\n`;
 
       const groupedIssues = {
-        TEMPORARY_FIX: report.issues.filter(i => i.type === 'TEMPORARY_FIX'),
-        ROOT_CAUSE: report.issues.filter(i => i.type === 'ROOT_CAUSE'),
-        TECHNICAL_DEBT: report.issues.filter(i => i.type === 'TECHNICAL_DEBT'),
-        WARNING: report.issues.filter(i => i.type === 'WARNING')
+        TEMPORARY_FIX: report.issues.filter((i) => i.type === "TEMPORARY_FIX"),
+        ROOT_CAUSE: report.issues.filter((i) => i.type === "ROOT_CAUSE"),
+        TECHNICAL_DEBT: report.issues.filter(
+          (i) => i.type === "TECHNICAL_DEBT",
+        ),
+        WARNING: report.issues.filter((i) => i.type === "WARNING"),
       };
 
       Object.entries(groupedIssues).forEach(([type, issues]) => {
         if (issues.length > 0) {
           const emoji = {
-            TEMPORARY_FIX: '⚠️',
-            ROOT_CAUSE: '🔍',
-            TECHNICAL_DEBT: '💳',
-            WARNING: '⚡'
+            TEMPORARY_FIX: "⚠️",
+            ROOT_CAUSE: "🔍",
+            TECHNICAL_DEBT: "💳",
+            WARNING: "⚡",
           };
 
-          section += `#### ${emoji[type as keyof typeof emoji]} **${type.replace('_', ' ')} (${issues.length}개)**\n\n`;
+          section += `#### ${emoji[type as keyof typeof emoji]} **${type.replace("_", " ")} (${issues.length}개)**\n\n`;
 
           issues.forEach((issue, index) => {
             section += `${index + 1}. **${issue.component}** (${issue.severity})\n`;
@@ -317,7 +352,7 @@ _마지막 업데이트: ${new Date().toLocaleString('ko-KR')}_
               section += `   - 근본 해결: ${issue.rootCauseFix}\n`;
             }
             section += `   - 영향: ${issue.impact}\n`;
-            section += `   - 인수인계: ${issue.handoffRequired ? '✅ 필요' : '❌ 불필요'}\n\n`;
+            section += `   - 인수인계: ${issue.handoffRequired ? "✅ 필요" : "❌ 불필요"}\n\n`;
           });
         }
       });
@@ -328,14 +363,16 @@ _마지막 업데이트: ${new Date().toLocaleString('ko-KR')}_
 
   displayReport(report: SyncHealthReport): void {
     const healthEmoji = {
-      EXCELLENT: '🟢',
-      GOOD: '🟡',
-      NEEDS_ATTENTION: '🟠',
-      CRITICAL: '🔴'
+      EXCELLENT: "🟢",
+      GOOD: "🟡",
+      NEEDS_ATTENTION: "🟠",
+      CRITICAL: "🔴",
     };
 
-    console.log(`\n${healthEmoji[report.overallHealth]} 시스템 건강 상태: ${report.overallHealth}`);
-    console.log('========================================');
+    console.log(
+      `\n${healthEmoji[report.overallHealth]} 시스템 건강 상태: ${report.overallHealth}`,
+    );
+    console.log("========================================");
 
     if (report.temporaryFixes > 0) {
       console.log(`⚠️  임시 수정사항: ${report.temporaryFixes}개`);
@@ -346,11 +383,11 @@ _마지막 업데이트: ${new Date().toLocaleString('ko-KR')}_
     }
 
     if (report.issues.length === 0) {
-      console.log('✅ 임시 해결책이나 심각한 문제가 발견되지 않았습니다.');
+      console.log("✅ 임시 해결책이나 심각한 문제가 발견되지 않았습니다.");
     }
 
-    console.log('\n🎯 추천 액션:');
-    report.recommendations.forEach(rec => {
+    console.log("\n🎯 추천 액션:");
+    report.recommendations.forEach((rec) => {
       console.log(`   ${rec}`);
     });
 

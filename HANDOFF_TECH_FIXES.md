@@ -34,10 +34,13 @@ _Generated: 2025-09-25_
 ## 🎯 **완전 자동화된 워크플로**
 
 ### `/sync` 명령어 통합
+
 ```bash
 npm run sync
 ```
+
 **자동 실행되는 작업들:**
+
 1. **AI 분석**: TypeScript 오류 자동 스캔 및 수정 제안
 2. **정리**: 임시 파일, 로그, 캐시 자동 정리
 3. **문서 업데이트**: 시스템 맵, 인덱스, LLM 태그 자동 생성
@@ -45,6 +48,7 @@ npm run sync
 5. **Git 관리**: 자동 스테이징, 커밋, 푸시
 
 ### 4개 핵심 슬래시 명령어
+
 ```bash
 /fix              # AI 자동 오류 수정 + 롤백
 /status           # 스마트 시스템 상태 대시보드
@@ -74,11 +78,13 @@ npm run sync
 ## 📚 **업데이트된 문서들**
 
 ### 자동 생성/업데이트
+
 - `SYSTEM_MAP.md` - 시스템 아키텍처 맵
 - `apps/fe-web/docs/*/INDEX.md` - RUN_LOGS, DECISIONS, EXPERIMENTS 인덱스
 - `docs/SYSTEM_DOCS/` - 완전한 시스템 문서 구조
 
 ### 슬래시 명령어 정리
+
 - **활성**: `.claude/commands/` (4개 핵심 명령어)
 - **숨김**: `.claude/commands/_hidden/` (개발자용 고급 명령어)
 
@@ -141,7 +147,7 @@ _마지막 업데이트: 2025. 9. 25. 오후 12:26:24_
    - 인수인계: ✅ 필요
 
 4. **scripts/sync-health-reporter.ts** (MEDIUM)
-   - 문제: Line 96: line.includes('TODO.*FIX'.toLowerCase())) {
+   - 문제: Line 96: line.includes('TODO.\*FIX'.toLowerCase())) {
    - 임시 해결: 주석 처리 또는 임시 구현
    - 근본 해결: 완전한 기능 구현 필요
    - 영향: 기능 제한적, 향후 개발 필요
@@ -185,34 +191,38 @@ _마지막 업데이트: 2025. 9. 25. 오후 12:26:24_
    - 인수인계: ❌ 불필요
 
 8. **scripts/sync-health-reporter.ts** (LOW)
-   - 문제: Line 96: line.includes('TODO.*FIX'.toLowerCase())) {
+   - 문제: Line 96: line.includes('TODO.\*FIX'.toLowerCase())) {
    - 영향: Code quality and maintainability
    - 인수인계: ❌ 불필요
 
 9. **scripts/sync-health-reporter.ts** (LOW)
-   - 문제: Line 121: const { stdout } = await execAsync('find src scripts -name "*.ts" -exec grep -n "TODO\\|FIXME\\|HACK\\|XXX" {} + | head -20');
+   - 문제: Line 121: const { stdout } = await execAsync('find src scripts -name "\*.ts" -exec grep -n "TODO\\|FIXME\\|HACK\\|XXX" {} + | head -20');
    - 영향: Code quality and maintainability
    - 인수인계: ✅ 필요
 
 10. **scripts/sync-health-reporter.ts** (LOW)
-   - 문제: Line 128: if (comment.includes('TODO') || comment.includes('FIXME')) {
-   - 영향: Code quality and maintainability
-   - 인수인계: ✅ 필요
+
+- 문제: Line 128: if (comment.includes('TODO') || comment.includes('FIXME')) {
+- 영향: Code quality and maintainability
+- 인수인계: ✅ 필요
 
 11. **scripts/sync-health-reporter.ts** (LOW)
-   - 문제: Line 135: handoffRequired: comment.includes('FIXME')
-   - 영향: Code quality and maintainability
-   - 인수인계: ✅ 필요
+
+- 문제: Line 135: handoffRequired: comment.includes('FIXME')
+- 영향: Code quality and maintainability
+- 인수인계: ✅ 필요
 
 12. **scripts/lib/gating_integrator.ts** (LOW)
-   - 문제: Line 158: const manifestIntegrityOk = manifestHash ? true : true; // TODO: implement actual validation
-   - 영향: Code quality and maintainability
-   - 인수인계: ❌ 불필요
+
+- 문제: Line 158: const manifestIntegrityOk = manifestHash ? true : true; // TODO: implement actual validation
+- 영향: Code quality and maintainability
+- 인수인계: ❌ 불필요
 
 13. **scripts/ts-compile-checker.ts** (LOW)
-   - 문제: Line 284: return `${prop}: any; // TODO: Define proper type`;
-   - 영향: Code quality and maintainability
-   - 인수인계: ❌ 불필요
+
+- 문제: Line 284: return `${prop}: any; // TODO: Define proper type`;
+- 영향: Code quality and maintainability
+- 인수인계: ❌ 불필요
 
 #### ⚡ **WARNING (1개)**
 
@@ -259,7 +269,7 @@ _마지막 업데이트: 2025. 9. 25. 오후 12:26:24_
    - 인수인계: ✅ 필요
 
 4. **scripts/sync-health-reporter.ts** (MEDIUM)
-   - 문제: Line 96: line.includes('TODO.*FIX'.toLowerCase())) {
+   - 문제: Line 96: line.includes('TODO.\*FIX'.toLowerCase())) {
    - 임시 해결: 주석 처리 또는 임시 구현
    - 근본 해결: 완전한 기능 구현 필요
    - 영향: 기능 제한적, 향후 개발 필요
@@ -293,12 +303,12 @@ _마지막 업데이트: 2025. 9. 25. 오후 12:26:24_
    - 인수인계: ❌ 불필요
 
 6. **scripts/sync-health-reporter.ts** (LOW)
-   - 문제: Line 96: line.includes('TODO.*FIX'.toLowerCase())) {
+   - 문제: Line 96: line.includes('TODO.\*FIX'.toLowerCase())) {
    - 영향: Code quality and maintainability
    - 인수인계: ❌ 불필요
 
 7. **scripts/sync-health-reporter.ts** (LOW)
-   - 문제: Line 121: const { stdout } = await execAsync('find src scripts -name "*.ts" -exec grep -n "TODO\\|FIXME\\|HACK\\|XXX" {} + | head -20');
+   - 문제: Line 121: const { stdout } = await execAsync('find src scripts -name "\*.ts" -exec grep -n "TODO\\|FIXME\\|HACK\\|XXX" {} + | head -20');
    - 영향: Code quality and maintainability
    - 인수인계: ✅ 필요
 
@@ -313,14 +323,16 @@ _마지막 업데이트: 2025. 9. 25. 오후 12:26:24_
    - 인수인계: ✅ 필요
 
 10. **scripts/lib/gating_integrator.ts** (LOW)
-   - 문제: Line 158: const manifestIntegrityOk = manifestHash ? true : true; // TODO: implement actual validation
-   - 영향: Code quality and maintainability
-   - 인수인계: ❌ 불필요
+
+- 문제: Line 158: const manifestIntegrityOk = manifestHash ? true : true; // TODO: implement actual validation
+- 영향: Code quality and maintainability
+- 인수인계: ❌ 불필요
 
 11. **scripts/ts-compile-checker.ts** (LOW)
-   - 문제: Line 284: return `${prop}: any; // TODO: Define proper type`;
-   - 영향: Code quality and maintainability
-   - 인수인계: ❌ 불필요
+
+- 문제: Line 284: return `${prop}: any; // TODO: Define proper type`;
+- 영향: Code quality and maintainability
+- 인수인계: ❌ 불필요
 
 #### ⚡ **WARNING (1개)**
 
@@ -367,7 +379,7 @@ _마지막 업데이트: 2025. 9. 25. 오후 12:26:24_
    - 인수인계: ✅ 필요
 
 4. **scripts/sync-health-reporter.ts** (MEDIUM)
-   - 문제: Line 96: line.includes('TODO.*FIX'.toLowerCase())) {
+   - 문제: Line 96: line.includes('TODO.\*FIX'.toLowerCase())) {
    - 임시 해결: 주석 처리 또는 임시 구현
    - 근본 해결: 완전한 기능 구현 필요
    - 영향: 기능 제한적, 향후 개발 필요
@@ -401,12 +413,12 @@ _마지막 업데이트: 2025. 9. 25. 오후 12:26:24_
    - 인수인계: ❌ 불필요
 
 6. **scripts/sync-health-reporter.ts** (LOW)
-   - 문제: Line 96: line.includes('TODO.*FIX'.toLowerCase())) {
+   - 문제: Line 96: line.includes('TODO.\*FIX'.toLowerCase())) {
    - 영향: Code quality and maintainability
    - 인수인계: ❌ 불필요
 
 7. **scripts/sync-health-reporter.ts** (LOW)
-   - 문제: Line 121: const { stdout } = await execAsync('find src scripts -name "*.ts" -exec grep -n "TODO\\|FIXME\\|HACK\\|XXX" {} + | head -20');
+   - 문제: Line 121: const { stdout } = await execAsync('find src scripts -name "\*.ts" -exec grep -n "TODO\\|FIXME\\|HACK\\|XXX" {} + | head -20');
    - 영향: Code quality and maintainability
    - 인수인계: ✅ 필요
 
@@ -421,14 +433,16 @@ _마지막 업데이트: 2025. 9. 25. 오후 12:26:24_
    - 인수인계: ✅ 필요
 
 10. **scripts/lib/gating_integrator.ts** (LOW)
-   - 문제: Line 158: const manifestIntegrityOk = manifestHash ? true : true; // TODO: implement actual validation
-   - 영향: Code quality and maintainability
-   - 인수인계: ❌ 불필요
+
+- 문제: Line 158: const manifestIntegrityOk = manifestHash ? true : true; // TODO: implement actual validation
+- 영향: Code quality and maintainability
+- 인수인계: ❌ 불필요
 
 11. **scripts/ts-compile-checker.ts** (LOW)
-   - 문제: Line 284: return `${prop}: any; // TODO: Define proper type`;
-   - 영향: Code quality and maintainability
-   - 인수인계: ❌ 불필요
+
+- 문제: Line 284: return `${prop}: any; // TODO: Define proper type`;
+- 영향: Code quality and maintainability
+- 인수인계: ❌ 불필요
 
 #### ⚡ **WARNING (1개)**
 
@@ -436,4 +450,3 @@ _마지막 업데이트: 2025. 9. 25. 오후 12:26:24_
    - 문제: 85 ESLint warnings
    - 영향: Code style and potential issues
    - 인수인계: ✅ 필요
-

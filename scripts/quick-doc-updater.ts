@@ -3,10 +3,10 @@
  * Quick Document Updater - 핵심 문서들만 빠르게 업데이트
  */
 
-import { promises as fs } from 'fs';
-import { join } from 'path';
-import { exec } from 'child_process';
-import { promisify } from 'util';
+import { promises as fs } from "fs";
+import { join } from "path";
+import { exec } from "child_process";
+import { promisify } from "util";
 
 const execAsync = promisify(exec);
 
@@ -18,15 +18,15 @@ class QuickDocUpdater {
   }
 
   async updateCoreDocuments(): Promise<void> {
-    console.log('📚 Updating core project documents...\n');
+    console.log("📚 Updating core project documents...\n");
 
     const coreDocuments = [
-      'README.md',
-      'CHANGELOG.md',
-      'HANDOFF_NAVIGATION.md',
-      'DEVELOPER_HANDOFF_COMPLETE.md',
-      'DEVELOPMENT_ONBOARDING.md',
-      'docs/SYSTEM_DOCS/README.md'
+      "README.md",
+      "CHANGELOG.md",
+      "HANDOFF_NAVIGATION.md",
+      "DEVELOPER_HANDOFF_COMPLETE.md",
+      "DEVELOPMENT_ONBOARDING.md",
+      "docs/SYSTEM_DOCS/README.md",
     ];
 
     let updatedCount = 0;
@@ -44,7 +44,7 @@ class QuickDocUpdater {
           continue;
         }
 
-        const content = await fs.readFile(fullPath, 'utf-8');
+        const content = await fs.readFile(fullPath, "utf-8");
         const updatedContent = await this.updateDocument(content, docPath);
 
         if (updatedContent !== content) {
@@ -54,7 +54,6 @@ class QuickDocUpdater {
         } else {
           console.log(`ℹ️  No changes: ${docPath}`);
         }
-
       } catch (error) {
         console.log(`❌ Error updating ${docPath}: ${String(error)}`);
         errorCount++;
@@ -64,18 +63,21 @@ class QuickDocUpdater {
     console.log(`\n📊 Summary: ${updatedCount} updated, ${errorCount} errors`);
   }
 
-  private async updateDocument(content: string, filePath: string): Promise<string> {
+  private async updateDocument(
+    content: string,
+    filePath: string,
+  ): Promise<string> {
     let updated = content;
 
     // 1. 타임스탬프 업데이트
     updated = this.updateTimestamp(updated);
 
     // 2. 파일별 특별 처리
-    if (filePath === 'README.md') {
+    if (filePath === "README.md") {
       updated = await this.updateMainReadme(updated);
-    } else if (filePath === 'CHANGELOG.md') {
+    } else if (filePath === "CHANGELOG.md") {
       updated = await this.updateChangelog(updated);
-    } else if (filePath.includes('HANDOFF')) {
+    } else if (filePath.includes("HANDOFF")) {
       updated = await this.updateHandoffDoc(updated);
     }
 
@@ -83,13 +85,13 @@ class QuickDocUpdater {
   }
 
   private updateTimestamp(content: string): string {
-    const timestamp = `_Last updated: ${new Date().toLocaleDateString('ko-KR')}_`;
+    const timestamp = `_Last updated: ${new Date().toLocaleDateString("ko-KR")}_`;
 
     // 기존 타임스탬프 패턴 찾기
     const patterns = [
       /_Last updated: [^_\n]+_/g,
       /_마지막 업데이트: [^_\n]+_/g,
-      /_Generated: [^_\n]+_/g
+      /_Generated: [^_\n]+_/g,
     ];
 
     for (const pattern of patterns) {
@@ -108,22 +110,25 @@ class QuickDocUpdater {
     const statusSection = `## 📊 Current Status
 
 - **Build**: ${stats.buildStatus}
-- **TypeScript**: ${stats.tsErrors === 0 ? 'PASS' : `${stats.tsErrors} errors`}
+- **TypeScript**: ${stats.tsErrors === 0 ? "PASS" : `${stats.tsErrors} errors`}
 - **Health Score**: ${stats.healthScore}/10
 - **Core Commands**: 4 (fix, status, sync, refactor-audit)
 
 _Auto-updated by /sync_`;
 
     // 기존 status 섹션 교체 또는 추가
-    if (content.includes('## 📊 Current Status')) {
-      return content.replace(/## 📊 Current Status[\s\S]*?_Auto-updated by \/sync_/g, statusSection);
+    if (content.includes("## 📊 Current Status")) {
+      return content.replace(
+        /## 📊 Current Status[\s\S]*?_Auto-updated by \/sync_/g,
+        statusSection,
+      );
     } else {
-      return content + '\n\n' + statusSection;
+      return content + "\n\n" + statusSection;
     }
   }
 
   private async updateChangelog(content: string): Promise<string> {
-    const today = new Date().toISOString().split('T')[0];
+    const today = new Date().toISOString().split("T")[0];
 
     // 오늘 날짜 항목이 이미 있는지 확인
     if (content.includes(`## [${today}]`)) {
@@ -154,9 +159,15 @@ _Auto-updated by /sync_`;
 `;
 
     // CHANGELOG 시작 부분에 새 항목 삽입
-    const changelogStart = content.indexOf('# Changelog') + '# Changelog'.length;
+    const changelogStart =
+      content.indexOf("# Changelog") + "# Changelog".length;
     if (changelogStart > -1) {
-      return content.slice(0, changelogStart) + '\n\n' + newEntry + content.slice(changelogStart);
+      return (
+        content.slice(0, changelogStart) +
+        "\n\n" +
+        newEntry +
+        content.slice(changelogStart)
+      );
     } else {
       return `# Changelog\n\n${newEntry}\n${content}`;
     }
@@ -168,23 +179,26 @@ _Auto-updated by /sync_`;
     // 현재 시스템 상태 섹션 추가/업데이트
     const currentStatusSection = `## 🔄 Current System Status
 
-**As of ${new Date().toLocaleDateString('ko-KR')}:**
+**As of ${new Date().toLocaleDateString("ko-KR")}:**
 
-- ✅ TypeScript: ${stats.tsErrors === 0 ? 'All errors resolved' : `${stats.tsErrors} errors remaining`}
+- ✅ TypeScript: ${stats.tsErrors === 0 ? "All errors resolved" : `${stats.tsErrors} errors remaining`}
 - ✅ Build: ${stats.buildStatus}
 - ✅ Health Score: ${stats.healthScore}/10
 - 🤖 AI Systems: Active (fix, status, health reporting)
 - 📚 Documentation: Auto-synchronized
 
-**Ready for handoff**: ${stats.healthScore >= 8 ? '✅ YES' : '⚠️ Needs attention'}
+**Ready for handoff**: ${stats.healthScore >= 8 ? "✅ YES" : "⚠️ Needs attention"}
 
 ---`;
 
-    if (content.includes('## 🔄 Current System Status')) {
-      return content.replace(/## 🔄 Current System Status[\s\S]*?---/g, currentStatusSection);
+    if (content.includes("## 🔄 Current System Status")) {
+      return content.replace(
+        /## 🔄 Current System Status[\s\S]*?---/g,
+        currentStatusSection,
+      );
     } else {
       // 문서 시작 부분에 현재 상태 추가
-      return currentStatusSection + '\n\n' + content;
+      return currentStatusSection + "\n\n" + content;
     }
   }
 
@@ -197,26 +211,27 @@ _Auto-updated by /sync_`;
       // TypeScript 체크
       let tsErrors = 0;
       try {
-        await execAsync('npm run typecheck');
+        await execAsync("npm run typecheck");
       } catch (error) {
         const errorOutput = String(error);
         tsErrors = (errorOutput.match(/error TS/g) || []).length;
       }
 
       // 빌드 상태
-      let buildStatus = 'PASS';
+      let buildStatus = "PASS";
       try {
-        await execAsync('npm run build');
+        await execAsync("npm run build");
       } catch {
-        buildStatus = 'FAIL';
+        buildStatus = "FAIL";
       }
 
       // 건강 점수
-      const healthScore = tsErrors === 0 ? 10 : Math.max(8 - Math.floor(tsErrors / 2), 1);
+      const healthScore =
+        tsErrors === 0 ? 10 : Math.max(8 - Math.floor(tsErrors / 2), 1);
 
       return { tsErrors, buildStatus, healthScore };
     } catch {
-      return { tsErrors: 0, buildStatus: 'UNKNOWN', healthScore: 7 };
+      return { tsErrors: 0, buildStatus: "UNKNOWN", healthScore: 7 };
     }
   }
 }

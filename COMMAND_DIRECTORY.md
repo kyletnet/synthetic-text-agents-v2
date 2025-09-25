@@ -131,18 +131,22 @@ npm run demo                   # → dev 사용
 ## 🎛️ **명령어 우선순위별 분류**
 
 ### 🟢 **Daily Use (매일 사용)**
+
 - `npm run dev`, `npm run build`, `npm run ci:quality`
 - `npm run docs:audit`, `npm run refactor:audit`
 
 ### 🟡 **Weekly Use (주간 사용)**
+
 - `npm run ship`, `npm run docs:gate`
 - `npm run refactor:summary`, `npm run guard:all`
 
 ### 🔵 **As Needed (필요시만)**
+
 - `npm run docs:signals:inject`, `npm run ts:check`
 - `npm run verify:*`, `npm run baseline:*`
 
 ### 🔴 **Deprecated/Redundant (사용 중단 권장)**
+
 - `npm run demo` → `npm run dev`
 - `npm run docs:coverage` → `npm run docs:audit`
 - `npm run baseline:tsnode` → `npm run dev`

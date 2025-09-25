@@ -1,8 +1,8 @@
 #!/usr/bin/env tsx
 
-import { spawn } from 'child_process';
-import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
+import { spawn } from "child_process";
+import { join, dirname } from "path";
+import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -33,38 +33,38 @@ interface StatusReport {
 
 async function execCommand(command: string, cwd?: string): Promise<string> {
   return new Promise((resolve, reject) => {
-    const [cmd, ...args] = command.split(' ');
+    const [cmd, ...args] = command.split(" ");
     const child = spawn(cmd, args, {
       cwd: cwd || process.cwd(),
-      stdio: 'pipe',
-      shell: true
+      stdio: "pipe",
+      shell: true,
     });
 
-    let stdout = '';
-    let stderr = '';
+    let stdout = "";
+    let stderr = "";
 
-    child.stdout?.on('data', (data) => {
+    child.stdout?.on("data", (data) => {
       stdout += data.toString();
     });
 
-    child.stderr?.on('data', (data) => {
+    child.stderr?.on("data", (data) => {
       stderr += data.toString();
     });
 
-    child.on('close', (code) => {
+    child.on("close", (code) => {
       if (code === 0 || stdout.trim()) {
         resolve(stdout.trim());
       } else {
-        resolve(''); // Return empty string for commands that might not have output
+        resolve(""); // Return empty string for commands that might not have output
       }
     });
   });
 }
 
-async function getGitStatus(): Promise<StatusReport['git']> {
+async function getGitStatus(): Promise<StatusReport["git"]> {
   try {
-    const status = await execCommand('git status --porcelain');
-    const lines = status.split('\n').filter(line => line.trim());
+    const status = await execCommand("git status --porcelain");
+    const lines = status.split("\n").filter((line) => line.trim());
 
     let modified = 0;
     let untracked = 0;
@@ -72,9 +72,9 @@ async function getGitStatus(): Promise<StatusReport['git']> {
 
     for (const line of lines) {
       const status = line.substring(0, 2);
-      if (status[0] !== ' ' && status[0] !== '?') staged++;
-      if (status[1] === 'M') modified++;
-      if (status[0] === '?') untracked++;
+      if (status[0] !== " " && status[0] !== "?") staged++;
+      if (status[1] === "M") modified++;
+      if (status[0] === "?") untracked++;
     }
 
     return { modified, untracked, staged };
@@ -83,10 +83,10 @@ async function getGitStatus(): Promise<StatusReport['git']> {
   }
 }
 
-async function getTypeScriptStatus(): Promise<StatusReport['typescript']> {
+async function getTypeScriptStatus(): Promise<StatusReport["typescript"]> {
   try {
     // Import AI fix engine to get suggestions
-    const fixEngineModule = await import('./ai-fix-engine.js');
+    const fixEngineModule = await import("./ai-fix-engine.js");
     const AIFixEngine = fixEngineModule.AIFixEngine;
     const fixEngine = new AIFixEngine(process.cwd());
     const suggestions = await fixEngine.getFixSuggestions();
@@ -95,32 +95,32 @@ async function getTypeScriptStatus(): Promise<StatusReport['typescript']> {
       errors: suggestions.totalErrors,
       fixableErrors: suggestions.fixableErrors,
       successRate: suggestions.successRate,
-      recommendedAction: suggestions.recommendedAction
+      recommendedAction: suggestions.recommendedAction,
     };
   } catch (error) {
-    console.error('Warning: Could not get TypeScript suggestions:', error);
+    console.error("Warning: Could not get TypeScript suggestions:", error);
     return {
       errors: 0,
       fixableErrors: 0,
       successRate: 0,
-      recommendedAction: 'Check TypeScript manually'
+      recommendedAction: "Check TypeScript manually",
     };
   }
 }
 
-async function getDocsStatus(): Promise<StatusReport['docs']> {
+async function getDocsStatus(): Promise<StatusReport["docs"]> {
   try {
     // Try to get docs audit info
-    await execCommand('npm run docs:audit');
-    return { stale: 0, coverage: 'Good' };
+    await execCommand("npm run docs:audit");
+    return { stale: 0, coverage: "Good" };
   } catch {
-    return { stale: 4, coverage: 'Check needed' };
+    return { stale: 4, coverage: "Check needed" };
   }
 }
 
-async function getAIStatus(): Promise<StatusReport['ai']> {
+async function getAIStatus(): Promise<StatusReport["ai"]> {
   try {
-    const advisorOutput = await execCommand('npm run advisor:suggest');
+    const advisorOutput = await execCommand("npm run advisor:suggest");
     const patterns = (advisorOutput.match(/patterns/g) || []).length;
     const suggestions = (advisorOutput.match(/suggestions/g) || []).length;
 
@@ -155,28 +155,28 @@ function generateQuickActions(report: StatusReport): string[] {
   }
 
   if (report.docs.stale > 0) {
-    actions.push('npm run docs:audit → Update stale documentation');
+    actions.push("npm run docs:audit → Update stale documentation");
   }
 
   if (report.ai.suggestions > 5) {
-    actions.push('npm run advisor:suggest → Review AI improvement suggestions');
+    actions.push("npm run advisor:suggest → Review AI improvement suggestions");
   }
 
   if (report.git.modified > 5) {
-    actions.push('/sync → Commit and sync changes');
+    actions.push("/sync → Commit and sync changes");
   }
 
   return actions;
 }
 
 async function generateStatusReport(): Promise<StatusReport> {
-  console.log('🔍 Gathering system status...\n');
+  console.log("🔍 Gathering system status...\n");
 
   const [git, typescript, docs, ai] = await Promise.all([
     getGitStatus(),
     getTypeScriptStatus(),
     getDocsStatus(),
-    getAIStatus()
+    getAIStatus(),
   ]);
 
   const report: StatusReport = {
@@ -185,7 +185,7 @@ async function generateStatusReport(): Promise<StatusReport> {
     docs,
     ai,
     overallHealth: 0,
-    quickActions: []
+    quickActions: [],
   };
 
   report.overallHealth = calculateOverallHealth(report);
@@ -195,30 +195,43 @@ async function generateStatusReport(): Promise<StatusReport> {
 }
 
 function displayReport(report: StatusReport): void {
-  const healthIcon = report.overallHealth >= 8 ? '🟢' : report.overallHealth >= 6 ? '🟡' : '🔴';
-  const healthStatus = report.overallHealth >= 8 ? 'EXCELLENT' : report.overallHealth >= 6 ? 'GOOD' : 'NEEDS ATTENTION';
+  const healthIcon =
+    report.overallHealth >= 8 ? "🟢" : report.overallHealth >= 6 ? "🟡" : "🔴";
+  const healthStatus =
+    report.overallHealth >= 8
+      ? "EXCELLENT"
+      : report.overallHealth >= 6
+        ? "GOOD"
+        : "NEEDS ATTENTION";
 
-  console.log(`${healthIcon} SYSTEM HEALTH: ${healthStatus} (${report.overallHealth}/10)`);
-  console.log('================================');
+  console.log(
+    `${healthIcon} SYSTEM HEALTH: ${healthStatus} (${report.overallHealth}/10)`,
+  );
+  console.log("================================");
 
   // TypeScript Status
   if (report.typescript.errors === 0) {
-    console.log('✅ TypeScript: PASS (0 errors)');
+    console.log("✅ TypeScript: PASS (0 errors)");
   } else {
-    console.log(`🟡 TypeScript: ${report.typescript.errors} errors (${report.typescript.fixableErrors} auto-fixable)`);
+    console.log(
+      `🟡 TypeScript: ${report.typescript.errors} errors (${report.typescript.fixableErrors} auto-fixable)`,
+    );
   }
 
   // Git Status
-  const gitStatus = report.git.modified + report.git.untracked + report.git.staged;
+  const gitStatus =
+    report.git.modified + report.git.untracked + report.git.staged;
   if (gitStatus === 0) {
-    console.log('✅ Git: Clean working directory');
+    console.log("✅ Git: Clean working directory");
   } else {
-    console.log(`🟡 Git: ${report.git.modified}M ${report.git.untracked}U ${report.git.staged}S files`);
+    console.log(
+      `🟡 Git: ${report.git.modified}M ${report.git.untracked}U ${report.git.staged}S files`,
+    );
   }
 
   // Docs Status
   if (report.docs.stale === 0) {
-    console.log('✅ Docs: Up to date');
+    console.log("✅ Docs: Up to date");
   } else {
     console.log(`🟡 Docs: ${report.docs.stale} stale items`);
   }
@@ -228,12 +241,12 @@ function displayReport(report: StatusReport): void {
 
   // Quick Actions
   if (report.quickActions.length > 0) {
-    console.log('\n🔥 Smart Actions:');
+    console.log("\n🔥 Smart Actions:");
     report.quickActions.forEach((action, index) => {
       console.log(`   ${index + 1}. ${action}`);
     });
   } else {
-    console.log('\n✅ All systems optimal - no actions needed!');
+    console.log("\n✅ All systems optimal - no actions needed!");
   }
 }
 
@@ -242,7 +255,7 @@ async function main(): Promise<void> {
     const report = await generateStatusReport();
     displayReport(report);
   } catch (error) {
-    console.error('Error generating status report:', error);
+    console.error("Error generating status report:", error);
     process.exit(1);
   }
 }

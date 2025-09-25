@@ -231,5 +231,4 @@ Edit `.githooks/pre-commit` to add project-specific validations
 
 **The system is designed to maintain consistency and quality automatically, allowing developers to focus on building features rather than managing configurations.**
 
-
 _Last updated: 2025. 9. 25._

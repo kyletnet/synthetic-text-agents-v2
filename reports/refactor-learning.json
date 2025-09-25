@@ -52,9 +52,7 @@
       "effort": "HIGH",
       "impact": "MEDIUM",
       "category": "Module Structure",
-      "files": [
-        "src/shared/types.ts"
-      ],
+      "files": ["src/shared/types.ts"],
       "reasoning": "높은 export 수 (17개)"
     },
     {
@@ -65,9 +63,7 @@
       "effort": "HIGH",
       "impact": "MEDIUM",
       "category": "Module Structure",
-      "files": [
-        "src/shared/rateLimiter.ts"
-      ],
+      "files": ["src/shared/rateLimiter.ts"],
       "reasoning": "높은 export 수 (11개)"
     }
   ],

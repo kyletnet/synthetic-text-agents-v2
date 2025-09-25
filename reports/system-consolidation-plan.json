@@ -53,12 +53,7 @@
     }
   ],
   "final_architecture": {
-    "core_commands": [
-      "sync",
-      "status",
-      "fix",
-      "ship"
-    ],
+    "core_commands": ["sync", "status", "fix", "ship"],
     "plugin_commands": [
       "advanced:audit",
       "advanced:integrate",

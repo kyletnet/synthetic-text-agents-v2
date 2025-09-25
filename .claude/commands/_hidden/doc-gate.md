@@ -13,11 +13,13 @@
 ## 🔐 Quality Gate 규칙
 
 ### Blocking Rules (릴리스 차단)
+
 - **📊 Coverage Threshold**: 문서 커버리지 > 80%
 - **📅 Freshness Gate**: 7일 이상 오래된 문서 없음
 - **🔗 Broken Links**: 깨진 내부 링크 없음
 
 ### Warning Rules (경고만)
+
 - **🏗️ Structure Violations**: 구조 위반 < 5개
 - **🧩 LLM Signals**: 50% 이상 문서에 최적화 태그
 
@@ -42,12 +44,14 @@
 ## CI/CD 통합
 
 ### GitHub Actions 예시
+
 ```yaml
 - name: 🔐 Execute Quality Gate
   run: npm run docs:gate:ci
 ```
 
 ### Pre-commit Hook
+
 ```bash
 #!/bin/sh
 npm run docs:gate:ci || {
@@ -60,24 +64,28 @@ npm run docs:gate:ci || {
 ## 🔧 문제 해결 가이드
 
 **Coverage < 80%**:
+
 ```bash
 npm run docs:audit:full  # 누락된 문서 확인
 # 누락된 Agent/명령어/API 문서 작성
 ```
 
 **Stale Documents**:
+
 ```bash
 npm run docs:freshness   # 오래된 문서 목록
 # 해당 문서들 업데이트
 ```
 
 **Structure Violations**:
+
 ```bash
 npm run docs:lint       # 구조 문제 확인
 # 필수 섹션 추가 (# Overview, ## Usage 등)
 ```
 
 **Missing LLM Signals**:
+
 ```bash
 npm run docs:signals:inject    # 자동 시그널 삽입
 npm run docs:signals:validate  # 검증

@@ -16,17 +16,20 @@ TypeScript 오류를 AI가 자동으로 분석하고 수정을 시도합니다.
 ## 🤖 자동 수정 가능한 오류들
 
 ### ✅ **높은 성공률 (80-90%)**
+
 - **Missing semicolons**: 세미콜론 누락 → 자동 추가
 - **Unterminated strings**: 문자열 미종료 → 따옴표 추가
 - **Common imports**: fs, path, glob 등 → import 문 추가
 - **Empty object fixes**: `{}` → 올바른 인터페이스 객체
 
 ### ✅ **중간 성공률 (60-80%)**
+
 - **Invalid property names**: 잘못된 속성 → 주석 처리 또는 수정
 - **Type assertion needs**: 타입 불일치 → 안전한 타입 변환
 - **Optional chaining**: 속성 접근 오류 → `?.` 추가
 
 ### ⚠️ **수동 검토 필요 (낮은 성공률)**
+
 - **복잡한 인터페이스 확장**
 - **제네릭 타입 해결**
 - **복잡한 타입 호환성**
@@ -34,37 +37,39 @@ TypeScript 오류를 AI가 자동으로 분석하고 수정을 시도합니다.
 ## 🔧 수정 예시
 
 ### Before:
+
 ```typescript
 // TS2304: Cannot find name 'fs'
-const content = fs.readFile('file.txt');
+const content = fs.readFile("file.txt");
 
 // TS2345: Argument '{}' not assignable to 'DocSyncContext'
 const context = {};
 
 // TS1005: ';' expected
-const name = "test"
+const name = "test";
 
 // TS2339: Property 'config' does not exist
 obj.config.setting = true;
 ```
 
 ### After (자동 수정):
+
 ```typescript
 // ✅ Added import
-import { promises as fs } from 'fs';
-const content = fs.readFile('file.txt');
+import { promises as fs } from "fs";
+const content = fs.readFile("file.txt");
 
 // ✅ Fixed empty object
 const context = {
   projectRoot: process.cwd(),
-  projectScope: 'default',
+  projectScope: "default",
   changedFiles: [],
   documentMap: {},
-  environment: 'development' as const,
+  environment: "development" as const,
   cache: new Map(),
   tempFiles: [],
   logger: console,
-  traceId: 'trace-' + Date.now()
+  traceId: "trace-" + Date.now(),
 };
 
 // ✅ Added semicolon
@@ -97,17 +102,20 @@ obj.config?.setting = true;
 ## 🛡️ 안전장치
 
 ### 백업 & 롤백 시스템
+
 - **자동 백업**: 모든 수정 전 타임스탬프 백업 파일 생성
 - **세션 추적**: 수정 세션별로 변경사항 추적 및 기록
 - **안전한 롤백**: `/fix rollback`으로 마지막 세션의 모든 변경사항 취소
 - **복구 검증**: 롤백 후 TypeScript 컴파일 자동 재실행으로 복구 확인
 
 ### 신뢰도 기반 수정
+
 - **High confidence (80%+)**: 자동 적용
 - **Medium confidence (60-80%)**: 적용 후 사용자 알림
 - **Low confidence (<60%)**: 제안만 하고 수동 검토 요청
 
 ### 검증 시스템
+
 - **수정 후 재검증**: TypeScript 컴파일 자동 재실행
 - **성공률 추적**: 수정 성공률 모니터링
 - **패턴 학습**: 실패한 수정 패턴 학습하여 개선

@@ -34,6 +34,10 @@
     "dev:typecheck": "tsc -p tsconfig.build.json --noEmit",
     "dev:lint": "eslint 'src/**/*.ts'",
     "dev:test": "vitest --run",
+    "test": "vitest --run",
+    "test:coverage": "vitest --run --coverage",
+    "build": "tsc",
+    "build:export": "tsx scripts/export_cli.ts",
     "dev:build": "tsc",
     "design:rollback": "tsx scripts/design-rollback-system.ts rollback",
     "design:status": "tsx scripts/design-metadata-manager.ts status"

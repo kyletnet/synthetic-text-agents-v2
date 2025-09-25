@@ -37,6 +37,7 @@ Developers can still access hidden commands by:
 This reduction from 13+ commands to 4 core commands follows the user's requirement for "3-4 core commands for non-developers" while maintaining all functionality through automation and integration.
 
 All hidden command functionality is either:
+
 - Automated (runs automatically in background)
 - Integrated (merged into core commands)
 - Available via npm scripts for developers

@@ -4,25 +4,32 @@
  * TypeScript 소스 코드 변경사항을 감지하고 관련 문서를 자동 업데이트
  */
 
-import { DocPlugin, DocSyncContext, DocPluginResult, DocPermission } from '../types/DocPlugin.js';
+import {
+  DocPlugin,
+  DocSyncContext,
+  DocPluginResult,
+  DocPermission,
+} from "../types/DocPlugin.js";
 
 export class TypeScriptDocRefreshPlugin implements DocPlugin {
   meta = {
-    name: 'refresh-typescript',
-    description: 'Auto-refresh documentation when TypeScript files change',
-    version: '1.0.0',
-    author: 'AI Team',
-    permissions: ['general-docs', 'api-docs'] as DocPermission[],
-    supportedScopes: ['ai-agents', 'platform'],
-    documentTypes: ['typescript', 'api'],
-    dependencies: []
+    name: "refresh-typescript",
+    description: "Auto-refresh documentation when TypeScript files change",
+    version: "1.0.0",
+    author: "AI Team",
+    permissions: ["general-docs", "api-docs"] as DocPermission[],
+    supportedScopes: ["ai-agents", "platform"],
+    documentTypes: ["typescript", "api"],
+    dependencies: [],
   };
 
   async run(context: DocSyncContext): Promise<DocPluginResult> {
     const { changes, utils, config } = context;
     const { logger, llmClient, fileSystem } = utils;
 
-    logger.info(`🔍 TypeScript Doc Refresh: Analyzing ${changes.files.length} changed files`);
+    logger.info(
+      `🔍 TypeScript Doc Refresh: Analyzing ${changes.files.length} changed files`,
+    );
 
     const results: DocPluginResult = {
       success: true,
@@ -31,40 +38,44 @@ export class TypeScriptDocRefreshPlugin implements DocPlugin {
       metrics: {
         duration: 0,
         filesProcessed: 0,
-        tokensUsed: 0
-      }
+        tokensUsed: 0,
+      },
     };
 
     const startTime = Date.now();
 
     try {
       // 1. TypeScript 파일 변경 감지
-      const tsFiles = changes.files.filter(file =>
-        file.endsWith('.ts') &&
-        file.startsWith('src/') &&
-        !file.includes('.test.') &&
-        !file.includes('.spec.')
+      const tsFiles = changes.files.filter(
+        (file) =>
+          file.endsWith(".ts") &&
+          file.startsWith("src/") &&
+          !file.includes(".test.") &&
+          !file.includes(".spec."),
       );
 
       if (tsFiles.length === 0) {
-        results.messages.push('📝 No TypeScript source files changed');
+        results.messages.push("📝 No TypeScript source files changed");
         return results;
       }
 
-      logger.info(`📁 Found ${tsFiles.length} changed TypeScript files`, { files: tsFiles });
+      logger.info(`📁 Found ${tsFiles.length} changed TypeScript files`, {
+        files: tsFiles,
+      });
 
       // 2. 문서 소스 매핑 확인
       const docSources = config.documentSources;
-      const relevantMappings = Object.entries(docSources).filter(([key, _]) =>
-        key === 'typescript' || key === 'agents' || key === 'scripts'
+      const relevantMappings = Object.entries(docSources).filter(
+        ([key, _]) =>
+          key === "typescript" || key === "agents" || key === "scripts",
       );
 
       for (const [sourceType, mapping] of relevantMappings) {
-        const [sourcePattern, targetDoc] = mapping.split(' -> ');
+        const [sourcePattern, targetDoc] = mapping.split(" -> ");
 
         // 3. 패턴 매칭으로 영향받는 파일 확인
-        const affectedFiles = tsFiles.filter(file =>
-          this.matchesPattern(file, sourcePattern)
+        const affectedFiles = tsFiles.filter((file) =>
+          this.matchesPattern(file, sourcePattern),
         );
 
         if (affectedFiles.length === 0) continue;
@@ -77,7 +88,7 @@ export class TypeScriptDocRefreshPlugin implements DocPlugin {
           targetDoc,
           changes.gitDiff,
           llmClient,
-          fileSystem
+          fileSystem,
         );
 
         // 5. 백업 생성
@@ -91,9 +102,12 @@ export class TypeScriptDocRefreshPlugin implements DocPlugin {
 
         results.changes.push({
           filePath: targetDoc,
-          action: 'update',
+          action: "update",
           summary: `Updated based on ${affectedFiles.length} TypeScript file changes`,
-          requiresApproval: this.requiresApproval(targetDoc, config.approvalRules)
+          requiresApproval: this.requiresApproval(
+            targetDoc,
+            config.approvalRules,
+          ),
         });
 
         results.metrics!.filesProcessed++;
@@ -101,19 +115,24 @@ export class TypeScriptDocRefreshPlugin implements DocPlugin {
       }
 
       // 7. API 문서 특별 처리
-      if (tsFiles.some(file => file.includes('/agents/') || file.includes('/core/'))) {
+      if (
+        tsFiles.some(
+          (file) => file.includes("/agents/") || file.includes("/core/"),
+        )
+      ) {
         await this.updateArchitectureDocs(tsFiles, context, results);
       }
-
     } catch (error) {
-      logger.error('TypeScript doc refresh failed', error);
+      logger.error("TypeScript doc refresh failed", error);
       results.success = false;
       results.messages.push(`❌ Error: ${error.message}`);
     }
 
     results.metrics!.duration = Date.now() - startTime;
 
-    logger.info(`✅ TypeScript Doc Refresh completed in ${results.metrics!.duration}ms`);
+    logger.info(
+      `✅ TypeScript Doc Refresh completed in ${results.metrics!.duration}ms`,
+    );
     return results;
   }
 
@@ -123,9 +142,9 @@ export class TypeScriptDocRefreshPlugin implements DocPlugin {
   private matchesPattern(filePath: string, pattern: string): boolean {
     // 간단한 glob 패턴 매칭 (실제로는 minimatch 등 사용)
     const regex = pattern
-      .replace(/\*\*/g, '.*')
-      .replace(/\*/g, '[^/]*')
-      .replace(/\?/g, '.');
+      .replace(/\*\*/g, ".*")
+      .replace(/\*/g, "[^/]*")
+      .replace(/\?/g, ".");
 
     return new RegExp(`^${regex}$`).test(filePath);
   }
@@ -138,11 +157,10 @@ export class TypeScriptDocRefreshPlugin implements DocPlugin {
     targetDoc: string,
     gitDiff: string,
     llmClient: any,
-    fileSystem: any
+    fileSystem: any,
   ): Promise<string> {
-
     // 기존 문서 읽기
-    let existingDoc = '';
+    let existingDoc = "";
     if (await fileSystem.exists(targetDoc)) {
       existingDoc = await fileSystem.readFile(targetDoc);
     }
@@ -151,8 +169,8 @@ export class TypeScriptDocRefreshPlugin implements DocPlugin {
     const fileContents = await Promise.all(
       changedFiles.map(async (file) => ({
         path: file,
-        content: await fileSystem.readFile(file)
-      }))
+        content: await fileSystem.readFile(file),
+      })),
     );
 
     // LLM 프롬프트 생성
@@ -160,7 +178,7 @@ export class TypeScriptDocRefreshPlugin implements DocPlugin {
 Update the documentation based on the following TypeScript code changes:
 
 Changed Files:
-${fileContents.map(f => `\n--- ${f.path} ---\n${f.content}`).join('\n')}
+${fileContents.map((f) => `\n--- ${f.path} ---\n${f.content}`).join("\n")}
 
 Git Diff:
 ${gitDiff}
@@ -179,7 +197,7 @@ Generate only the updated documentation content:
 
     return await llmClient.generateSummary(prompt, {
       maxTokens: 2000,
-      temperature: 0.3
+      temperature: 0.3,
     });
   }
 
@@ -189,14 +207,14 @@ Generate only the updated documentation content:
   private async updateArchitectureDocs(
     changedFiles: string[],
     context: DocSyncContext,
-    results: DocPluginResult
+    results: DocPluginResult,
   ): Promise<void> {
     const { utils } = context;
     const { logger, llmClient, fileSystem } = utils;
 
     const architectureFiles = [
-      'docs/llm_friendly_summary.md',
-      'HANDOFF_NAVIGATION.md'
+      "docs/llm_friendly_summary.md",
+      "HANDOFF_NAVIGATION.md",
     ];
 
     for (const docPath of architectureFiles) {
@@ -204,13 +222,16 @@ Generate only the updated documentation content:
         logger.info(`🏗️ Updating architecture doc: ${docPath}`);
 
         // 아키텍처 문서는 더 신중하게 업데이트
-        const summary = await this.generateArchitectureSummary(changedFiles, utils);
+        const summary = await this.generateArchitectureSummary(
+          changedFiles,
+          utils,
+        );
 
         const existingContent = await fileSystem.readFile(docPath);
         const updatedContent = await this.mergeArchitectureChanges(
           existingContent,
           summary,
-          llmClient
+          llmClient,
         );
 
         // 백업 생성
@@ -219,10 +240,10 @@ Generate only the updated documentation content:
 
         results.changes.push({
           filePath: docPath,
-          action: 'update',
+          action: "update",
           summary: `Architecture doc updated based on core system changes`,
           requiresApproval: true, // 아키텍처 변경은 항상 승인 필요
-          backupCreated: backupPath
+          backupCreated: backupPath,
         });
 
         results.messages.push(`🏗️ Updated architecture: ${docPath}`);
@@ -232,31 +253,32 @@ Generate only the updated documentation content:
 
   private async generateArchitectureSummary(
     changedFiles: string[],
-    utils: any
+    utils: any,
   ): Promise<string> {
     // 핵심 아키텍처 파일 변경사항만 추출
-    const coreFiles = changedFiles.filter(file =>
-      file.includes('/core/') ||
-      file.includes('/agents/') ||
-      file.includes('/shared/')
+    const coreFiles = changedFiles.filter(
+      (file) =>
+        file.includes("/core/") ||
+        file.includes("/agents/") ||
+        file.includes("/shared/"),
     );
 
-    if (coreFiles.length === 0) return '';
+    if (coreFiles.length === 0) return "";
 
     const fileAnalysis = await Promise.all(
       coreFiles.map(async (file) => {
         const content = await utils.fileSystem.readFile(file);
         return `${file}: Key classes and interfaces extracted`;
-      })
+      }),
     );
 
-    return fileAnalysis.join('\n');
+    return fileAnalysis.join("\n");
   }
 
   private async mergeArchitectureChanges(
     existingContent: string,
     summary: string,
-    llmClient: any
+    llmClient: any,
   ): Promise<string> {
     if (!summary) return existingContent;
 
@@ -276,7 +298,7 @@ Updated documentation:
 
     return await llmClient.generateSummary(prompt, {
       maxTokens: 3000,
-      temperature: 0.2
+      temperature: 0.2,
     });
   }
 
@@ -285,10 +307,16 @@ Updated documentation:
    */
   private requiresApproval(filePath: string, approvalRules: any): boolean {
     // CLAUDE.md, 아키텍처 문서 등은 승인 필요
-    const criticalDocs = ['CLAUDE.md', 'HANDOFF_NAVIGATION.md', 'docs/llm_friendly_summary.md'];
+    const criticalDocs = [
+      "CLAUDE.md",
+      "HANDOFF_NAVIGATION.md",
+      "docs/llm_friendly_summary.md",
+    ];
 
-    return criticalDocs.some(doc => filePath.includes(doc)) ||
-           Object.keys(approvalRules).some(pattern => filePath.match(pattern));
+    return (
+      criticalDocs.some((doc) => filePath.includes(doc)) ||
+      Object.keys(approvalRules).some((pattern) => filePath.match(pattern))
+    );
   }
 
   /**

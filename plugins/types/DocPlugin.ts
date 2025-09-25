@@ -14,14 +14,14 @@ export interface DocPluginMeta {
 }
 
 export type DocPermission =
-  | 'general-docs'
-  | 'core-system'
-  | 'security'
-  | 'api-docs'
-  | 'code-analysis'
-  | 'file-system'
-  | 'git-ops'
-  | 'llm-calls';
+  | "general-docs"
+  | "core-system"
+  | "security"
+  | "api-docs"
+  | "code-analysis"
+  | "file-system"
+  | "git-ops"
+  | "llm-calls";
 
 export interface DocSyncContext {
   projectRoot: string;
@@ -29,7 +29,7 @@ export interface DocSyncContext {
   changedFiles: string[];
   gitDiff?: string;
   documentMap: Record<string, DocStatus>;
-  environment: 'development' | 'staging' | 'production';
+  environment: "development" | "staging" | "production";
   cache: Map<string, any>;
   tempFiles: string[];
   logger: Logger;
@@ -74,8 +74,14 @@ export interface DocPlugin {
 
 export interface PluginLoader {
   loadPlugins(patterns: string[], projectScope?: string): Promise<DocPlugin[]>;
-  validatePluginSecurity(plugin: DocPlugin, requiredPermissions: DocPermission[]): boolean;
-  executePlugin(plugin: DocPlugin, context: DocSyncContext): Promise<DocPluginResult>;
+  validatePluginSecurity(
+    plugin: DocPlugin,
+    requiredPermissions: DocPermission[],
+  ): boolean;
+  executePlugin(
+    plugin: DocPlugin,
+    context: DocSyncContext,
+  ): Promise<DocPluginResult>;
 }
 
 export interface Logger {

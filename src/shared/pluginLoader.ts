@@ -4,25 +4,28 @@
  * 팀별/기능별 플러그인을 안전하게 로드하고 실행하는 시스템
  */
 
-import { glob } from 'glob';
-import { Logger } from './logger.js';
+import { glob } from "glob";
+import { Logger } from "./logger.js";
 import {
   DocPlugin,
   PluginLoader,
   DocSyncContext,
   DocPluginResult,
-  DocPermission
-} from './pluginTypes.js';
+  DocPermission,
+} from "./pluginTypes.js";
 
 export class DocPluginLoader implements PluginLoader {
-  private logger = new Logger({ level: 'info' });
+  private logger = new Logger({ level: "info" });
   private loadedPlugins = new Map<string, DocPlugin>();
 
   /**
    * 지정된 패턴으로 플러그인 로드
    */
-  async loadPlugins(patterns: string[], projectScope?: string): Promise<DocPlugin[]> {
-    this.logger.info('🔌 Loading plugins', { patterns, projectScope });
+  async loadPlugins(
+    patterns: string[],
+    projectScope?: string,
+  ): Promise<DocPlugin[]> {
+    this.logger.info("🔌 Loading plugins", { patterns, projectScope });
 
     const plugins: DocPlugin[] = [];
     const pluginFiles = new Set<string>();
@@ -31,9 +34,9 @@ export class DocPluginLoader implements PluginLoader {
     for (const pattern of patterns) {
       try {
         const files = await glob(pattern, {
-          ignore: ['**/*.test.ts', '**/*.spec.ts', '**/node_modules/**']
+          ignore: ["**/*.test.ts", "**/*.spec.ts", "**/node_modules/**"],
         });
-        files.forEach(file => pluginFiles.add(file));
+        files.forEach((file) => pluginFiles.add(file));
       } catch (error) {
         this.logger.warn(`Failed to load pattern: ${pattern}`, error);
       }
@@ -61,7 +64,10 @@ export class DocPluginLoader implements PluginLoader {
   /**
    * 단일 플러그인 로드
    */
-  private async loadSinglePlugin(filePath: string, projectScope?: string): Promise<DocPlugin | null> {
+  private async loadSinglePlugin(
+    filePath: string,
+    projectScope?: string,
+  ): Promise<DocPlugin | null> {
     try {
       // 플러그인 모듈 동적 임포트
       const pluginModule = await import(filePath);
@@ -85,9 +91,10 @@ export class DocPluginLoader implements PluginLoader {
         await plugin.initialize(context);
       }
 
-      this.logger.info(`🔌 Loaded plugin: ${plugin.meta.name} v${plugin.meta.version}`);
+      this.logger.info(
+        `🔌 Loaded plugin: ${plugin.meta.name} v${plugin.meta.version}`,
+      );
       return plugin;
-
     } catch (error) {
       this.logger.error(`Failed to load plugin from ${filePath}:`, error);
       return null;
@@ -100,14 +107,14 @@ export class DocPluginLoader implements PluginLoader {
   private createInitialContext(): DocSyncContext {
     return {
       projectRoot: process.cwd(),
-      projectScope: 'default',
+      projectScope: "default",
       changedFiles: [],
       documentMap: {},
-      environment: 'development' as const,
+      environment: "development" as const,
       cache: new Map(),
       tempFiles: [],
       logger: this.logger,
-      traceId: 'trace-' + Date.now()
+      traceId: "trace-" + Date.now(),
     };
   }
 
@@ -117,11 +124,11 @@ export class DocPluginLoader implements PluginLoader {
   private validatePluginStructure(plugin: any): plugin is DocPlugin {
     return (
       plugin &&
-      typeof plugin === 'object' &&
+      typeof plugin === "object" &&
       plugin.meta &&
-      typeof plugin.meta.name === 'string' &&
-      typeof plugin.meta.version === 'string' &&
-      typeof plugin.execute === 'function' &&
+      typeof plugin.meta.name === "string" &&
+      typeof plugin.meta.version === "string" &&
+      typeof plugin.execute === "function" &&
       Array.isArray(plugin.meta.permissions) &&
       Array.isArray(plugin.meta.supportedScopes)
     );
@@ -130,19 +137,25 @@ export class DocPluginLoader implements PluginLoader {
   /**
    * 플러그인 보안 검증
    */
-  validatePluginSecurity(plugin: DocPlugin, requiredPermissions: DocPermission[]): boolean {
+  validatePluginSecurity(
+    plugin: DocPlugin,
+    requiredPermissions: DocPermission[],
+  ): boolean {
     const pluginPermissions = plugin.meta.permissions;
 
     // 요구되는 권한이 플러그인 권한에 포함되는지 확인
-    return requiredPermissions.every(permission =>
-      pluginPermissions.includes(permission)
+    return requiredPermissions.every((permission) =>
+      pluginPermissions.includes(permission),
     );
   }
 
   /**
    * 단일 플러그인 실행
    */
-  async executePlugin(plugin: DocPlugin, context: DocSyncContext): Promise<DocPluginResult> {
+  async executePlugin(
+    plugin: DocPlugin,
+    context: DocSyncContext,
+  ): Promise<DocPluginResult> {
     const startTime = Date.now();
 
     try {
@@ -152,14 +165,22 @@ export class DocPluginLoader implements PluginLoader {
       if (plugin.healthCheck) {
         const healthy = await plugin.healthCheck();
         if (!healthy) {
-          return this.createErrorResult(plugin, 'Plugin health check failed', startTime);
+          return this.createErrorResult(
+            plugin,
+            "Plugin health check failed",
+            startTime,
+          );
         }
       }
 
       // 권한 검증 (예시: 기본 권한만 체크)
-      const requiredPermissions: DocPermission[] = ['general-docs'];
+      const requiredPermissions: DocPermission[] = ["general-docs"];
       if (!this.validatePluginSecurity(plugin, requiredPermissions)) {
-        return this.createErrorResult(plugin, 'Insufficient permissions', startTime);
+        return this.createErrorResult(
+          plugin,
+          "Insufficient permissions",
+          startTime,
+        );
       }
 
       // 플러그인 실행
@@ -167,17 +188,26 @@ export class DocPluginLoader implements PluginLoader {
 
       this.logger.info(`✅ Plugin executed successfully: ${plugin.meta.name}`);
       return result;
-
     } catch (error) {
-      this.logger.error(`❌ Plugin execution failed: ${plugin.meta.name}`, error);
-      return this.createErrorResult(plugin, `Execution error: ${error}`, startTime);
+      this.logger.error(
+        `❌ Plugin execution failed: ${plugin.meta.name}`,
+        error,
+      );
+      return this.createErrorResult(
+        plugin,
+        `Execution error: ${error}`,
+        startTime,
+      );
     } finally {
       // 정리 작업
       if (plugin.cleanup) {
         try {
           await plugin.cleanup(context);
         } catch (cleanupError) {
-          this.logger.warn(`Cleanup failed for ${plugin.meta.name}:`, cleanupError);
+          this.logger.warn(
+            `Cleanup failed for ${plugin.meta.name}:`,
+            cleanupError,
+          );
         }
       }
     }
@@ -186,7 +216,10 @@ export class DocPluginLoader implements PluginLoader {
   /**
    * 여러 플러그인 순차 실행
    */
-  async runPluginsSequentially(plugins: DocPlugin[], context: DocSyncContext): Promise<{
+  async runPluginsSequentially(
+    plugins: DocPlugin[],
+    context: DocSyncContext,
+  ): Promise<{
     success: boolean;
     results: DocPluginResult[];
   }> {
@@ -202,7 +235,9 @@ export class DocPluginLoader implements PluginLoader {
           allSuccess = false;
           // 치명적 오류인 경우 중단
           if (result.error && !result.error.recoverable) {
-            this.logger.error(`Critical error in ${plugin.meta.name}, stopping execution`);
+            this.logger.error(
+              `Critical error in ${plugin.meta.name}, stopping execution`,
+            );
             break;
           }
         }
@@ -219,7 +254,11 @@ export class DocPluginLoader implements PluginLoader {
   /**
    * 오류 결과 생성 헬퍼
    */
-  private createErrorResult(plugin: DocPlugin, message: string, startTime: number): DocPluginResult {
+  private createErrorResult(
+    plugin: DocPlugin,
+    message: string,
+    startTime: number,
+  ): DocPluginResult {
     return {
       success: false,
       message,
@@ -227,17 +266,17 @@ export class DocPluginLoader implements PluginLoader {
       newDependencies: [],
       executionTime: Date.now() - startTime,
       resourceUsage: {
-        memoryMB: process.memoryUsage().heapUsed / 1024 / 1024
+        memoryMB: process.memoryUsage().heapUsed / 1024 / 1024,
       },
       error: {
-        code: 'PLUGIN_ERROR',
+        code: "PLUGIN_ERROR",
         details: message,
-        recoverable: true
+        recoverable: true,
       },
       metadata: {
         pluginName: plugin.meta.name,
-        pluginVersion: plugin.meta.version
-      }
+        pluginVersion: plugin.meta.version,
+      },
     };
   }
 }

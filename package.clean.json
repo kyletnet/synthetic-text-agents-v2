@@ -139,12 +139,7 @@
     "docs:freshness:deprecated": "echo \"⚠️  docs:freshness is deprecated. Use 'docs:audit' instead.\" && npm run docs:audit",
     "dev:demo:deprecated": "echo \"⚠️  dev:demo is deprecated. Use 'dev' instead.\" && npm run dev"
   },
-  "keywords": [
-    "ai",
-    "qa-generation",
-    "multi-agent",
-    "expert-orchestration"
-  ],
+  "keywords": ["ai", "qa-generation", "multi-agent", "expert-orchestration"],
   "author": "Meta-Adaptive Expert Orchestration Team",
   "license": "MIT",
   "devDependencies": {

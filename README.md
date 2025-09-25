@@ -54,7 +54,6 @@ npm run regression:mini
 
 For detailed operations procedures, see **[Operations Guide](docs/OPERATIONS.md)**.
 
-
 _Last updated: 2025. 9. 25._
 
 ## 📊 Current Status

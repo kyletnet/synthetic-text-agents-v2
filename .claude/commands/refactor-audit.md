@@ -55,12 +55,14 @@
 ## 🧠 NEW: AI-Enhanced Features
 
 ### Pattern Learning Integration
+
 - **Auto-Learn**: Analyzes TypeScript compilation errors and fix success rates
 - **Smart Suggestions**: Recommends refactoring based on recurring error patterns
 - **Confidence Scoring**: Prioritizes suggestions by success probability
 - **Context Awareness**: Understands your codebase patterns and conventions
 
 ### AI-Powered Next Actions
+
 ```
 🎯 Smart Recommendations (based on your project):
    1. Fix 18 TypeScript errors (94% success rate) → /fix

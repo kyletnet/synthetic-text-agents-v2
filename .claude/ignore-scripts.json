@@ -16,22 +16,13 @@
     "temp_debug.ts"
   ],
   "categories": {
-    "legacy": [
-      "legacy_migration.ts",
-      "migration_backup.ts"
-    ],
-    "experimental": [
-      "experimental_feature.ts",
-      "demo.ts"
-    ],
+    "legacy": ["legacy_migration.ts", "migration_backup.ts"],
+    "experimental": ["experimental_feature.ts", "demo.ts"],
     "development": [
       "local_benchmark.ts",
       "temp_debug.ts",
       "prepare_test_fixtures.ts"
     ],
-    "maintenance": [
-      "cleanup_backups.sh",
-      "anthropic_smoke.sh"
-    ]
+    "maintenance": ["cleanup_backups.sh", "anthropic_smoke.sh"]
   }
 }

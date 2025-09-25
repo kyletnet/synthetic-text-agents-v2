@@ -5,15 +5,15 @@
  * 설계 기반 전환 메타데이터 및 문서화 관리
  */
 
-import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'fs';
-import { join } from 'path';
-import { execSync } from 'child_process';
+import { existsSync, readFileSync, writeFileSync, mkdirSync } from "fs";
+import { join } from "path";
+import { execSync } from "child_process";
 
 interface SystemMetadata {
-  mode: 'vibe-coding' | 'design-based';
+  mode: "vibe-coding" | "design-based";
   version: string;
   transition: {
-    approvedBy: 'system-owner' | 'user' | 'automated';
+    approvedBy: "system-owner" | "user" | "automated";
     executedAt: string;
     previousMode: string;
     transitionReason: string;
@@ -39,49 +39,52 @@ class DesignMetadataManager {
 
   constructor() {
     this.projectRoot = process.cwd();
-    this.metadataPath = join(this.projectRoot, '.claude/system-metadata.yaml');
+    this.metadataPath = join(this.projectRoot, ".claude/system-metadata.yaml");
   }
 
   async createTransitionMetadata(rollbackId?: string): Promise<void> {
-    console.log('📋 설계 전환 메타데이터 생성 중...');
+    console.log("📋 설계 전환 메타데이터 생성 중...");
 
     // .claude 디렉토리 확보
-    const claudeDir = join(this.projectRoot, '.claude');
+    const claudeDir = join(this.projectRoot, ".claude");
     if (!existsSync(claudeDir)) {
       mkdirSync(claudeDir, { recursive: true });
     }
 
     // 현재 package.json 분석
-    const packageJson = JSON.parse(readFileSync(join(this.projectRoot, 'package.json'), 'utf8'));
+    const packageJson = JSON.parse(
+      readFileSync(join(this.projectRoot, "package.json"), "utf8"),
+    );
     const totalCommands = Object.keys(packageJson.scripts || {}).length;
 
     const metadata: SystemMetadata = {
-      mode: 'design-based',
-      version: '3.0.0',
+      mode: "design-based",
+      version: "3.0.0",
       transition: {
-        approvedBy: 'system-owner',
+        approvedBy: "system-owner",
         executedAt: new Date().toISOString(),
-        previousMode: 'vibe-coding',
-        transitionReason: 'GPT-advised transition from vibe coding to design-based operation',
-        rollbackId
+        previousMode: "vibe-coding",
+        transitionReason:
+          "GPT-advised transition from vibe coding to design-based operation",
+        rollbackId,
       },
       architecture: {
         coreCommands: 4, // sync, status, fix, ship
         totalCommands,
         unifiedSystems: [
-          'unified-dashboard',
-          'approval-workflow',
-          'design-validator',
-          'system-coherence'
+          "unified-dashboard",
+          "approval-workflow",
+          "design-validator",
+          "system-coherence",
         ],
-        approvalWorkflow: true
+        approvalWorkflow: true,
       },
       documentation: {
-        userGuide: 'docs/USER_GUIDE.md',
-        developerGuide: 'docs/DEVELOPER_GUIDE.md',
-        architectureDoc: 'docs/ARCHITECTURE.md',
-        approvalProcess: 'docs/APPROVAL_PROCESS.md'
-      }
+        userGuide: "docs/USER_GUIDE.md",
+        developerGuide: "docs/DEVELOPER_GUIDE.md",
+        architectureDoc: "docs/ARCHITECTURE.md",
+        approvalProcess: "docs/APPROVAL_PROCESS.md",
+      },
     };
 
     // YAML 형식으로 저장
@@ -96,14 +99,14 @@ transition:
   approvedBy: ${metadata.transition.approvedBy}
   executedAt: ${metadata.transition.executedAt}
   previousMode: ${metadata.transition.previousMode}
-  transitionReason: "${metadata.transition.transitionReason}"${rollbackId ? `\n  rollbackId: ${rollbackId}` : ''}
+  transitionReason: "${metadata.transition.transitionReason}"${rollbackId ? `\n  rollbackId: ${rollbackId}` : ""}
 
 # System Architecture
 architecture:
   coreCommands: ${metadata.architecture.coreCommands}
   totalCommands: ${metadata.architecture.totalCommands}
   unifiedSystems:
-${metadata.architecture.unifiedSystems.map(s => `    - ${s}`).join('\n')}
+${metadata.architecture.unifiedSystems.map((s) => `    - ${s}`).join("\n")}
   approvalWorkflow: ${metadata.architecture.approvalWorkflow}
 
 # Documentation Structure
@@ -126,9 +129,9 @@ fingerprint: design-based-v3-${Date.now()}
   }
 
   private async generateDocumentation(metadata: SystemMetadata): Promise<void> {
-    console.log('📚 설계 기반 시스템 문서 생성 중...');
+    console.log("📚 설계 기반 시스템 문서 생성 중...");
 
-    const docsDir = join(this.projectRoot, 'docs');
+    const docsDir = join(this.projectRoot, "docs");
     if (!existsSync(docsDir)) {
       mkdirSync(docsDir, { recursive: true });
     }
@@ -145,7 +148,7 @@ fingerprint: design-based-v3-${Date.now()}
     // 4. 설계 전환 실행 로그
     await this.createExecutionLog(docsDir, metadata);
 
-    console.log('✅ 모든 문서 생성 완료');
+    console.log("✅ 모든 문서 생성 완료");
   }
 
   private async createUserGuide(docsDir: string): Promise<void> {
@@ -213,8 +216,8 @@ fingerprint: design-based-v3-${Date.now()}
 - **효율성**: 통합 대시보드로 한번에 확인
 `;
 
-    writeFileSync(join(docsDir, 'USER_GUIDE.md'), userGuide);
-    console.log('✅ 사용자 가이드 생성 완료');
+    writeFileSync(join(docsDir, "USER_GUIDE.md"), userGuide);
+    console.log("✅ 사용자 가이드 생성 완료");
   }
 
   private async createArchitectureDoc(docsDir: string): Promise<void> {
@@ -298,8 +301,8 @@ fingerprint: design-based-v3-${Date.now()}
 - **유지보수성**: 파편화 → 통합 시스템 (대폭 개선)
 `;
 
-    writeFileSync(join(docsDir, 'ARCHITECTURE.md'), architectureDoc);
-    console.log('✅ 아키텍처 문서 생성 완료');
+    writeFileSync(join(docsDir, "ARCHITECTURE.md"), architectureDoc);
+    console.log("✅ 아키텍처 문서 생성 완료");
   }
 
   private async createApprovalProcessDoc(docsDir: string): Promise<void> {
@@ -397,11 +400,14 @@ npm run /review-sync (상세검토)
 - \`.claude/approval-history.md\` - 요약 기록
 `;
 
-    writeFileSync(join(docsDir, 'APPROVAL_PROCESS.md'), approvalDoc);
-    console.log('✅ 승인 프로세스 문서 생성 완료');
+    writeFileSync(join(docsDir, "APPROVAL_PROCESS.md"), approvalDoc);
+    console.log("✅ 승인 프로세스 문서 생성 완료");
   }
 
-  private async createExecutionLog(docsDir: string, metadata: SystemMetadata): Promise<void> {
+  private async createExecutionLog(
+    docsDir: string,
+    metadata: SystemMetadata,
+  ): Promise<void> {
     const executionLog = `# 설계 기반 시스템 전환 실행 로그
 
 ## 📋 전환 정보
@@ -409,7 +415,7 @@ npm run /review-sync (상세검토)
 - **승인자**: ${metadata.transition.approvedBy}
 - **이전 모드**: ${metadata.transition.previousMode}
 - **전환 이유**: ${metadata.transition.transitionReason}
-${metadata.transition.rollbackId ? `- **롤백 ID**: ${metadata.transition.rollbackId}` : ''}
+${metadata.transition.rollbackId ? `- **롤백 ID**: ${metadata.transition.rollbackId}` : ""}
 
 ## 🎯 전환 목표 달성 현황
 
@@ -529,37 +535,38 @@ Generated by Design-First System Architect v3.0.0
 ${new Date().toISOString()}
 `;
 
-    writeFileSync(join(docsDir, 'DESIGN_EXECUTION.md'), executionLog);
-    console.log('✅ 전환 실행 로그 생성 완료');
+    writeFileSync(join(docsDir, "DESIGN_EXECUTION.md"), executionLog);
+    console.log("✅ 전환 실행 로그 생성 완료");
   }
 
   getCurrentMode(): string {
     if (!existsSync(this.metadataPath)) {
-      return 'vibe-coding';
+      return "vibe-coding";
     }
 
     try {
-      const content = readFileSync(this.metadataPath, 'utf8');
+      const content = readFileSync(this.metadataPath, "utf8");
       const modeMatch = content.match(/mode:\s*(\w+)/);
-      return modeMatch ? modeMatch[1] : 'vibe-coding';
+      return modeMatch ? modeMatch[1] : "vibe-coding";
     } catch (error) {
-      return 'unknown';
+      return "unknown";
     }
   }
 
   printCurrentStatus(): void {
     const mode = this.getCurrentMode();
-    const icon = mode === 'design-based' ? '🏗️' : mode === 'vibe-coding' ? '🎵' : '❓';
+    const icon =
+      mode === "design-based" ? "🏗️" : mode === "vibe-coding" ? "🎵" : "❓";
 
     console.log(`\n${icon} 현재 시스템 모드: ${mode.toUpperCase()}`);
 
-    if (mode === 'design-based') {
-      console.log('✅ 설계 기반 운영 모드 활성화됨');
-      console.log('🔐 모든 중요 변경사항은 승인 필요');
-      console.log('📊 통합 대시보드로 상태 확인');
-      console.log('🛡️ 완전한 롤백 지원 활성화');
+    if (mode === "design-based") {
+      console.log("✅ 설계 기반 운영 모드 활성화됨");
+      console.log("🔐 모든 중요 변경사항은 승인 필요");
+      console.log("📊 통합 대시보드로 상태 확인");
+      console.log("🛡️ 완전한 롤백 지원 활성화");
     } else {
-      console.log('⚠️ 바이브 코딩 모드 - 설계 기반 전환 권장');
+      console.log("⚠️ 바이브 코딩 모드 - 설계 기반 전환 권장");
     }
 
     if (existsSync(this.metadataPath)) {
@@ -574,17 +581,19 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   const command = process.argv[2];
 
   switch (command) {
-    case 'create':
+    case "create":
       const rollbackId = process.argv[3];
       manager.createTransitionMetadata(rollbackId).catch(console.error);
       break;
 
-    case 'status':
+    case "status":
       manager.printCurrentStatus();
       break;
 
     default:
-      console.log('Usage: tsx design-metadata-manager.ts <create [rollbackId]|status>');
+      console.log(
+        "Usage: tsx design-metadata-manager.ts <create [rollbackId]|status>",
+      );
       process.exit(1);
   }
 }

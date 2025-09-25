@@ -5,7 +5,7 @@
 project:
   name: synthetic-text-agents-v2
   version: "1.1.0"
-  projectScope: "ai-agents"  # 멀티 프로젝트 환경에서의 스코프 식별
+  projectScope: "ai-agents" # 멀티 프로젝트 환경에서의 스코프 식별
   teams:
     - ai-agents
     - platform

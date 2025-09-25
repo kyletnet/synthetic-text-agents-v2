@@ -5,9 +5,7 @@
       "id": "fix-1758703443718-12",
       "type": "report-format-normalization",
       "description": "1 report files don't follow expected JSONL format",
-      "files": [
-        "reports/baseline_report.jsonl"
-      ],
+      "files": ["reports/baseline_report.jsonl"],
       "appliedAt": "2025-09-24T08:44:03.720Z",
       "rollbackData": {
         "files": [
@@ -33,9 +31,7 @@
       "id": "fix-1758704220768-12",
       "type": "report-format-normalization",
       "description": "1 report files don't follow expected JSONL format",
-      "files": [
-        "reports/baseline_report.jsonl"
-      ],
+      "files": ["reports/baseline_report.jsonl"],
       "appliedAt": "2025-09-24T08:57:00.771Z",
       "rollbackData": {
         "files": [
@@ -61,9 +57,7 @@
       "id": "fix-1758763770370-13",
       "type": "report-format-normalization",
       "description": "1 report files don't follow expected JSONL format",
-      "files": [
-        "reports/baseline_report.jsonl"
-      ],
+      "files": ["reports/baseline_report.jsonl"],
       "appliedAt": "2025-09-25T01:29:30.374Z",
       "rollbackData": {
         "files": [
@@ -92,9 +86,7 @@
       "category": "schema-fix",
       "title": "Invalid JSON Schema: tsconfig.json",
       "description": "Configuration file contains invalid JSON: SyntaxError: Unexpected token / in JSON at position 62",
-      "files": [
-        "/Users/kyle/synthetic-text-agents-v2/tsconfig.json"
-      ],
+      "files": ["/Users/kyle/synthetic-text-agents-v2/tsconfig.json"],
       "impact": {
         "fileCount": 1,
         "crossModuleImpact": false,
@@ -109,9 +101,7 @@
       "category": "schema-fix",
       "title": "Missing Required Configuration Fields",
       "description": "1 config files missing required fields",
-      "files": [
-        "baseline_config.json"
-      ],
+      "files": ["baseline_config.json"],
       "impact": {
         "fileCount": 1,
         "crossModuleImpact": false,
@@ -169,10 +159,7 @@
       "category": "duplicate-export-cleanup",
       "title": "Duplicate Export: appendJSONL",
       "description": "Type/interface/class \"appendJSONL\" is exported from 2 files",
-      "files": [
-        "src/utils/log.ts",
-        "src/shared/jsonl.ts"
-      ],
+      "files": ["src/utils/log.ts", "src/shared/jsonl.ts"],
       "impact": {
         "fileCount": 2,
         "crossModuleImpact": true,
@@ -205,10 +192,7 @@
       "category": "duplicate-export-cleanup",
       "title": "Duplicate Export: ValidationError",
       "description": "Type/interface/class \"ValidationError\" is exported from 2 files",
-      "files": [
-        "src/shared/inputValidation.ts",
-        "src/shared/errors.ts"
-      ],
+      "files": ["src/shared/inputValidation.ts", "src/shared/errors.ts"],
       "impact": {
         "fileCount": 2,
         "crossModuleImpact": false,
@@ -241,10 +225,7 @@
       "category": "duplicate-export-cleanup",
       "title": "Duplicate Export: DLQManager",
       "description": "Type/interface/class \"DLQManager\" is exported from 2 files",
-      "files": [
-        "src/scripts/lib/dlq_manager.ts",
-        "src/scripts/lib/dlq.ts"
-      ],
+      "files": ["src/scripts/lib/dlq_manager.ts", "src/scripts/lib/dlq.ts"],
       "impact": {
         "fileCount": 2,
         "crossModuleImpact": false,
@@ -366,9 +347,7 @@
       "category": "command-mapping",
       "title": "Commands Missing from Dispatcher",
       "description": "12 commands not registered in slash-commands.sh",
-      "files": [
-        "scripts/slash-commands.sh"
-      ],
+      "files": ["scripts/slash-commands.sh"],
       "impact": {
         "fileCount": 1,
         "crossModuleImpact": false,
@@ -383,10 +362,7 @@
       "category": "release-safety",
       "title": "Release Safety Gaps",
       "description": "2 release safety improvements needed",
-      "files": [
-        ".github/workflows/release.yml",
-        "CHANGELOG.md"
-      ],
+      "files": [".github/workflows/release.yml", "CHANGELOG.md"],
       "impact": {
         "fileCount": 2,
         "crossModuleImpact": false,
@@ -402,9 +378,7 @@
       "id": "fix-1758703443718-0",
       "type": "schema-fix",
       "description": "Configuration file contains invalid JSON: SyntaxError: Unexpected token / in JSON at position 62",
-      "files": [
-        "/Users/kyle/synthetic-text-agents-v2/tsconfig.json"
-      ],
+      "files": ["/Users/kyle/synthetic-text-agents-v2/tsconfig.json"],
       "appliedAt": "2025-09-24T08:44:13.947Z",
       "rollbackData": {},
       "safety": {
@@ -415,17 +389,13 @@
         "rollbackDifficulty": 0.1,
         "autoSafe": false
       },
-      "criteria": [
-        "user-confirmed-medium-risk"
-      ]
+      "criteria": ["user-confirmed-medium-risk"]
     },
     {
       "id": "fix-1758703443718-1",
       "type": "schema-fix",
       "description": "1 config files missing required fields",
-      "files": [
-        "baseline_config.json"
-      ],
+      "files": ["baseline_config.json"],
       "appliedAt": "2025-09-24T08:44:13.949Z",
       "rollbackData": {},
       "safety": {
@@ -436,9 +406,7 @@
         "rollbackDifficulty": 0.1,
         "autoSafe": false
       },
-      "criteria": [
-        "user-confirmed-low-risk"
-      ]
+      "criteria": ["user-confirmed-low-risk"]
     },
     {
       "id": "fix-1758703443718-2",
@@ -464,9 +432,7 @@
         "rollbackDifficulty": 0.3,
         "autoSafe": false
       },
-      "criteria": [
-        "user-confirmed-medium-risk"
-      ]
+      "criteria": ["user-confirmed-medium-risk"]
     },
     {
       "id": "fix-1758703443718-3",
@@ -487,18 +453,13 @@
         "rollbackDifficulty": 0.5,
         "autoSafe": false
       },
-      "criteria": [
-        "user-confirmed-medium-risk"
-      ]
+      "criteria": ["user-confirmed-medium-risk"]
     },
     {
       "id": "fix-1758703443718-4",
       "type": "duplicate-export-cleanup",
       "description": "Type/interface/class \"appendJSONL\" is exported from 2 files",
-      "files": [
-        "src/utils/log.ts",
-        "src/shared/jsonl.ts"
-      ],
+      "files": ["src/utils/log.ts", "src/shared/jsonl.ts"],
       "appliedAt": "2025-09-24T08:44:13.951Z",
       "rollbackData": {},
       "safety": {
@@ -509,9 +470,7 @@
         "rollbackDifficulty": 0.4,
         "autoSafe": false
       },
-      "criteria": [
-        "user-confirmed-medium-risk"
-      ]
+      "criteria": ["user-confirmed-medium-risk"]
     },
     {
       "id": "fix-1758703443718-5",
@@ -531,18 +490,13 @@
         "rollbackDifficulty": 0.2,
         "autoSafe": false
       },
-      "criteria": [
-        "user-confirmed-low-risk"
-      ]
+      "criteria": ["user-confirmed-low-risk"]
     },
     {
       "id": "fix-1758703443718-6",
       "type": "duplicate-export-cleanup",
       "description": "Type/interface/class \"ValidationError\" is exported from 2 files",
-      "files": [
-        "src/shared/inputValidation.ts",
-        "src/shared/errors.ts"
-      ],
+      "files": ["src/shared/inputValidation.ts", "src/shared/errors.ts"],
       "appliedAt": "2025-09-24T08:44:13.953Z",
       "rollbackData": {},
       "safety": {
@@ -553,9 +507,7 @@
         "rollbackDifficulty": 0.2,
         "autoSafe": false
       },
-      "criteria": [
-        "user-confirmed-low-risk"
-      ]
+      "criteria": ["user-confirmed-low-risk"]
     },
     {
       "id": "fix-1758703443718-7",
@@ -575,9 +527,7 @@
         "rollbackDifficulty": 0.4,
         "autoSafe": false
       },
-      "criteria": [
-        "user-confirmed-medium-risk"
-      ]
+      "criteria": ["user-confirmed-medium-risk"]
     },
     {
       "id": "fix-1758703443718-9",
@@ -646,9 +596,7 @@
         "rollbackDifficulty": 0.3,
         "autoSafe": false
       },
-      "criteria": [
-        "user-confirmed-medium-risk"
-      ]
+      "criteria": ["user-confirmed-medium-risk"]
     },
     {
       "id": "fix-1758703443718-10",
@@ -671,17 +619,13 @@
         "rollbackDifficulty": 0.3,
         "autoSafe": false
       },
-      "criteria": [
-        "user-confirmed-low-risk"
-      ]
+      "criteria": ["user-confirmed-low-risk"]
     },
     {
       "id": "fix-1758703443718-11",
       "type": "command-mapping",
       "description": "9 commands not registered in slash-commands.sh",
-      "files": [
-        "scripts/slash-commands.sh"
-      ],
+      "files": ["scripts/slash-commands.sh"],
       "appliedAt": "2025-09-24T08:44:13.960Z",
       "rollbackData": {},
       "safety": {
@@ -692,18 +636,13 @@
         "rollbackDifficulty": 0.1,
         "autoSafe": false
       },
-      "criteria": [
-        "user-confirmed-low-risk"
-      ]
+      "criteria": ["user-confirmed-low-risk"]
     },
     {
       "id": "fix-1758703443718-13",
       "type": "release-safety",
       "description": "2 release safety improvements needed",
-      "files": [
-        ".github/workflows/release.yml",
-        "CHANGELOG.md"
-      ],
+      "files": [".github/workflows/release.yml", "CHANGELOG.md"],
       "appliedAt": "2025-09-24T08:44:13.961Z",
       "rollbackData": {},
       "safety": {
@@ -714,9 +653,7 @@
         "rollbackDifficulty": 0.2,
         "autoSafe": false
       },
-      "criteria": [
-        "user-confirmed-low-risk"
-      ]
+      "criteria": ["user-confirmed-low-risk"]
     }
   ],
   "rollbackStack": [
@@ -724,27 +661,21 @@
       "id": "rollback-1758703443720",
       "timestamp": "2025-09-24T08:44:03.720Z",
       "description": "Before: 1 report files don't follow expected JSONL format",
-      "affectedFiles": [
-        "reports/baseline_report.jsonl"
-      ],
+      "affectedFiles": ["reports/baseline_report.jsonl"],
       "changes": []
     },
     {
       "id": "rollback-1758704220771",
       "timestamp": "2025-09-24T08:57:00.771Z",
       "description": "Before: 1 report files don't follow expected JSONL format",
-      "affectedFiles": [
-        "reports/baseline_report.jsonl"
-      ],
+      "affectedFiles": ["reports/baseline_report.jsonl"],
       "changes": []
     },
     {
       "id": "rollback-1758763770374",
       "timestamp": "2025-09-25T01:29:30.374Z",
       "description": "Before: 1 report files don't follow expected JSONL format",
-      "affectedFiles": [
-        "reports/baseline_report.jsonl"
-      ],
+      "affectedFiles": ["reports/baseline_report.jsonl"],
       "changes": []
     }
   ],
@@ -762,9 +693,7 @@
           "category": "schema-fix",
           "title": "Invalid JSON Schema: tsconfig.json",
           "description": "Configuration file contains invalid JSON: SyntaxError: Unexpected token / in JSON at position 62",
-          "files": [
-            "/Users/kyle/synthetic-text-agents-v2/tsconfig.json"
-          ],
+          "files": ["/Users/kyle/synthetic-text-agents-v2/tsconfig.json"],
           "impact": {
             "fileCount": 1,
             "crossModuleImpact": false,
@@ -783,9 +712,7 @@
           "category": "schema-fix",
           "title": "Missing Required Configuration Fields",
           "description": "1 config files missing required fields",
-          "files": [
-            "baseline_config.json"
-          ],
+          "files": ["baseline_config.json"],
           "impact": {
             "fileCount": 1,
             "crossModuleImpact": false,
@@ -855,10 +782,7 @@
           "category": "duplicate-export-cleanup",
           "title": "Duplicate Export: appendJSONL",
           "description": "Type/interface/class \"appendJSONL\" is exported from 2 files",
-          "files": [
-            "src/utils/log.ts",
-            "src/shared/jsonl.ts"
-          ],
+          "files": ["src/utils/log.ts", "src/shared/jsonl.ts"],
           "impact": {
             "fileCount": 2,
             "crossModuleImpact": true,
@@ -899,10 +823,7 @@
           "category": "duplicate-export-cleanup",
           "title": "Duplicate Export: ValidationError",
           "description": "Type/interface/class \"ValidationError\" is exported from 2 files",
-          "files": [
-            "src/shared/inputValidation.ts",
-            "src/shared/errors.ts"
-          ],
+          "files": ["src/shared/inputValidation.ts", "src/shared/errors.ts"],
           "impact": {
             "fileCount": 2,
             "crossModuleImpact": false,
@@ -943,10 +864,7 @@
           "category": "duplicate-export-cleanup",
           "title": "Duplicate Export: DLQManager",
           "description": "Type/interface/class \"DLQManager\" is exported from 2 files",
-          "files": [
-            "src/scripts/lib/dlq_manager.ts",
-            "src/scripts/lib/dlq.ts"
-          ],
+          "files": ["src/scripts/lib/dlq_manager.ts", "src/scripts/lib/dlq.ts"],
           "impact": {
             "fileCount": 2,
             "crossModuleImpact": false,
@@ -1061,9 +979,7 @@
           "category": "command-mapping",
           "title": "Commands Missing from Dispatcher",
           "description": "9 commands not registered in slash-commands.sh",
-          "files": [
-            "scripts/slash-commands.sh"
-          ],
+          "files": ["scripts/slash-commands.sh"],
           "impact": {
             "fileCount": 1,
             "crossModuleImpact": false,
@@ -1082,10 +998,7 @@
           "category": "release-safety",
           "title": "Release Safety Gaps",
           "description": "2 release safety improvements needed",
-          "files": [
-            ".github/workflows/release.yml",
-            "CHANGELOG.md"
-          ],
+          "files": [".github/workflows/release.yml", "CHANGELOG.md"],
           "impact": {
             "fileCount": 2,
             "crossModuleImpact": false,
