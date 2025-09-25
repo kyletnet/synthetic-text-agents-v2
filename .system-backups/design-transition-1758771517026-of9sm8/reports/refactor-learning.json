@@ -1,0 +1,80 @@
+{
+  "timestamp": "2025-09-25T01:57:24.483Z",
+  "patterns": [],
+  "suggestions": [
+    {
+      "id": "duplicate-code-refactor",
+      "title": "중복 코드 리팩토링 기회",
+      "description": "13개의 중복 코드 패턴을 발견했습니다. 공통 유틸리티 함수나 베이스 클래스로 추출을 고려해보세요.",
+      "confidence": 0.7,
+      "effort": "HIGH",
+      "impact": "HIGH",
+      "category": "Code Reuse",
+      "files": [
+        "src/utils/log.ts",
+        "src/shared/jsonl.ts",
+        "src/shared/secretsManager.ts",
+        "src/shared/rateLimiter.ts",
+        "src/shared/pluginLoader.ts",
+        "src/shared/performanceMonitoring.ts",
+        "src/shared/logAggregation.ts",
+        "src/shared/llmAdapter.ts",
+        "src/shared/inputValidation.ts",
+        "src/shared/logForwarder.ts",
+        "src/shared/performanceDashboard.ts",
+        "src/shared/logger.ts",
+        "src/shared/logMasking.ts"
+      ],
+      "reasoning": "중복 코드 패턴 자동 감지"
+    },
+    {
+      "id": "function-complexity-reduction",
+      "title": "함수 복잡도 감소",
+      "description": "복잡한 함수들이 발견되었습니다. 작은 함수로 분해하거나 책임을 분리하는 것을 고려해보세요.",
+      "confidence": 0.6,
+      "effort": "MEDIUM",
+      "impact": "MEDIUM",
+      "category": "Code Clarity",
+      "files": [
+        "src/shared/secretsManager.ts",
+        "src/shared/rulesEngine.ts",
+        "src/shared/rateLimiter.ts",
+        "src/shared/pluginLoader.ts",
+        "src/shared/performanceMonitoring.ts"
+      ],
+      "reasoning": "함수 복잡도 분석 기반"
+    },
+    {
+      "id": "barrel-export-src-shared-types-ts",
+      "title": "src/shared/types.ts 모듈 분리 고려",
+      "description": "이 파일에서 17개의 export를 발견했습니다. 여러 모듈로 분리하거나 배럴 패턴 적용을 고려해보세요.",
+      "confidence": 0.5,
+      "effort": "HIGH",
+      "impact": "MEDIUM",
+      "category": "Module Structure",
+      "files": [
+        "src/shared/types.ts"
+      ],
+      "reasoning": "높은 export 수 (17개)"
+    },
+    {
+      "id": "barrel-export-src-shared-rateLimiter-ts",
+      "title": "src/shared/rateLimiter.ts 모듈 분리 고려",
+      "description": "이 파일에서 11개의 export를 발견했습니다. 여러 모듈로 분리하거나 배럴 패턴 적용을 고려해보세요.",
+      "confidence": 0.5,
+      "effort": "HIGH",
+      "impact": "MEDIUM",
+      "category": "Module Structure",
+      "files": [
+        "src/shared/rateLimiter.ts"
+      ],
+      "reasoning": "높은 export 수 (11개)"
+    }
+  ],
+  "projectStats": {
+    "totalErrors": 0,
+    "fixedErrors": 0,
+    "commonErrorTypes": {},
+    "improveableFiles": []
+  }
+}

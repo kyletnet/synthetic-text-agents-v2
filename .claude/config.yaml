@@ -1,0 +1,119 @@
+# Claude Code Project Configuration
+# This file controls document automation, team workflows, and system behavior
+
+# 프로젝트 기본 정보
+project:
+  name: synthetic-text-agents-v2
+  version: "1.1.0"
+  projectScope: "ai-agents"  # 멀티 프로젝트 환경에서의 스코프 식별
+  teams:
+    - ai-agents
+    - platform
+    - infra
+
+# 문서 자동화 설정
+documentation:
+  defaultLanguage: en
+
+  # 소스-문서 자동 매핑
+  documentSources:
+    typescript: "src/**/*.ts -> docs/api.md"
+    agents: "src/agents/**/*.ts -> docs/agents.md"
+    scripts: "src/scripts/**/*.ts -> docs/scripts.md"
+    kubernetes: "k8s/*.yaml -> docs/deployment.md"
+    configs: "*.config.* -> docs/configuration.md"
+
+  # 문서별 승인 규칙 (보안 중요)
+  approvalRules:
+    "CLAUDE.md":
+      approvers: ["tech-lead", "architect"]
+      permissions: ["core-system"]
+    "SECURITY.md":
+      approvers: ["security-team"]
+      permissions: ["security"]
+    "API.md":
+      approvers: ["backend-team"]
+      permissions: ["api-docs"]
+    "*.md":
+      approvers: ["any-developer"]
+      permissions: ["general-docs"]
+
+  # 미래 확장 지원 (현재 미구현)
+  supports:
+    - versionedDocs
+    - i18n
+    - confluenceSync
+    - slackNotifications
+
+# LLM 설정
+llm:
+  provider: anthropic
+  model: claude-3-haiku
+  fallback: openai/gpt-4
+  maxTokens: 4000
+
+# 플러그인 시스템
+plugins:
+  # 로딩 경로 (팀별/기능별 구분)
+  loadPaths:
+    - "plugins/docs/**/*.ts"
+    - "plugins/notifications/**/*.ts"
+    - "plugins/team-ai-agents/**/*.ts"
+
+  # 활성화된 플러그인
+  enabled:
+    - docs/refresh-typescript
+    - docs/update-architecture
+    - notifications/slack-basic
+
+  # 플러그인 보안 기본 설정
+  security:
+    requirePermissions: true
+    allowedScopes: ["ai-agents"]
+    restrictedDocuments: ["CLAUDE.md", "SECURITY.md"]
+
+# 명령어 동작 설정
+commands:
+  sync:
+    autoDocRefresh: true
+    autoAudit: true
+    requireApproval: ["CLAUDE.md"]
+    notifyChannels: ["#ai-team"]
+
+  docAudit:
+    checkStalenessDays: 7
+    warnMissingDocs: true
+    validateCodeDocSync: true
+
+  status:
+    includeMetrics: true
+    showTeamContext: true
+    limitToScope: true
+
+# 외부 시스템 통합 (선택적)
+integrations:
+  slack:
+    enabled: false
+    webhook: "" # 환경변수에서 로드
+    channels:
+      general: "#ai-team"
+      alerts: "#ai-alerts"
+
+  jira:
+    enabled: false
+    baseUrl: ""
+
+  confluence:
+    enabled: false
+    spaceKey: "AIAGENTS"
+
+# 개발 안전 규칙
+safety:
+  featureFlags:
+    requireApprovalFor: ["CLAUDE.md", "core-architecture"]
+    backupBeforeChanges: true
+
+  validation:
+    enforceTypeScript: true
+    requireTests: false # 문서 변경에는 테스트 불필요
+    validateLinks: true

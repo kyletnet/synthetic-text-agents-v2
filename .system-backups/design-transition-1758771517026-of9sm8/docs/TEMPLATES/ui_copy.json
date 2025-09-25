@@ -1,0 +1,16 @@
+{
+  "buttons": {
+    "run": "실행",
+    "rerun": "재실행",
+    "rollback": "롤백",
+    "export": "세션 내보내기"
+  },
+  "labels": {
+    "preset": "프리셋",
+    "guardianProfile": "품질 게이트",
+    "mode": "모드",
+    "styleGuard": "스타일 가드",
+    "searchLite": "근거 강화(Beta)",
+    "feedback": "피드백"
+  }
+}

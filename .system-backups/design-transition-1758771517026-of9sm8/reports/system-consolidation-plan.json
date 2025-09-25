@@ -1,0 +1,83 @@
+{
+  "timestamp": "2025-09-25T03:30:30.479Z",
+  "current_state": {
+    "total_files": 68,
+    "total_commands": 170,
+    "duplicate_systems": 3,
+    "integration_score": 52
+  },
+  "consolidation_actions": [
+    {
+      "action": "MERGE",
+      "target": "모든 보고서 시스템",
+      "reason": "이슈추적/보안/건강/통합 보고서가 분리되어 사용자 혼란 가중",
+      "impact": "단일 통합 대시보드로 사용자 경험 대폭 개선",
+      "implementation": [
+        "unified-dashboard.ts 생성",
+        "기존 개별 보고서 시스템들을 플러그인으로 전환",
+        "npm run dashboard 단일 명령어로 통합"
+      ]
+    },
+    {
+      "action": "RESTRUCTURE",
+      "target": "명령어 체계",
+      "reason": "현재 140+ 명령어로 비개발자가 파악 불가능한 상태",
+      "impact": "4개 핵심 + 계층화된 고급 명령어로 단순화",
+      "implementation": [
+        "핵심 4개: sync, status, fix, ship",
+        "고급: advanced:*, recovery:*, dev:*",
+        "나머지는 internal: 접두사로 숨김"
+      ]
+    },
+    {
+      "action": "ELIMINATE",
+      "target": "중복/실험적 스크립트",
+      "reason": "34개 파일 중 상당수가 실험적이거나 중복 기능",
+      "impact": "유지보수 부담 50% 감소, 시스템 명확성 향상",
+      "implementation": [
+        "사용되지 않는 스크립트 제거",
+        "실험적 기능을 experimental/ 디렉토리로 분리",
+        "핵심 기능만 scripts/에 유지"
+      ]
+    },
+    {
+      "action": "STANDARDIZE",
+      "target": "자동화와 수동 승인 루프",
+      "reason": "GPT 지적: 자동화만으로는 \"서서히 부식되는 시스템\" 생성",
+      "impact": "모든 중요 변경은 사용자 승인 후 실행하는 안전 체계",
+      "implementation": [
+        "/sync → 분석 → /confirm → 실행 패턴 도입",
+        "영향도 분석 결과를 승인 전 필수 확인",
+        "자동 실행은 안전한 작업에만 제한"
+      ]
+    }
+  ],
+  "final_architecture": {
+    "core_commands": [
+      "sync",
+      "status",
+      "fix",
+      "ship"
+    ],
+    "plugin_commands": [
+      "advanced:audit",
+      "advanced:integrate",
+      "recovery:rollback",
+      "dev:typecheck",
+      "dev:test"
+    ],
+    "unified_systems": [
+      "unified-dashboard.ts",
+      "approval-workflow.ts",
+      "design-validator.ts",
+      "system-coherence.ts"
+    ],
+    "documentation_structure": [
+      "docs/ARCHITECTURE.md",
+      "docs/USER_GUIDE.md",
+      "docs/DEVELOPER_GUIDE.md",
+      "docs/APPROVAL_PROCESS.md"
+    ]
+  },
+  "user_approval_required": true
+}

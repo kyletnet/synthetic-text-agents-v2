@@ -5,7 +5,7 @@ echo "🔍 Running pre-commit checks..."
 
 # Check TypeScript compilation
 echo "📝 Checking TypeScript compilation..."
-npm run typecheck
+npm run dev:typecheck
 if [ $? -ne 0 ]; then
   echo "❌ TypeScript compilation failed. Please fix TypeScript errors before committing."
   exit 1
@@ -13,7 +13,7 @@ fi
 
 # Run ESLint check (warnings allowed, only errors block)
 echo "🔧 Running ESLint..."
-npm run lint --silent
+npm run dev:lint --silent
 ESLINT_EXIT_CODE=$?
 
 # Allow warnings (exit code 1) but block on errors (exit code 2)

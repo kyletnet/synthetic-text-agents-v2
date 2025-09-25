@@ -1,0 +1,37 @@
+{
+  "_metadata": {
+    "purpose": "의도적으로 사용하지 않는 스크립트들을 자동화 갭 검사에서 제외",
+    "updated": "2025-09-25T03:52:00.000Z"
+  },
+  "ignore": [
+    "anthropic_smoke.sh",
+    "cleanup_backups.sh",
+    "convert_evaluation_data.js",
+    "demo.ts",
+    "experimental_feature.ts",
+    "legacy_migration.ts",
+    "local_benchmark.ts",
+    "migration_backup.ts",
+    "prepare_test_fixtures.ts",
+    "temp_debug.ts"
+  ],
+  "categories": {
+    "legacy": [
+      "legacy_migration.ts",
+      "migration_backup.ts"
+    ],
+    "experimental": [
+      "experimental_feature.ts",
+      "demo.ts"
+    ],
+    "development": [
+      "local_benchmark.ts",
+      "temp_debug.ts",
+      "prepare_test_fixtures.ts"
+    ],
+    "maintenance": [
+      "cleanup_backups.sh",
+      "anthropic_smoke.sh"
+    ]
+  }
+}

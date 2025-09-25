@@ -1,0 +1,82 @@
+#!/usr/bin/env bash
+# EXECUTION SHIM: scripts/anthropic_smoke.sh
+# This script has been shimmed to prevent direct execution.
+# All scripts must go through the unified launcher for proper environment loading.
+
+echo "[FAIL] Direct execution blocked. Use: ./run.sh anthropic_smoke [args]"
+echo "[INFO] This ensures proper environment loading and API key management."
+exit 1
+
+# Simple Anthropic API smoke test
+set -euo pipefail
+
+# Load environment
+if [ -f .env ]; then
+    export $(grep -v '^#' .env | xargs)
+fi
+
+# Ensure we have the API key
+if [ -z "${ANTHROPIC_API_KEY:-}" ]; then
+    echo "❌ ANTHROPIC_API_KEY not set"
+    exit 1
+fi
+
+# Create log directory
+mkdir -p RUN_LOGS
+
+# Generate timestamp for log files
+TS=$(date +'%Y%m%d_%H%M%S')
+LOG_FILE="RUN_LOGS/anthropic_smoke_${TS}.log"
+META_FILE="RUN_LOGS/anthropic_smoke_${TS}.log.meta"
+
+echo "🧪 Running Anthropic smoke test..."
+echo "Model: ${LLM_MODEL:-claude-3-haiku-20240307}"
+echo "Provider: ${LLM_PROVIDER:-anthropic}"
+
+# Test payload
+PAYLOAD='{
+  "model": "'${LLM_MODEL:-claude-3-haiku-20240307}'",
+  "max_tokens": 50,
+  "temperature": 0,
+  "messages": [{"role": "user", "content": "Say hello in exactly 3 words."}]
+}'
+
+# Make API call
+HTTP_CODE=$(curl -s -o "$LOG_FILE" -w "%{http_code}" \
+    -H "Content-Type: application/json" \
+    -H "x-api-key: ${ANTHROPIC_API_KEY}" \
+    -H "anthropic-version: 2023-06-01" \
+    -d "$PAYLOAD" \
+    https://api.anthropic.com/v1/messages 2>/dev/null || echo "000")
+
+# Create meta log
+echo "HTTP_CODE=$HTTP_CODE" > "$META_FILE"
+echo "TIMESTAMP=$TS" >> "$META_FILE"
+echo "MODEL=${LLM_MODEL:-claude-3-haiku-20240307}" >> "$META_FILE"
+
+case "$HTTP_CODE" in
+    200)
+        echo "llm.ok: HTTP 200 - API call successful" >> "$META_FILE"
+        RESPONSE=$(jq -r '.content[0].text // "No content"' "$LOG_FILE" 2>/dev/null || echo "Parse error")
+        echo "RESPONSE=$RESPONSE" >> "$META_FILE"
+        echo "✅ Smoke test passed (HTTP 200)"
+        echo "Response: $RESPONSE"
+        ;;
+    401)
+        echo "llm.fail: HTTP 401 - Authentication failed" >> "$META_FILE"
+        echo "❌ Authentication failed (HTTP 401)"
+        echo "Check your ANTHROPIC_API_KEY"
+        exit 1
+        ;;
+    429)
+        echo "llm.fail: HTTP 429 - Rate limited" >> "$META_FILE"
+        echo "❌ Rate limited (HTTP 429)"
+        exit 1
+        ;;
+    *)
+        echo "llm.fail: HTTP $HTTP_CODE - Unexpected error" >> "$META_FILE"
+        echo "❌ Unexpected HTTP code: $HTTP_CODE"
+        echo "Response: $(cat "$LOG_FILE" 2>/dev/null | head -n 5)"
+        exit 1
+        ;;
+esac

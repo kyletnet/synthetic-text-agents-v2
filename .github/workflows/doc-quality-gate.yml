@@ -1,0 +1,187 @@
+name: 📚 Documentation Quality Gate
+
+on:
+  pull_request:
+    paths:
+      - 'docs/**'
+      - 'src/**'
+      - 'scripts/**'
+      - '.github/workflows/doc-quality-gate.yml'
+  push:
+    branches:
+      - main
+      - develop
+
+jobs:
+  doc-quality-gate:
+    name: 🔐 Document Quality Gate
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # 전체 히스토리 필요 (신선도 체크용)
+
+      - name: 🏗️ Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🏗️ Build TypeScript
+        run: npm run build
+
+      - name: 🔍 Run Document Audit
+        id: audit
+        run: |
+          npm run docs:audit:full
+          echo "audit_completed=true" >> $GITHUB_OUTPUT
+
+      - name: 🧩 Validate LLM Signals
+        run: npm run docs:signals:validate
+
+      - name: 📋 Run Document Linting
+        run: npm run docs:lint
+
+      - name: 🔐 Execute Quality Gate
+        id: gate
+        run: |
+          # Quality Gate 실행 (실패 시 exit 1)
+          npm run docs:gate:ci
+          echo "gate_passed=true" >> $GITHUB_OUTPUT
+
+      - name: 📊 Generate Quality Report
+        if: always()
+        run: |
+          echo "## 📚 Documentation Quality Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ -f "reports/doc-gate-report.json" ]; then
+            # 게이트 결과 요약
+            OVERALL=$(jq -r '.overall' reports/doc-gate-report.json)
+            PASSED=$(jq -r '.summary.passed' reports/doc-gate-report.json)
+            TOTAL=$(jq -r '.summary.totalRules' reports/doc-gate-report.json)
+
+            echo "### 🔐 Quality Gate: **$OVERALL**" >> $GITHUB_STEP_SUMMARY
+            echo "- ✅ Rules Passed: $PASSED/$TOTAL" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+
+            # 실패한 규칙들 표시
+            jq -r '.rules[] | select(.result.passed == false) | "- ❌ \(.name): \(.result.message)"' reports/doc-gate-report.json >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: 📋 Upload Quality Reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: doc-quality-reports
+          path: |
+            reports/doc-audit-report.json
+            reports/doc-gate-report.json
+            reports/doc-lint-report.json
+            docs/.llm-signals-index.json
+          retention-days: 30
+
+      - name: 💬 Comment PR (on failure)
+        if: failure() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+
+            let comment = '## 🚫 Documentation Quality Gate Failed\n\n';
+
+            try {
+              const gateReport = JSON.parse(fs.readFileSync('reports/doc-gate-report.json', 'utf8'));
+              const failed = gateReport.rules.filter(r => !r.result.passed && r.blocking);
+
+              if (failed.length > 0) {
+                comment += '### Blocking Issues:\n';
+                failed.forEach(rule => {
+                  comment += `- **${rule.name}**: ${rule.result.message}\n`;
+                  if (rule.result.details) {
+                    rule.result.details.slice(0, 3).forEach(detail => {
+                      comment += `  - ${detail}\n`;
+                    });
+                  }
+                });
+              }
+
+              comment += '\n### 🔧 How to fix:\n';
+              comment += '```bash\n';
+              comment += '# Run audit to see detailed issues\n';
+              comment += 'npm run docs:audit:full\n\n';
+              comment += '# Fix linting issues\n';
+              comment += 'npm run docs:lint\n\n';
+              comment += '# Check quality gate locally\n';
+              comment += 'npm run docs:gate\n';
+              comment += '```\n';
+
+            } catch (e) {
+              comment += 'Could not parse quality gate report.';
+            }
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+
+  auto-llm-signals:
+    name: 🧩 Auto-inject LLM Signals
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: doc-quality-gate
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 🏗️ Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🏗️ Build TypeScript
+        run: npm run build
+
+      - name: 🧩 Inject LLM Signals
+        run: npm run docs:signals:inject
+
+      - name: 🔍 Check for changes
+        id: changes
+        run: |
+          if [[ `git status --porcelain` ]]; then
+            echo "changes=true" >> $GITHUB_OUTPUT
+            echo "LLM signals were injected"
+          else
+            echo "changes=false" >> $GITHUB_OUTPUT
+            echo "No LLM signal changes needed"
+          fi
+
+      - name: 📤 Commit LLM signals
+        if: steps.changes.outputs.changes == 'true'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add docs/**/*.md
+          git add docs/.llm-signals-index.json
+          git commit -m "docs: auto-inject LLM optimization signals 🧩
+
+          - Added DOC:ENTITY, DOC:SECTION, DOC:API tags
+          - Generated LLM signals index
+          - Optimized for RAG ingestion
+
+          🤖 Generated with Claude Code"
+          git push

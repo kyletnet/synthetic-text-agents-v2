@@ -1,0 +1,24 @@
+{
+  "timestamp": "2025-09-25T03:38:37.417Z",
+  "snapshot_id": "design-transition-1758771517026-of9sm8",
+  "pre_transition_state": {
+    "package_json_backup": "/Users/kyle/synthetic-text-agents-v2/.system-backups/design-transition-1758771517026-of9sm8/package.json",
+    "scripts_directory_backup": "/Users/kyle/synthetic-text-agents-v2/.system-backups/design-transition-1758771517026-of9sm8/scripts",
+    "git_commit_hash": "8bd1e6f60364980857a2dd90a028acf0081cee6c",
+    "command_count": 173,
+    "file_count": 126
+  },
+  "transition_log": {
+    "actions_executed": [],
+    "files_modified": [],
+    "files_created": [],
+    "commands_changed": []
+  },
+  "rollback_instructions": [
+    "1. Git reset to pre-transition commit",
+    "2. Restore package.json from backup",
+    "3. Restore scripts directory from backup",
+    "4. Remove any new files created during transition",
+    "5. Verify system integrity"
+  ]
+}

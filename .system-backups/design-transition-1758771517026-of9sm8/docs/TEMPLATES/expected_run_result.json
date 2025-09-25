@@ -1,0 +1,14 @@
+{
+  "metrics": {
+    "passRate": 0.75,
+    "avgScore": 7.2,
+    "avgLatency": 1950,
+    "vetoedPct": 0.25
+  },
+  "issuesTop3": ["hallucination", "too_easy", "format_issue"],
+  "samples": [],
+  "links": {
+    "runLogPath": "docs/RUN_LOGS/YYYY-MM-DD_run-###.md",
+    "decisionPath": "docs/LEDGER/dec-YYYYMMDD-###.md"
+  }
+}

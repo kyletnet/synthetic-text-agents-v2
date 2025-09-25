@@ -53,3 +53,15 @@ npm run regression:mini
 ```
 
 For detailed operations procedures, see **[Operations Guide](docs/OPERATIONS.md)**.
+
+
+_Last updated: 2025. 9. 25._
+
+## 📊 Current Status
+
+- **Build**: PASS
+- **TypeScript**: PASS
+- **Health Score**: 10/10
+- **Core Commands**: 4 (fix, status, sync, refactor-audit)
+
+_Auto-updated by /sync_

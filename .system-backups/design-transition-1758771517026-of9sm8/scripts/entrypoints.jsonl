@@ -1,0 +1,30 @@
+{"name":"step4_2","script":"./step4_2.sh","env_required":["ANTHROPIC_API_KEYS"],"smoke_args":"MODE=SMOKE SMOKE_N=1","full_args":""}
+{"name":"handoff","script":"./handoff_one.sh","env_required":[],"smoke_args":"","full_args":""}
+{"name":"export","script":"./scripts/export_pack.sh","env_required":[],"smoke_args":"","full_args":""}
+{"name":"export-smart","script":"./create_llm_friendly_dump.sh","env_required":[],"smoke_args":"","full_args":""}
+{"name":"build","script":"npm run build","env_required":[],"smoke_args":"","full_args":""}
+{"name":"test","script":"npm run test","env_required":[],"smoke_args":"","full_args":""}
+{"name":"dev","script":"npm run dev","env_required":[],"smoke_args":"","full_args":""}
+{"name":"typecheck","script":"npm run typecheck","env_required":[],"smoke_args":"","full_args":""}
+{"name":"anthropic-test","script":"./anthropic_call_now.sh","env_required":["ANTHROPIC_API_KEY"],"smoke_args":"DRY_RUN=true","full_args":""}
+{"name":"repo-state","script":"./tools/repo_state.sh","env_required":[],"smoke_args":"","full_args":""}
+{"name":"set_anthropic_keys","script":"./set_anthropic_keys.sh","env_required":[],"smoke_args":"","full_args":""}
+{"name":"anthropic_call_now","script":"./anthropic_call_now.sh","env_required":["ANTHROPIC_API_KEY"],"smoke_args":"DRY_RUN=true","full_args":""}
+{"name":"quick_api_check","script":"./quick_api_check.sh","env_required":["ANTHROPIC_API_KEY"],"smoke_args":"","full_args":""}
+{"name":"update_api_key","script":"./update_api_key.sh","env_required":[],"smoke_args":"","full_args":""}
+{"name":"handoff_builder","script":"./handoff_builder.sh","env_required":[],"smoke_args":"","full_args":""}
+{"name":"automation_env_run","script":"./automation_env_run.sh","env_required":["ANTHROPIC_API_KEY"],"smoke_args":"DRY_RUN=true","full_args":""}
+{"name":"S3_baseline_plus_batch","script":"./S3_baseline_plus_batch.sh","env_required":["ANTHROPIC_API_KEY"],"smoke_args":"","full_args":""}
+{"name":"anthropic_ops_now","script":"./anthropic_ops_now.sh","env_required":["ANTHROPIC_API_KEY"],"smoke_args":"DRY_RUN=true","full_args":""}
+{"name":"S2_generate_eval_run","script":"./S2_generate_eval_run.sh","env_required":["ANTHROPIC_API_KEY"],"smoke_args":"","full_args":""}
+{"name":"s4_1b_analyze_and_report","script":"./s4_1b_analyze_and_report.sh","env_required":["ANTHROPIC_API_KEY"],"smoke_args":"","full_args":""}
+{"name":"setup_anthropic_keys","script":"./setup_anthropic_keys.sh","env_required":[],"smoke_args":"","full_args":""}
+{"name":"quick_check","script":"./quick_check.sh","env_required":[],"smoke_args":"","full_args":""}
+{"name":"anthropic_smoke","script":"./scripts/anthropic_smoke.sh","env_required":["ANTHROPIC_API_KEY"],"smoke_args":"","full_args":""}
+{"name":"update_anthropic_key","script":"./scripts/update_anthropic_key.sh","env_required":[],"smoke_args":"","full_args":""}
+{"name":"run_anthropic_b","script":"./run_anthropic_b.sh","env_required":["ANTHROPIC_API_KEY"],"smoke_args":"DRY_RUN=true","full_args":""}
+{"name":"run_anthropic_llm_now","script":"./run_anthropic_llm_now.sh","env_required":["ANTHROPIC_API_KEY"],"smoke_args":"DRY_RUN=true","full_args":""}
+{"name":"anthropic_refactor_run","script":"./anthropic_refactor_run.sh","env_required":["ANTHROPIC_API_KEY"],"smoke_args":"DRY_RUN=true","full_args":""}
+{"name":"automation_script","script":"./automation_script.sh","env_required":["ANTHROPIC_API_KEY"],"smoke_args":"DRY_RUN=true","full_args":""}
+{"name":"anthropic_real_run","script":"./anthropic_real_run.sh","env_required":["ANTHROPIC_API_KEY"],"smoke_args":"DRY_RUN=true","full_args":""}
+{"name":"session-report","script":"./scripts/session_report_standalone.sh","env_required":[],"smoke_args":"","full_args":""}

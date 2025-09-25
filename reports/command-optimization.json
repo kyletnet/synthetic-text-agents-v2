@@ -1,0 +1,2212 @@
+{
+  "timestamp": "2025-09-25T01:37:46.258Z",
+  "summary": {
+    "total": 136,
+    "core": 12,
+    "duplicates": 7,
+    "deprecated": 7,
+    "canRemove": 7,
+    "canMerge": 7
+  },
+  "recommendations": {
+    "keep": [
+      {
+        "name": "build",
+        "command": "tsc",
+        "category": "core",
+        "usage": "daily",
+        "recommendation": "keep",
+        "reason": "Essential command for development workflow"
+      },
+      {
+        "name": "baseline:bundle",
+        "command": "esbuild scripts/metrics/baselineCli.ts --bundle --platform=node --format=esm --outfile=scripts/metrics/dist/baselineCli.mjs",
+        "category": "specialized",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": "Advanced/debugging command"
+      },
+      {
+        "name": "baseline:run:bundle",
+        "command": "node scripts/metrics/dist/baselineCli.mjs",
+        "category": "specialized",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": "Advanced/debugging command"
+      },
+      {
+        "name": "dev",
+        "command": "tsx src/cli/main.ts",
+        "category": "core",
+        "usage": "daily",
+        "recommendation": "keep",
+        "reason": "Essential command for development workflow"
+      },
+      {
+        "name": "test",
+        "command": "vitest --run",
+        "category": "core",
+        "usage": "daily",
+        "recommendation": "keep",
+        "reason": "Essential command for development workflow"
+      },
+      {
+        "name": "test:watch",
+        "command": "vitest",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "test:coverage",
+        "command": "vitest --run --coverage",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "test:ui",
+        "command": "vitest --ui",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "test:e2e",
+        "command": "playwright test",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "test:integration",
+        "command": "vitest --run tests/integration",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "test:unit",
+        "command": "vitest --run tests/unit",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "coverage:report",
+        "command": "vitest --run --coverage --reporter=html",
+        "category": "specialized",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": "Advanced/debugging command"
+      },
+      {
+        "name": "coverage:check",
+        "command": "vitest --run --coverage --coverage.thresholds.statements=80 --coverage.thresholds.branches=80 --coverage.thresholds.functions=80 --coverage.thresholds.lines=80",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "lint",
+        "command": "eslint 'src/**/*.ts'",
+        "category": "core",
+        "usage": "weekly",
+        "recommendation": "keep",
+        "reason": "Essential command for development workflow"
+      },
+      {
+        "name": "lint:fix",
+        "command": "eslint 'src/**/*.ts' --fix",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "format",
+        "command": "prettier --write .",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "start",
+        "command": "node dist/cli/main.js",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "cli:help",
+        "command": "node dist/cli/main.js --help",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "docs:systemmap",
+        "command": "node --loader ts-node/esm scripts/generate_system_map.ts",
+        "category": "specialized",
+        "usage": "weekly",
+        "recommendation": "keep",
+        "reason": "Specialized workflow command"
+      },
+      {
+        "name": "docs:indexes",
+        "command": "node --loader ts-node/esm scripts/build_docs_indexes.ts",
+        "category": "specialized",
+        "usage": "weekly",
+        "recommendation": "keep",
+        "reason": "Specialized workflow command"
+      },
+      {
+        "name": "docs:refresh",
+        "command": "npm run docs:systemmap && npm run docs:indexes",
+        "category": "specialized",
+        "usage": "weekly",
+        "recommendation": "keep",
+        "reason": "Specialized workflow command"
+      },
+      {
+        "name": "docs:audit",
+        "command": "tsx scripts/docs/doc-quality-auditor.ts",
+        "category": "core",
+        "usage": "weekly",
+        "recommendation": "keep",
+        "reason": "Essential command for development workflow"
+      },
+      {
+        "name": "docs:audit:full",
+        "command": "tsx scripts/docs/doc-quality-auditor.ts full",
+        "category": "specialized",
+        "usage": "weekly",
+        "recommendation": "keep",
+        "reason": "Specialized workflow command"
+      },
+      {
+        "name": "docs:lint",
+        "command": "tsx scripts/docs/doc-linter.ts",
+        "category": "specialized",
+        "usage": "weekly",
+        "recommendation": "keep",
+        "reason": "Specialized workflow command"
+      },
+      {
+        "name": "docs:lint:file",
+        "command": "tsx scripts/docs/doc-linter.ts file",
+        "category": "specialized",
+        "usage": "weekly",
+        "recommendation": "keep",
+        "reason": "Specialized workflow command"
+      },
+      {
+        "name": "docs:gate",
+        "command": "tsx scripts/docs/doc-gate.ts",
+        "category": "core",
+        "usage": "weekly",
+        "recommendation": "keep",
+        "reason": "Essential command for development workflow"
+      },
+      {
+        "name": "docs:gate:ci",
+        "command": "tsx scripts/docs/doc-gate.ts ci",
+        "category": "specialized",
+        "usage": "weekly",
+        "recommendation": "keep",
+        "reason": "Specialized workflow command"
+      },
+      {
+        "name": "docs:signals:inject",
+        "command": "tsx scripts/docs/llm-signal-injector.ts inject",
+        "category": "specialized",
+        "usage": "weekly",
+        "recommendation": "keep",
+        "reason": "Specialized workflow command"
+      },
+      {
+        "name": "docs:signals:remove",
+        "command": "tsx scripts/docs/llm-signal-injector.ts remove",
+        "category": "specialized",
+        "usage": "weekly",
+        "recommendation": "keep",
+        "reason": "Specialized workflow command"
+      },
+      {
+        "name": "docs:signals:validate",
+        "command": "tsx scripts/docs/llm-signal-injector.ts validate",
+        "category": "specialized",
+        "usage": "weekly",
+        "recommendation": "keep",
+        "reason": "Specialized workflow command"
+      },
+      {
+        "name": "ts:check",
+        "command": "tsx scripts/ts-compile-checker.ts check",
+        "category": "core",
+        "usage": "weekly",
+        "recommendation": "keep",
+        "reason": "Essential command for development workflow"
+      },
+      {
+        "name": "ts:issues",
+        "command": "tsx scripts/ts-compile-checker.ts refactor-issues",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "commands:optimize",
+        "command": "tsx scripts/command-optimizer.ts",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "report:last",
+        "command": "node cli/report-last.ts",
+        "category": "specialized",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": "Advanced/debugging command"
+      },
+      {
+        "name": "annotate:run",
+        "command": "node cli/annotate-run.ts",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "feedback:apply",
+        "command": "node cli/apply-feedback.ts",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "docs:status",
+        "command": "bash scripts/check-docs-freshness.sh",
+        "category": "specialized",
+        "usage": "weekly",
+        "recommendation": "keep",
+        "reason": "Specialized workflow command"
+      },
+      {
+        "name": "docs:touch",
+        "command": "node cli/docs-touch.cjs",
+        "category": "specialized",
+        "usage": "weekly",
+        "recommendation": "keep",
+        "reason": "Specialized workflow command"
+      },
+      {
+        "name": "regression:mini",
+        "command": "node tools/run_regression.mjs --target step4_2 --mode smoke --offline",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "regression:extended",
+        "command": "node tools/run_regression.mjs --extended",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "report:baseline",
+        "command": "node dist/scripts/metrics/baselineReportGenerator.js --render-md",
+        "category": "specialized",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": "Advanced/debugging command"
+      },
+      {
+        "name": "report:export",
+        "command": "node dist/scripts/metrics/baselineReportGenerator.js --export --validate",
+        "category": "specialized",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": "Advanced/debugging command"
+      },
+      {
+        "name": "regression:freeze",
+        "command": "node tools/run_regression.mjs --freeze",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "tickets:list",
+        "command": "ls -1 dev/tickets | sed 's/^/- /'",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "log:sample",
+        "command": "node tools/run_logger.js '{\"run_id\":\"sample\",\"routing_path\":\"rag\",\"quality_score\":8.7,\"p95_ms\":2400,\"cost\":0.0012,\"cost_cap_hit\":0,\"citation_presence\":1,\"snippet_alignment\":0.93,\"failure_class\":\"-\"}'",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "demo:orch:cit",
+        "command": "node tools/orchestrator_cit_hook_demo.js",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "eval:p13",
+        "command": "node tools/eval_runner_p13.js",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "eval:p13:multi",
+        "command": "node tools/eval_runner_multi_p13.js",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "handoff",
+        "command": "scripts/handoff",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "system:map",
+        "command": "npm run docs:systemmap && echo \"📍 System map generated in docs/SYSTEM_ARCHITECTURE_MAP.md\"",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "typecheck",
+        "command": "tsc -p tsconfig.build.json --noEmit",
+        "category": "core",
+        "usage": "weekly",
+        "recommendation": "keep",
+        "reason": "Essential command for development workflow"
+      },
+      {
+        "name": "ab-test",
+        "command": "tsx src/cli/abTestRunner.ts",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "ab-test:list",
+        "command": "tsx src/cli/abTestRunner.ts list",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "ab-test:quality",
+        "command": "tsx src/cli/abTestRunner.ts batch test-configs/quality-comparison.json",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "ab-test:performance",
+        "command": "tsx src/cli/abTestRunner.ts batch test-configs/performance-test.json",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "ab-test:compare",
+        "command": "tsx src/cli/abTestRunner.ts compare conservative,balanced,comprehensive",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "web:open",
+        "command": "node -e \"require('child_process').exec(process.platform==='darwin'?'open apps/fe-web/review/index.html':(process.platform==='win32'?'start apps/fe-web/review/index.html':'xdg-open apps/fe-web/review/index.html'))\"",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "run:min",
+        "command": "node -r dotenv/config node_modules/.bin/tsx src/orchestrator/min_loop.ts",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "run:min+commit",
+        "command": "npm run -s run:min && scripts/post_run_commit.sh \"feat(run): QA gen & audit update\"",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "run:min+autocommit",
+        "command": "AUTO_COMMIT=true npm run -s run:min && scripts/post_run_commit.sh \"feat(run): QA gen & audit update\"",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "guard:env",
+        "command": "bash scripts/validate-environment.sh",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "guard:no-direct-http",
+        "command": "bash scripts/forbidden-direct-http.sh",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "guard:prod",
+        "command": "bash -c './run_v3.sh __validate_prod_guard --check-only'",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "guard:toolchain",
+        "command": "bash tools/validate_toolchain.sh --strict",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "guard:all",
+        "command": "npm run guard:env && npm run guard:toolchain && npm run smoke && npm run guard:prod && npm run guard:git && npm run schema && npm run guard:no-direct-http && npm run regression:mini",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "guard:git",
+        "command": "bash scripts/scan_secrets.sh",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "security:audit",
+        "command": "bash scripts/security-audit.sh",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "hygiene:clean",
+        "command": "bash scripts/cleanup_backups.sh",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "snapshot:commit",
+        "command": "bash scripts/snapshot_commit.sh",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "smoke",
+        "command": "OFFLINE_MODE=true bash tools/anthropic_client.sh --smoke",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "schema",
+        "command": "node tools/validate_schema.mjs",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "dx:smoke",
+        "command": "npx tsx scripts/dx/cli.ts run --profile dev --budget 0.50",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "dx:full",
+        "command": "npx tsx scripts/dx/cli.ts run --profile stage --budget 2.00 --autocalib --approve",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "dx:approve",
+        "command": "npx tsx scripts/dx/cli.ts run --profile stage --budget 1.00 --autocalib --approve",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "dx:report",
+        "command": "npx tsx scripts/dx/cli.ts report",
+        "category": "specialized",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": "Advanced/debugging command"
+      },
+      {
+        "name": "verify:obs",
+        "command": "node dist/scripts/ci/check_observability_consistency.js --session reports/session_report.md --obs 'reports/observability/**/index.html' --logs RUN_LOGS",
+        "category": "specialized",
+        "usage": "weekly",
+        "recommendation": "keep",
+        "reason": "Specialized workflow command"
+      },
+      {
+        "name": "verify:handoff",
+        "command": "node dist/scripts/ci/verify_bundle_contents.js --root . --mode handoff",
+        "category": "specialized",
+        "usage": "weekly",
+        "recommendation": "keep",
+        "reason": "Specialized workflow command"
+      },
+      {
+        "name": "verify:export",
+        "command": "node dist/scripts/ci/verify_bundle_contents.js --root . --mode export",
+        "category": "specialized",
+        "usage": "weekly",
+        "recommendation": "keep",
+        "reason": "Specialized workflow command"
+      },
+      {
+        "name": "preflight",
+        "command": "npm run typecheck && npm run lint && node dist/scripts/preflight_pack.js --profile stage --budget-smoke 2.00 --budget-full 50.00 --run-tags preflight",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "taxo:check",
+        "command": "node dist/scripts/ci/check_taxonomy_consistency.js --roots 'src,scripts,validators,reports,.claude/commands,docs' --session reports/session_report.md --schema validators/session_report.schema.json --obs_glob 'reports/observability/**/index.html'",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "taxo:fix:dry",
+        "command": "node dist/scripts/ci/fix_taxonomy_labels.js --roots 'src,scripts,.claude/commands,reports,docs' --dry",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "taxo:fix",
+        "command": "node dist/scripts/ci/fix_taxonomy_labels.js --roots 'src,scripts,.claude/commands,reports,docs' --write",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "verify:ops",
+        "command": "node dist/scripts/ci/verify_ops_brief.js",
+        "category": "specialized",
+        "usage": "weekly",
+        "recommendation": "keep",
+        "reason": "Specialized workflow command"
+      },
+      {
+        "name": "check:standards",
+        "command": "bash scripts/check-standards.sh",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "generate:agent",
+        "command": "bash scripts/generate-agent.sh",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "onboard:setup",
+        "command": "bash scripts/onboard-developer.sh",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "ci:quality",
+        "command": "npm run typecheck && npm run lint && (npm run test || echo 'Tests failed but continuing for CI/CD consistency')",
+        "category": "core",
+        "usage": "daily",
+        "recommendation": "keep",
+        "reason": "Essential command for development workflow"
+      },
+      {
+        "name": "ci:strict",
+        "command": "npm run typecheck && npm run build && npm run test && npm run smoke && npm run schema",
+        "category": "core",
+        "usage": "daily",
+        "recommendation": "keep",
+        "reason": "Essential command for development workflow"
+      },
+      {
+        "name": "prepare",
+        "command": "husky install",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "export",
+        "command": "bash scripts/export_pack_smart.sh",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "commit",
+        "command": "git add . && git commit -m \"feat: automated commit with Claude Code\" && git push",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "sync",
+        "command": "bash scripts/slash-commands.sh sync",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "sync:simple",
+        "command": "git add . && git commit -m \"sync: update with latest changes\" && git push && echo \"✅ 프로젝트 동기화 완료\"",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "/commit",
+        "command": "npm run commit",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "/sync",
+        "command": "npm run sync",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "ship:docs",
+        "command": "npm run docs:refresh && npm run handoff",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "ship:pre",
+        "command": "npm run ci:strict && npm run verify:obs && npm run verify:handoff && npm run verify:export",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "ship",
+        "command": "node scripts/ship.cjs",
+        "category": "core",
+        "usage": "weekly",
+        "recommendation": "keep",
+        "reason": "Essential command for development workflow"
+      },
+      {
+        "name": "ship:fast",
+        "command": "npm run typecheck && npm run lint && npm run smoke && echo '🚀 Fast ship complete - APM tests bypassed'",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "ship:enhanced",
+        "command": "node scripts/ship.js",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "ship:legacy",
+        "command": "npm run ship:pre && npm run handoff && npm run export",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "diag:preflight",
+        "command": "node scripts/ci/preflight_root_cause_diag.cjs",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "docs:sync",
+        "command": "bash scripts/generate-system-docs.sh && npm run docs:refresh",
+        "category": "specialized",
+        "usage": "weekly",
+        "recommendation": "keep",
+        "reason": "Specialized workflow command"
+      },
+      {
+        "name": "verify:all",
+        "command": "npm run typecheck && npm run lint && npm run test && npm run guard:all",
+        "category": "specialized",
+        "usage": "weekly",
+        "recommendation": "keep",
+        "reason": "Specialized workflow command"
+      },
+      {
+        "name": "refactor:audit",
+        "command": "tsx scripts/smart-refactor-auditor.ts audit",
+        "category": "core",
+        "usage": "weekly",
+        "recommendation": "keep",
+        "reason": "Essential command for development workflow"
+      },
+      {
+        "name": "refactor:audit:simulate",
+        "command": "tsx scripts/smart-refactor-auditor.ts audit --simulate",
+        "category": "specialized",
+        "usage": "weekly",
+        "recommendation": "keep",
+        "reason": "Specialized workflow command"
+      },
+      {
+        "name": "refactor:audit:rollback",
+        "command": "tsx scripts/smart-refactor-auditor.ts audit --rollback",
+        "category": "specialized",
+        "usage": "weekly",
+        "recommendation": "keep",
+        "reason": "Specialized workflow command"
+      },
+      {
+        "name": "refactor:confirm",
+        "command": "tsx scripts/smart-refactor-auditor.ts confirm",
+        "category": "specialized",
+        "usage": "weekly",
+        "recommendation": "keep",
+        "reason": "Specialized workflow command"
+      },
+      {
+        "name": "refactor:summary",
+        "command": "tsx scripts/smart-refactor-auditor.ts summary",
+        "category": "specialized",
+        "usage": "weekly",
+        "recommendation": "keep",
+        "reason": "Specialized workflow command"
+      },
+      {
+        "name": "refactor:next",
+        "command": "tsx scripts/smart-refactor-auditor.ts summary | grep 'Next action'",
+        "category": "specialized",
+        "usage": "weekly",
+        "recommendation": "keep",
+        "reason": "Specialized workflow command"
+      },
+      {
+        "name": "refactor:sync",
+        "command": "tsx scripts/smart-refactor-auditor.ts sync",
+        "category": "specialized",
+        "usage": "weekly",
+        "recommendation": "keep",
+        "reason": "Specialized workflow command"
+      },
+      {
+        "name": "refactor:learned-criteria",
+        "command": "tsx scripts/smart-refactor-auditor.ts learned-criteria",
+        "category": "specialized",
+        "usage": "weekly",
+        "recommendation": "keep",
+        "reason": "Specialized workflow command"
+      },
+      {
+        "name": "refactor:reset-learning",
+        "command": "tsx scripts/smart-refactor-auditor.ts reset-learning",
+        "category": "specialized",
+        "usage": "weekly",
+        "recommendation": "keep",
+        "reason": "Specialized workflow command"
+      },
+      {
+        "name": "refactor:rollback-preview",
+        "command": "tsx scripts/smart-refactor-auditor.ts rollback-preview",
+        "category": "specialized",
+        "usage": "weekly",
+        "recommendation": "keep",
+        "reason": "Specialized workflow command"
+      },
+      {
+        "name": "refactor:guide",
+        "command": "tsx scripts/smart-refactor-auditor.ts guide",
+        "category": "specialized",
+        "usage": "weekly",
+        "recommendation": "keep",
+        "reason": "Specialized workflow command"
+      },
+      {
+        "name": "refactor:legacy:audit",
+        "command": "tsx scripts/refactor-auditor.ts ALL --verbose",
+        "category": "specialized",
+        "usage": "weekly",
+        "recommendation": "keep",
+        "reason": "Specialized workflow command"
+      },
+      {
+        "name": "refactor:legacy:p1",
+        "command": "tsx scripts/refactor-auditor.ts P1 --verbose",
+        "category": "specialized",
+        "usage": "weekly",
+        "recommendation": "keep",
+        "reason": "Specialized workflow command"
+      },
+      {
+        "name": "/refactor-audit",
+        "command": "npm run refactor:audit",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "/refactor-confirm",
+        "command": "npm run refactor:confirm",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "/refactor-summary",
+        "command": "npm run refactor:summary",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "/refactor-next",
+        "command": "npm run refactor:next",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      },
+      {
+        "name": "slash",
+        "command": "bash scripts/slash-commands.sh",
+        "category": "unknown",
+        "usage": "rare",
+        "recommendation": "keep",
+        "reason": ""
+      }
+    ],
+    "merge": [
+      {
+        "name": "baseline:tsnode",
+        "command": "node --loader ts-node/esm scripts/metrics/baselineCli.ts",
+        "category": "duplicate",
+        "usage": "never",
+        "recommendation": "merge",
+        "mergeWith": "dev",
+        "reason": "Duplicate of dev"
+      },
+      {
+        "name": "build:export",
+        "command": "tsc -p tsconfig.export.json",
+        "category": "duplicate",
+        "usage": "never",
+        "recommendation": "merge",
+        "mergeWith": "build",
+        "reason": "Duplicate of build"
+      },
+      {
+        "name": "start:cli",
+        "command": "node dist/cli/main.js --help",
+        "category": "duplicate",
+        "usage": "never",
+        "recommendation": "merge",
+        "mergeWith": "dev",
+        "reason": "Duplicate of dev"
+      },
+      {
+        "name": "demo",
+        "command": "node dist/cli/main.js --demo",
+        "category": "duplicate",
+        "usage": "never",
+        "recommendation": "merge",
+        "mergeWith": "dev",
+        "reason": "Duplicate of dev"
+      },
+      {
+        "name": "docs:coverage",
+        "command": "tsx scripts/docs/doc-quality-auditor.ts coverage",
+        "category": "duplicate",
+        "usage": "never",
+        "recommendation": "merge",
+        "mergeWith": "docs:audit",
+        "reason": "Duplicate of docs:audit"
+      },
+      {
+        "name": "docs:freshness",
+        "command": "tsx scripts/docs/doc-quality-auditor.ts freshness",
+        "category": "duplicate",
+        "usage": "never",
+        "recommendation": "merge",
+        "mergeWith": "docs:audit",
+        "reason": "Duplicate of docs:audit"
+      },
+      {
+        "name": "dev:demo",
+        "command": "tsx src/cli/main.ts",
+        "category": "duplicate",
+        "usage": "never",
+        "recommendation": "merge",
+        "mergeWith": "dev",
+        "reason": "Duplicate of dev"
+      }
+    ],
+    "remove": [
+      {
+        "name": "replit:start",
+        "command": "bash main.sh",
+        "category": "deprecated",
+        "usage": "never",
+        "recommendation": "remove",
+        "reason": "Legacy command no longer needed"
+      },
+      {
+        "name": "replit:install",
+        "command": "cd backend && npm install && cd ../apps/fe-web && npm install",
+        "category": "deprecated",
+        "usage": "never",
+        "recommendation": "remove",
+        "reason": "Legacy command no longer needed"
+      },
+      {
+        "name": "safe:show",
+        "command": "node cli/safe-show.cjs",
+        "category": "deprecated",
+        "usage": "never",
+        "recommendation": "remove",
+        "reason": "Legacy command no longer needed"
+      },
+      {
+        "name": "safe:dryrun",
+        "command": "node cli/safe-dryrun.cjs",
+        "category": "deprecated",
+        "usage": "never",
+        "recommendation": "remove",
+        "reason": "Legacy command no longer needed"
+      },
+      {
+        "name": "eval:mini",
+        "command": "node tools/eval_mini.js",
+        "category": "deprecated",
+        "usage": "never",
+        "recommendation": "remove",
+        "reason": "Legacy command no longer needed"
+      },
+      {
+        "name": "route:seed",
+        "command": "node tools/seed_route.js",
+        "category": "deprecated",
+        "usage": "never",
+        "recommendation": "remove",
+        "reason": "Legacy command no longer needed"
+      },
+      {
+        "name": "demo:cit",
+        "command": "node tools/citation_demo_run.js",
+        "category": "deprecated",
+        "usage": "never",
+        "recommendation": "remove",
+        "reason": "Legacy command no longer needed"
+      }
+    ],
+    "deprecate": []
+  },
+  "analysis": [
+    {
+      "name": "build",
+      "command": "tsc",
+      "category": "core",
+      "usage": "daily",
+      "recommendation": "keep",
+      "reason": "Essential command for development workflow"
+    },
+    {
+      "name": "baseline:tsnode",
+      "command": "node --loader ts-node/esm scripts/metrics/baselineCli.ts",
+      "category": "duplicate",
+      "usage": "never",
+      "recommendation": "merge",
+      "mergeWith": "dev",
+      "reason": "Duplicate of dev"
+    },
+    {
+      "name": "baseline:bundle",
+      "command": "esbuild scripts/metrics/baselineCli.ts --bundle --platform=node --format=esm --outfile=scripts/metrics/dist/baselineCli.mjs",
+      "category": "specialized",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": "Advanced/debugging command"
+    },
+    {
+      "name": "baseline:run:bundle",
+      "command": "node scripts/metrics/dist/baselineCli.mjs",
+      "category": "specialized",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": "Advanced/debugging command"
+    },
+    {
+      "name": "build:export",
+      "command": "tsc -p tsconfig.export.json",
+      "category": "duplicate",
+      "usage": "never",
+      "recommendation": "merge",
+      "mergeWith": "build",
+      "reason": "Duplicate of build"
+    },
+    {
+      "name": "dev",
+      "command": "tsx src/cli/main.ts",
+      "category": "core",
+      "usage": "daily",
+      "recommendation": "keep",
+      "reason": "Essential command for development workflow"
+    },
+    {
+      "name": "replit:start",
+      "command": "bash main.sh",
+      "category": "deprecated",
+      "usage": "never",
+      "recommendation": "remove",
+      "reason": "Legacy command no longer needed"
+    },
+    {
+      "name": "replit:install",
+      "command": "cd backend && npm install && cd ../apps/fe-web && npm install",
+      "category": "deprecated",
+      "usage": "never",
+      "recommendation": "remove",
+      "reason": "Legacy command no longer needed"
+    },
+    {
+      "name": "test",
+      "command": "vitest --run",
+      "category": "core",
+      "usage": "daily",
+      "recommendation": "keep",
+      "reason": "Essential command for development workflow"
+    },
+    {
+      "name": "test:watch",
+      "command": "vitest",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "test:coverage",
+      "command": "vitest --run --coverage",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "test:ui",
+      "command": "vitest --ui",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "test:e2e",
+      "command": "playwright test",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "test:integration",
+      "command": "vitest --run tests/integration",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "test:unit",
+      "command": "vitest --run tests/unit",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "coverage:report",
+      "command": "vitest --run --coverage --reporter=html",
+      "category": "specialized",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": "Advanced/debugging command"
+    },
+    {
+      "name": "coverage:check",
+      "command": "vitest --run --coverage --coverage.thresholds.statements=80 --coverage.thresholds.branches=80 --coverage.thresholds.functions=80 --coverage.thresholds.lines=80",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "lint",
+      "command": "eslint 'src/**/*.ts'",
+      "category": "core",
+      "usage": "weekly",
+      "recommendation": "keep",
+      "reason": "Essential command for development workflow"
+    },
+    {
+      "name": "lint:fix",
+      "command": "eslint 'src/**/*.ts' --fix",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "format",
+      "command": "prettier --write .",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "start",
+      "command": "node dist/cli/main.js",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "start:cli",
+      "command": "node dist/cli/main.js --help",
+      "category": "duplicate",
+      "usage": "never",
+      "recommendation": "merge",
+      "mergeWith": "dev",
+      "reason": "Duplicate of dev"
+    },
+    {
+      "name": "demo",
+      "command": "node dist/cli/main.js --demo",
+      "category": "duplicate",
+      "usage": "never",
+      "recommendation": "merge",
+      "mergeWith": "dev",
+      "reason": "Duplicate of dev"
+    },
+    {
+      "name": "cli:help",
+      "command": "node dist/cli/main.js --help",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "docs:systemmap",
+      "command": "node --loader ts-node/esm scripts/generate_system_map.ts",
+      "category": "specialized",
+      "usage": "weekly",
+      "recommendation": "keep",
+      "reason": "Specialized workflow command"
+    },
+    {
+      "name": "docs:indexes",
+      "command": "node --loader ts-node/esm scripts/build_docs_indexes.ts",
+      "category": "specialized",
+      "usage": "weekly",
+      "recommendation": "keep",
+      "reason": "Specialized workflow command"
+    },
+    {
+      "name": "docs:refresh",
+      "command": "npm run docs:systemmap && npm run docs:indexes",
+      "category": "specialized",
+      "usage": "weekly",
+      "recommendation": "keep",
+      "reason": "Specialized workflow command"
+    },
+    {
+      "name": "docs:audit",
+      "command": "tsx scripts/docs/doc-quality-auditor.ts",
+      "category": "core",
+      "usage": "weekly",
+      "recommendation": "keep",
+      "reason": "Essential command for development workflow"
+    },
+    {
+      "name": "docs:audit:full",
+      "command": "tsx scripts/docs/doc-quality-auditor.ts full",
+      "category": "specialized",
+      "usage": "weekly",
+      "recommendation": "keep",
+      "reason": "Specialized workflow command"
+    },
+    {
+      "name": "docs:coverage",
+      "command": "tsx scripts/docs/doc-quality-auditor.ts coverage",
+      "category": "duplicate",
+      "usage": "never",
+      "recommendation": "merge",
+      "mergeWith": "docs:audit",
+      "reason": "Duplicate of docs:audit"
+    },
+    {
+      "name": "docs:freshness",
+      "command": "tsx scripts/docs/doc-quality-auditor.ts freshness",
+      "category": "duplicate",
+      "usage": "never",
+      "recommendation": "merge",
+      "mergeWith": "docs:audit",
+      "reason": "Duplicate of docs:audit"
+    },
+    {
+      "name": "docs:lint",
+      "command": "tsx scripts/docs/doc-linter.ts",
+      "category": "specialized",
+      "usage": "weekly",
+      "recommendation": "keep",
+      "reason": "Specialized workflow command"
+    },
+    {
+      "name": "docs:lint:file",
+      "command": "tsx scripts/docs/doc-linter.ts file",
+      "category": "specialized",
+      "usage": "weekly",
+      "recommendation": "keep",
+      "reason": "Specialized workflow command"
+    },
+    {
+      "name": "docs:gate",
+      "command": "tsx scripts/docs/doc-gate.ts",
+      "category": "core",
+      "usage": "weekly",
+      "recommendation": "keep",
+      "reason": "Essential command for development workflow"
+    },
+    {
+      "name": "docs:gate:ci",
+      "command": "tsx scripts/docs/doc-gate.ts ci",
+      "category": "specialized",
+      "usage": "weekly",
+      "recommendation": "keep",
+      "reason": "Specialized workflow command"
+    },
+    {
+      "name": "docs:signals:inject",
+      "command": "tsx scripts/docs/llm-signal-injector.ts inject",
+      "category": "specialized",
+      "usage": "weekly",
+      "recommendation": "keep",
+      "reason": "Specialized workflow command"
+    },
+    {
+      "name": "docs:signals:remove",
+      "command": "tsx scripts/docs/llm-signal-injector.ts remove",
+      "category": "specialized",
+      "usage": "weekly",
+      "recommendation": "keep",
+      "reason": "Specialized workflow command"
+    },
+    {
+      "name": "docs:signals:validate",
+      "command": "tsx scripts/docs/llm-signal-injector.ts validate",
+      "category": "specialized",
+      "usage": "weekly",
+      "recommendation": "keep",
+      "reason": "Specialized workflow command"
+    },
+    {
+      "name": "ts:check",
+      "command": "tsx scripts/ts-compile-checker.ts check",
+      "category": "core",
+      "usage": "weekly",
+      "recommendation": "keep",
+      "reason": "Essential command for development workflow"
+    },
+    {
+      "name": "ts:issues",
+      "command": "tsx scripts/ts-compile-checker.ts refactor-issues",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "commands:optimize",
+      "command": "tsx scripts/command-optimizer.ts",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "report:last",
+      "command": "node cli/report-last.ts",
+      "category": "specialized",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": "Advanced/debugging command"
+    },
+    {
+      "name": "annotate:run",
+      "command": "node cli/annotate-run.ts",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "feedback:apply",
+      "command": "node cli/apply-feedback.ts",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "safe:show",
+      "command": "node cli/safe-show.cjs",
+      "category": "deprecated",
+      "usage": "never",
+      "recommendation": "remove",
+      "reason": "Legacy command no longer needed"
+    },
+    {
+      "name": "safe:dryrun",
+      "command": "node cli/safe-dryrun.cjs",
+      "category": "deprecated",
+      "usage": "never",
+      "recommendation": "remove",
+      "reason": "Legacy command no longer needed"
+    },
+    {
+      "name": "docs:status",
+      "command": "bash scripts/check-docs-freshness.sh",
+      "category": "specialized",
+      "usage": "weekly",
+      "recommendation": "keep",
+      "reason": "Specialized workflow command"
+    },
+    {
+      "name": "docs:touch",
+      "command": "node cli/docs-touch.cjs",
+      "category": "specialized",
+      "usage": "weekly",
+      "recommendation": "keep",
+      "reason": "Specialized workflow command"
+    },
+    {
+      "name": "eval:mini",
+      "command": "node tools/eval_mini.js",
+      "category": "deprecated",
+      "usage": "never",
+      "recommendation": "remove",
+      "reason": "Legacy command no longer needed"
+    },
+    {
+      "name": "regression:mini",
+      "command": "node tools/run_regression.mjs --target step4_2 --mode smoke --offline",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "regression:extended",
+      "command": "node tools/run_regression.mjs --extended",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "report:baseline",
+      "command": "node dist/scripts/metrics/baselineReportGenerator.js --render-md",
+      "category": "specialized",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": "Advanced/debugging command"
+    },
+    {
+      "name": "report:export",
+      "command": "node dist/scripts/metrics/baselineReportGenerator.js --export --validate",
+      "category": "specialized",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": "Advanced/debugging command"
+    },
+    {
+      "name": "regression:freeze",
+      "command": "node tools/run_regression.mjs --freeze",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "tickets:list",
+      "command": "ls -1 dev/tickets | sed 's/^/- /'",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "log:sample",
+      "command": "node tools/run_logger.js '{\"run_id\":\"sample\",\"routing_path\":\"rag\",\"quality_score\":8.7,\"p95_ms\":2400,\"cost\":0.0012,\"cost_cap_hit\":0,\"citation_presence\":1,\"snippet_alignment\":0.93,\"failure_class\":\"-\"}'",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "route:seed",
+      "command": "node tools/seed_route.js",
+      "category": "deprecated",
+      "usage": "never",
+      "recommendation": "remove",
+      "reason": "Legacy command no longer needed"
+    },
+    {
+      "name": "demo:cit",
+      "command": "node tools/citation_demo_run.js",
+      "category": "deprecated",
+      "usage": "never",
+      "recommendation": "remove",
+      "reason": "Legacy command no longer needed"
+    },
+    {
+      "name": "demo:orch:cit",
+      "command": "node tools/orchestrator_cit_hook_demo.js",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "eval:p13",
+      "command": "node tools/eval_runner_p13.js",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "eval:p13:multi",
+      "command": "node tools/eval_runner_multi_p13.js",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "handoff",
+      "command": "scripts/handoff",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "system:map",
+      "command": "npm run docs:systemmap && echo \"📍 System map generated in docs/SYSTEM_ARCHITECTURE_MAP.md\"",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "typecheck",
+      "command": "tsc -p tsconfig.build.json --noEmit",
+      "category": "core",
+      "usage": "weekly",
+      "recommendation": "keep",
+      "reason": "Essential command for development workflow"
+    },
+    {
+      "name": "ab-test",
+      "command": "tsx src/cli/abTestRunner.ts",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "ab-test:list",
+      "command": "tsx src/cli/abTestRunner.ts list",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "ab-test:quality",
+      "command": "tsx src/cli/abTestRunner.ts batch test-configs/quality-comparison.json",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "ab-test:performance",
+      "command": "tsx src/cli/abTestRunner.ts batch test-configs/performance-test.json",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "ab-test:compare",
+      "command": "tsx src/cli/abTestRunner.ts compare conservative,balanced,comprehensive",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "web:open",
+      "command": "node -e \"require('child_process').exec(process.platform==='darwin'?'open apps/fe-web/review/index.html':(process.platform==='win32'?'start apps/fe-web/review/index.html':'xdg-open apps/fe-web/review/index.html'))\"",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "dev:demo",
+      "command": "tsx src/cli/main.ts",
+      "category": "duplicate",
+      "usage": "never",
+      "recommendation": "merge",
+      "mergeWith": "dev",
+      "reason": "Duplicate of dev"
+    },
+    {
+      "name": "run:min",
+      "command": "node -r dotenv/config node_modules/.bin/tsx src/orchestrator/min_loop.ts",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "run:min+commit",
+      "command": "npm run -s run:min && scripts/post_run_commit.sh \"feat(run): QA gen & audit update\"",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "run:min+autocommit",
+      "command": "AUTO_COMMIT=true npm run -s run:min && scripts/post_run_commit.sh \"feat(run): QA gen & audit update\"",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "guard:env",
+      "command": "bash scripts/validate-environment.sh",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "guard:no-direct-http",
+      "command": "bash scripts/forbidden-direct-http.sh",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "guard:prod",
+      "command": "bash -c './run_v3.sh __validate_prod_guard --check-only'",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "guard:toolchain",
+      "command": "bash tools/validate_toolchain.sh --strict",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "guard:all",
+      "command": "npm run guard:env && npm run guard:toolchain && npm run smoke && npm run guard:prod && npm run guard:git && npm run schema && npm run guard:no-direct-http && npm run regression:mini",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "guard:git",
+      "command": "bash scripts/scan_secrets.sh",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "security:audit",
+      "command": "bash scripts/security-audit.sh",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "hygiene:clean",
+      "command": "bash scripts/cleanup_backups.sh",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "snapshot:commit",
+      "command": "bash scripts/snapshot_commit.sh",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "smoke",
+      "command": "OFFLINE_MODE=true bash tools/anthropic_client.sh --smoke",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "schema",
+      "command": "node tools/validate_schema.mjs",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "dx:smoke",
+      "command": "npx tsx scripts/dx/cli.ts run --profile dev --budget 0.50",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "dx:full",
+      "command": "npx tsx scripts/dx/cli.ts run --profile stage --budget 2.00 --autocalib --approve",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "dx:approve",
+      "command": "npx tsx scripts/dx/cli.ts run --profile stage --budget 1.00 --autocalib --approve",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "dx:report",
+      "command": "npx tsx scripts/dx/cli.ts report",
+      "category": "specialized",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": "Advanced/debugging command"
+    },
+    {
+      "name": "verify:obs",
+      "command": "node dist/scripts/ci/check_observability_consistency.js --session reports/session_report.md --obs 'reports/observability/**/index.html' --logs RUN_LOGS",
+      "category": "specialized",
+      "usage": "weekly",
+      "recommendation": "keep",
+      "reason": "Specialized workflow command"
+    },
+    {
+      "name": "verify:handoff",
+      "command": "node dist/scripts/ci/verify_bundle_contents.js --root . --mode handoff",
+      "category": "specialized",
+      "usage": "weekly",
+      "recommendation": "keep",
+      "reason": "Specialized workflow command"
+    },
+    {
+      "name": "verify:export",
+      "command": "node dist/scripts/ci/verify_bundle_contents.js --root . --mode export",
+      "category": "specialized",
+      "usage": "weekly",
+      "recommendation": "keep",
+      "reason": "Specialized workflow command"
+    },
+    {
+      "name": "preflight",
+      "command": "npm run typecheck && npm run lint && node dist/scripts/preflight_pack.js --profile stage --budget-smoke 2.00 --budget-full 50.00 --run-tags preflight",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "taxo:check",
+      "command": "node dist/scripts/ci/check_taxonomy_consistency.js --roots 'src,scripts,validators,reports,.claude/commands,docs' --session reports/session_report.md --schema validators/session_report.schema.json --obs_glob 'reports/observability/**/index.html'",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "taxo:fix:dry",
+      "command": "node dist/scripts/ci/fix_taxonomy_labels.js --roots 'src,scripts,.claude/commands,reports,docs' --dry",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "taxo:fix",
+      "command": "node dist/scripts/ci/fix_taxonomy_labels.js --roots 'src,scripts,.claude/commands,reports,docs' --write",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "verify:ops",
+      "command": "node dist/scripts/ci/verify_ops_brief.js",
+      "category": "specialized",
+      "usage": "weekly",
+      "recommendation": "keep",
+      "reason": "Specialized workflow command"
+    },
+    {
+      "name": "check:standards",
+      "command": "bash scripts/check-standards.sh",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "generate:agent",
+      "command": "bash scripts/generate-agent.sh",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "onboard:setup",
+      "command": "bash scripts/onboard-developer.sh",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "ci:quality",
+      "command": "npm run typecheck && npm run lint && (npm run test || echo 'Tests failed but continuing for CI/CD consistency')",
+      "category": "core",
+      "usage": "daily",
+      "recommendation": "keep",
+      "reason": "Essential command for development workflow"
+    },
+    {
+      "name": "ci:strict",
+      "command": "npm run typecheck && npm run build && npm run test && npm run smoke && npm run schema",
+      "category": "core",
+      "usage": "daily",
+      "recommendation": "keep",
+      "reason": "Essential command for development workflow"
+    },
+    {
+      "name": "prepare",
+      "command": "husky install",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "export",
+      "command": "bash scripts/export_pack_smart.sh",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "commit",
+      "command": "git add . && git commit -m \"feat: automated commit with Claude Code\" && git push",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "sync",
+      "command": "bash scripts/slash-commands.sh sync",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "sync:simple",
+      "command": "git add . && git commit -m \"sync: update with latest changes\" && git push && echo \"✅ 프로젝트 동기화 완료\"",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "/commit",
+      "command": "npm run commit",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "/sync",
+      "command": "npm run sync",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "ship:docs",
+      "command": "npm run docs:refresh && npm run handoff",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "ship:pre",
+      "command": "npm run ci:strict && npm run verify:obs && npm run verify:handoff && npm run verify:export",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "ship",
+      "command": "node scripts/ship.cjs",
+      "category": "core",
+      "usage": "weekly",
+      "recommendation": "keep",
+      "reason": "Essential command for development workflow"
+    },
+    {
+      "name": "ship:fast",
+      "command": "npm run typecheck && npm run lint && npm run smoke && echo '🚀 Fast ship complete - APM tests bypassed'",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "ship:enhanced",
+      "command": "node scripts/ship.js",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "ship:legacy",
+      "command": "npm run ship:pre && npm run handoff && npm run export",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "diag:preflight",
+      "command": "node scripts/ci/preflight_root_cause_diag.cjs",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "docs:sync",
+      "command": "bash scripts/generate-system-docs.sh && npm run docs:refresh",
+      "category": "specialized",
+      "usage": "weekly",
+      "recommendation": "keep",
+      "reason": "Specialized workflow command"
+    },
+    {
+      "name": "verify:all",
+      "command": "npm run typecheck && npm run lint && npm run test && npm run guard:all",
+      "category": "specialized",
+      "usage": "weekly",
+      "recommendation": "keep",
+      "reason": "Specialized workflow command"
+    },
+    {
+      "name": "refactor:audit",
+      "command": "tsx scripts/smart-refactor-auditor.ts audit",
+      "category": "core",
+      "usage": "weekly",
+      "recommendation": "keep",
+      "reason": "Essential command for development workflow"
+    },
+    {
+      "name": "refactor:audit:simulate",
+      "command": "tsx scripts/smart-refactor-auditor.ts audit --simulate",
+      "category": "specialized",
+      "usage": "weekly",
+      "recommendation": "keep",
+      "reason": "Specialized workflow command"
+    },
+    {
+      "name": "refactor:audit:rollback",
+      "command": "tsx scripts/smart-refactor-auditor.ts audit --rollback",
+      "category": "specialized",
+      "usage": "weekly",
+      "recommendation": "keep",
+      "reason": "Specialized workflow command"
+    },
+    {
+      "name": "refactor:confirm",
+      "command": "tsx scripts/smart-refactor-auditor.ts confirm",
+      "category": "specialized",
+      "usage": "weekly",
+      "recommendation": "keep",
+      "reason": "Specialized workflow command"
+    },
+    {
+      "name": "refactor:summary",
+      "command": "tsx scripts/smart-refactor-auditor.ts summary",
+      "category": "specialized",
+      "usage": "weekly",
+      "recommendation": "keep",
+      "reason": "Specialized workflow command"
+    },
+    {
+      "name": "refactor:next",
+      "command": "tsx scripts/smart-refactor-auditor.ts summary | grep 'Next action'",
+      "category": "specialized",
+      "usage": "weekly",
+      "recommendation": "keep",
+      "reason": "Specialized workflow command"
+    },
+    {
+      "name": "refactor:sync",
+      "command": "tsx scripts/smart-refactor-auditor.ts sync",
+      "category": "specialized",
+      "usage": "weekly",
+      "recommendation": "keep",
+      "reason": "Specialized workflow command"
+    },
+    {
+      "name": "refactor:learned-criteria",
+      "command": "tsx scripts/smart-refactor-auditor.ts learned-criteria",
+      "category": "specialized",
+      "usage": "weekly",
+      "recommendation": "keep",
+      "reason": "Specialized workflow command"
+    },
+    {
+      "name": "refactor:reset-learning",
+      "command": "tsx scripts/smart-refactor-auditor.ts reset-learning",
+      "category": "specialized",
+      "usage": "weekly",
+      "recommendation": "keep",
+      "reason": "Specialized workflow command"
+    },
+    {
+      "name": "refactor:rollback-preview",
+      "command": "tsx scripts/smart-refactor-auditor.ts rollback-preview",
+      "category": "specialized",
+      "usage": "weekly",
+      "recommendation": "keep",
+      "reason": "Specialized workflow command"
+    },
+    {
+      "name": "refactor:guide",
+      "command": "tsx scripts/smart-refactor-auditor.ts guide",
+      "category": "specialized",
+      "usage": "weekly",
+      "recommendation": "keep",
+      "reason": "Specialized workflow command"
+    },
+    {
+      "name": "refactor:legacy:audit",
+      "command": "tsx scripts/refactor-auditor.ts ALL --verbose",
+      "category": "specialized",
+      "usage": "weekly",
+      "recommendation": "keep",
+      "reason": "Specialized workflow command"
+    },
+    {
+      "name": "refactor:legacy:p1",
+      "command": "tsx scripts/refactor-auditor.ts P1 --verbose",
+      "category": "specialized",
+      "usage": "weekly",
+      "recommendation": "keep",
+      "reason": "Specialized workflow command"
+    },
+    {
+      "name": "/refactor-audit",
+      "command": "npm run refactor:audit",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "/refactor-confirm",
+      "command": "npm run refactor:confirm",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "/refactor-summary",
+      "command": "npm run refactor:summary",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "/refactor-next",
+      "command": "npm run refactor:next",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    },
+    {
+      "name": "slash",
+      "command": "bash scripts/slash-commands.sh",
+      "category": "unknown",
+      "usage": "rare",
+      "recommendation": "keep",
+      "reason": ""
+    }
+  ]
+}

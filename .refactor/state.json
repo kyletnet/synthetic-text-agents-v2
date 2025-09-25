@@ -5,7 +5,9 @@
       "id": "fix-1758703443718-12",
       "type": "report-format-normalization",
       "description": "1 report files don't follow expected JSONL format",
-      "files": ["reports/baseline_report.jsonl"],
+      "files": [
+        "reports/baseline_report.jsonl"
+      ],
       "appliedAt": "2025-09-24T08:44:03.720Z",
       "rollbackData": {
         "files": [
@@ -31,8 +33,38 @@
       "id": "fix-1758704220768-12",
       "type": "report-format-normalization",
       "description": "1 report files don't follow expected JSONL format",
-      "files": ["reports/baseline_report.jsonl"],
+      "files": [
+        "reports/baseline_report.jsonl"
+      ],
       "appliedAt": "2025-09-24T08:57:00.771Z",
+      "rollbackData": {
+        "files": [
+          {
+            "path": "reports/baseline_report.jsonl",
+            "beforeContent": "{\"timestamp\":\"2025-09-24T05:19:42.730Z\",\"session_id\":\"baseline_20250924_141942_dev_smoke\",\"item_index\":0,\"total_items\":5,\"qa\":{\"q\":\"나는 자주 불리는 별명이 있는데, 혹시 프라 안젤리코에게도 별명이 있었을까?\",\"a\":\"프라 안젤리코에게는 천사와 같은 수도사라는 별명이 있었어요. 기도하지 않으면 붓을 들지 않았고 십자가상의 그리스도를 그릴 때 눈물을 흘려서 수도사들이 그렇게 이야기했대요.\"},\"evidence\":\"\\\"프라 안젤리코(Fra Angelico, 1390/95년 ~ 1455년 2월 18일)는 이탈리아의 르네상스 시대의 화가이다. 원래 이름은 귀도 디 피에로(Guido di Piero)이다. 바사리(Vasari)의 기록에 따르면 '이 헌신적인 수도사는 기도치 않으면 붓을 들지 않았고 십자가상의 그리스도를 그릴 때면 언제나 볼에 눈물이 흘렀다'고 하는데, '천사와 같은 수도사(Fra Angelico)'이라는 말은 당시 수도사들의 그에 대한 경의의 표현이었고 오늘날도 그렇게 불린다. 1417년 San Niccolo di Bari의 형제회에 가입했고, 1418년 Santo Stefano al Ponte의 제단화를 그렸다는 기록이 있어 그가 수도사로서 살기 전 평신도 화가로 활동했음이 밝혀졌다. 1418/20년 Firenze 근교 Fiesole의 San Domenico 수도원의 성직자가 되었고 후에 수도원장이 되었다. 프레스코화에 뛰어났으며 피렌체파의 대표적인 화가이다. 작품으로 <수태 고지>, <성모의 대관>, <최후의 심판> 등이 있다. 본명은 귀도 디 피에트로(Guido di Pietro). 이탈리아 화가. 베아토 안젤리코(Beato Angelico)라고도 한다. 베키오 데 무젤로에서 출생, 로마에서 사망. 어려서부터 페조레의 도미니코 수도원에 들어갔다. 초기에는 『리나이 보리의 성모』(1433, 피렌체 산 마르코 미술관)와 코르트나의 산 도미니코 성당을 위해 그린 『수태고지』(1435년경, 제스 성당 미술관)와 같은 고딕 양식에 의한 치밀하고 화려한 작풍을 나타내고 있으나 1436년 피렌체로 옮기고 미케로체가 개축하기 시작한 산 마르코 수도원 집회실과 승방에 벽화장식을 하게 되어, 마사치오 등의 새로운 양식을 흡수, 이 수도원 2층에 『수태고지』 벽화 등 훌륭한 르네상스적 작품을 제작. 1445~48년에는 로마에서 바티칸 궁 니콜라스 5세 예배당 벽화에도 손을 댔고, 그간 오르비에토에서도 활약. 특유의 청아한 표현으로 피렌체 회화에서 독자적 위치를 차지한다. 15세기 건축. 1436년 피에소레에서 이주한 도미니코회 수도사를 위해 코시모 데 메디치(⇒메디치 가)의 의뢰로 건축가 미켈로초가 구 실베스트로 수도원을 개축(1437~52). 교회당, 참사회실, 중정, 승방, 도서실 등으로 이룩되고 프라 안젤리코와 그 제자가 40여 개의 승방, 기타에 그리스도 전에 따른 프레스코 장식을 했다(1438~50). 그중 이층복도의 『수태고지』와 참사회실의 『책형』은 유명함. 중정을 에워싼 일층 일부는 미술관으로 프라 안첼리코의 작품을 다수 수장하고 있음.\",\"evidence_idx\":0,\"source_text\":\"\\\"프라 안젤리코(Fra Angelico, 1390/95년 ~ 1455년 2월 18일)는 이탈리아의 르네상스 시대의 화가이다. 원래 이름은 귀도 디 피에로(Guido di Piero)이다. 바사리(Vasari)의 기록에 따르면 '이 헌신적인 수도사는 기도치 않으면 붓을 들지 않았고 십자가상의 그리스도를 그릴 때면 언제나 볼에 눈물이 흘렀다'고 하는데, '천사와 같은 수도사(Fra Angelico)'이라는 말은 당시 수도사들의 그에 대한 경의의 표현이었고 오늘날도 그렇게 불린다. 1417년 San Niccolo di Bari의 형제회에 가입했고, 1418년 Santo Stefano al Ponte의 제단화를 그렸다는 기록이 있어 그가 수도사로서 살기 전 평신도 화가로 활동했음이 밝혀졌다. 1418/20년 Firenze 근교 Fiesole의 San Domenico 수도원의 성직자가 되었고 후에 수도원장이 되었다. 프레스코화에 뛰어났으며 피렌체파의 대표적인 화가이다. 작품으로 <수태 고지>, <성모의 대관>, <최후의 심판> 등이 있다. 본명은 귀도 디 피에트로(Guido di Pietro). 이탈리아 화가. 베아토 안젤리코(Beato Angelico)라고도 한다. 베키오 데 무젤로에서 출생, 로마에서 사망. 어려서부터 페조레의 도미니코 수도원에 들어갔다. 초기에는 『리나이 보리의 성모』(1433, 피렌체 산 마르코 미술관)와 코르트나의 산 도미니코 성당을 위해 그린 『수태고지』(1435년경, 제스 성당 미술관)와 같은 고딕 양식에 의한 치밀하고 화려한 작풍을 나타내고 있으나 1436년 피렌체로 옮기고 미케로체가 개축하기 시작한 산 마르코 수도원 집회실과 승방에 벽화장식을 하게 되어, 마사치오 등의 새로운 양식을 흡수, 이 수도원 2층에 『수태고지』 벽화 등 훌륭한 르네상스적 작품을 제작. 1445~48년에는 로마에서 바티칸 궁 니콜라스 5세 예배당 벽화에도 손을 댔고, 그간 오르비에토에서도 활약. 특유의 청아한 표현으로 피렌체 회화에서 독자적 위치를 차지한다. 15세기 건축. 1436년 피에소레에서 이주한 도미니코회 수도사를 위해 코시모 데 메디치(⇒메디치 가)의 의뢰로 건축가 미켈로초가 구 실베스트로 수도원을 개축(1437~52). 교회당, 참사회실, 중정, 승방, 도서실 등으로 이룩되고 프라 안젤리코와 그 제자가 40여 개의 승방, 기타에 그리스도 전에 따른 프레스코 장식을 했다(1438~50). 그중 이층복도의 『수태고지』와 참사회실의 『책형』은 유명함. 중정을 에워싼 일층 일부는 미술관으로 프라 안첼리코의 작품을 다수 수장하고 있음.\",\"duplication\":{\"is_duplicate\":false,\"max_similarity\":0,\"similar_to_indices\":[]},\"qtype\":{\"classified_type\":null,\"confidence\":0.8,\"unclassified\":false},\"coverage\":{\"entity_coverage_score\":0,\"section_coverage_score\":0,\"covered_entities\":[],\"missing_entities\":[]},\"evidence_quality\":{\"has_evidence\":true,\"alignment_score\":0.18055273512518827,\"evidence_complete\":true},\"hallucination\":{\"flagged\":false,\"risk_level\":null,\"similarity_to_evidence\":1,\"unsupported_claims\":[]},\"pii_license\":{\"pii_violations\":0,\"license_violations\":0,\"clean\":true,\"violation_types\":[]},\"cost_usd\":0.001,\"latency_ms\":226.1142855090912,\"tokens_in\":0,\"tokens_out\":0,\"quality_score\":0.8,\"alert_flags\":[]}\n{\"timestamp\":\"2025-09-24T05:19:42.730Z\",\"session_id\":\"baseline_20250924_141942_dev_smoke\",\"item_index\":1,\"total_items\":5,\"qa\":{\"q\":\"[그러면] 프라 안젤리코는 수도사였으니까 수도원에서 생활했을 텐데 그곳에서 그린 그림도 있을까?\",\"a\":\"대표적으로 프라 안젤리코는 산 마르코 수도원 2층에 수태고지라는 벽화를 그렸어요. 현재 산 마르코 수도원 일층 일부는 미술관인데, 프라 안젤리코의 작품을 다수 보유 중이에요.\"},\"evidence\":\"\\\"프라 안젤리코(Fra Angelico, 1390/95년 ~ 1455년 2월 18일)는 이탈리아의 르네상스 시대의 화가이다. 원래 이름은 귀도 디 피에로(Guido di Piero)이다. 바사리(Vasari)의 기록에 따르면 '이 헌신적인 수도사는 기도치 않으면 붓을 들지 않았고 십자가상의 그리스도를 그릴 때면 언제나 볼에 눈물이 흘렀다'고 하는데, '천사와 같은 수도사(Fra Angelico)'이라는 말은 당시 수도사들의 그에 대한 경의의 표현이었고 오늘날도 그렇게 불린다. 1417년 San Niccolo di Bari의 형제회에 가입했고, 1418년 Santo Stefano al Ponte의 제단화를 그렸다는 기록이 있어 그가 수도사로서 살기 전 평신도 화가로 활동했음이 밝혀졌다. 1418/20년 Firenze 근교 Fiesole의 San Domenico 수도원의 성직자가 되었고 후에 수도원장이 되었다. 프레스코화에 뛰어났으며 피렌체파의 대표적인 화가이다. 작품으로 <수태 고지>, <성모의 대관>, <최후의 심판> 등이 있다. 본명은 귀도 디 피에트로(Guido di Pietro). 이탈리아 화가. 베아토 안젤리코(Beato Angelico)라고도 한다. 베키오 데 무젤로에서 출생, 로마에서 사망. 어려서부터 페조레의 도미니코 수도원에 들어갔다. 초기에는 『리나이 보리의 성모』(1433, 피렌체 산 마르코 미술관)와 코르트나의 산 도미니코 성당을 위해 그린 『수태고지』(1435년경, 제스 성당 미술관)와 같은 고딕 양식에 의한 치밀하고 화려한 작풍을 나타내고 있으나 1436년 피렌체로 옮기고 미케로체가 개축하기 시작한 산 마르코 수도원 집회실과 승방에 벽화장식을 하게 되어, 마사치오 등의 새로운 양식을 흡수, 이 수도원 2층에 『수태고지』 벽화 등 훌륭한 르네상스적 작품을 제작. 1445~48년에는 로마에서 바티칸 궁 니콜라스 5세 예배당 벽화에도 손을 댔고, 그간 오르비에토에서도 활약. 특유의 청아한 표현으로 피렌체 회화에서 독자적 위치를 차지한다. 15세기 건축. 1436년 피에소레에서 이주한 도미니코회 수도사를 위해 코시모 데 메디치(⇒메디치 가)의 의뢰로 건축가 미켈로초가 구 실베스트로 수도원을 개축(1437~52). 교회당, 참사회실, 중정, 승방, 도서실 등으로 이룩되고 프라 안젤리코와 그 제자가 40여 개의 승방, 기타에 그리스도 전에 따른 프레스코 장식을 했다(1438~50). 그중 이층복도의 『수태고지』와 참사회실의 『책형』은 유명함. 중정을 에워싼 일층 일부는 미술관으로 프라 안첼리코의 작품을 다수 수장하고 있음.\",\"evidence_idx\":1,\"source_text\":\"\\\"프라 안젤리코(Fra Angelico, 1390/95년 ~ 1455년 2월 18일)는 이탈리아의 르네상스 시대의 화가이다. 원래 이름은 귀도 디 피에로(Guido di Piero)이다. 바사리(Vasari)의 기록에 따르면 '이 헌신적인 수도사는 기도치 않으면 붓을 들지 않았고 십자가상의 그리스도를 그릴 때면 언제나 볼에 눈물이 흘렀다'고 하는데, '천사와 같은 수도사(Fra Angelico)'이라는 말은 당시 수도사들의 그에 대한 경의의 표현이었고 오늘날도 그렇게 불린다. 1417년 San Niccolo di Bari의 형제회에 가입했고, 1418년 Santo Stefano al Ponte의 제단화를 그렸다는 기록이 있어 그가 수도사로서 살기 전 평신도 화가로 활동했음이 밝혀졌다. 1418/20년 Firenze 근교 Fiesole의 San Domenico 수도원의 성직자가 되었고 후에 수도원장이 되었다. 프레스코화에 뛰어났으며 피렌체파의 대표적인 화가이다. 작품으로 <수태 고지>, <성모의 대관>, <최후의 심판> 등이 있다. 본명은 귀도 디 피에트로(Guido di Pietro). 이탈리아 화가. 베아토 안젤리코(Beato Angelico)라고도 한다. 베키오 데 무젤로에서 출생, 로마에서 사망. 어려서부터 페조레의 도미니코 수도원에 들어갔다. 초기에는 『리나이 보리의 성모』(1433, 피렌체 산 마르코 미술관)와 코르트나의 산 도미니코 성당을 위해 그린 『수태고지』(1435년경, 제스 성당 미술관)와 같은 고딕 양식에 의한 치밀하고 화려한 작풍을 나타내고 있으나 1436년 피렌체로 옮기고 미케로체가 개축하기 시작한 산 마르코 수도원 집회실과 승방에 벽화장식을 하게 되어, 마사치오 등의 새로운 양식을 흡수, 이 수도원 2층에 『수태고지』 벽화 등 훌륭한 르네상스적 작품을 제작. 1445~48년에는 로마에서 바티칸 궁 니콜라스 5세 예배당 벽화에도 손을 댔고, 그간 오르비에토에서도 활약. 특유의 청아한 표현으로 피렌체 회화에서 독자적 위치를 차지한다. 15세기 건축. 1436년 피에소레에서 이주한 도미니코회 수도사를 위해 코시모 데 메디치(⇒메디치 가)의 의뢰로 건축가 미켈로초가 구 실베스트로 수도원을 개축(1437~52). 교회당, 참사회실, 중정, 승방, 도서실 등으로 이룩되고 프라 안젤리코와 그 제자가 40여 개의 승방, 기타에 그리스도 전에 따른 프레스코 장식을 했다(1438~50). 그중 이층복도의 『수태고지』와 참사회실의 『책형』은 유명함. 중정을 에워싼 일층 일부는 미술관으로 프라 안첼리코의 작품을 다수 수장하고 있음.\",\"duplication\":{\"is_duplicate\":false,\"max_similarity\":0,\"similar_to_indices\":[]},\"qtype\":{\"classified_type\":null,\"confidence\":0.8,\"unclassified\":false},\"coverage\":{\"entity_coverage_score\":0,\"section_coverage_score\":0,\"covered_entities\":[],\"missing_entities\":[]},\"evidence_quality\":{\"has_evidence\":true,\"alignment_score\":0.16732851654376132,\"evidence_complete\":true},\"hallucination\":{\"flagged\":false,\"risk_level\":null,\"similarity_to_evidence\":1,\"unsupported_claims\":[]},\"pii_license\":{\"pii_violations\":0,\"license_violations\":0,\"clean\":true,\"violation_types\":[]},\"cost_usd\":0.001,\"latency_ms\":186.50901509728763,\"tokens_in\":0,\"tokens_out\":0,\"quality_score\":0.8,\"alert_flags\":[]}\n{\"timestamp\":\"2025-09-24T05:19:42.730Z\",\"session_id\":\"baseline_20250924_141942_dev_smoke\",\"item_index\":2,\"total_items\":5,\"qa\":{\"q\":\"프라 안젤리코는 수도사로 살기 전에 어떤 일을 했어?\",\"a\":\"프라 안젤리코는 수도사로 살기 전에 평신도 화가로 활동했어요. 1418년에는 제단화를 그리기도 했대요.\"},\"evidence\":\"\\\"프라 안젤리코(Fra Angelico, 1390/95년 ~ 1455년 2월 18일)는 이탈리아의 르네상스 시대의 화가이다. 원래 이름은 귀도 디 피에로(Guido di Piero)이다. 바사리(Vasari)의 기록에 따르면 '이 헌신적인 수도사는 기도치 않으면 붓을 들지 않았고 십자가상의 그리스도를 그릴 때면 언제나 볼에 눈물이 흘렀다'고 하는데, '천사와 같은 수도사(Fra Angelico)'이라는 말은 당시 수도사들의 그에 대한 경의의 표현이었고 오늘날도 그렇게 불린다. 1417년 San Niccolo di Bari의 형제회에 가입했고, 1418년 Santo Stefano al Ponte의 제단화를 그렸다는 기록이 있어 그가 수도사로서 살기 전 평신도 화가로 활동했음이 밝혀졌다. 1418/20년 Firenze 근교 Fiesole의 San Domenico 수도원의 성직자가 되었고 후에 수도원장이 되었다. 프레스코화에 뛰어났으며 피렌체파의 대표적인 화가이다. 작품으로 <수태 고지>, <성모의 대관>, <최후의 심판> 등이 있다. 본명은 귀도 디 피에트로(Guido di Pietro). 이탈리아 화가. 베아토 안젤리코(Beato Angelico)라고도 한다. 베키오 데 무젤로에서 출생, 로마에서 사망. 어려서부터 페조레의 도미니코 수도원에 들어갔다. 초기에는 『리나이 보리의 성모』(1433, 피렌체 산 마르코 미술관)와 코르트나의 산 도미니코 성당을 위해 그린 『수태고지』(1435년경, 제스 성당 미술관)와 같은 고딕 양식에 의한 치밀하고 화려한 작풍을 나타내고 있으나 1436년 피렌체로 옮기고 미케로체가 개축하기 시작한 산 마르코 수도원 집회실과 승방에 벽화장식을 하게 되어, 마사치오 등의 새로운 양식을 흡수, 이 수도원 2층에 『수태고지』 벽화 등 훌륭한 르네상스적 작품을 제작. 1445~48년에는 로마에서 바티칸 궁 니콜라스 5세 예배당 벽화에도 손을 댔고, 그간 오르비에토에서도 활약. 특유의 청아한 표현으로 피렌체 회화에서 독자적 위치를 차지한다. 내부에는 커다란 8각 홀이 있고 3개의 높은 고딕 아치가 있다. 남쪽의 현관은 로마네스크 양식으로 장식되었는데 1419년에는 고딕양식의 아치를 덧붙였다. 내부는 단순하지만 석조로 아주 풍요롭게 치장하였다. 석조 가구, 설교단, 묘비가 있고 벽감은 르네상스 양식으로 장식되었다. 정원에는 매우 많은 장식을 했는데 그중에 왕관 모양의 수조가 눈에 띈다. 이곳에 있는 도서관은 손으로 직접 그린 원본들과 풍부한 자료의 고문서 등 귀중한 자료가 220권 넘게 보관되어 있다.\",\"evidence_idx\":2,\"source_text\":\"\\\"프라 안젤리코(Fra Angelico, 1390/95년 ~ 1455년 2월 18일)는 이탈리아의 르네상스 시대의 화가이다. 원래 이름은 귀도 디 피에로(Guido di Piero)이다. 바사리(Vasari)의 기록에 따르면 '이 헌신적인 수도사는 기도치 않으면 붓을 들지 않았고 십자가상의 그리스도를 그릴 때면 언제나 볼에 눈물이 흘렀다'고 하는데, '천사와 같은 수도사(Fra Angelico)'이라는 말은 당시 수도사들의 그에 대한 경의의 표현이었고 오늘날도 그렇게 불린다. 1417년 San Niccolo di Bari의 형제회에 가입했고, 1418년 Santo Stefano al Ponte의 제단화를 그렸다는 기록이 있어 그가 수도사로서 살기 전 평신도 화가로 활동했음이 밝혀졌다. 1418/20년 Firenze 근교 Fiesole의 San Domenico 수도원의 성직자가 되었고 후에 수도원장이 되었다. 프레스코화에 뛰어났으며 피렌체파의 대표적인 화가이다. 작품으로 <수태 고지>, <성모의 대관>, <최후의 심판> 등이 있다. 본명은 귀도 디 피에트로(Guido di Pietro). 이탈리아 화가. 베아토 안젤리코(Beato Angelico)라고도 한다. 베키오 데 무젤로에서 출생, 로마에서 사망. 어려서부터 페조레의 도미니코 수도원에 들어갔다. 초기에는 『리나이 보리의 성모』(1433, 피렌체 산 마르코 미술관)와 코르트나의 산 도미니코 성당을 위해 그린 『수태고지』(1435년경, 제스 성당 미술관)와 같은 고딕 양식에 의한 치밀하고 화려한 작풍을 나타내고 있으나 1436년 피렌체로 옮기고 미케로체가 개축하기 시작한 산 마르코 수도원 집회실과 승방에 벽화장식을 하게 되어, 마사치오 등의 새로운 양식을 흡수, 이 수도원 2층에 『수태고지』 벽화 등 훌륭한 르네상스적 작품을 제작. 1445~48년에는 로마에서 바티칸 궁 니콜라스 5세 예배당 벽화에도 손을 댔고, 그간 오르비에토에서도 활약. 특유의 청아한 표현으로 피렌체 회화에서 독자적 위치를 차지한다. 내부에는 커다란 8각 홀이 있고 3개의 높은 고딕 아치가 있다. 남쪽의 현관은 로마네스크 양식으로 장식되었는데 1419년에는 고딕양식의 아치를 덧붙였다. 내부는 단순하지만 석조로 아주 풍요롭게 치장하였다. 석조 가구, 설교단, 묘비가 있고 벽감은 르네상스 양식으로 장식되었다. 정원에는 매우 많은 장식을 했는데 그중에 왕관 모양의 수조가 눈에 띈다. 이곳에 있는 도서관은 손으로 직접 그린 원본들과 풍부한 자료의 고문서 등 귀중한 자료가 220권 넘게 보관되어 있다.\",\"duplication\":{\"is_duplicate\":false,\"max_similarity\":0,\"similar_to_indices\":[]},\"qtype\":{\"classified_type\":null,\"confidence\":0.8,\"unclassified\":false},\"coverage\":{\"entity_coverage_score\":0,\"section_coverage_score\":0,\"covered_entities\":[],\"missing_entities\":[]},\"evidence_quality\":{\"has_evidence\":true,\"alignment_score\":0.15741893744268398,\"evidence_complete\":true},\"hallucination\":{\"flagged\":false,\"risk_level\":null,\"similarity_to_evidence\":1,\"unsupported_claims\":[]},\"pii_license\":{\"pii_violations\":0,\"license_violations\":0,\"clean\":true,\"violation_types\":[]},\"cost_usd\":0.001,\"latency_ms\":156.83925813912978,\"tokens_in\":0,\"tokens_out\":0,\"quality_score\":0.8,\"alert_flags\":[]}\n{\"timestamp\":\"2025-09-24T05:19:42.730Z\",\"session_id\":\"baseline_20250924_141942_dev_smoke\",\"item_index\":3,\"total_items\":5,\"qa\":{\"q\":\"[그렇다면] 프라 안젤리코는 어떤 수도원에 들어간 거야?\",\"a\":\"프라 안젤리코는 페조레의 도미니코 수도원에 들어갔어요. 도미니코 수도원의 벽감은 르네상스 양식으로 장식되어 있어요.\"},\"evidence\":\"\\\"프라 안젤리코(Fra Angelico, 1390/95년 ~ 1455년 2월 18일)는 이탈리아의 르네상스 시대의 화가이다. 원래 이름은 귀도 디 피에로(Guido di Piero)이다. 바사리(Vasari)의 기록에 따르면 '이 헌신적인 수도사는 기도치 않으면 붓을 들지 않았고 십자가상의 그리스도를 그릴 때면 언제나 볼에 눈물이 흘렀다'고 하는데, '천사와 같은 수도사(Fra Angelico)'이라는 말은 당시 수도사들의 그에 대한 경의의 표현이었고 오늘날도 그렇게 불린다. 1417년 San Niccolo di Bari의 형제회에 가입했고, 1418년 Santo Stefano al Ponte의 제단화를 그렸다는 기록이 있어 그가 수도사로서 살기 전 평신도 화가로 활동했음이 밝혀졌다. 1418/20년 Firenze 근교 Fiesole의 San Domenico 수도원의 성직자가 되었고 후에 수도원장이 되었다. 프레스코화에 뛰어났으며 피렌체파의 대표적인 화가이다. 작품으로 <수태 고지>, <성모의 대관>, <최후의 심판> 등이 있다. 본명은 귀도 디 피에트로(Guido di Pietro). 이탈리아 화가. 베아토 안젤리코(Beato Angelico)라고도 한다. 베키오 데 무젤로에서 출생, 로마에서 사망. 어려서부터 페조레의 도미니코 수도원에 들어갔다. 초기에는 『리나이 보리의 성모』(1433, 피렌체 산 마르코 미술관)와 코르트나의 산 도미니코 성당을 위해 그린 『수태고지』(1435년경, 제스 성당 미술관)와 같은 고딕 양식에 의한 치밀하고 화려한 작풍을 나타내고 있으나 1436년 피렌체로 옮기고 미케로체가 개축하기 시작한 산 마르코 수도원 집회실과 승방에 벽화장식을 하게 되어, 마사치오 등의 새로운 양식을 흡수, 이 수도원 2층에 『수태고지』 벽화 등 훌륭한 르네상스적 작품을 제작. 1445~48년에는 로마에서 바티칸 궁 니콜라스 5세 예배당 벽화에도 손을 댔고, 그간 오르비에토에서도 활약. 특유의 청아한 표현으로 피렌체 회화에서 독자적 위치를 차지한다. 내부에는 커다란 8각 홀이 있고 3개의 높은 고딕 아치가 있다. 남쪽의 현관은 로마네스크 양식으로 장식되었는데 1419년에는 고딕양식의 아치를 덧붙였다. 내부는 단순하지만 석조로 아주 풍요롭게 치장하였다. 석조 가구, 설교단, 묘비가 있고 벽감은 르네상스 양식으로 장식되었다. 정원에는 매우 많은 장식을 했는데 그중에 왕관 모양의 수조가 눈에 띈다. 이곳에 있는 도서관은 손으로 직접 그린 원본들과 풍부한 자료의 고문서 등 귀중한 자료가 220권 넘게 보관되어 있다.\",\"evidence_idx\":3,\"source_text\":\"\\\"프라 안젤리코(Fra Angelico, 1390/95년 ~ 1455년 2월 18일)는 이탈리아의 르네상스 시대의 화가이다. 원래 이름은 귀도 디 피에로(Guido di Piero)이다. 바사리(Vasari)의 기록에 따르면 '이 헌신적인 수도사는 기도치 않으면 붓을 들지 않았고 십자가상의 그리스도를 그릴 때면 언제나 볼에 눈물이 흘렀다'고 하는데, '천사와 같은 수도사(Fra Angelico)'이라는 말은 당시 수도사들의 그에 대한 경의의 표현이었고 오늘날도 그렇게 불린다. 1417년 San Niccolo di Bari의 형제회에 가입했고, 1418년 Santo Stefano al Ponte의 제단화를 그렸다는 기록이 있어 그가 수도사로서 살기 전 평신도 화가로 활동했음이 밝혀졌다. 1418/20년 Firenze 근교 Fiesole의 San Domenico 수도원의 성직자가 되었고 후에 수도원장이 되었다. 프레스코화에 뛰어났으며 피렌체파의 대표적인 화가이다. 작품으로 <수태 고지>, <성모의 대관>, <최후의 심판> 등이 있다. 본명은 귀도 디 피에트로(Guido di Pietro). 이탈리아 화가. 베아토 안젤리코(Beato Angelico)라고도 한다. 베키오 데 무젤로에서 출생, 로마에서 사망. 어려서부터 페조레의 도미니코 수도원에 들어갔다. 초기에는 『리나이 보리의 성모』(1433, 피렌체 산 마르코 미술관)와 코르트나의 산 도미니코 성당을 위해 그린 『수태고지』(1435년경, 제스 성당 미술관)와 같은 고딕 양식에 의한 치밀하고 화려한 작풍을 나타내고 있으나 1436년 피렌체로 옮기고 미케로체가 개축하기 시작한 산 마르코 수도원 집회실과 승방에 벽화장식을 하게 되어, 마사치오 등의 새로운 양식을 흡수, 이 수도원 2층에 『수태고지』 벽화 등 훌륭한 르네상스적 작품을 제작. 1445~48년에는 로마에서 바티칸 궁 니콜라스 5세 예배당 벽화에도 손을 댔고, 그간 오르비에토에서도 활약. 특유의 청아한 표현으로 피렌체 회화에서 독자적 위치를 차지한다. 내부에는 커다란 8각 홀이 있고 3개의 높은 고딕 아치가 있다. 남쪽의 현관은 로마네스크 양식으로 장식되었는데 1419년에는 고딕양식의 아치를 덧붙였다. 내부는 단순하지만 석조로 아주 풍요롭게 치장하였다. 석조 가구, 설교단, 묘비가 있고 벽감은 르네상스 양식으로 장식되었다. 정원에는 매우 많은 장식을 했는데 그중에 왕관 모양의 수조가 눈에 띈다. 이곳에 있는 도서관은 손으로 직접 그린 원본들과 풍부한 자료의 고문서 등 귀중한 자료가 220권 넘게 보관되어 있다.\",\"duplication\":{\"is_duplicate\":false,\"max_similarity\":0,\"similar_to_indices\":[]},\"qtype\":{\"classified_type\":null,\"confidence\":0.8,\"unclassified\":false},\"coverage\":{\"entity_coverage_score\":0,\"section_coverage_score\":0,\"covered_entities\":[],\"missing_entities\":[]},\"evidence_quality\":{\"has_evidence\":true,\"alignment_score\":0.15076403080103515,\"evidence_complete\":true},\"hallucination\":{\"flagged\":false,\"risk_level\":null,\"similarity_to_evidence\":1,\"unsupported_claims\":[]},\"pii_license\":{\"pii_violations\":0,\"license_violations\":0,\"clean\":true,\"violation_types\":[]},\"cost_usd\":0.001,\"latency_ms\":176.9522909096758,\"tokens_in\":0,\"tokens_out\":0,\"quality_score\":0.8,\"alert_flags\":[]}\n{\"timestamp\":\"2025-09-24T05:19:42.730Z\",\"session_id\":\"baseline_20250924_141942_dev_smoke\",\"item_index\":4,\"total_items\":5,\"qa\":{\"q\":\"프라 안젤리코는 프레스코화가 특기였다는데 어떤 유명한 작품을 그렸을까?\",\"a\":\"프라 안젤리코는 수태 고지, 성모의 대관, 최후의 심판 등이 대표적인 작품이라고 할 수 있어요.\"},\"evidence\":\"\\\"프라 안젤리코(Fra Angelico, 1390/95년 ~ 1455년 2월 18일)는 이탈리아의 르네상스 시대의 화가이다. 원래 이름은 귀도 디 피에로(Guido di Piero)이다. 바사리(Vasari)의 기록에 따르면 '이 헌신적인 수도사는 기도치 않으면 붓을 들지 않았고 십자가상의 그리스도를 그릴 때면 언제나 볼에 눈물이 흘렀다'고 하는데, '천사와 같은 수도사(Fra Angelico)'이라는 말은 당시 수도사들의 그에 대한 경의의 표현이었고 오늘날도 그렇게 불린다. 1417년 San Niccolo di Bari의 형제회에 가입했고, 1418년 Santo Stefano al Ponte의 제단화를 그렸다는 기록이 있어 그가 수도사로서 살기 전 평신도 화가로 활동했음이 밝혀졌다. 1418/20년 Firenze 근교 Fiesole의 San Domenico 수도원의 성직자가 되었고 후에 수도원장이 되었다. 프레스코화에 뛰어났으며 피렌체파의 대표적인 화가이다. 작품으로 <수태 고지>, <성모의 대관>, <최후의 심판> 등이 있다. 본명은 귀도 디 피에트로(Guido di Pietro). 이탈리아 화가. 베아토 안젤리코(Beato Angelico)라고도 한다. 베키오 데 무젤로에서 출생, 로마에서 사망. 어려서부터 페조레의 도미니코 수도원에 들어갔다. 초기에는 『리나이 보리의 성모』(1433, 피렌체 산 마르코 미술관)와 코르트나의 산 도미니코 성당을 위해 그린 『수태고지』(1435년경, 제스 성당 미술관)와 같은 고딕 양식에 의한 치밀하고 화려한 작풍을 나타내고 있으나 1436년 피렌체로 옮기고 미케로체가 개축하기 시작한 산 마르코 수도원 집회실과 승방에 벽화장식을 하게 되어, 마사치오 등의 새로운 양식을 흡수, 이 수도원 2층에 『수태고지』 벽화 등 훌륭한 르네상스적 작품을 제작. 1445~48년에는 로마에서 바티칸 궁 니콜라스 5세 예배당 벽화에도 손을 댔고, 그간 오르비에토에서도 활약. 특유의 청아한 표현으로 피렌체 회화에서 독자적 위치를 차지한다. 큰 방·사실(私室)·예배당 등 전체 방의 수가 약 1,400개나 되는 대규모 궁전으로, 세계에서 가장 아름다운 궁전으로 알려져 있다. 지금은 대부분이 바티칸 미술관과 도서관으로 이용된다. 교황 심마쿠스(재위 498∼514) 때 구(舊) 성 베드로 성당의 곁에 교황의 거주관으로 건립된 것이 시초이다. 교황 거주구는 1307년까지 라테란궁이었으나, 1377년 그레고리오 11세가 바티칸 건물을 교황궁으로 정하였다.\",\"evidence_idx\":4,\"source_text\":\"\\\"프라 안젤리코(Fra Angelico, 1390/95년 ~ 1455년 2월 18일)는 이탈리아의 르네상스 시대의 화가이다. 원래 이름은 귀도 디 피에로(Guido di Piero)이다. 바사리(Vasari)의 기록에 따르면 '이 헌신적인 수도사는 기도치 않으면 붓을 들지 않았고 십자가상의 그리스도를 그릴 때면 언제나 볼에 눈물이 흘렀다'고 하는데, '천사와 같은 수도사(Fra Angelico)'이라는 말은 당시 수도사들의 그에 대한 경의의 표현이었고 오늘날도 그렇게 불린다. 1417년 San Niccolo di Bari의 형제회에 가입했고, 1418년 Santo Stefano al Ponte의 제단화를 그렸다는 기록이 있어 그가 수도사로서 살기 전 평신도 화가로 활동했음이 밝혀졌다. 1418/20년 Firenze 근교 Fiesole의 San Domenico 수도원의 성직자가 되었고 후에 수도원장이 되었다. 프레스코화에 뛰어났으며 피렌체파의 대표적인 화가이다. 작품으로 <수태 고지>, <성모의 대관>, <최후의 심판> 등이 있다. 본명은 귀도 디 피에트로(Guido di Pietro). 이탈리아 화가. 베아토 안젤리코(Beato Angelico)라고도 한다. 베키오 데 무젤로에서 출생, 로마에서 사망. 어려서부터 페조레의 도미니코 수도원에 들어갔다. 초기에는 『리나이 보리의 성모』(1433, 피렌체 산 마르코 미술관)와 코르트나의 산 도미니코 성당을 위해 그린 『수태고지』(1435년경, 제스 성당 미술관)와 같은 고딕 양식에 의한 치밀하고 화려한 작풍을 나타내고 있으나 1436년 피렌체로 옮기고 미케로체가 개축하기 시작한 산 마르코 수도원 집회실과 승방에 벽화장식을 하게 되어, 마사치오 등의 새로운 양식을 흡수, 이 수도원 2층에 『수태고지』 벽화 등 훌륭한 르네상스적 작품을 제작. 1445~48년에는 로마에서 바티칸 궁 니콜라스 5세 예배당 벽화에도 손을 댔고, 그간 오르비에토에서도 활약. 특유의 청아한 표현으로 피렌체 회화에서 독자적 위치를 차지한다. 큰 방·사실(私室)·예배당 등 전체 방의 수가 약 1,400개나 되는 대규모 궁전으로, 세계에서 가장 아름다운 궁전으로 알려져 있다. 지금은 대부분이 바티칸 미술관과 도서관으로 이용된다. 교황 심마쿠스(재위 498∼514) 때 구(舊) 성 베드로 성당의 곁에 교황의 거주관으로 건립된 것이 시초이다. 교황 거주구는 1307년까지 라테란궁이었으나, 1377년 그레고리오 11세가 바티칸 건물을 교황궁으로 정하였다.\",\"duplication\":{\"is_duplicate\":false,\"max_similarity\":0,\"similar_to_indices\":[]},\"qtype\":{\"classified_type\":null,\"confidence\":0.8,\"unclassified\":false},\"coverage\":{\"entity_coverage_score\":0,\"section_coverage_score\":0,\"covered_entities\":[],\"missing_entities\":[]},\"evidence_quality\":{\"has_evidence\":true,\"alignment_score\":0.1416856432585955,\"evidence_complete\":true},\"hallucination\":{\"flagged\":false,\"risk_level\":null,\"similarity_to_evidence\":1,\"unsupported_claims\":[]},\"pii_license\":{\"pii_violations\":0,\"license_violations\":0,\"clean\":true,\"violation_types\":[]},\"cost_usd\":0.001,\"latency_ms\":187.69747270200253,\"tokens_in\":0,\"tokens_out\":0,\"quality_score\":0.8,\"alert_flags\":[]}"
+          }
+        ]
+      },
+      "safety": {
+        "fileCount": 1,
+        "crossModule": false,
+        "buildImpact": false,
+        "testCoverage": 100,
+        "rollbackDifficulty": 0.1,
+        "autoSafe": true
+      },
+      "criteria": [
+        "✅ report-format-normalization (Safe: files: 1 (threshold: 3), cross-module: no, build-impact: no, test-coverage: 100.0%, rollback-difficulty: 0.10, external-interface: no, critical-path: no)"
+      ]
+    },
+    {
+      "id": "fix-1758763770370-13",
+      "type": "report-format-normalization",
+      "description": "1 report files don't follow expected JSONL format",
+      "files": [
+        "reports/baseline_report.jsonl"
+      ],
+      "appliedAt": "2025-09-25T01:29:30.374Z",
       "rollbackData": {
         "files": [
           {
@@ -56,11 +88,13 @@
   ],
   "pendingConfirm": [
     {
-      "id": "fix-1758704220768-0",
+      "id": "fix-1758763770370-0",
       "category": "schema-fix",
       "title": "Invalid JSON Schema: tsconfig.json",
       "description": "Configuration file contains invalid JSON: SyntaxError: Unexpected token / in JSON at position 62",
-      "files": ["/Users/kyle/synthetic-text-agents-v2/tsconfig.json"],
+      "files": [
+        "/Users/kyle/synthetic-text-agents-v2/tsconfig.json"
+      ],
       "impact": {
         "fileCount": 1,
         "crossModuleImpact": false,
@@ -71,11 +105,13 @@
       "risk": "medium"
     },
     {
-      "id": "fix-1758704220768-1",
+      "id": "fix-1758763770370-1",
       "category": "schema-fix",
       "title": "Missing Required Configuration Fields",
       "description": "1 config files missing required fields",
-      "files": ["baseline_config.json"],
+      "files": [
+        "baseline_config.json"
+      ],
       "impact": {
         "fileCount": 1,
         "crossModuleImpact": false,
@@ -86,7 +122,7 @@
       "risk": "low"
     },
     {
-      "id": "fix-1758704220768-2",
+      "id": "fix-1758763770370-2",
       "category": "agent-inheritance",
       "title": "Inconsistent Agent Implementation",
       "description": "1 agents don't extend BaseAgent or implement consistent patterns",
@@ -110,7 +146,7 @@
       "risk": "medium"
     },
     {
-      "id": "fix-1758704220768-3",
+      "id": "fix-1758763770370-3",
       "category": "runtime-protection",
       "title": "Critical Files Lack Adequate Protection",
       "description": "3 critical system files have insufficient guardrails (need 2+ mechanisms)",
@@ -129,11 +165,14 @@
       "risk": "medium"
     },
     {
-      "id": "fix-1758704220768-4",
+      "id": "fix-1758763770370-4",
       "category": "duplicate-export-cleanup",
       "title": "Duplicate Export: appendJSONL",
       "description": "Type/interface/class \"appendJSONL\" is exported from 2 files",
-      "files": ["src/utils/log.ts", "src/shared/jsonl.ts"],
+      "files": [
+        "src/utils/log.ts",
+        "src/shared/jsonl.ts"
+      ],
       "impact": {
         "fileCount": 2,
         "crossModuleImpact": true,
@@ -144,7 +183,7 @@
       "risk": "medium"
     },
     {
-      "id": "fix-1758704220768-5",
+      "id": "fix-1758763770370-5",
       "category": "duplicate-export-cleanup",
       "title": "Duplicate Export: LogEntry",
       "description": "Type/interface/class \"LogEntry\" is exported from 2 files",
@@ -162,11 +201,14 @@
       "risk": "low"
     },
     {
-      "id": "fix-1758704220768-6",
+      "id": "fix-1758763770370-6",
       "category": "duplicate-export-cleanup",
       "title": "Duplicate Export: ValidationError",
       "description": "Type/interface/class \"ValidationError\" is exported from 2 files",
-      "files": ["src/shared/inputValidation.ts", "src/shared/errors.ts"],
+      "files": [
+        "src/shared/inputValidation.ts",
+        "src/shared/errors.ts"
+      ],
       "impact": {
         "fileCount": 2,
         "crossModuleImpact": false,
@@ -177,7 +219,7 @@
       "risk": "low"
     },
     {
-      "id": "fix-1758704220768-7",
+      "id": "fix-1758763770370-7",
       "category": "duplicate-export-cleanup",
       "title": "Duplicate Export: DLQStats",
       "description": "Type/interface/class \"DLQStats\" is exported from 2 files",
@@ -195,11 +237,14 @@
       "risk": "medium"
     },
     {
-      "id": "fix-1758704220768-8",
+      "id": "fix-1758763770370-8",
       "category": "duplicate-export-cleanup",
       "title": "Duplicate Export: DLQManager",
       "description": "Type/interface/class \"DLQManager\" is exported from 2 files",
-      "files": ["src/scripts/lib/dlq_manager.ts", "src/scripts/lib/dlq.ts"],
+      "files": [
+        "src/scripts/lib/dlq_manager.ts",
+        "src/scripts/lib/dlq.ts"
+      ],
       "impact": {
         "fileCount": 2,
         "crossModuleImpact": false,
@@ -210,7 +255,7 @@
       "risk": "low"
     },
     {
-      "id": "fix-1758704220768-9",
+      "id": "fix-1758763770370-9",
       "category": "routing-unification",
       "title": "Mixed Routing Patterns",
       "description": "Both app/ and pages/ directories exist, which may cause routing conflicts",
@@ -277,19 +322,38 @@
       "risk": "medium"
     },
     {
-      "id": "fix-1758704220768-10",
+      "id": "fix-1758763770370-10",
+      "category": "command-mapping",
+      "title": "Unmapped Slash Commands",
+      "description": "2 slash commands don't have corresponding npm scripts",
+      "files": [
+        ".claude/commands/llm-signals.md",
+        ".claude/commands/doc-audit.md"
+      ],
+      "impact": {
+        "fileCount": 2,
+        "crossModuleImpact": false,
+        "buildImpact": false,
+        "testCoverage": 100,
+        "rollbackDifficulty": 0.2
+      },
+      "risk": "low"
+    },
+    {
+      "id": "fix-1758763770370-11",
       "category": "command-mapping",
       "title": "Incomplete Command Documentation",
-      "description": "5 slash commands have incomplete documentation",
+      "description": "6 slash commands have incomplete documentation",
       "files": [
         ".claude/commands/sync.md",
         ".claude/commands/status.md",
         ".claude/commands/refactor-audit.md",
+        ".claude/commands/doc-gate.md",
         ".claude/commands/dev.md",
         ".claude/commands/commit.md"
       ],
       "impact": {
-        "fileCount": 5,
+        "fileCount": 6,
         "crossModuleImpact": false,
         "buildImpact": false,
         "testCoverage": 100,
@@ -298,11 +362,13 @@
       "risk": "low"
     },
     {
-      "id": "fix-1758704220768-11",
+      "id": "fix-1758763770370-12",
       "category": "command-mapping",
       "title": "Commands Missing from Dispatcher",
-      "description": "9 commands not registered in slash-commands.sh",
-      "files": ["scripts/slash-commands.sh"],
+      "description": "12 commands not registered in slash-commands.sh",
+      "files": [
+        "scripts/slash-commands.sh"
+      ],
       "impact": {
         "fileCount": 1,
         "crossModuleImpact": false,
@@ -313,11 +379,14 @@
       "risk": "low"
     },
     {
-      "id": "fix-1758704220768-13",
+      "id": "fix-1758763770370-14",
       "category": "release-safety",
       "title": "Release Safety Gaps",
       "description": "2 release safety improvements needed",
-      "files": [".github/workflows/release.yml", "CHANGELOG.md"],
+      "files": [
+        ".github/workflows/release.yml",
+        "CHANGELOG.md"
+      ],
       "impact": {
         "fileCount": 2,
         "crossModuleImpact": false,
@@ -333,7 +402,9 @@
       "id": "fix-1758703443718-0",
       "type": "schema-fix",
       "description": "Configuration file contains invalid JSON: SyntaxError: Unexpected token / in JSON at position 62",
-      "files": ["/Users/kyle/synthetic-text-agents-v2/tsconfig.json"],
+      "files": [
+        "/Users/kyle/synthetic-text-agents-v2/tsconfig.json"
+      ],
       "appliedAt": "2025-09-24T08:44:13.947Z",
       "rollbackData": {},
       "safety": {
@@ -344,13 +415,17 @@
         "rollbackDifficulty": 0.1,
         "autoSafe": false
       },
-      "criteria": ["user-confirmed-medium-risk"]
+      "criteria": [
+        "user-confirmed-medium-risk"
+      ]
     },
     {
       "id": "fix-1758703443718-1",
       "type": "schema-fix",
       "description": "1 config files missing required fields",
-      "files": ["baseline_config.json"],
+      "files": [
+        "baseline_config.json"
+      ],
       "appliedAt": "2025-09-24T08:44:13.949Z",
       "rollbackData": {},
       "safety": {
@@ -361,7 +436,9 @@
         "rollbackDifficulty": 0.1,
         "autoSafe": false
       },
-      "criteria": ["user-confirmed-low-risk"]
+      "criteria": [
+        "user-confirmed-low-risk"
+      ]
     },
     {
       "id": "fix-1758703443718-2",
@@ -387,7 +464,9 @@
         "rollbackDifficulty": 0.3,
         "autoSafe": false
       },
-      "criteria": ["user-confirmed-medium-risk"]
+      "criteria": [
+        "user-confirmed-medium-risk"
+      ]
     },
     {
       "id": "fix-1758703443718-3",
@@ -408,13 +487,18 @@
         "rollbackDifficulty": 0.5,
         "autoSafe": false
       },
-      "criteria": ["user-confirmed-medium-risk"]
+      "criteria": [
+        "user-confirmed-medium-risk"
+      ]
     },
     {
       "id": "fix-1758703443718-4",
       "type": "duplicate-export-cleanup",
       "description": "Type/interface/class \"appendJSONL\" is exported from 2 files",
-      "files": ["src/utils/log.ts", "src/shared/jsonl.ts"],
+      "files": [
+        "src/utils/log.ts",
+        "src/shared/jsonl.ts"
+      ],
       "appliedAt": "2025-09-24T08:44:13.951Z",
       "rollbackData": {},
       "safety": {
@@ -425,7 +509,9 @@
         "rollbackDifficulty": 0.4,
         "autoSafe": false
       },
-      "criteria": ["user-confirmed-medium-risk"]
+      "criteria": [
+        "user-confirmed-medium-risk"
+      ]
     },
     {
       "id": "fix-1758703443718-5",
@@ -445,13 +531,18 @@
         "rollbackDifficulty": 0.2,
         "autoSafe": false
       },
-      "criteria": ["user-confirmed-low-risk"]
+      "criteria": [
+        "user-confirmed-low-risk"
+      ]
     },
     {
       "id": "fix-1758703443718-6",
       "type": "duplicate-export-cleanup",
       "description": "Type/interface/class \"ValidationError\" is exported from 2 files",
-      "files": ["src/shared/inputValidation.ts", "src/shared/errors.ts"],
+      "files": [
+        "src/shared/inputValidation.ts",
+        "src/shared/errors.ts"
+      ],
       "appliedAt": "2025-09-24T08:44:13.953Z",
       "rollbackData": {},
       "safety": {
@@ -462,7 +553,9 @@
         "rollbackDifficulty": 0.2,
         "autoSafe": false
       },
-      "criteria": ["user-confirmed-low-risk"]
+      "criteria": [
+        "user-confirmed-low-risk"
+      ]
     },
     {
       "id": "fix-1758703443718-7",
@@ -482,7 +575,9 @@
         "rollbackDifficulty": 0.4,
         "autoSafe": false
       },
-      "criteria": ["user-confirmed-medium-risk"]
+      "criteria": [
+        "user-confirmed-medium-risk"
+      ]
     },
     {
       "id": "fix-1758703443718-9",
@@ -551,7 +646,9 @@
         "rollbackDifficulty": 0.3,
         "autoSafe": false
       },
-      "criteria": ["user-confirmed-medium-risk"]
+      "criteria": [
+        "user-confirmed-medium-risk"
+      ]
     },
     {
       "id": "fix-1758703443718-10",
@@ -574,13 +671,17 @@
         "rollbackDifficulty": 0.3,
         "autoSafe": false
       },
-      "criteria": ["user-confirmed-low-risk"]
+      "criteria": [
+        "user-confirmed-low-risk"
+      ]
     },
     {
       "id": "fix-1758703443718-11",
       "type": "command-mapping",
       "description": "9 commands not registered in slash-commands.sh",
-      "files": ["scripts/slash-commands.sh"],
+      "files": [
+        "scripts/slash-commands.sh"
+      ],
       "appliedAt": "2025-09-24T08:44:13.960Z",
       "rollbackData": {},
       "safety": {
@@ -591,13 +692,18 @@
         "rollbackDifficulty": 0.1,
         "autoSafe": false
       },
-      "criteria": ["user-confirmed-low-risk"]
+      "criteria": [
+        "user-confirmed-low-risk"
+      ]
     },
     {
       "id": "fix-1758703443718-13",
       "type": "release-safety",
       "description": "2 release safety improvements needed",
-      "files": [".github/workflows/release.yml", "CHANGELOG.md"],
+      "files": [
+        ".github/workflows/release.yml",
+        "CHANGELOG.md"
+      ],
       "appliedAt": "2025-09-24T08:44:13.961Z",
       "rollbackData": {},
       "safety": {
@@ -608,7 +714,9 @@
         "rollbackDifficulty": 0.2,
         "autoSafe": false
       },
-      "criteria": ["user-confirmed-low-risk"]
+      "criteria": [
+        "user-confirmed-low-risk"
+      ]
     }
   ],
   "rollbackStack": [
@@ -616,14 +724,27 @@
       "id": "rollback-1758703443720",
       "timestamp": "2025-09-24T08:44:03.720Z",
       "description": "Before: 1 report files don't follow expected JSONL format",
-      "affectedFiles": ["reports/baseline_report.jsonl"],
+      "affectedFiles": [
+        "reports/baseline_report.jsonl"
+      ],
       "changes": []
     },
     {
       "id": "rollback-1758704220771",
       "timestamp": "2025-09-24T08:57:00.771Z",
       "description": "Before: 1 report files don't follow expected JSONL format",
-      "affectedFiles": ["reports/baseline_report.jsonl"],
+      "affectedFiles": [
+        "reports/baseline_report.jsonl"
+      ],
+      "changes": []
+    },
+    {
+      "id": "rollback-1758763770374",
+      "timestamp": "2025-09-25T01:29:30.374Z",
+      "description": "Before: 1 report files don't follow expected JSONL format",
+      "affectedFiles": [
+        "reports/baseline_report.jsonl"
+      ],
       "changes": []
     }
   ],
@@ -641,7 +762,9 @@
           "category": "schema-fix",
           "title": "Invalid JSON Schema: tsconfig.json",
           "description": "Configuration file contains invalid JSON: SyntaxError: Unexpected token / in JSON at position 62",
-          "files": ["/Users/kyle/synthetic-text-agents-v2/tsconfig.json"],
+          "files": [
+            "/Users/kyle/synthetic-text-agents-v2/tsconfig.json"
+          ],
           "impact": {
             "fileCount": 1,
             "crossModuleImpact": false,
@@ -660,7 +783,9 @@
           "category": "schema-fix",
           "title": "Missing Required Configuration Fields",
           "description": "1 config files missing required fields",
-          "files": ["baseline_config.json"],
+          "files": [
+            "baseline_config.json"
+          ],
           "impact": {
             "fileCount": 1,
             "crossModuleImpact": false,
@@ -730,7 +855,10 @@
           "category": "duplicate-export-cleanup",
           "title": "Duplicate Export: appendJSONL",
           "description": "Type/interface/class \"appendJSONL\" is exported from 2 files",
-          "files": ["src/utils/log.ts", "src/shared/jsonl.ts"],
+          "files": [
+            "src/utils/log.ts",
+            "src/shared/jsonl.ts"
+          ],
           "impact": {
             "fileCount": 2,
             "crossModuleImpact": true,
@@ -771,7 +899,10 @@
           "category": "duplicate-export-cleanup",
           "title": "Duplicate Export: ValidationError",
           "description": "Type/interface/class \"ValidationError\" is exported from 2 files",
-          "files": ["src/shared/inputValidation.ts", "src/shared/errors.ts"],
+          "files": [
+            "src/shared/inputValidation.ts",
+            "src/shared/errors.ts"
+          ],
           "impact": {
             "fileCount": 2,
             "crossModuleImpact": false,
@@ -812,7 +943,10 @@
           "category": "duplicate-export-cleanup",
           "title": "Duplicate Export: DLQManager",
           "description": "Type/interface/class \"DLQManager\" is exported from 2 files",
-          "files": ["src/scripts/lib/dlq_manager.ts", "src/scripts/lib/dlq.ts"],
+          "files": [
+            "src/scripts/lib/dlq_manager.ts",
+            "src/scripts/lib/dlq.ts"
+          ],
           "impact": {
             "fileCount": 2,
             "crossModuleImpact": false,
@@ -927,7 +1061,9 @@
           "category": "command-mapping",
           "title": "Commands Missing from Dispatcher",
           "description": "9 commands not registered in slash-commands.sh",
-          "files": ["scripts/slash-commands.sh"],
+          "files": [
+            "scripts/slash-commands.sh"
+          ],
           "impact": {
             "fileCount": 1,
             "crossModuleImpact": false,
@@ -946,7 +1082,10 @@
           "category": "release-safety",
           "title": "Release Safety Gaps",
           "description": "2 release safety improvements needed",
-          "files": [".github/workflows/release.yml", "CHANGELOG.md"],
+          "files": [
+            ".github/workflows/release.yml",
+            "CHANGELOG.md"
+          ],
           "impact": {
             "fileCount": 2,
             "crossModuleImpact": false,

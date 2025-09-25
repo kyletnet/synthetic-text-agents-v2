@@ -1,0 +1,33 @@
+# System Mode Configuration
+# 모든 명령어들이 이 설정을 참조하여 분기 처리
+
+system_mode: "design"
+version: "3.0.0"
+transition_id: "design-transition-1758771517026-of9sm8"
+
+# Mode Details
+mode_details:
+  current_mode: "design-based"
+  previous_mode: "vibe-coding"
+  transition_date: "2025-09-25T03:38:37.419Z"
+  approved_by: "system-owner"
+
+# Operational Flags
+operational_flags:
+  require_approval_for_changes: true
+  auto_rollback_on_failure: true
+  unified_dashboard_enabled: true
+  transaction_integrity_check: true
+
+# Automation Settings
+automation:
+  sync_includes_refactor_audit: true
+  ai_fix_auto_apply: false
+  release_requires_approval: true
+  gap_monitoring_enabled: true
+
+# System Health Thresholds
+thresholds:
+  minimum_integration_score: 80
+  maximum_typescript_errors: 0
+  automation_coverage_target: 90.0
