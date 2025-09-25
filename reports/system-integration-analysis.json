@@ -1,6 +1,6 @@
 {
-  "timestamp": "2025-09-25T04:22:39.030Z",
-  "components_analyzed": 35,
+  "timestamp": "2025-09-25T04:57:51.322Z",
+  "components_analyzed": 36,
   "integration_score": 53,
   "recommendations": {
     "immediate": [],
@@ -176,8 +176,8 @@
   ],
   "system_health": {
     "coherence": 10,
-    "redundancy": 35,
+    "redundancy": 40,
     "completeness": 85,
-    "maintainability": 76.85714285714286
+    "maintainability": 77.22222222222223
   }
 }
