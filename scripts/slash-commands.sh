@@ -202,6 +202,14 @@ auto_commit_push() {
 case "${1:-}" in
     "sync"|"/sync")
         print_header "Complete System Sync"
+
+        # 🤖 Smart AI Fix Suggestions (NEW)
+        print_status "Checking for AI-fixable issues..."
+        tsx scripts/smart-status.ts
+        echo ""
+        print_status "💡 Run '/fix' if TypeScript errors are auto-fixable"
+        echo ""
+
         cleanup_old_docs
         update_slash_commands
         npm run docs:sync
@@ -212,6 +220,12 @@ case "${1:-}" in
 
     "status"|"/status")
         print_header "System Status Check"
+
+        # 🤖 Smart AI-Enhanced Status (NEW)
+        tsx scripts/smart-status.ts
+        echo ""
+
+        print_status "Additional checks:"
         npm run docs:status
         npm run typecheck
         print_status "Git status:"

@@ -3,14 +3,12 @@
 ## Core Architecture Modules
 
 ### `/src/core/` - System Core
-
 - **orchestrator.ts**: Main system orchestrator, coordinates all agents
 - **baseAgent.ts**: Abstract base class for all agents
 - **metaController.ts**: Strategic decision-making and complexity analysis
 - **performanceGuardian.ts**: Performance monitoring and optimization
 
 ### `/src/agents/` - Agent Implementations
-
 - **qaGenerator.ts**: Q&A pair generation with LLM integration
 - **qualityAuditor.ts**: Multi-level quality assessment
 - **promptArchitect.ts**: Prompt optimization and engineering
@@ -20,7 +18,6 @@
 - **cognitiveScientist.ts**: Expert thinking process modeling
 
 ### `/src/shared/` - Shared Infrastructure
-
 - **types.ts**: All TypeScript interfaces and types
 - **logger.ts**: Centralized logging system
 - **registry.ts**: Agent registration and discovery
@@ -28,12 +25,10 @@
 - **env.ts**: Environment variable management
 
 ### `/src/clients/` - External Integrations
-
 - **anthropicAdapter.ts**: Anthropic Claude API integration
 - **llmAdapter.ts**: Unified LLM interface
 
 ### `/src/utils/` - Utility Functions
-
 - **cost.ts**: Cost calculation and tracking
 - **log.ts**: Log formatting utilities
 
