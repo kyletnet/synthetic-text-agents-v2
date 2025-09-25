@@ -427,9 +427,7 @@ class SystemIntegrationAnalyzer {
     return conflicts;
   }
 
-  private findMissingIntegrations(
-    component: SystemComponent,
-  ): Array<{
+  private findMissingIntegrations(component: SystemComponent): Array<{
     component: string;
     integration: string;
     priority: "HIGH" | "MEDIUM" | "LOW";
