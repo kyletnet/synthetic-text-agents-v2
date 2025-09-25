@@ -214,6 +214,12 @@ case "${1:-}" in
         update_slash_commands
         npm run docs:sync
         npm run ci:strict || print_warning "CI validation had warnings"
+
+        # 🏥 System Health & Temporary Fixes Report (NEW)
+        print_status "Analyzing system health and temporary fixes..."
+        tsx scripts/sync-health-reporter.ts
+        echo ""
+
         auto_commit_push
         print_success "Complete system sync finished!"
         ;;

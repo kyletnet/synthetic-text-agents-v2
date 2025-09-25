@@ -55,6 +55,7 @@
     "advisor:learn": "tsx scripts/refactor-advisor.ts learn",
     "advisor:suggest": "tsx scripts/refactor-advisor.ts suggest",
     "status:smart": "tsx scripts/smart-status.ts",
+    "health:report": "tsx scripts/sync-health-reporter.ts",
     "report:last": "node cli/report-last.ts",
     "annotate:run": "node cli/annotate-run.ts",
     "feedback:apply": "node cli/apply-feedback.ts",
