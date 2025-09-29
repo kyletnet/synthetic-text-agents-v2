@@ -8,6 +8,7 @@
 import { readFileSync, existsSync, readdirSync, statSync } from "fs";
 import { join } from "path";
 import { glob } from "glob";
+import { DesignPrincipleMapper } from "./lib/design-principle-mapper.js";
 
 interface AuditFinding {
   category: string;
@@ -30,10 +31,12 @@ class RefactorAuditor {
   private findings: AuditFinding[] = [];
   private config: AuditConfig;
   private rootDir: string;
+  private designPrincipleMapper: DesignPrincipleMapper;
 
   constructor(config: AuditConfig) {
     this.config = config;
     this.rootDir = process.cwd();
+    this.designPrincipleMapper = new DesignPrincipleMapper();
   }
 
   async runAudit(): Promise<AuditFinding[]> {
@@ -60,6 +63,9 @@ class RefactorAuditor {
   private async auditP1Critical(): Promise<void> {
     console.log("🚨 Priority 1: Critical for LLM-Powered QA Systems");
 
+    // 0. TypeScript Compilation Errors (자동 탐지)
+    await this.checkTypeScriptCompilation();
+
     // 1. Execution Flow Consistency
     await this.checkExecutionFlowConsistency();
 
@@ -75,6 +81,12 @@ class RefactorAuditor {
 
   private async auditP2Core(): Promise<void> {
     console.log("⚠️ Priority 2: Core Structure and Developer Trust");
+
+    // 4.1. Method Signature Consistency (자동 탐지)
+    await this.checkMethodSignatures();
+
+    // 4.2. Node.js Compatibility Issues (자동 탐지)
+    await this.checkNodeCompatibility();
 
     // 5. Import/Export and Type Consistency
     await this.checkImportExportConsistency();
@@ -1086,6 +1098,150 @@ class RefactorAuditor {
     this.findings.push(finding);
   }
 
+  /**
+   * 자동 TypeScript 컴파일 오류 탐지
+   */
+  private async checkTypeScriptCompilation(): Promise<void> {
+    console.log("🔍 TypeScript 컴파일 오류 자동 탐지...");
+
+    try {
+      // TypeScript 컴파일 실행
+      const { execSync } = await import('child_process');
+      const result = execSync('npx tsc --noEmit --pretty false', {
+        encoding: 'utf8',
+        stdio: 'pipe'
+      });
+
+      console.log("✅ TypeScript 컴파일 성공 - 오류 없음");
+    } catch (error: any) {
+      const output = error.stdout || error.stderr || '';
+      const errorLines = output.split('\n').filter((line: string) =>
+        line.includes('error TS') && line.trim().length > 0
+      );
+
+      if (errorLines.length > 0) {
+        const criticalErrors = errorLines.filter((line: string) =>
+          line.includes('TS2304') || // Cannot find name
+          line.includes('TS2339') || // Property does not exist
+          line.includes('TS2345') || // Argument not assignable
+          line.includes('TS2322') || // Type not assignable
+          line.includes('TS2393')    // Duplicate function implementation
+        );
+
+        // 파일별로 그룹화
+        const errorsByFile: Record<string, string[]> = {};
+        errorLines.forEach((line: string) => {
+          const match = line.match(/^([^(]+)\((\d+),(\d+)\): (.+)$/);
+          if (match) {
+            const [, file] = match;
+            if (!errorsByFile[file]) errorsByFile[file] = [];
+            errorsByFile[file].push(line);
+          }
+        });
+
+        this.addFinding({
+          category: "TypeScript Compilation",
+          priority: "HIGH",
+          severity: "P0",
+          title: "TypeScript Compilation Errors",
+          description: `${errorLines.length}개의 컴파일 오류 발견 (Critical: ${criticalErrors.length}개)`,
+          files: Object.keys(errorsByFile),
+          impact: "시스템이 컴파일되지 않아 실행 불가능",
+          recommendation: "모든 TypeScript 오류를 수정하여 컴파일을 성공시켜야 함"
+        });
+
+        console.log(`❌ TypeScript 오류 ${errorLines.length}개 발견 (Critical: ${criticalErrors.length}개)`);
+      }
+    }
+  }
+
+  /**
+   * 메서드 시그니처 불일치 자동 탐지
+   */
+  private async checkMethodSignatures(): Promise<void> {
+    console.log("🔍 메서드 시그니처 불일치 자동 탐지...");
+
+    const tsFiles = glob.sync("scripts/**/*.ts", { cwd: this.rootDir });
+    const methodIssues: string[] = [];
+
+    for (const file of tsFiles) {
+      const content = this.safeReadFile(file);
+      if (!content) continue;
+
+      // requestApproval 메서드 호출 패턴 검사
+      const requestApprovalCalls = content.match(/requestApproval\s*\([^)]+\)/g) || [];
+      requestApprovalCalls.forEach(call => {
+        // 2개 파라미터 패턴 (구식)
+        if (call.includes(',') && !call.includes('{')) {
+          methodIssues.push(`${file}: 구식 requestApproval 시그니처 사용`);
+        }
+      });
+
+      // listSnapshots vs getSnapshots
+      if (content.includes('listSnapshots(') && !content.includes('getSnapshots(')) {
+        methodIssues.push(`${file}: listSnapshots() 메서드가 존재하지 않음 (getSnapshots() 사용 필요)`);
+      }
+    }
+
+    if (methodIssues.length > 0) {
+      this.addFinding({
+        category: "Method Signatures",
+        priority: "HIGH",
+        severity: "P1",
+        title: "Method Signature Mismatches",
+        description: `${methodIssues.length}개의 메서드 시그니처 불일치`,
+        files: methodIssues.map(issue => issue.split(':')[0]),
+        impact: "런타임 오류 및 메서드 호출 실패",
+        recommendation: "모든 메서드 시그니처를 최신 인터페이스에 맞춰 수정"
+      });
+
+      console.log(`❌ 메서드 시그니처 문제 ${methodIssues.length}개 발견`);
+    }
+  }
+
+  /**
+   * Node.js 호환성 문제 자동 탐지
+   */
+  private async checkNodeCompatibility(): Promise<void> {
+    console.log("🔍 Node.js 호환성 문제 자동 탐지...");
+
+    const jsFiles = glob.sync("scripts/**/*.{ts,js}", { cwd: this.rootDir });
+    const compatibilityIssues: string[] = [];
+
+    for (const file of jsFiles) {
+      const content = this.safeReadFile(file);
+      if (!content) continue;
+
+      // ESM/CommonJS 혼재 사용
+      const hasESMImports = /^import\s+.*from\s+['"].+['"];?\s*$/m.test(content);
+      const hasCommonJSRequire = /require\s*\(\s*['"].+['"]\s*\)/.test(content);
+
+      if (hasESMImports && hasCommonJSRequire) {
+        compatibilityIssues.push(`${file}: ESM과 CommonJS 혼재 사용`);
+      }
+
+      // 파일 감시 glob 패턴 잘못된 사용
+      if (content.includes('fs.watch(') && content.includes('**/*.ts')) {
+        compatibilityIssues.push(`${file}: 파일 감시에서 glob 패턴 잘못 사용`);
+      }
+    }
+
+    if (compatibilityIssues.length > 0) {
+      this.addFinding({
+        category: "Node.js Compatibility",
+        priority: "MEDIUM",
+        severity: "P2",
+        title: "Node.js Compatibility Issues",
+        description: `${compatibilityIssues.length}개의 Node.js 호환성 문제`,
+        files: compatibilityIssues.map(issue => issue.split(':')[0]),
+        impact: "런타임 오류 및 불안정한 동작",
+        recommendation: "Node.js 호환성 문제 수정 및 표준 패턴 사용"
+      });
+
+      console.log(`⚠️ Node.js 호환성 문제 ${compatibilityIssues.length}개 발견`);
+    }
+  }
+
   private generateReport(): void {
     const highPriority = this.findings.filter((f) => f.priority === "HIGH");
     const mediumPriority = this.findings.filter((f) => f.priority === "MEDIUM");
@@ -1126,6 +1282,11 @@ class RefactorAuditor {
     }
 
     console.log("\\n" + "=".repeat(80));
+
+    // 설계 원칙 위반 요약 출력
+    const enhancedFindings = this.designPrincipleMapper.enhanceIssuesWithDesignPrinciples(this.findings);
+    const violationSummary = this.designPrincipleMapper.generateViolationSummary(enhancedFindings);
+    console.log(violationSummary);
 
     // Auto-trigger conditions
     const shouldTriggerShip =

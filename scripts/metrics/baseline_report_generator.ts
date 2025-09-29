@@ -358,8 +358,8 @@ function convertToExportFormat(
       EVIDENCE_PRESENCE: record.evidence_quality.has_evidence ? 1 : 0,
       DUPLICATION_RATE: record.duplication.max_similarity,
       HALLUCINATION_RISK: record.hallucination.risk_level || "none",
-      PII_HITS: record.pii_license.pii_violations,
-      LICENSE_HITS: record.pii_license.license_violations,
+      PII_HITS: record.pii_license?.pii_violations || 0,
+      LICENSE_HITS: record.pii_license?.license_violations || 0,
       PROFILE: "dev", // Will be overridden with actual profile
       TIMESTAMP: record.timestamp,
       Q_TYPE: record.qtype.classified_type,
@@ -694,8 +694,8 @@ function generateThresholdSummary(
     {
       priority: "P0",
       metric: "PII Hits",
-      current: summary.pii_license.pii_hits,
-      previous: previousSummary?.pii_license.pii_hits,
+      current: summary.pii_license?.pii_hits || 0,
+      previous: previousSummary?.pii_license?.pii_hits || 0,
       threshold: thresholds.p0.pii_hits_max,
       format: "number",
       source: "FIXED",
@@ -703,8 +703,8 @@ function generateThresholdSummary(
     {
       priority: "P0",
       metric: "License Violations",
-      current: summary.pii_license.license_hits,
-      previous: previousSummary?.pii_license.license_hits,
+      current: summary.pii_license?.license_hits || 0,
+      previous: previousSummary?.pii_license?.license_hits || 0,
       threshold: thresholds.p0.license_violations_max,
       format: "number",
       source: "FIXED",
@@ -728,8 +728,8 @@ function generateThresholdSummary(
     {
       priority: "P2",
       metric: "Duplication Rate",
-      current: summary.duplication.rate,
-      previous: previousSummary?.duplication.rate,
+      current: summary.duplication?.rate || 0,
+      previous: previousSummary?.duplication?.rate || 0,
       threshold: thresholds.p2.duplication_rate_warn,
       format: "percentage",
     },
@@ -897,9 +897,9 @@ function generateMarkdownReport(
   const metrics = [
     {
       name: "Duplication Rate",
-      value: `${(summary.duplication.rate * 100).toFixed(1)}%`,
-      status: summary.duplication.rate < 0.15 ? "✅" : "⚠️",
-      alert: summary.duplication.alert_triggered ? "🚨" : "✅",
+      value: `${((summary.duplication?.rate || 0) * 100).toFixed(1)}%`,
+      status: (summary.duplication?.rate || 0) < 0.15 ? "✅" : "⚠️",
+      alert: summary.duplication?.alert_triggered ? "🚨" : "✅",
     },
     {
       name: "Evidence Presence",
@@ -909,15 +909,15 @@ function generateMarkdownReport(
     },
     {
       name: "Hallucination Rate",
-      value: `${(summary.hallucination.rate * 100).toFixed(2)}%`,
-      status: summary.hallucination.rate < 0.05 ? "✅" : "⚠️",
-      alert: summary.hallucination.alert_triggered ? "🚨" : "✅",
+      value: `${((summary.hallucination?.rate || 0) * 100).toFixed(2)}%`,
+      status: (summary.hallucination?.rate || 0) < 0.05 ? "✅" : "⚠️",
+      alert: summary.hallucination?.alert_triggered ? "🚨" : "✅",
     },
     {
       name: "PII Violations",
-      value: `${summary.pii_license.pii_hits}`,
-      status: summary.pii_license.pii_hits === 0 ? "✅" : "❌",
-      alert: summary.pii_license.alert_triggered ? "🚨" : "✅",
+      value: `${summary.pii_license?.pii_hits || 0}`,
+      status: (summary.pii_license?.pii_hits || 0) === 0 ? "✅" : "❌",
+      alert: summary.pii_license?.alert_triggered ? "🚨" : "✅",
     },
     {
       name: "Coverage Score",
@@ -940,7 +940,7 @@ function generateMarkdownReport(
   lines.push("## 1. Duplication Analysis");
   lines.push("");
   lines.push(
-    `- **Duplication Rate**: ${(summary.duplication.rate * 100).toFixed(1)}%`,
+    `- **Duplication Rate**: ${((summary.duplication?.rate || 0) * 100).toFixed(1)}%`,
   );
   lines.push(
     `- **High Similarity Pairs**: ${summary.duplication.high_similarity_pairs}`,
@@ -1031,7 +1031,7 @@ function generateMarkdownReport(
   lines.push("## 5. Hallucination Detection");
   lines.push("");
   lines.push(
-    `- **Hallucination Rate**: ${(summary.hallucination.rate * 100).toFixed(2)}%`,
+    `- **Hallucination Rate**: ${((summary.hallucination?.rate || 0) * 100).toFixed(2)}%`,
   );
   lines.push(`- **High Risk Cases**: ${summary.hallucination.high_risk_count}`);
   lines.push("");
@@ -1050,11 +1050,11 @@ function generateMarkdownReport(
   // 6. PII and License Scanning
   lines.push("## 6. PII and License Compliance");
   lines.push("");
-  lines.push(`- **PII Violations**: ${summary.pii_license.pii_hits}`);
-  lines.push(`- **License Violations**: ${summary.pii_license.license_hits}`);
-  lines.push(`- **Total Violations**: ${summary.pii_license.total_violations}`);
+  lines.push(`- **PII Violations**: ${summary.pii_license?.pii_hits || 0}`);
+  lines.push(`- **License Violations**: ${summary.pii_license?.license_hits || 0}`);
+  lines.push(`- **Total Violations**: ${summary.pii_license?.total_violations || 0}`);
   lines.push(
-    `- **Compliance Status**: ${summary.pii_license.alert_triggered ? "🚨 VIOLATIONS DETECTED" : "✅ COMPLIANT"}`,
+    `- **Compliance Status**: ${summary.pii_license?.alert_triggered ? "🚨 VIOLATIONS DETECTED" : "✅ COMPLIANT"}`,
   );
   lines.push("");
 
@@ -1109,7 +1109,7 @@ function generateMarkdownReport(
           "Potential hallucinations detected - validate against source material",
       },
       {
-        condition: summary.pii_license.alert_triggered,
+        condition: summary.pii_license?.alert_triggered || false,
         message: "PII or license violations found - immediate cleanup required",
       },
       {

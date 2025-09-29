@@ -348,7 +348,7 @@ export class PrometheusProvider implements APMProvider {
     }
   }
 
-  startTransaction(name: string, type: string): string {
+  startTransaction(_name: string, _type: string): string {
     // Prometheus doesn't have built-in transaction tracking
     return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
   }
@@ -364,7 +364,7 @@ export class PrometheusProvider implements APMProvider {
     }
   }
 
-  addCustomAttribute(key: string, value: string | number): void {
+  addCustomAttribute(_key: string, _value: string | number): void {
     // Custom attributes are handled through labels in recordMetric
   }
 
@@ -423,6 +423,7 @@ export class APMIntegration extends EventEmitter {
 
   constructor(config: APMConfig, performanceMonitor: PerformanceMonitor) {
     super();
+    this.setMaxListeners(50);
     this.config = config;
     this.performanceMonitor = performanceMonitor;
     this.logger = new Logger({ level: "info" });

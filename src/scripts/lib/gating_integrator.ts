@@ -284,7 +284,7 @@ export class GatingIntegrator {
 
   private evaluateThresholdViolations(
     metrics: GatingResult["sessionMetrics"],
-    criteria: GatingCriteria,
+    _criteria: GatingCriteria,
   ): { passed: boolean; reason: string } {
     // P0 violations are always blocking
     if (metrics.p0Violations.length > 0) {

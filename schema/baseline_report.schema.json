@@ -1,0 +1,211 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Baseline Report Schema",
+  "type": "object",
+  "required": [
+    "session_id",
+    "timestamp",
+    "profile",
+    "cases_total",
+    "cases_processed"
+  ],
+  "properties": {
+    "session_id": {
+      "type": "string",
+      "description": "Unique identifier for the baseline session"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO timestamp when the report was generated"
+    },
+    "profile": {
+      "type": "string",
+      "enum": ["dev", "stage", "prod"],
+      "description": "Profile used for threshold evaluation"
+    },
+    "cases_total": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Total number of QA cases processed"
+    },
+    "cases_processed": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of cases successfully processed"
+    },
+    "pass_rate": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Overall pass rate for the session"
+    },
+    "mean_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Mean quality score across all cases"
+    },
+    "latency_p50_ms": {
+      "type": "number",
+      "minimum": 0,
+      "description": "50th percentile latency in milliseconds"
+    },
+    "latency_p95_ms": {
+      "type": "number",
+      "minimum": 0,
+      "description": "95th percentile latency in milliseconds"
+    },
+    "duplication_metrics": {
+      "type": "object",
+      "properties": {
+        "rate": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Overall duplication rate"
+        },
+        "semantic_rate": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Semantic duplication rate"
+        },
+        "jaccard_similarity": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Jaccard similarity score"
+        },
+        "cosine_similarity": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Cosine similarity score"
+        }
+      }
+    },
+    "coverage_metrics": {
+      "type": "object",
+      "properties": {
+        "entity_coverage_rate": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Rate of entity coverage"
+        },
+        "section_coverage_rate": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Rate of section coverage"
+        },
+        "uncovered_important_entities": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of uncovered important entities"
+        }
+      }
+    },
+    "evidence_quality": {
+      "type": "object",
+      "properties": {
+        "presence_rate": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Rate of evidence presence"
+        },
+        "alignment_mean": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Mean alignment score"
+        },
+        "alignment_p95": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "95th percentile alignment score"
+        }
+      }
+    },
+    "pii_license_scan": {
+      "type": "object",
+      "properties": {
+        "pii_hits": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of PII hits detected"
+        },
+        "license_risk_hits": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of license risk hits"
+        }
+      }
+    },
+    "qtype_distribution": {
+      "type": "object",
+      "properties": {
+        "factual": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Proportion of factual questions"
+        },
+        "analytical": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Proportion of analytical questions"
+        },
+        "procedural": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Proportion of procedural questions"
+        },
+        "comparative": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Proportion of comparative questions"
+        }
+      }
+    },
+    "thresholds": {
+      "type": "object",
+      "description": "Thresholds used for evaluation",
+      "properties": {
+        "min_pass_rate": {"type": "number"},
+        "min_mean_score": {"type": "number"},
+        "max_p50_latency_ms": {"type": "number"},
+        "max_p95_latency_ms": {"type": "number"},
+        "min_cases_total": {"type": "integer"}
+      }
+    },
+    "gating_results": {
+      "type": "object",
+      "description": "Results of gating evaluation",
+      "properties": {
+        "p0_issues": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "p1_issues": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "p2_issues": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "overall_status": {
+          "type": "string",
+          "enum": ["PASS", "P0_FAIL", "P1_FAIL", "P2_FAIL"]
+        }
+      }
+    }
+  }
+}

@@ -271,7 +271,7 @@ export class PreflightRunner {
       } else {
         console.log("⚠️  Dry-run smoke issues detected, proceeding anyway\n");
       }
-    } catch (error) {
+    } catch (_____error) {
       console.log(
         "⚠️  Dry-run smoke failed, proceeding to paid smoke anyway\n",
       );
@@ -310,7 +310,7 @@ export class PreflightRunner {
       },
     };
 
-    const budgetState = this.budgetGuardian.initializeRun(
+    const _____budgetState = this.budgetGuardian.initializeRun(
       `smoke_${this.timestamp}`,
       `session_${this.timestamp}`,
       this.config.profile,

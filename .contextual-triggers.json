@@ -1,0 +1,114 @@
+{
+  "version": "1.0",
+  "triggers": [
+    {
+      "id": "code-change-maintenance",
+      "name": "코드 변경 후 자동 유지보수",
+      "trigger": {
+        "type": "file_change",
+        "pattern": "src/**/*.ts|scripts/**/*.ts",
+        "condition": "file_count >= 3"
+      },
+      "action": {
+        "command": "npm run maintain:quick",
+        "requireApproval": false,
+        "priority": "medium",
+        "delay": 5000
+      },
+      "context": {
+        "frequency": "throttled",
+        "throttleMs": 300000,
+        "enabled": true
+      }
+    },
+    {
+      "id": "package-change-audit",
+      "name": "package.json 변경 후 보안 감사",
+      "trigger": {
+        "type": "file_change",
+        "pattern": "package.json|package-lock.json"
+      },
+      "action": {
+        "command": "npm audit && npm run security:check",
+        "requireApproval": false,
+        "priority": "high",
+        "delay": 2000
+      },
+      "context": {
+        "frequency": "throttled",
+        "throttleMs": 60000,
+        "enabled": true
+      }
+    },
+    {
+      "id": "critical-file-backup",
+      "name": "Critical 파일 변경 시 자동 백업",
+      "trigger": {
+        "type": "file_change",
+        "pattern": "CLAUDE.md|.strategy-matrix.yaml|package.json|tsconfig.json"
+      },
+      "action": {
+        "command": "internal:create-snapshot",
+        "requireApproval": false,
+        "priority": "critical",
+        "delay": 1000
+      },
+      "context": {
+        "frequency": "always",
+        "enabled": true
+      }
+    },
+    {
+      "id": "daily-health-check",
+      "name": "매일 아침 시스템 건강도 체크",
+      "trigger": {
+        "type": "time_based",
+        "pattern": "0 9 * * *"
+      },
+      "action": {
+        "command": "npm run status && npm run health:comprehensive",
+        "requireApproval": false,
+        "priority": "medium"
+      },
+      "context": {
+        "frequency": "once",
+        "enabled": true
+      }
+    },
+    {
+      "id": "performance-threshold-optimize",
+      "name": "성능 메트릭 임계값 도달 시 자동 최적화",
+      "trigger": {
+        "type": "metric_threshold",
+        "pattern": "build_time > 30s || test_time > 60s"
+      },
+      "action": {
+        "command": "npm run optimize:performance",
+        "requireApproval": true,
+        "priority": "high"
+      },
+      "context": {
+        "frequency": "throttled",
+        "throttleMs": 3600000,
+        "enabled": true
+      }
+    },
+    {
+      "id": "pre-commit-quality-gate",
+      "name": "Git 커밋 전 자동 품질 체크",
+      "trigger": {
+        "type": "git_hook",
+        "pattern": "pre-commit"
+      },
+      "action": {
+        "command": "npm run ci:quality",
+        "requireApproval": false,
+        "priority": "critical"
+      },
+      "context": {
+        "frequency": "always",
+        "enabled": true
+      }
+    }
+  ]
+}

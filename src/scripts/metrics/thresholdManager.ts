@@ -585,7 +585,7 @@ export class ThresholdManager {
    */
   applyCalibrationResults(
     results: CalibrationResult[],
-    profile: string = "dev",
+    _profile: string = "dev",
   ): void {
     let configModified = false;
 
@@ -979,7 +979,7 @@ export class ThresholdManager {
         if (record.alert_flags && record.alert_flags.length > 0) {
           failedItems++;
         }
-      } catch (error) {
+      } catch (_____error) {
         // Skip invalid lines
       }
     }
@@ -1006,7 +1006,7 @@ export class ThresholdManager {
         if (!record.evidence_quality?.has_evidence) {
           missingEvidence++;
         }
-      } catch (error) {
+      } catch (_____error) {
         // Skip invalid lines
       }
     }
@@ -1025,7 +1025,7 @@ export class ThresholdManager {
         if (record.hallucination?.flagged) {
           hallucinationFlags++;
         }
-      } catch (error) {
+      } catch (_____error) {
         // Skip invalid lines
       }
     }
@@ -1042,7 +1042,7 @@ export class ThresholdManager {
         if (record.pii_license?.pii_violations) {
           totalHits += record.pii_license.pii_violations;
         }
-      } catch (error) {
+      } catch (_____error) {
         // Skip invalid lines
       }
     }
@@ -1059,7 +1059,7 @@ export class ThresholdManager {
         if (record.pii_license?.license_violations) {
           totalViolations += record.pii_license.license_violations;
         }
-      } catch (error) {
+      } catch (_____error) {
         // Skip invalid lines
       }
     }
@@ -1071,7 +1071,7 @@ export class ThresholdManager {
    * Get calibration status for a profile
    */
   async getCalibrationStatus(
-    profile: string,
+    _profile: string,
   ): Promise<{ status: string; lastCalibration?: string; nextDue?: string }> {
     // Return basic calibration status
     return {

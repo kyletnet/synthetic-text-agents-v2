@@ -87,7 +87,7 @@ export class RAGService {
     }
   }
 
-  async search(query: string, options?: RetrieveOptions): Promise<RAGContext> {
+  async search(query: string, options?: RetrieveOptions, performanceMonitor?: any): Promise<RAGContext> {
     const start = Date.now();
 
     if (!this.config.enabled) {
@@ -115,6 +115,16 @@ export class RAGService {
       const retrievedChunks = retrieve(query, this.corpus, searchOptions);
       const searchDuration = Date.now() - start;
 
+      // Record performance metrics if monitor is available
+      if (performanceMonitor && typeof performanceMonitor.recordSearchOperation === 'function') {
+        const algorithm = searchOptions.algorithm || 'bm25';
+        await performanceMonitor.recordSearchOperation(
+          searchDuration,
+          retrievedChunks.length,
+          algorithm
+        );
+      }
+
       await this.logger.trace({
         level: "debug",
         agentId: "rag-service",
@@ -122,6 +132,7 @@ export class RAGService {
         data: {
           resultsCount: retrievedChunks.length,
           topScore: retrievedChunks[0]?.score ?? 0,
+          algorithm: searchOptions.algorithm || 'bm25',
         },
         duration: searchDuration,
       });

@@ -1,0 +1,215 @@
+# Strategy Decision Matrix Configuration
+# Externalized decision logic for system optimization trade-offs
+
+version: "2.0"
+updated: "2024-09-25"
+
+# Performance-Safety-Usability scoring weights
+strategies:
+  typecheck:
+    performance:
+      speed: 2
+      resources: 3
+      scalability: 2
+    safety:
+      reliability: 5
+      reversible: 5
+      riskLevel: 5
+    usability:
+      clarity: 4
+      automation: 5
+      feedback: 3
+
+  workaround_resolution:
+    performance:
+      speed: 3
+      resources: 2
+      scalability: 4
+    safety:
+      reliability: 4
+      reversible: 4
+      riskLevel: 3
+    usability:
+      clarity: 5
+      automation: 4
+      feedback: 4
+
+  component_integration:
+    performance:
+      speed: 1
+      resources: 4
+      scalability: 5
+    safety:
+      reliability: 5
+      reversible: 3
+      riskLevel: 4
+    usability:
+      clarity: 3
+      automation: 2
+      feedback: 5
+
+  maintenance_orchestration:
+    performance:
+      speed: 2
+      resources: 3
+      scalability: 3
+    safety:
+      reliability: 4
+      reversible: 4
+      riskLevel: 3
+    usability:
+      clarity: 4
+      automation: 5
+      feedback: 4
+
+# Context-based weight adjustments
+context_weights:
+  P0: # Critical priority
+    safety: 0.5
+    performance: 0.3
+    usability: 0.2
+  P1: # High priority
+    safety: 0.4
+    performance: 0.35
+    usability: 0.25
+  P2: # Medium/Low priority
+    performance: 0.4
+    safety: 0.3
+    usability: 0.3
+
+# Execution strategy configurations
+execution_strategies:
+  immediate:
+    timeout: 60000
+    retries: 1
+    parallelism: 4
+    description: "Execute immediately with minimal coordination"
+    use_when:
+      - "priority == P0"
+      - "operationsPerHour < 20"
+
+  optimized:
+    timeout: 120000
+    retries: 2
+    parallelism: 2
+    description: "Balanced execution with moderate coordination"
+    use_when:
+      - "priority == P1"
+      - "operationsPerHour < 40"
+
+  coordinated:
+    timeout: 300000
+    retries: 3
+    parallelism: 1
+    description: "Careful coordination with full safety checks"
+    use_when:
+      - "priority == P2"
+      - "operationsPerHour >= 40"
+
+  distributed:
+    timeout: 180000
+    retries: 2
+    parallelism: 6
+    description: "Distribute across multiple components"
+    use_when:
+      - "healthyComponents >= 3"
+      - "systemLoad < 0.7"
+
+# Integration decision rules (GPT 권고사항 반영)
+integration_rules:
+  full_integration:
+    conditions:
+      - "compatibility_score >= 0.8"
+      - "performance_impact < 0.1"
+      - "architecture_alignment >= 0.7"
+    description: "Complete integration with all features enabled"
+
+  partial_integration:
+    conditions:
+      - "compatibility_score >= 0.6"
+      - "performance_impact < 0.2"
+      - "architecture_alignment >= 0.5"
+    description: "Limited integration with feature flags"
+
+  reject_integration:
+    conditions:
+      - "compatibility_score < 0.6"
+      - "performance_impact >= 0.2"
+      - "architecture_alignment < 0.5"
+    description: "Integration rejected, requires redesign"
+
+# System harmony metrics definitions (GPT 권고사항)
+harmony_metrics:
+  component_harmony:
+    weight: 0.4
+    calculation: "inter_dependency_graph_entropy"
+    target: 0.8
+    description: "Measures how well components work together"
+    factors:
+      - dependency_cycles
+      - interface_consistency
+      - communication_overhead
+
+  architecture_alignment:
+    weight: 0.3
+    calculation: "design_principle_conformity"
+    target: 0.85
+    description: "Adherence to system design principles"
+    factors:
+      - principle_violations
+      - pattern_consistency
+      - convention_adherence
+
+  performance_coherence:
+    weight: 0.3
+    calculation: "runtime_variance_analysis"
+    target: 0.75
+    description: "Consistency in performance characteristics"
+    factors:
+      - response_time_variance
+      - resource_usage_patterns
+      - error_rate_distribution
+
+# Risk assessment thresholds
+risk_thresholds:
+  low:
+    max_impact: 0.1
+    max_complexity: 0.3
+    rollback_time: "< 5 minutes"
+  medium:
+    max_impact: 0.3
+    max_complexity: 0.6
+    rollback_time: "< 15 minutes"
+  high:
+    max_impact: 0.6
+    max_complexity: 0.8
+    rollback_time: "< 30 minutes"
+  critical:
+    max_impact: 1.0
+    max_complexity: 1.0
+    rollback_time: "< 60 minutes"
+
+# Operational modes
+operational_modes:
+  development:
+    safety_factor: 0.7
+    performance_factor: 1.2
+    usability_factor: 1.1
+
+  staging:
+    safety_factor: 0.9
+    performance_factor: 1.0
+    usability_factor: 1.0
+
+  production:
+    safety_factor: 1.2
+    performance_factor: 0.9
+    usability_factor: 0.9
+
+# Feature flags for progressive rollout
+feature_flags:
+  enable_predictive_analysis: true
+  enable_integration_sandbox: false
+  enable_real_time_metrics: true
+  enable_auto_rollback: true
+  enable_harmony_tracking: true

@@ -153,7 +153,7 @@ export class OpsBriefVerifier {
       currentCommit = execSync("git rev-parse HEAD", {
         encoding: "utf-8",
       }).trim();
-    } catch (error) {
+    } catch (_____error) {
       return {
         hasCurrentCommit: true,
         commitMatch: false,

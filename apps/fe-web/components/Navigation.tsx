@@ -9,37 +9,48 @@ import {
   BarChart3,
   Home,
   Activity,
+  BookOpen,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
   {
-    name: "Home",
+    name: "홈",
     href: "/",
     icon: Home,
   },
   {
-    name: "Upload",
+    name: "스마트 증강",
+    href: "/smart-augment",
+    icon: Upload,
+  },
+  {
+    name: "문서 업로드",
     href: "/upload",
     icon: Upload,
   },
   {
-    name: "Run",
+    name: "RAG",
+    href: "/rag",
+    icon: BookOpen,
+  },
+  {
+    name: "실행",
     href: "/run",
     icon: Play,
   },
   {
-    name: "Results",
+    name: "결과",
     href: "/results",
     icon: FileText,
   },
   {
-    name: "Dashboard",
+    name: "대시보드",
     href: "/dashboard",
     icon: BarChart3,
   },
   {
-    name: "Baseline",
+    name: "베이스라인",
     href: "/baseline",
     icon: Activity,
   },
@@ -59,7 +70,7 @@ export default function Navigation() {
                 <span className="text-white font-bold text-sm">QA</span>
               </div>
               <span className="font-semibold text-gray-900">
-                QA Generation System
+                스마트 QA 생성 시스템
               </span>
             </Link>
           </div>

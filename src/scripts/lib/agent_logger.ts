@@ -564,7 +564,7 @@ export class AgentLogger {
             if (criteria.limit && results.length >= criteria.limit) {
               return results.slice(0, criteria.limit);
             }
-          } catch (error) {
+          } catch (_____error) {
             // Skip malformed lines
           }
         }

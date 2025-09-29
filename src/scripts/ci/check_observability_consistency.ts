@@ -234,7 +234,7 @@ export class ObservabilityConsistencyChecker {
         total_operations: totalOperations,
         components_seen: Array.from(componentsSet),
       };
-    } catch (error) {
+    } catch (_____error) {
       // If we can't read logs, return empty data
       return {
         total_operations: 0,

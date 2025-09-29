@@ -234,7 +234,7 @@ export class DLQManager {
             ) {
               pendingItems.push(item);
             }
-          } catch (_error) {
+          } catch (______error) {
             console.warn(`Failed to parse DLQ line: ${line}`);
           }
         }
@@ -313,7 +313,7 @@ export class DLQManager {
           } else {
             updatedLines.push(line);
           }
-        } catch (_error) {
+        } catch (______error) {
           updatedLines.push(line); // Keep malformed lines as-is
         }
       }
@@ -350,7 +350,7 @@ export class DLQManager {
           if (item.id !== itemId) {
             filteredLines.push(line);
           }
-        } catch (_error) {
+        } catch (______error) {
           filteredLines.push(line); // Keep malformed lines as-is
         }
       }
@@ -437,7 +437,7 @@ export class DLQManager {
             if (item.retry_count > 0) {
               stats.success_after_retry++;
             }
-          } catch (_error) {
+          } catch (______error) {
             // Skip malformed lines
           }
         }
@@ -480,7 +480,7 @@ export class DLQManager {
             } else {
               removedCount++;
             }
-          } catch (_error) {
+          } catch (______error) {
             remainingLines.push(line); // Keep malformed lines
           }
         }

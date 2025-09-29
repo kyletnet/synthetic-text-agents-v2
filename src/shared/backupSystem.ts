@@ -163,6 +163,7 @@ export class BackupSystem extends EventEmitter {
 
   constructor(config: BackupConfig) {
     super();
+    this.setMaxListeners(50);
     this.config = config;
     this.logger = new Logger({ level: "info" });
 
@@ -263,7 +264,7 @@ export class BackupSystem extends EventEmitter {
     }
 
     this.logger.info(`Starting restore from backup: ${request.backupId}`);
-    const startTime = Date.now();
+    const _____startTime = Date.now();
 
     try {
       const result = await this.executeRestore(backup, request);
@@ -687,7 +688,7 @@ export class BackupSystem extends EventEmitter {
   private async filterChangedFiles(
     files: string[],
     parentBackup: BackupMetadata,
-    type: "incremental" | "differential",
+    _type: "incremental" | "differential",
   ): Promise<string[]> {
     const changedFiles: string[] = [];
     const parentFileMap = new Map(parentBackup.files.map((f) => [f.path, f]));
@@ -700,7 +701,7 @@ export class BackupSystem extends EventEmitter {
         if (!parentFileInfo || stats.mtime > parentFileInfo.modifiedTime) {
           changedFiles.push(file);
         }
-      } catch (error) {
+      } catch (_____error) {
         // File may have been deleted, include it anyway
         changedFiles.push(file);
       }
@@ -712,7 +713,7 @@ export class BackupSystem extends EventEmitter {
   private async backupFile(
     sourceFile: string,
     backupPath: string,
-    strategy: BackupStrategy,
+    _strategy: BackupStrategy,
   ): Promise<BackupFileInfo> {
     const stats = await fs.stat(sourceFile);
     const checksum = await this.calculateChecksum(sourceFile);

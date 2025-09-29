@@ -1,15 +1,15 @@
 # Baseline v1.5 Metrics Report
 
-**Session**: baseline_20250924_141942_dev_smoke
-**Generated**: 2025-09-24T05:19:42.730Z
-**Items Analyzed**: 5
+**Session**: baseline_1758879533910
+**Generated**: 2025-09-26T09:38:55.791Z
+**Items Analyzed**: 100
 **Config Version**: 1.5.0
 
 ## Executive Summary
 
-**Overall Quality Score**: ⚠️ 80.0%
-**Recommendation Level**: YELLOW
-**Total Alerts**: 3
+**Overall Quality Score**: ✅ 86.0%
+**Recommendation Level**: GREEN
+**Total Alerts**: 4
 **Budget Utilization**: 0.0%
 
 ## 🚪 Threshold Validation & Gating
@@ -21,62 +21,63 @@
 
 ### 🟡 P2 Quality Issues
 
-- 🟡 Coverage rate FAIL: 0.0% <= 50.0%
+- 🟡 Coverage rate FAIL: 33.6% <= 50.0%
 
 ### 📊 Threshold Summary with Trend Analysis
 
-| Priority   | Metric             | Current | Previous | Delta | Threshold | Status  |
-| ---------- | ------------------ | ------- | -------- | ----- | --------- | ------- |
-| P0 (FIXED) | PII Hits           | 0       | N/A      | N/A   | 0         | ✅ PASS |
-| P0 (FIXED) | License Violations | 0       | N/A      | N/A   | 2         | ✅ PASS |
-| P1         | Cost/Item          | $0.0010 | N/A      | N/A   | $0.0800   | ✅ PASS |
-| P1         | Latency P95        | 226ms   | N/A      | N/A   | 4000ms    | ✅ PASS |
-| P2         | Duplication Rate   | 0.0%    | N/A      | N/A   | 10.0%     | ✅ PASS |
+| Priority | Metric | Current | Previous | Delta | Threshold | Status |
+|----------|--------|---------|----------|-------|-----------|--------|
+| P0 (FIXED) | PII Hits | 0 | 0 | ➡️ 0 | 0 | ✅ PASS |
+| P0 (FIXED) | License Violations | 0 | 0 | ➡️ 0 | 2 | ✅ PASS |
+| P1 | Cost/Item | $0.0010 | N/A | N/A | $0.0800 | ✅ PASS |
+| P1 | Latency P95 | 241ms | N/A | N/A | 4000ms | ✅ PASS |
+| P2 | Duplication Rate | 0.0% | 0.0% | 📈 0.0% | 10.0% | ✅ PASS |
 
 ## Quick Metrics Dashboard
 
-| Metric             | Value  | Status | Alert |
-| ------------------ | ------ | ------ | ----- |
-| Duplication Rate   | 0.0%   | ✅     | ✅    |
-| Evidence Presence  | 100.0% | ✅     | 🚨    |
-| Hallucination Rate | 0.00%  | ✅     | ✅    |
-| PII Violations     | 0      | ✅     | ✅    |
-| Coverage Score     | 0.0%   | ⚠️     | 🚨    |
+| Metric | Value | Status | Alert |
+|--------|-------|--------|-------|
+| Duplication Rate | 0.0% | ✅ | 🚨 |
+| Evidence Presence | 100.0% | ✅ | 🚨 |
+| Hallucination Rate | 0.00% | ✅ | ✅ |
+| PII Violations | 0 | ✅ | ✅ |
+| Coverage Score | 60.2% | ⚠️ | 🚨 |
 
 ## 1. Duplication Analysis
 
 - **Duplication Rate**: 0.0%
-- **High Similarity Pairs**: 0
-- **Semantic Duplication Rate**: 0.0%
-- **Alert Status**: ✅ NORMAL
+- **High Similarity Pairs**: 1
+- **Semantic Duplication Rate**: 100.0%
+- **Alert Status**: ⚠️ TRIGGERED
 
 ## 2. Question Type Distribution
 
 | Question Type | Count | Ratio |
-| ------------- | ----- | ----- |
+|---------------|-------|-------|
+| comparison | 10 | 10.0% |
+| inference | 2 | 2.0% |
 
 - **Imbalance Score**: 1.000
-- **Entropy**: 0.000
+- **Entropy**: 0.650
 - **Missing Categories**: factual, analytical, procedural, comparative
 
 ## 3. Coverage Analysis
 
-- **Entity Coverage**: 0.0%
-- **Section Coverage**: 0.0%
-- **Overall Coverage Score**: 0.0%
+- **Entity Coverage**: 33.6%
+- **Section Coverage**: 100.0%
+- **Overall Coverage Score**: 60.2%
 - **Critical Gaps**:
-  - Low entity coverage: 0.0%
-  - Low section coverage: 0.0%
+  - Low entity coverage: 33.6%
 
 ## 4. Evidence Quality Assessment
 
 ### 📋 Evidence Quality KPIs
 
-| Metric                        | Value      | Status |
-| ----------------------------- | ---------- | ------ |
-| **Citation Presence %**       | **100.0%** | ✅     |
-| **Snippet Alignment %**       | **16.0%**  | ⚠️     |
-| **95th Percentile Alignment** | 0.181      | -      |
+| Metric | Value | Status |
+|--------|-------|--------|
+| **Citation Presence %** | **100.0%** | ✅ |
+| **Snippet Alignment %** | **17.9%** | ⚠️ |
+| **95th Percentile Alignment** | 0.225 | - |
 
 - **Alert Status**: ⚠️ QUALITY ISSUES
 
@@ -86,7 +87,6 @@
 - **High Risk Cases**: 0
 
 **Risk Distribution**:
-
 - low: 0 (0.0%)
 - medium: 0 (0.0%)
 - high: 0 (0.0%)
@@ -100,35 +100,32 @@
 
 ## 7. Cost and Performance Analysis
 
-- **Total Cost**: $0.0050
+- **Total Cost**: $0.1000
 - **Cost per Item**: $0.0010
-- **Latency P50**: 187ms
-- **Latency P95**: 226ms
+- **Latency P50**: 202ms
+- **Latency P95**: 241ms
 - **Budget Utilization**: 0.0%
 
 ## 8. Reproducibility Assessment
 
-- **Reproducibility Check**: ⚠️ FAILED
+- **Reproducibility Check**: ✅ PASSED
 - **Deviations**:
-  - duplication_rate: 100.0%
-  - evidence_presence_rate: 13.8%
-  - overall_quality_score: 8.9%
+  - overall_quality_score: 2.1%
 
 ## 🚨 Alert Summary
 
 The following areas require attention:
 
+- ⚠️ High duplication rate detected - review for content repetition
 - ⚠️ Evidence quality issues - verify answer-evidence alignment
 - ⚠️ Coverage gaps identified - important content may be missing
 - ⚠️ Question type imbalance detected - diversify question patterns
 
 ## Recommendations
 
-⚠️ **Quality requires review before production**
-
-- Address alert conditions above
-- Re-run baseline after improvements
-- Consider additional QA validation
+✅ **Quality is acceptable for production use**
+- Continue monitoring key metrics
+- Maintain current quality standards
 
 ## File References
 
@@ -139,6 +136,6 @@ The following areas require attention:
 
 ---
 
-_Generated by Baseline v1.5 Metrics System_
-_Report ID: baseline_20250924_141942_dev_smoke_
-_Total Items: 5_
+*Generated by Baseline v1.5 Metrics System*
+*Report ID: baseline_1758879533910*
+*Total Items: 100*

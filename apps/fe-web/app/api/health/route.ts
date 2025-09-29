@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+import { anthropicClient } from "@/lib/anthropic-client";
+import { ExecutionVerifier } from "@/lib/execution-verifier";
 
 export interface HealthCheckResult {
   status: "healthy" | "unhealthy" | "degraded";
@@ -73,9 +75,13 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       },
     };
 
-    // Check API key availability
+    // Check API key availability and Anthropic connection
     const apiKeyCheck = await checkApiKeyAvailability();
     healthCheck.checks.apiKey = apiKeyCheck;
+
+    // CRITICAL: Check for Mock data contamination
+    const mockCheck = await checkMockDataContamination();
+    healthCheck.checks.mockContamination = mockCheck;
 
     // Check database connectivity (if applicable)
     const dbCheck = await checkDatabaseConnectivity();
@@ -177,12 +183,22 @@ async function checkApiKeyAvailability() {
       };
     }
 
-    return {
-      status: "pass" as const,
-      responseTime: Date.now() - checkStart,
-      details: "API key is configured",
-      lastChecked: new Date().toISOString(),
-    };
+    // Test actual Anthropic client connection
+    if (anthropicClient.isReady()) {
+      return {
+        status: "pass" as const,
+        responseTime: Date.now() - checkStart,
+        details: "Anthropic client ready and API key configured",
+        lastChecked: new Date().toISOString(),
+      };
+    } else {
+      return {
+        status: "fail" as const,
+        responseTime: Date.now() - checkStart,
+        details: "Anthropic client not ready",
+        lastChecked: new Date().toISOString(),
+      };
+    }
   } catch (error) {
     return {
       status: "fail" as const,
@@ -277,7 +293,7 @@ async function checkDiskSpace() {
     // For Node.js environment, we'll use a simple approximation
     // In a real production environment, you'd want to use actual disk space monitoring
 
-    const tmpDir = process.env.TMPDIR || "/tmp";
+    const _tmpDir = process.env.TMPDIR || "/tmp";
     const freeSpacePercent = 85; // Simulated - replace with actual disk space check
 
     if (freeSpacePercent > 90) {
@@ -333,6 +349,63 @@ async function getCpuUsage(): Promise<number> {
     return Math.round(cpuUsage);
   } catch {
     return 0;
+  }
+}
+
+/**
+ * CRITICAL: Check for Mock data contamination in system
+ */
+async function checkMockDataContamination() {
+  const checkStart = Date.now();
+
+  try {
+    const envPolicy = ExecutionVerifier.checkEnvironmentPolicy();
+
+    // 환경 정책 검사
+    if (!envPolicy.strictMode && process.env.NODE_ENV === 'production') {
+      return {
+        status: "fail" as const,
+        responseTime: Date.now() - checkStart,
+        details: "CRITICAL: Production detected but system not in strict mode - Mock data contamination risk",
+        lastChecked: new Date().toISOString(),
+      };
+    }
+
+    // API 키 누락으로 인한 Fallback 사용 경고
+    if (envPolicy.warnings.length > 0) {
+      const hasCriticalWarning = envPolicy.warnings.some(warning => warning.includes('CRITICAL'));
+
+      if (hasCriticalWarning) {
+        return {
+          status: "fail" as const,
+          responseTime: Date.now() - checkStart,
+          details: `Mock contamination risk: ${envPolicy.warnings.join(', ')}`,
+          lastChecked: new Date().toISOString(),
+        };
+      } else {
+        return {
+          status: "warn" as const,
+          responseTime: Date.now() - checkStart,
+          details: `Fallback mode: ${envPolicy.warnings.join(', ')}`,
+          lastChecked: new Date().toISOString(),
+        };
+      }
+    }
+
+    return {
+      status: "pass" as const,
+      responseTime: Date.now() - checkStart,
+      details: "No Mock data contamination detected",
+      lastChecked: new Date().toISOString(),
+    };
+
+  } catch (error) {
+    return {
+      status: "fail" as const,
+      responseTime: Date.now() - checkStart,
+      details: `Mock contamination check failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+      lastChecked: new Date().toISOString(),
+    };
   }
 }
 

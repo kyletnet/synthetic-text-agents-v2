@@ -197,7 +197,7 @@ export class DLQManager {
           if (content.includes("budget") || content.includes("cost")) {
             reasons.push("budget_exceeded");
           }
-        } catch (_e) {
+        } catch (______e) {
           // Ignore file read errors
         }
       }
@@ -248,7 +248,7 @@ export class DLQManager {
         try {
           const entry = JSON.parse(line);
           entries.push(entry);
-        } catch (_e) {
+        } catch (______e) {
           console.warn(`[DLQ] Skipping malformed index line: ${line}`);
         }
       }
@@ -339,7 +339,7 @@ export class DLQManager {
           try {
             const metadata = JSON.parse(fs.readFileSync(metadataPath, "utf-8"));
             newEntries.push(metadata);
-          } catch (_e) {
+          } catch (______e) {
             console.warn(`[DLQ] Skipping invalid metadata: ${metadataPath}`);
           }
         }

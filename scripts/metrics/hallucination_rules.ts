@@ -345,7 +345,7 @@ export function generateHallucinationReport(
 /**
  * CLI entry point for testing
  */
-if (require.main === module) {
+if (import.meta.url === `file://${process.argv[1]}`) {
   // Test with sample data including potential hallucinations
   const sampleQA: QAItem[] = [
     {

@@ -1,0 +1,15 @@
+[
+  {
+    "title": "아키텍처 진화 승인 대기 (2개)",
+    "description": "evolution 변경 (우선순위: high)",
+    "command": "/approve-evolution 또는 npm run evolution:approve",
+    "impact": "시스템 구조 개선, 중복 제거",
+    "riskLevel": "medium",
+    "priority": "medium",
+    "timeoutAt": "2025-09-26T07:46:10.316Z",
+    "source": "maintenance",
+    "id": "approval_1758872770328_tst57",
+    "createdAt": "2025-09-26T07:46:10.328Z",
+    "attempts": 1
+  }
+]

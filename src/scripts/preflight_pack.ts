@@ -235,7 +235,7 @@ export class PreflightPack {
     console.log("npx tsc --noEmit");
 
     try {
-      const output = execSync("npx tsc --noEmit", {
+      const _____output = execSync("npx tsc --noEmit", {
         encoding: "utf8",
         stdio: "pipe",
       });
@@ -268,7 +268,7 @@ export class PreflightPack {
     console.log('npx eslint "src/**/*.ts" --max-warnings=0');
 
     try {
-      const output = execSync('npx eslint "src/**/*.ts" --max-warnings=0', {
+      const _____output = execSync('npx eslint "src/**/*.ts" --max-warnings=0', {
         encoding: "utf8",
         stdio: "pipe",
       });
@@ -370,7 +370,7 @@ export class PreflightPack {
           .replace("${profile}", profile)
           .replace("${budgetSmoke}", budgetSmoke.toString());
       }
-    } catch (error) {
+    } catch (_____error) {
       // baseline_config.json doesn't exist or doesn't have runners.smoke
     }
 
@@ -663,9 +663,9 @@ export class PreflightPack {
 
         // Parse the 4-key header (Title/Version/Commit/Profile)
         const versionMatch = productPlan.match(/version[:\s]*([^\n\r]+)/i);
-        const titleMatch = productPlan.match(/title[:\s]*([^\n\r]+)/i);
-        const commitMatch = productPlan.match(/commit[:\s]*([^\n\r]+)/i);
-        const profileMatch = productPlan.match(/profile[:\s]*([^\n\r]+)/i);
+        const _____titleMatch = productPlan.match(/title[:\s]*([^\n\r]+)/i);
+        const _____commitMatch = productPlan.match(/commit[:\s]*([^\n\r]+)/i);
+        const _____profileMatch = productPlan.match(/profile[:\s]*([^\n\r]+)/i);
 
         productPlanVersion = versionMatch ? versionMatch[1].trim() : "v1.0";
         productPlanPath = path;

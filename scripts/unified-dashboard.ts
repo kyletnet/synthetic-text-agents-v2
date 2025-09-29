@@ -1,22 +1,34 @@
 #!/usr/bin/env node
 
 /**
- * Unified System Dashboard
- * 모든 시스템 상태를 한 곳에서 제공 (보고서 시스템 통합)
+ * Unified System Dashboard v4.0
+ * Complete developer handoff and system optimization platform
  */
+
+// Set process-level listener limit to prevent memory leaks
+process.setMaxListeners(50);
 
 import IssueTracker from "./issue-tracker.js";
 import SecurityAuditChecker from "./security-audit-checker.js";
 import SystemIntegrationAnalyzer from "./system-integration-analyzer.js";
 import { SmartRefactorAuditor } from "./smart-refactor-auditor.js";
+import HandoffGenerator from "./handoff-generator.js";
+import DocumentOptimizer from "./document-optimizer.js";
+import WorkaroundDetector from "./workaround-detector.js";
+import ReferenceTracker from "./reference-tracker.js";
+import ComponentRegistrySystem from "./component-registry-system.js";
+import ArchitecturalEvolutionEngine from "./architectural-evolution-engine.js";
 import { execSync } from "child_process";
+import { writeFileSync } from "fs";
+import { perfCache } from "./lib/performance-cache.js";
 
 class UnifiedSystemDashboard {
   async showCompleteDashboard(
-    options: { quick?: boolean } = {},
+    options: { quick?: boolean; generateHandoff?: boolean } = {},
   ): Promise<void> {
-    console.log("🎛️ 통합 시스템 대시보드 (v3.1)");
+    console.log("🎛️ 통합 시스템 대시보드 (v4.0)");
     console.log("================================");
+    console.log("🚀 Complete Developer Handoff & System Optimization Platform");
 
     if (options.quick) {
       console.log("⚡ Quick Mode - 핵심 검사만");
@@ -24,8 +36,13 @@ class UnifiedSystemDashboard {
       return;
     }
 
-    // 1. 포괄적 품질 검사 (NEW: Advanced Audit 통합)
+    // 1. 포괄적 품질 검사 (NEW: 병렬 실행 최적화)
     console.log("\n🔍 포괄적 품질 분석:");
+    console.log("   🔄 TypeScript 컴파일...");
+    console.log("   🎨 Code style (Prettier/ESLint)...");
+    console.log("   🧪 Tests...");
+    console.log("   🛡️ Security audit...");
+
     const auditResults = await this.runComprehensiveAudit();
 
     // 2. 시스템 건강 상태 요약 (점수화)
@@ -78,11 +95,170 @@ class UnifiedSystemDashboard {
       console.log("   ✅ 시스템 상태 양호 - 추가 액션 불필요");
     }
 
-    // 7. 상세 진단 링크
-    console.log("\n📋 상세 진단:");
+    // 7. v4.0 Enhanced Features
+    console.log("\n🔥 v4.0 Enhanced Analysis:");
+    await this.runV4EnhancedAnalysis();
+
+    // 8. Self-Designing System Status
+    console.log("\n🧬 Self-Designing System Status:");
+    await this.showSelfDesigningStatus();
+
+    // 8. Generate handoff documentation if requested
+    if (options.generateHandoff || process.argv.includes("--handoff")) {
+      console.log("\n📋 Generating Developer Handoff Documentation...");
+      await this.generateHandoffDocumentation();
+    }
+
+    // 10. 상세 진단 링크
+    console.log("\n📋 상세 진단 & 진화 명령어:");
     console.log("   npm run advanced:audit     # 전체 리팩터링 분석");
     console.log("   gh run list --limit 5      # GitHub Actions 상태");
     console.log("   /fix                       # AI 자동 수정");
+    console.log("   npm run status -- --handoff # Generate handoff docs");
+    console.log("   npm run system:evolve      # 자동 아키텍처 진화");
+    console.log("   npm run registry:summary   # 컴포넌트 레지스트리 상태");
+  }
+
+  // NEW: Self-Designing System Status
+  private async showSelfDesigningStatus(): Promise<void> {
+    try {
+      console.log("   🏗️ Component Registry Analysis...");
+      const registry = new ComponentRegistrySystem();
+      const registryData = registry.getRegistryData();
+      console.log(`   📊 Total Components: ${registryData.totalComponents}`);
+      console.log(
+        `   ✅ Compliant: ${registryData.complianceStats.compliant} (${Math.round((registryData.complianceStats.compliant / registryData.totalComponents) * 100)}%)`,
+      );
+      console.log(
+        `   ❌ Violations: ${registryData.complianceStats.violations}`,
+      );
+
+      console.log("   🧬 Architectural Evolution Analysis...");
+      const evolution = new ArchitecturalEvolutionEngine();
+      const improvements = await evolution.identifyStructuralImprovements();
+      console.log(`   💡 Evolution Opportunities: ${improvements.length}`);
+      const autoFixable = improvements.filter(
+        (i) => i.priority === "low" || i.estimatedImpact.riskLevel === "low",
+      );
+      console.log(`   ⚡ Auto-fixable: ${autoFixable.length}`);
+
+      // Save unified self-designing report
+      const selfDesigningReport = {
+        timestamp: new Date().toISOString(),
+        componentRegistry: {
+          total: registryData.totalComponents,
+          compliant: registryData.complianceStats.compliant,
+          violations: registryData.complianceStats.violations,
+          integrationHealth: registryData.integrationHealth,
+        },
+        architecturalEvolution: {
+          opportunitiesFound: improvements.length,
+          autoFixable: autoFixable.length,
+          criticalImprovements: improvements.filter(
+            (i) => i.priority === "critical",
+          ).length,
+        },
+        systemCapabilities: {
+          designPrincipleEngine: true,
+          integrationEnforcement: true,
+          componentRegistry: true,
+          evolutionEngine: true,
+        },
+        systemHealth: {
+          selfManagementScore: Math.round(
+            (registryData.complianceStats.compliant /
+              registryData.totalComponents) *
+              100,
+          ),
+          evolutionCapability:
+            Math.round((autoFixable.length / improvements.length) * 100) || 0,
+          overallReadiness: "OPERATIONAL",
+        },
+      };
+
+      writeFileSync(
+        "reports/self-designing-system-status.json",
+        JSON.stringify(selfDesigningReport, null, 2),
+      );
+
+      console.log(
+        `   🎯 Self-Management Score: ${selfDesigningReport.systemHealth.selfManagementScore}/100`,
+      );
+      console.log(
+        `   🚀 System Status: ${selfDesigningReport.systemHealth.overallReadiness}`,
+      );
+    } catch (error) {
+      console.log(
+        "   ⚠️ Self-designing system analysis partially failed - continuing...",
+      );
+    }
+  }
+
+  // NEW: v4.0 Enhanced Analysis with all four new systems
+  private async runV4EnhancedAnalysis(): Promise<void> {
+    try {
+      console.log("   📚 Developer Reference Documentation...");
+      const referenceTracker = new ReferenceTracker();
+      const referenceReport = await referenceTracker.trackReferences();
+      console.log(
+        `   📖 Documentation Health: ${referenceReport.overallScore}/100`,
+      );
+      console.log(
+        `   📄 Missing Docs: ${referenceReport.missingCount}/${referenceReport.totalDocuments}`,
+      );
+
+      console.log("   🔍 Temporary Workarounds...");
+      const workaroundDetector = new WorkaroundDetector();
+      const workaroundReport = await workaroundDetector.scanWorkarounds();
+      console.log(`   ⚠️ Total Workarounds: ${workaroundReport.total}`);
+      console.log(
+        `   🚨 Critical: ${workaroundReport.criticalCount}, High: ${workaroundReport.highCount}`,
+      );
+
+      console.log("   📁 Document/Folder Optimization...");
+      const documentOptimizer = new DocumentOptimizer();
+      const optimizationReport = await documentOptimizer.analyzeAndOptimize();
+      console.log(
+        `   🧹 Cleanup Score: ${optimizationReport.stats.cleanupScore}/100`,
+      );
+      console.log(
+        `   📦 Potential Savings: ${optimizationReport.stats.potentialSavings}`,
+      );
+      console.log(
+        `   🗃️ Archive Actions: ${optimizationReport.archiveActions.length} recommended`,
+      );
+
+      // Save comprehensive v4.0 report
+      const v4Report = {
+        timestamp: new Date().toISOString(),
+        version: "4.0",
+        documentation: referenceReport,
+        workarounds: workaroundReport,
+        optimization: optimizationReport,
+      };
+
+      writeFileSync(
+        "reports/status-v4-comprehensive.json",
+        JSON.stringify(v4Report, null, 2),
+      );
+    } catch (error) {
+      console.log(
+        "   ⚠️ v4.0 enhanced analysis partially failed - continuing...",
+      );
+    }
+  }
+
+  // NEW: Generate comprehensive handoff documentation
+  private async generateHandoffDocumentation(): Promise<void> {
+    try {
+      const handoffGenerator = new HandoffGenerator();
+      await handoffGenerator.generateHandoffOne();
+      console.log("   ✅ HANDOFF_ONE.md generated successfully");
+      console.log("   📂 Location: reports/HANDOFF_ONE.md");
+      console.log("   🎯 Ready for developer handoff!");
+    } catch (error) {
+      console.log(`   ❌ Handoff generation failed: ${error}`);
+    }
   }
 
   private async getSystemHealth(): Promise<{
@@ -306,20 +482,21 @@ class UnifiedSystemDashboard {
     details: any;
     actionSuggestions: string[];
   }> {
-    console.log("   🔄 TypeScript 컴파일...");
-    const typescript = await this.checkTypeScript();
+    // 병렬 실행으로 성능 최적화
+    const [typescriptResult, codeStyleResult, testsResult, securityResult, integrationResult] =
+      await Promise.allSettled([
+        this.checkTypeScript(),
+        this.checkCodeStyle(),
+        this.checkTests(),
+        this.checkSecurity(),
+        this.checkIntegration()
+      ]);
 
-    console.log("   🎨 Code style (Prettier/ESLint)...");
-    const codeStyle = await this.checkCodeStyle();
-
-    console.log("   🧪 Tests...");
-    const tests = await this.checkTests();
-
-    console.log("   🛡️ Security audit...");
-    const security = await this.checkSecurity();
-
-    console.log("   🔗 System integration...");
-    const integration = await this.checkIntegration();
+    const typescript = typescriptResult.status === 'fulfilled' && typescriptResult.value;
+    const codeStyle = codeStyleResult.status === 'fulfilled' && codeStyleResult.value;
+    const tests = testsResult.status === 'fulfilled' && testsResult.value;
+    const security = securityResult.status === 'fulfilled' ? securityResult.value : 'ERROR';
+    const integration = integrationResult.status === 'fulfilled' ? integrationResult.value : 50;
 
     console.log("   🎯 Advanced refactor audit...");
     const auditDetails = await this.runAdvancedAudit();
@@ -360,12 +537,18 @@ class UnifiedSystemDashboard {
   }
 
   private async checkTypeScript(): Promise<boolean> {
-    try {
-      execSync("npm run dev:typecheck", { stdio: "ignore" });
-      return true;
-    } catch {
-      return false;
-    }
+    return perfCache.getCachedOrCompute(
+      'typescript-check',
+      async () => {
+        try {
+          execSync("npm run dev:typecheck", { stdio: "ignore", timeout: 10000 });
+          return true;
+        } catch {
+          return false;
+        }
+      },
+      { ttl: 2 * 60 * 1000 } // 2분 캐시
+    );
   }
 
   private async checkCodeStyle(): Promise<boolean> {
@@ -401,11 +584,24 @@ class UnifiedSystemDashboard {
 
   private async checkIntegration(): Promise<number> {
     try {
-      const analyzer = new SystemIntegrationAnalyzer();
-      const result = await analyzer.analyzeFullSystem();
-      return result.integration_score;
+      // Run unified reporter for improved integration score
+      const UnifiedReporter = await import("./unified-reporter.js");
+      const reporter = new UnifiedReporter.default();
+      const report = await reporter.generateConsolidatedReport();
+
+      // Save improved report
+      await reporter.saveConsolidatedReport(report);
+
+      return report.systemHealth.integration_score;
     } catch {
-      return 50;
+      // Fallback to original analyzer
+      try {
+        const analyzer = new SystemIntegrationAnalyzer();
+        const result = await analyzer.analyzeFullSystem();
+        return result.integration_score;
+      } catch {
+        return 50;
+      }
     }
   }
 

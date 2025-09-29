@@ -304,6 +304,7 @@ Before marking implementation complete:
 
 ## Development Safety Rules (Always-On)
 
+- **No-Mock Policy**: 꼭 필요한 경우가 아니면 Mock 데이터나 시뮬레이션을 사용하지 않는다. 실제 기능 구현을 우선한다. Mock은 초기 프로토타입이나 외부 API 의존성이 불가피한 경우에만 사용하며, 가능한 빨리 실제 구현으로 대체한다. **절대 금지**: API 스펙 불일치를 "건너뛰기"나 "회피"로 해결하는 것. 반드시 API 계약을 완전히 구현해야 한다.
 - **Feature Flag First**: 모든 신규 기능은 환경변수 기반 Feature Flag로 가드한다. 기본값은 프로젝트 상황에 따라 정하되, 릴리즈 안정이 우선일 땐 `false`(off)를 기본으로 둔다. 예) `FEATURE_<FEATURE_NAME>=false`.
 - **Compatibility Fallback**: 새 경로/엔진을 추가해도 기존 오케스트레이션 경로(runCouncil 등)는 **삭제 금지**. FLAG가 꺼져 있으면 기존 동작이 100% 재현되어야 한다.
 - **Mandatory Docs**: 각 기능은 반드시 아래 문서를 동반한다.

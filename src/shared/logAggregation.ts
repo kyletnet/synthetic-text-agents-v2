@@ -130,6 +130,7 @@ export class LogAggregator extends EventEmitter {
 
   constructor(config: LogAggregationConfig) {
     super();
+    this.setMaxListeners(50);
     this.config = config;
     this.logger = new Logger({ level: "info" });
 
@@ -447,12 +448,12 @@ export class LogAggregator extends EventEmitter {
     });
   }
 
-  private async writeToSplunk(logs: LogEntry[]): Promise<void> {
+  private async writeToSplunk(_logs: LogEntry[]): Promise<void> {
     // Splunk HEC implementation would go here
     this.logger.warn("Splunk integration not yet implemented");
   }
 
-  private async writeToDatadog(logs: LogEntry[]): Promise<void> {
+  private async writeToDatadog(_logs: LogEntry[]): Promise<void> {
     // Datadog Logs API implementation would go here
     this.logger.warn("Datadog Logs integration not yet implemented");
   }
@@ -553,7 +554,7 @@ export class LogAggregator extends EventEmitter {
     return results;
   }
 
-  private async queryFromStorage(filter: LogFilter): Promise<LogEntry[]> {
+  private async queryFromStorage(_filter: LogFilter): Promise<LogEntry[]> {
     // This would implement storage-specific querying
     // For now, return buffer contents
     return [...this.buffer];

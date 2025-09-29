@@ -4,6 +4,7 @@ import { flag } from "../shared/env.js";
 import { applyRulesToPrompt } from "../shared/rulesEngine.js";
 import { Logger } from "../shared/logger.js";
 import { LLM } from "../shared/llm.js";
+import { getContextInjector } from "../rag/factory.js";
 
 type QAPair = {
   question: string;
@@ -13,13 +14,24 @@ type QAPair = {
 };
 
 export class QAGenerator extends BaseAgent {
+  private ragEnabled: boolean;
+
   constructor() {
     super(
       "qa-generator",
       "QAGenerator",
-      ["qa-generation", "llm-integration"],
+      ["qa-generation", "llm-integration", "rag-integration"],
       new Logger(),
     );
+
+    this.ragEnabled = flag("FEATURE_RAG_CONTEXT", false);
+
+    this.logger.trace({
+      level: "info",
+      agentId: this.id,
+      action: "qa_generator_initialized",
+      data: { ragEnabled: this.ragEnabled },
+    });
   }
 
   protected async handle(
@@ -45,11 +57,50 @@ export class QAGenerator extends BaseAgent {
     let tokensUsed = 0;
 
     if (featureOn) {
-      const basePrompt = `당신은 교육용 Q/A 데이터셋을 생성하는 전문가입니다.
+      let basePrompt = `당신은 교육용 Q/A 데이터셋을 생성하는 전문가입니다.
 - 주제: ${topic}
 - 갯수: ${count}
 - 출력만 JSON 배열로 반환하세요. 항목 스키마: { "question": string, "answer": string, "confidence": number, "domain": string }
 - confidence는 0.0~1.0 사이 실수로 자기평가하세요. domain에는 주제를 채우세요.`;
+
+      // Apply RAG context injection if enabled
+      if (this.ragEnabled) {
+        try {
+          const contextInjector = getContextInjector();
+          if (contextInjector) {
+            const injectionResult = await contextInjector.handle({
+              query: topic,
+              originalPrompt: basePrompt,
+              domainHint: req.domain,
+            });
+
+            if (injectionResult && typeof injectionResult === 'object') {
+              const result = injectionResult as any;
+              basePrompt = result.enhancedPrompt;
+
+              await this.logger.trace({
+                level: "info",
+                agentId: this.id,
+                action: "rag_context_injected",
+                data: {
+                  chunksUsed: result.injectionStats.chunksUsed,
+                  contextLength: result.injectionStats.contextLength,
+                  searchDuration: result.injectionStats.searchDuration,
+                },
+              });
+            }
+          }
+        } catch (error) {
+          await this.logger.trace({
+            level: "warn",
+            agentId: this.id,
+            action: "rag_context_injection_failed",
+            data: { topic },
+            error: error instanceof Error ? error.message : String(error),
+          });
+          // Continue with original prompt on RAG failure (graceful degradation)
+        }
+      }
 
       const withRules = promptSpec
         ? applyRulesToPrompt(basePrompt, promptSpec.rules)

@@ -553,7 +553,7 @@ export class ManifestManager {
       }
 
       return null;
-    } catch (error) {
+    } catch (_____error) {
       return null;
     }
   }

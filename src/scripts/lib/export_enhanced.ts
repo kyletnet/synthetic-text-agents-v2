@@ -252,7 +252,7 @@ export class EnhancedExporter {
               `Line ${i + 1}: ${validate.errors?.map((e) => e.message).join(", ")}`,
             );
           }
-        } catch (e) {
+        } catch (_____e) {
           errors.push(`Line ${i + 1}: Invalid JSON`);
         }
       }

@@ -4,6 +4,7 @@ import { Orchestrator } from "../core/orchestrator.js";
 import { QARequest } from "../shared/types.js";
 import { prewriteSessionMeta } from "../scripts/metrics/baselineReportGenerator.js";
 import { initializeSystem } from "../core/systemInitializer.js";
+import { initializeRAG } from "../rag/factory.js";
 
 async function main() {
   console.log("🚀 Starting Synthetic Text Agents System...\n");
@@ -11,6 +12,15 @@ async function main() {
   // Initialize production infrastructure first
   console.log("🔧 Initializing production infrastructure...");
   await initializeSystem();
+
+  // Initialize RAG components if enabled
+  console.log("📚 Initializing RAG system...");
+  const ragComponents = await initializeRAG();
+  if (ragComponents) {
+    console.log("✅ RAG system initialized with document context capabilities");
+  } else {
+    console.log("ℹ️  RAG system disabled (use FEATURE_RAG_CONTEXT=true to enable)");
+  }
 
   const orchestrator = new Orchestrator();
 

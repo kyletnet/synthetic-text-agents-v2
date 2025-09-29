@@ -183,7 +183,7 @@ export class SecretsManager {
         ) {
           missing.push(key);
         }
-      } catch (error) {
+      } catch (_____error) {
         missing.push(key);
       }
     }

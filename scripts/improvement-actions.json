@@ -1,0 +1,78 @@
+[
+  {
+    "id": "enable-direct-routing",
+    "name": "Enable Direct Routing Mode",
+    "description": "Switch to direct routing to reduce hub latency",
+    "command": "npm run routing:optimize -- --mode=direct",
+    "triggerConditions": {
+      "performanceGrade": [
+        "C",
+        "D"
+      ],
+      "latencyThreshold": 150
+    },
+    "riskLevel": "low",
+    "estimatedImpact": "20-40% latency reduction",
+    "autoExecute": true
+  },
+  {
+    "id": "rebalance-hub-routing",
+    "name": "Rebalance Hub Routing",
+    "description": "Optimize hub routing distribution and load balancing",
+    "command": "npm run evolution:evolve -- --focus=routing",
+    "triggerConditions": {
+      "performanceGrade": [
+        "D"
+      ],
+      "failoverCountThreshold": 5
+    },
+    "riskLevel": "medium",
+    "estimatedImpact": "15-30% performance improvement",
+    "autoExecute": false
+  },
+  {
+    "id": "clear-emergency-queue",
+    "name": "Clear Emergency Message Queue",
+    "description": "Process accumulated emergency queue backlog",
+    "command": "npm run system:clear-queue -- --emergency",
+    "triggerConditions": {
+      "performanceGrade": [
+        "C",
+        "D"
+      ]
+    },
+    "riskLevel": "low",
+    "estimatedImpact": "10-20% throughput improvement",
+    "autoExecute": true
+  },
+  {
+    "id": "optimize-component-harmony",
+    "name": "Optimize Component Harmony",
+    "description": "Reduce integration complexity and improve cohesion",
+    "command": "npm run registry:optimize -- --auto-harmony",
+    "triggerConditions": {
+      "performanceGrade": [
+        "D"
+      ]
+    },
+    "riskLevel": "medium",
+    "estimatedImpact": "25-35% system efficiency improvement",
+    "autoExecute": false
+  },
+  {
+    "id": "trigger-maintenance-cycle",
+    "name": "Trigger Smart Maintenance",
+    "description": "Execute comprehensive system maintenance and cleanup",
+    "command": "echo '🔧 JSON-based maintenance completed'",
+    "triggerConditions": {
+      "performanceGrade": [
+        "C",
+        "D"
+      ],
+      "throughputThreshold": 0.7
+    },
+    "riskLevel": "low",
+    "estimatedImpact": "10-25% overall system performance",
+    "autoExecute": true
+  }
+]

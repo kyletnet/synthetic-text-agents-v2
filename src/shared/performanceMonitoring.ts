@@ -91,6 +91,7 @@ export class PerformanceMonitor extends EventEmitter {
 
   constructor(config: APMConfig) {
     super();
+    this.setMaxListeners(50);
     this.config = config;
 
     if (config.enabled) {

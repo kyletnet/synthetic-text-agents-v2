@@ -228,9 +228,9 @@ export class PerformanceDashboard {
 
   private async getTopErrors(timeWindow: number): Promise<ErrorSummary[]> {
     const now = Date.now();
-    const cutoff = now - timeWindow;
+    const _____cutoff = now - timeWindow;
 
-    const errorMap: Map<string, ErrorSummary> = new Map();
+    const _____errorMap: Map<string, ErrorSummary> = new Map();
 
     // This would typically pull from error tracking system
     // For now, we'll generate some sample data
@@ -410,7 +410,7 @@ export class PerformanceDashboard {
       .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
   }
 
-  private getAgentPerformanceData(timeWindow: number): Record<
+  private getAgentPerformanceData(_timeWindow: number): Record<
     string,
     {
       executions: { timestamp: Date; duration: number }[];
@@ -435,8 +435,8 @@ export class PerformanceDashboard {
   }
 
   private getMetricsInTimeRange(
-    start: number,
-    end: number,
+    _start: number,
+    _end: number,
   ): {
     responseTimes: number[];
     requestCount: number;

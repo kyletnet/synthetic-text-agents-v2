@@ -94,10 +94,20 @@ class SecurityAuditChecker {
 
       for (const { pattern, name } of secretPatterns) {
         try {
-          const result = execSync(
-            `rg "${pattern}" src/ scripts/ --type ts --type js --type json || true`,
-            { encoding: "utf8" },
-          );
+          // Use grep as fallback if rg is not available
+          let result;
+          try {
+            result = execSync(
+              `rg "${pattern}" src/ scripts/ --type ts --type js --type json || true`,
+              { encoding: "utf8", stdio: 'pipe' },
+            );
+          } catch (e) {
+            // Fallback to grep
+            result = execSync(
+              `grep -r "${pattern}" src/ scripts/ --include="*.ts" --include="*.js" --include="*.json" || true`,
+              { encoding: "utf8", stdio: 'pipe' },
+            );
+          }
 
           if (result.trim()) {
             const lines = result.trim().split("\n");
@@ -213,10 +223,19 @@ class SecurityAuditChecker {
 
     try {
       // Check for hardcoded API endpoints in production code
-      const hardcodedEndpoints = execSync(
-        `rg "https?://[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}" src/ --type ts --type js || true`,
-        { encoding: "utf8" },
-      );
+      let hardcodedEndpoints;
+      try {
+        hardcodedEndpoints = execSync(
+          `rg "https?://[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}" src/ --type ts --type js || true`,
+          { encoding: "utf8", stdio: 'pipe' },
+        );
+      } catch (e) {
+        // Fallback to grep
+        hardcodedEndpoints = execSync(
+          `grep -rE "https?://[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}" src/ --include="*.ts" --include="*.js" || true`,
+          { encoding: "utf8", stdio: 'pipe' },
+        );
+      }
 
       if (hardcodedEndpoints.trim()) {
         const lines = hardcodedEndpoints.trim().split("\n").slice(0, 3); // Limit to first 3 findings

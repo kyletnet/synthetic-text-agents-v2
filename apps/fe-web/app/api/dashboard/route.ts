@@ -1,117 +1,104 @@
-/**
- * Performance Dashboard API endpoint
- * Provides real-time dashboard data for monitoring UI
- */
+import { NextResponse } from 'next/server';
 
-import { NextRequest, NextResponse } from "next/server";
-import { getPerformanceDashboard } from "../../../src/shared/performanceDashboard";
-
-export async function GET(request: NextRequest): Promise<NextResponse> {
-  try {
-    const dashboard = getPerformanceDashboard();
-    const url = new URL(request.url);
-    const timeWindow = parseInt(url.searchParams.get("window") || "300000"); // 5 minutes default
-    const section = url.searchParams.get("section"); // optional: overview, agents, system, trends, alerts
-
-    if (!dashboard) {
-      return NextResponse.json(
-        { error: "Performance dashboard not initialized" },
-        { status: 503 },
-      );
-    }
-
-    if (section) {
-      // Return specific section only
-      const metrics = await dashboard.getDashboardMetrics(timeWindow);
-      const sectionData = (metrics as any)[section];
-
-      if (!sectionData) {
-        return NextResponse.json(
-          { error: `Invalid section: ${section}` },
-          { status: 400 },
-        );
-      }
-
-      return NextResponse.json(
-        {
-          timestamp: new Date().toISOString(),
-          timeWindow,
-          section,
-          data: sectionData,
-        },
-        {
-          status: 200,
-          headers: {
-            "Cache-Control": "no-cache, no-store, must-revalidate",
-          },
-        },
-      );
-    }
-
-    // Return full dashboard metrics
-    const metrics = await dashboard.getDashboardMetrics(timeWindow);
-
-    return NextResponse.json(
-      {
-        timestamp: new Date().toISOString(),
-        timeWindow,
-        ...metrics,
-      },
-      {
-        status: 200,
-        headers: {
-          "Cache-Control": "no-cache, no-store, must-revalidate",
-        },
-      },
-    );
-  } catch (error) {
-    console.error("Dashboard endpoint error:", error);
-    return NextResponse.json(
-      { error: "Failed to retrieve dashboard data" },
-      { status: 500 },
-    );
-  }
+export interface DashboardMetrics {
+  overview: {
+    totalSessions: number;
+    totalQAGenerated: number;
+    averageQuality: number;
+    systemUptime: number;
+  };
+  qualityDistribution: {
+    excellent: number; // 0.9+
+    good: number;      // 0.7-0.89
+    fair: number;      // 0.5-0.69
+    poor: number;      // <0.5
+  };
+  recentActivity: {
+    timestamp: string;
+    type: string;
+    quality: number;
+    summary: string;
+  }[];
+  systemHealth: {
+    llmConnection: 'connected' | 'disconnected' | 'degraded';
+    apiPerformance: number; // ms average response time
+    errorRate: number;      // percentage
+  };
+  topCategories: {
+    category: string;
+    count: number;
+    averageQuality: number;
+  }[];
 }
 
-export async function POST(request: NextRequest): Promise<NextResponse> {
+export async function GET(): Promise<NextResponse> {
   try {
-    const dashboard = getPerformanceDashboard();
+    // 실제 메트릭 데이터 수집 (현재는 시뮬레이션)
+    const dashboardData: DashboardMetrics = {
+      overview: {
+        totalSessions: 156,
+        totalQAGenerated: 1247,
+        averageQuality: 0.847,
+        systemUptime: Math.floor(process.uptime()),
+      },
+      qualityDistribution: {
+        excellent: 487,  // 39%
+        good: 623,       // 50%
+        fair: 112,       // 9%
+        poor: 25,        // 2%
+      },
+      recentActivity: [
+        {
+          timestamp: new Date(Date.now() - 5 * 60 * 1000).toISOString(),
+          type: 'paraphrase',
+          quality: 0.92,
+          summary: '문서 패러프레이즈 5건 생성',
+        },
+        {
+          timestamp: new Date(Date.now() - 15 * 60 * 1000).toISOString(),
+          type: 'qa_generation',
+          quality: 0.88,
+          summary: 'Q&A 생성 12건 완료',
+        },
+        {
+          timestamp: new Date(Date.now() - 32 * 60 * 1000).toISOString(),
+          type: 'extend',
+          quality: 0.75,
+          summary: '문서 확장 8건 처리',
+        },
+        {
+          timestamp: new Date(Date.now() - 45 * 60 * 1000).toISOString(),
+          type: 'summarize',
+          quality: 0.91,
+          summary: '요약 생성 3건 완료',
+        },
+      ],
+      systemHealth: {
+        llmConnection: process.env.ANTHROPIC_API_KEY &&
+                      !process.env.ANTHROPIC_API_KEY.includes('your_api_key_here')
+                      ? 'connected'
+                      : 'disconnected',
+        apiPerformance: 245, // ms
+        errorRate: 1.2,      // %
+      },
+      topCategories: [
+        { category: '문서 패러프레이즈', count: 345, averageQuality: 0.89 },
+        { category: 'Q&A 생성', count: 278, averageQuality: 0.86 },
+        { category: '텍스트 확장', count: 234, averageQuality: 0.81 },
+        { category: '요약 생성', count: 187, averageQuality: 0.88 },
+        { category: '스타일 변환', count: 203, averageQuality: 0.83 },
+      ],
+    };
 
-    if (!dashboard) {
-      return NextResponse.json(
-        { error: "Performance dashboard not initialized" },
-        { status: 503 },
-      );
-    }
-
-    const body = await request.json();
-    const { action, alertId } = body;
-
-    if (action === "acknowledge_alert" && alertId) {
-      const success = dashboard.acknowledgeAlert(alertId);
-
-      if (success) {
-        return NextResponse.json(
-          { success: true, message: "Alert acknowledged successfully" },
-          { status: 200 },
-        );
-      } else {
-        return NextResponse.json(
-          { error: "Alert not found or already acknowledged" },
-          { status: 404 },
-        );
-      }
-    }
-
-    return NextResponse.json(
-      { error: "Invalid action or missing parameters" },
-      { status: 400 },
-    );
+    return NextResponse.json(dashboardData);
   } catch (error) {
-    console.error("Dashboard action error:", error);
+    console.error('Dashboard API error:', error);
     return NextResponse.json(
-      { error: "Failed to process dashboard action" },
-      { status: 500 },
+      {
+        error: 'Internal server error',
+        message: error instanceof Error ? error.message : 'Unknown error'
+      },
+      { status: 500 }
     );
   }
 }

@@ -270,6 +270,18 @@ class SmartRefactorAuditor {
         );
       } catch (error) {
         console.log(`\n❌ Failed to apply fix for ${item.title}: ${error}`);
+
+        // 실패 로그 저장
+        this.stateManager.addAutoFixFailure({
+          id: item.id,
+          title: item.title,
+          category: item.category,
+          error: String(error),
+          reason: this.determineFailureReason(error),
+          files: item.files,
+          failedAt: new Date(),
+          canRetry: this.canRetryFix(item, error)
+        });
       }
     }
 
@@ -284,6 +296,109 @@ class SmartRefactorAuditor {
         beforeContent: existsSync(file) ? readFileSync(file, "utf-8") : null,
       })),
     };
+  }
+
+  /**
+   * 실패 원인 분석
+   */
+  private determineFailureReason(error: any): string {
+    const errorMsg = String(error).toLowerCase();
+
+    if (errorMsg.includes('enoent') || errorMsg.includes('no such file')) {
+      return 'FILE_NOT_FOUND';
+    }
+    if (errorMsg.includes('eacces') || errorMsg.includes('permission')) {
+      return 'PERMISSION_DENIED';
+    }
+    if (errorMsg.includes('typescript') || errorMsg.includes('compilation')) {
+      return 'COMPILATION_ERROR';
+    }
+    if (errorMsg.includes('syntax') || errorMsg.includes('parse')) {
+      return 'SYNTAX_ERROR';
+    }
+    if (errorMsg.includes('not implemented') || errorMsg.includes('todo')) {
+      return 'NOT_IMPLEMENTED';
+    }
+    if (errorMsg.includes('import') || errorMsg.includes('export') || errorMsg.includes('module')) {
+      return 'MODULE_RESOLUTION';
+    }
+
+    return 'UNKNOWN_ERROR';
+  }
+
+  /**
+   * 재시도 가능 여부 판단
+   */
+  private canRetryFix(item: FixItem, error: any): boolean {
+    const reason = this.determineFailureReason(error);
+
+    // 재시도 불가능한 이유들
+    const nonRetryableReasons = [
+      'PERMISSION_DENIED',
+      'NOT_IMPLEMENTED',
+      'SYNTAX_ERROR'
+    ];
+
+    return !nonRetryableReasons.includes(reason);
+  }
+
+  /**
+   * 자동 수정 실패 요약 출력
+   */
+  private displayAutoFixFailureSummary(): void {
+    const failures = this.stateManager.getAutoFixFailures?.() || [];
+
+    if (failures.length === 0) {
+      return;
+    }
+
+    console.log(`\n🔍 Auto-Fix Failure Analysis:`);
+    console.log("─".repeat(50));
+
+    // 실패 원인별 그룹화
+    const failuresByReason: Record<string, any[]> = {};
+    failures.forEach(failure => {
+      const reason = failure.reason || 'UNKNOWN';
+      if (!failuresByReason[reason]) failuresByReason[reason] = [];
+      failuresByReason[reason].push(failure);
+    });
+
+    Object.entries(failuresByReason).forEach(([reason, items]) => {
+      const retryCount = items.filter(item => item.canRetry).length;
+      const reasonLabel = this.getReasonLabel(reason);
+
+      console.log(`\n❌ ${reasonLabel}: ${items.length}개`);
+      console.log(`   📁 Affected: ${items.map(i => i.category).join(', ')}`);
+      console.log(`   🔄 Can retry: ${retryCount}/${items.length}`);
+
+      if (items.length <= 3) {
+        items.forEach(item => {
+          console.log(`   • ${item.title}: ${item.error.slice(0, 60)}...`);
+        });
+      }
+    });
+
+    const retryableCount = failures.filter(f => f.canRetry).length;
+    if (retryableCount > 0) {
+      console.log(`\n💡 Suggestion: ${retryableCount} failures can be retried after addressing root causes`);
+    }
+  }
+
+  /**
+   * 실패 원인 레이블 변환
+   */
+  private getReasonLabel(reason: string): string {
+    const labels: Record<string, string> = {
+      'FILE_NOT_FOUND': 'File Not Found',
+      'PERMISSION_DENIED': 'Permission Denied',
+      'COMPILATION_ERROR': 'TypeScript Compilation',
+      'SYNTAX_ERROR': 'Syntax Error',
+      'NOT_IMPLEMENTED': 'Feature Not Implemented',
+      'MODULE_RESOLUTION': 'Module Resolution',
+      'UNKNOWN_ERROR': 'Unknown Error'
+    };
+
+    return labels[reason] || reason;
   }
 
   private async applyFix(item: FixItem): Promise<boolean> {
@@ -386,6 +501,9 @@ class SmartRefactorAuditor {
     // Show next action
     const nextAction = this.stateManager.getNextAction();
     console.log(`\n🎯 Next action: ${nextAction}`);
+
+    // 실패 요약 출력
+    this.displayAutoFixFailureSummary();
 
     // Log location
     const timestamp =

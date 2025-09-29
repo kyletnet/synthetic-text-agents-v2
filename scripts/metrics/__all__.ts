@@ -247,13 +247,13 @@ function checkReproducibility(
     const keyMetrics = [
       {
         name: "duplication_rate",
-        current: currentMetrics.duplication.rate,
-        previous: previous.pass_rate,
+        current: currentMetrics.duplication?.rate || 0,
+        previous: previous.duplication?.rate || 0,
       },
       {
         name: "evidence_presence_rate",
-        current: currentMetrics.evidence_quality.presence_rate,
-        previous: previous.mean_score,
+        current: currentMetrics.evidence_quality?.presence_rate || 0,
+        previous: previous.evidence_quality?.presence_rate || 0,
       },
       {
         name: "overall_quality_score",
@@ -573,7 +573,7 @@ export async function calculateAllBaselineMetrics(
 /**
  * CLI entry point for testing
  */
-if (require.main === module) {
+if (import.meta.url === `file://${process.argv[1]}`) {
   // Test with sample data
   const sampleQA: QAItem[] = [
     {

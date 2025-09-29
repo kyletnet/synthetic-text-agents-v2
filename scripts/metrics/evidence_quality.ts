@@ -343,7 +343,7 @@ export function generateEvidenceReport(
 /**
  * CLI entry point for testing
  */
-if (require.main === module) {
+if (import.meta.url === `file://${process.argv[1]}`) {
   // Test with sample data
   const sampleQA: QAItem[] = [
     {

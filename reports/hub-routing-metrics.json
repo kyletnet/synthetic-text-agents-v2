@@ -1,0 +1,46 @@
+{
+  "timestamp": "2025-09-26T06:24:54.867Z",
+  "status": {
+    "currentMode": "hub",
+    "failover": {
+      "hubHealthy": false,
+      "directModeActive": true,
+      "directConnections": 0,
+      "emergencyQueueSize": 0
+    },
+    "metrics": {
+      "totalMessages": 0,
+      "modeDistribution": {
+        "direct": 0,
+        "hub": 0,
+        "fallback": 0
+      },
+      "modePercentages": {
+        "direct": "0.0%",
+        "hub": "0.0%",
+        "fallback": "0.0%"
+      },
+      "recentLatency": 0,
+      "averageLatency": {
+        "direct": 40,
+        "hub": 100,
+        "fallback": 120
+      }
+    },
+    "performance": {
+      "hubLatency": 100,
+      "directLatency": 40,
+      "performanceImprovement": "60.0% faster with direct routing",
+      "recommendedMode": "fallback"
+    },
+    "recentActivity": []
+  },
+  "performance": {
+    "latencyReduction": "60.0%",
+    "throughputImprovement": "NaN% direct routing",
+    "failoverCount": 0,
+    "avgRecoveryTime": 18.4,
+    "recommendation": "Hub failover active - investigate hub health issues"
+  },
+  "fullHistory": []
+}

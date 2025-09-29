@@ -42,7 +42,7 @@ export async function prewriteSessionMeta(meta: {
         : block + "\n";
     await fs.writeFile(SESSION_REPORT + ".tmp", merged, "utf8");
     await fs.rename(SESSION_REPORT + ".tmp", SESSION_REPORT);
-  } catch (_e) {
+  } catch (______e) {
     // best-effort; don't block pipeline
   }
 }
@@ -1201,7 +1201,7 @@ export async function generateBaselineReports(
     sessionId = `baseline_${Date.now()}`,
     budgetLimit = 0,
     sourceTexts = [],
-    includeFullData = true,
+    _____includeFullData = true,
     profile = "dev",
     enableAutocalibration = false,
     applyCalibration = false,
@@ -1351,7 +1351,7 @@ export async function generateBaselineReports(
         .filter((line) => line.trim());
       if (previousLines.length > 0) {
         // Extract summary from last line (it should contain summary data)
-        const lastRecord = JSON.parse(previousLines[previousLines.length - 1]);
+        const _____lastRecord = JSON.parse(previousLines[previousLines.length - 1]);
         // Note: This is a simplified approach - in practice, you'd store summary separately
       }
     }

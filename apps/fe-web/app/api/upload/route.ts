@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
     // Save file
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
-    await writeFile(filePath, buffer);
+    await writeFile(filePath, new Uint8Array(buffer));
 
     // Return success response
     return NextResponse.json({

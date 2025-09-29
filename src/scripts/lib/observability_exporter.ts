@@ -254,7 +254,7 @@ export class ObservabilityExporter {
             if (entry.cost_usd) agent.total_cost_usd += entry.cost_usd;
             if (entry.latency_ms) agent.total_latency_ms += entry.latency_ms;
           }
-        } catch (parseError) {
+        } catch (_____parseError) {
           console.warn(`Failed to parse log line: ${line.slice(0, 100)}...`);
         }
       }
@@ -472,7 +472,7 @@ export class ObservabilityExporter {
 </html>`;
   }
 
-  private renderStats(traceData: TraceTree, colors: any): string {
+  private renderStats(traceData: TraceTree, _colors: any): string {
     const summary = traceData.global_summary;
 
     return `

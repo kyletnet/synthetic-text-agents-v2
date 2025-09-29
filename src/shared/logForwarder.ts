@@ -74,6 +74,7 @@ export class LogForwarder extends EventEmitter {
 
   constructor(config: LogForwarderConfig) {
     super();
+    this.setMaxListeners(50);
     this.config = config;
     this.logger = new Logger({ level: "info" });
 
@@ -466,8 +467,8 @@ export class LogForwarder extends EventEmitter {
   }
 
   private async sendToCloudWatch(
-    target: LogForwardingTarget,
-    logs: LogEntry[],
+    _target: LogForwardingTarget,
+    _logs: LogEntry[],
   ): Promise<void> {
     // AWS CloudWatch Logs implementation would go here
     throw new Error("CloudWatch forwarding not yet implemented");

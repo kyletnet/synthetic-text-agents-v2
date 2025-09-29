@@ -1,11 +1,12 @@
 {
-  "timestamp": "2025-09-25T04:57:51.322Z",
-  "components_analyzed": 36,
-  "integration_score": 53,
+  "timestamp": "2025-09-26T07:50:35.110Z",
+  "components_analyzed": 49,
+  "integration_score": 33,
   "recommendations": {
     "immediate": [],
     "planned": [],
     "architectural": [
+      "명령어 계층화 및 그룹핑 체계 재설계",
       "통합 설정 관리 시스템 도입 검토",
       "플러그인 아키텍처로 확장성 개선"
     ]
@@ -18,7 +19,7 @@
         "synergies": [],
         "conflicts": [
           {
-            "with": "auto-integration-guard.ts, command-optimizer.ts, command-wrapper.ts, comprehensive-doc-updater.ts, design-first-system-architect.ts, design-metadata-manager.ts, design-rollback-system.ts, dlq_manager.sh",
+            "with": "approval-alert-system.ts, architectural-evolution-engine.ts, auto-integration-guard.ts, command-optimizer.ts, command-wrapper.ts, component-registry-system.ts, comprehensive-doc-updater.ts, design-first-system-architect.ts",
             "issue": "다중 보고서 생성으로 인한 성능 저하",
             "resolution": "보고서 생성 스케줄링 또는 통합"
           }
@@ -48,11 +49,68 @@
       }
     },
     {
+      "component": "approval-alert-system.ts",
+      "analysis": {
+        "duplications": [],
+        "synergies": [],
+        "conflicts": [
+          {
+            "with": "ai-fix-engine.ts, architectural-evolution-engine.ts, auto-integration-guard.ts, command-optimizer.ts, command-wrapper.ts, component-registry-system.ts, comprehensive-doc-updater.ts, design-first-system-architect.ts",
+            "issue": "다중 보고서 생성으로 인한 성능 저하",
+            "resolution": "보고서 생성 스케줄링 또는 통합"
+          }
+        ],
+        "missing_integrations": [],
+        "user_experience_impact": {
+          "complexity_increase": 1,
+          "learning_curve": 3,
+          "efficiency_gain": 5,
+          "overall_score": 7
+        }
+      }
+    },
+    {
       "component": "approval-workflow.ts",
       "analysis": {
         "duplications": [],
         "synergies": [],
         "conflicts": [],
+        "missing_integrations": [],
+        "user_experience_impact": {
+          "complexity_increase": 1,
+          "learning_curve": 3,
+          "efficiency_gain": 5,
+          "overall_score": 7
+        }
+      }
+    },
+    {
+      "component": "approve-queue.ts",
+      "analysis": {
+        "duplications": [],
+        "synergies": [],
+        "conflicts": [],
+        "missing_integrations": [],
+        "user_experience_impact": {
+          "complexity_increase": 1,
+          "learning_curve": 3,
+          "efficiency_gain": 5,
+          "overall_score": 7
+        }
+      }
+    },
+    {
+      "component": "architectural-evolution-engine.ts",
+      "analysis": {
+        "duplications": [],
+        "synergies": [],
+        "conflicts": [
+          {
+            "with": "ai-fix-engine.ts, approval-alert-system.ts, auto-integration-guard.ts, command-optimizer.ts, command-wrapper.ts, component-registry-system.ts, comprehensive-doc-updater.ts, design-first-system-architect.ts",
+            "issue": "다중 보고서 생성으로 인한 성능 저하",
+            "resolution": "보고서 생성 스케줄링 또는 통합"
+          }
+        ],
         "missing_integrations": [],
         "user_experience_impact": {
           "complexity_increase": 1,
@@ -84,7 +142,7 @@
         "synergies": [],
         "conflicts": [
           {
-            "with": "ai-fix-engine.ts, command-optimizer.ts, command-wrapper.ts, comprehensive-doc-updater.ts, design-first-system-architect.ts, design-metadata-manager.ts, design-rollback-system.ts, dlq_manager.sh",
+            "with": "ai-fix-engine.ts, approval-alert-system.ts, architectural-evolution-engine.ts, command-optimizer.ts, command-wrapper.ts, component-registry-system.ts, comprehensive-doc-updater.ts, design-first-system-architect.ts",
             "issue": "다중 보고서 생성으로 인한 성능 저하",
             "resolution": "보고서 생성 스케줄링 또는 통합"
           }
@@ -127,57 +185,12 @@
           "overall_score": 7
         }
       }
-    },
-    {
-      "component": "build_docs_indexes.ts",
-      "analysis": {
-        "duplications": [],
-        "synergies": [],
-        "conflicts": [],
-        "missing_integrations": [],
-        "user_experience_impact": {
-          "complexity_increase": 1,
-          "learning_curve": 3,
-          "efficiency_gain": 5,
-          "overall_score": 7
-        }
-      }
-    },
-    {
-      "component": "check-docs-freshness.sh",
-      "analysis": {
-        "duplications": [],
-        "synergies": [],
-        "conflicts": [],
-        "missing_integrations": [],
-        "user_experience_impact": {
-          "complexity_increase": 1,
-          "learning_curve": 3,
-          "efficiency_gain": 5,
-          "overall_score": 7
-        }
-      }
-    },
-    {
-      "component": "check-standards.sh",
-      "analysis": {
-        "duplications": [],
-        "synergies": [],
-        "conflicts": [],
-        "missing_integrations": [],
-        "user_experience_impact": {
-          "complexity_increase": 1,
-          "learning_curve": 3,
-          "efficiency_gain": 5,
-          "overall_score": 7
-        }
-      }
     }
   ],
   "system_health": {
     "coherence": 10,
-    "redundancy": 40,
+    "redundancy": 100,
     "completeness": 85,
-    "maintainability": 77.22222222222223
+    "maintainability": 78.9795918367347
   }
 }
