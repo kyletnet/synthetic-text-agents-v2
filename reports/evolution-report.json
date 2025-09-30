@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-09-30T04:57:08.947Z",
+  "timestamp": "2025-09-30T06:38:43.137Z",
   "version": "1.0.0",
   "analysisResults": {
     "patternsFound": [
@@ -50,10 +50,12 @@
           "dlq_handler",
           "dlq_manager",
           "dlq_reprocess",
+          "doc-audit",
           "doc-gate",
           "doc-gate-ci",
           "doc-linter",
           "doc-quality-auditor",
+          "doc-signals-validator",
           "document-optimizer",
           "dry-run-approval-queue",
           "duplication_metrics",
@@ -127,9 +129,9 @@
           "workflow-gap-detector",
           "workflow-prevention-system"
         ],
-        "frequency": 119,
+        "frequency": 121,
         "duplicationType": "conceptual",
-        "consolidationOpportunity": 0.3962187260063626
+        "consolidationOpportunity": 0.39517125095970385
       },
       {
         "name": "test-related-components",
@@ -168,7 +170,7 @@
           "design-first-system-architect",
           "design-principle-engine",
           "detect_anomalies",
-          "doc-linter",
+          "doc-audit",
           "doc-quality-auditor",
           "dry-run-approval-queue",
           "duplication_metrics",
@@ -240,7 +242,7 @@
         ],
         "frequency": 102,
         "duplicationType": "conceptual",
-        "consolidationOpportunity": 0.3840459372388857
+        "consolidationOpportunity": 0.3843525674570903
       },
       {
         "name": "check-related-components",
@@ -278,10 +280,12 @@
           "design-principle-engine",
           "design-principle-mapper",
           "design-validator",
+          "doc-audit",
           "doc-gate",
           "doc-gate-ci",
           "doc-linter",
           "doc-quality-auditor",
+          "doc-signals-validator",
           "document-optimizer",
           "duplication_metrics",
           "emergency-recovery",
@@ -347,9 +351,9 @@
           "workflow-gap-detector",
           "workflow-prevention-system"
         ],
-        "frequency": 100,
+        "frequency": 102,
         "duplicationType": "conceptual",
-        "consolidationOpportunity": 0.41872654129808223
+        "consolidationOpportunity": 0.41723361814301557
       },
       {
         "name": "status-related-components",
@@ -384,6 +388,7 @@
           "dlq_handler",
           "dlq_manager",
           "doc-gate",
+          "doc-gate-ci",
           "dry-run-approval-queue",
           "emergency-recovery",
           "fix-mock-mode",
@@ -435,9 +440,9 @@
           "workaround-resolution-engine",
           "workflow-prevention-system"
         ],
-        "frequency": 79,
+        "frequency": 80,
         "duplicationType": "conceptual",
-        "consolidationOpportunity": 0.4039111557322488
+        "consolidationOpportunity": 0.405644924280672
       },
       {
         "name": "audit-related-components",
@@ -456,7 +461,9 @@
           "design-first-system-architect",
           "design-metadata-manager",
           "design-principle-engine",
+          "doc-audit",
           "doc-gate",
+          "doc-gate-ci",
           "doc-quality-auditor",
           "gating_integrator",
           "handoff-generator",
@@ -494,9 +501,9 @@
           "workflow-completeness-auditor",
           "workflow-prevention-system"
         ],
-        "frequency": 50,
+        "frequency": 52,
         "duplicationType": "conceptual",
-        "consolidationOpportunity": 0.43467789777389926
+        "consolidationOpportunity": 0.4388874899025785
       },
       {
         "name": "fix-related-components",
@@ -592,6 +599,7 @@
           "design-principle-engine",
           "design-validator",
           "doc-quality-auditor",
+          "doc-signals-validator",
           "evidence_agent",
           "export_cli",
           "export_enhanced",
@@ -615,9 +623,9 @@
           "validate_toolchain",
           "validate-environment"
         ],
-        "frequency": 34,
+        "frequency": 35,
         "duplicationType": "conceptual",
-        "consolidationOpportunity": 0.46829364554236647
+        "consolidationOpportunity": 0.4565636580034164
       },
       {
         "name": "security-related-components",
@@ -808,12 +816,14 @@
         "name": "doc-prefixed-components",
         "description": "Components with 'doc' prefix",
         "components": [
+          "doc-audit",
           "doc-gate",
           "doc-gate-ci",
           "doc-linter",
-          "doc-quality-auditor"
+          "doc-quality-auditor",
+          "doc-signals-validator"
         ],
-        "frequency": 4,
+        "frequency": 6,
         "duplicationType": "similar",
         "consolidationOpportunity": 0.8
       },
@@ -1029,6 +1039,63 @@
       },
       {
         "type": "consolidation",
+        "priority": "high",
+        "description": "Consolidate doc-prefixed-components pattern (6 components)",
+        "affectedComponents": [
+          "doc-audit",
+          "doc-gate",
+          "doc-gate-ci",
+          "doc-linter",
+          "doc-quality-auditor",
+          "doc-signals-validator"
+        ],
+        "estimatedImpact": {
+          "complexity": -120,
+          "maintainability": 90,
+          "performance": 5,
+          "riskLevel": "medium"
+        },
+        "implementationPlan": [
+          {
+            "order": 1,
+            "action": "analyze_components",
+            "description": "Analyze 6 components in doc-prefixed-components",
+            "automation": "full",
+            "dependencies": []
+          },
+          {
+            "order": 2,
+            "action": "create_unified_interface",
+            "description": "Create unified interface for doc-prefixed-components",
+            "automation": "assisted",
+            "dependencies": [
+              1
+            ]
+          },
+          {
+            "order": 3,
+            "action": "migrate_functionality",
+            "description": "Migrate functionality to unified interface",
+            "automation": "assisted",
+            "dependencies": [
+              2
+            ]
+          }
+        ],
+        "validation": {
+          "safetyChecks": [
+            "Verify all doc-prefixed-components functionality is preserved"
+          ],
+          "rollbackPlan": [
+            "Restore individual components if consolidation fails"
+          ],
+          "testRequirements": [
+            "Test consolidated doc-prefixed-components functionality"
+          ]
+        }
+      },
+      {
+        "type": "consolidation",
         "priority": "medium",
         "description": "Consolidate fix-prefixed-components pattern (5 components)",
         "affectedComponents": [
@@ -1191,61 +1258,6 @@
           ],
           "testRequirements": [
             "Test consolidated approval-prefixed-components functionality"
-          ]
-        }
-      },
-      {
-        "type": "consolidation",
-        "priority": "medium",
-        "description": "Consolidate doc-prefixed-components pattern (4 components)",
-        "affectedComponents": [
-          "doc-gate",
-          "doc-gate-ci",
-          "doc-linter",
-          "doc-quality-auditor"
-        ],
-        "estimatedImpact": {
-          "complexity": -80,
-          "maintainability": 60,
-          "performance": 5,
-          "riskLevel": "low"
-        },
-        "implementationPlan": [
-          {
-            "order": 1,
-            "action": "analyze_components",
-            "description": "Analyze 4 components in doc-prefixed-components",
-            "automation": "full",
-            "dependencies": []
-          },
-          {
-            "order": 2,
-            "action": "create_unified_interface",
-            "description": "Create unified interface for doc-prefixed-components",
-            "automation": "assisted",
-            "dependencies": [
-              1
-            ]
-          },
-          {
-            "order": 3,
-            "action": "migrate_functionality",
-            "description": "Migrate functionality to unified interface",
-            "automation": "assisted",
-            "dependencies": [
-              2
-            ]
-          }
-        ],
-        "validation": {
-          "safetyChecks": [
-            "Verify all doc-prefixed-components functionality is preserved"
-          ],
-          "rollbackPlan": [
-            "Restore individual components if consolidation fails"
-          ],
-          "testRequirements": [
-            "Test consolidated doc-prefixed-components functionality"
           ]
         }
       },
@@ -1642,61 +1654,6 @@
       {
         "type": "consolidation",
         "priority": "medium",
-        "description": "Consolidate doc-prefixed-components pattern (4 components)",
-        "affectedComponents": [
-          "doc-gate",
-          "doc-gate-ci",
-          "doc-linter",
-          "doc-quality-auditor"
-        ],
-        "estimatedImpact": {
-          "complexity": -80,
-          "maintainability": 60,
-          "performance": 5,
-          "riskLevel": "low"
-        },
-        "implementationPlan": [
-          {
-            "order": 1,
-            "action": "analyze_components",
-            "description": "Analyze 4 components in doc-prefixed-components",
-            "automation": "full",
-            "dependencies": []
-          },
-          {
-            "order": 2,
-            "action": "create_unified_interface",
-            "description": "Create unified interface for doc-prefixed-components",
-            "automation": "assisted",
-            "dependencies": [
-              1
-            ]
-          },
-          {
-            "order": 3,
-            "action": "migrate_functionality",
-            "description": "Migrate functionality to unified interface",
-            "automation": "assisted",
-            "dependencies": [
-              2
-            ]
-          }
-        ],
-        "validation": {
-          "safetyChecks": [
-            "Verify all doc-prefixed-components functionality is preserved"
-          ],
-          "rollbackPlan": [
-            "Restore individual components if consolidation fails"
-          ],
-          "testRequirements": [
-            "Test consolidated doc-prefixed-components functionality"
-          ]
-        }
-      },
-      {
-        "type": "consolidation",
-        "priority": "medium",
         "description": "Consolidate integration-prefixed-components pattern (4 components)",
         "affectedComponents": [
           "integration-enforcement-system",
@@ -1963,6 +1920,63 @@
           ],
           "testRequirements": [
             "Test consolidated design-prefixed-components functionality"
+          ]
+        }
+      },
+      {
+        "type": "consolidation",
+        "priority": "high",
+        "description": "Consolidate doc-prefixed-components pattern (6 components)",
+        "affectedComponents": [
+          "doc-audit",
+          "doc-gate",
+          "doc-gate-ci",
+          "doc-linter",
+          "doc-quality-auditor",
+          "doc-signals-validator"
+        ],
+        "estimatedImpact": {
+          "complexity": -120,
+          "maintainability": 90,
+          "performance": 5,
+          "riskLevel": "medium"
+        },
+        "implementationPlan": [
+          {
+            "order": 1,
+            "action": "analyze_components",
+            "description": "Analyze 6 components in doc-prefixed-components",
+            "automation": "full",
+            "dependencies": []
+          },
+          {
+            "order": 2,
+            "action": "create_unified_interface",
+            "description": "Create unified interface for doc-prefixed-components",
+            "automation": "assisted",
+            "dependencies": [
+              1
+            ]
+          },
+          {
+            "order": 3,
+            "action": "migrate_functionality",
+            "description": "Migrate functionality to unified interface",
+            "automation": "assisted",
+            "dependencies": [
+              2
+            ]
+          }
+        ],
+        "validation": {
+          "safetyChecks": [
+            "Verify all doc-prefixed-components functionality is preserved"
+          ],
+          "rollbackPlan": [
+            "Restore individual components if consolidation fails"
+          ],
+          "testRequirements": [
+            "Test consolidated doc-prefixed-components functionality"
           ]
         }
       },
@@ -2779,6 +2793,102 @@
       "afterState": {
         "timestamp": "2025-09-30T04:57:08.946Z",
         "componentCount": 184
+      },
+      "outcome": "success",
+      "impactMeasured": {
+        "componentCountChange": 0
+      }
+    },
+    {
+      "timestamp": "2025-09-30T06:38:43.129Z",
+      "improvementApplied": "Consolidate fix-prefixed-components pattern (5 components)",
+      "beforeState": {
+        "timestamp": "2025-09-30T06:38:43.127Z",
+        "componentCount": 186
+      },
+      "afterState": {
+        "timestamp": "2025-09-30T06:38:43.129Z",
+        "componentCount": 186
+      },
+      "outcome": "success",
+      "impactMeasured": {
+        "componentCountChange": 0
+      }
+    },
+    {
+      "timestamp": "2025-09-30T06:38:43.131Z",
+      "improvementApplied": "Consolidate utility-related-components pattern (4 components)",
+      "beforeState": {
+        "timestamp": "2025-09-30T06:38:43.129Z",
+        "componentCount": 186
+      },
+      "afterState": {
+        "timestamp": "2025-09-30T06:38:43.130Z",
+        "componentCount": 186
+      },
+      "outcome": "success",
+      "impactMeasured": {
+        "componentCountChange": 0
+      }
+    },
+    {
+      "timestamp": "2025-09-30T06:38:43.132Z",
+      "improvementApplied": "Consolidate approval-prefixed-components pattern (4 components)",
+      "beforeState": {
+        "timestamp": "2025-09-30T06:38:43.131Z",
+        "componentCount": 186
+      },
+      "afterState": {
+        "timestamp": "2025-09-30T06:38:43.131Z",
+        "componentCount": 186
+      },
+      "outcome": "success",
+      "impactMeasured": {
+        "componentCountChange": 0
+      }
+    },
+    {
+      "timestamp": "2025-09-30T06:38:43.133Z",
+      "improvementApplied": "Consolidate integration-prefixed-components pattern (4 components)",
+      "beforeState": {
+        "timestamp": "2025-09-30T06:38:43.132Z",
+        "componentCount": 186
+      },
+      "afterState": {
+        "timestamp": "2025-09-30T06:38:43.133Z",
+        "componentCount": 186
+      },
+      "outcome": "success",
+      "impactMeasured": {
+        "componentCountChange": 0
+      }
+    },
+    {
+      "timestamp": "2025-09-30T06:38:43.135Z",
+      "improvementApplied": "Consolidate interactive-prefixed-components pattern (4 components)",
+      "beforeState": {
+        "timestamp": "2025-09-30T06:38:43.133Z",
+        "componentCount": 186
+      },
+      "afterState": {
+        "timestamp": "2025-09-30T06:38:43.135Z",
+        "componentCount": 186
+      },
+      "outcome": "success",
+      "impactMeasured": {
+        "componentCountChange": 0
+      }
+    },
+    {
+      "timestamp": "2025-09-30T06:38:43.137Z",
+      "improvementApplied": "Consolidate duplicate build_docs_indexes implementations",
+      "beforeState": {
+        "timestamp": "2025-09-30T06:38:43.135Z",
+        "componentCount": 186
+      },
+      "afterState": {
+        "timestamp": "2025-09-30T06:38:43.136Z",
+        "componentCount": 186
       },
       "outcome": "success",
       "impactMeasured": {

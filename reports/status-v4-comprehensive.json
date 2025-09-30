@@ -1,8 +1,8 @@
 {
-  "timestamp": "2025-09-30T04:56:41.823Z",
+  "timestamp": "2025-09-30T06:38:10.157Z",
   "version": "4.0",
   "documentation": {
-    "timestamp": "2025-09-30T04:56:41.538Z",
+    "timestamp": "2025-09-30T06:38:09.885Z",
     "overallScore": 72,
     "totalDocuments": 18,
     "missingCount": 7,
@@ -27,9 +27,9 @@
         "category": "CRITICAL",
         "priority": 1,
         "exists": true,
-        "lastModified": "2025-09-30T03:10:35.579Z",
+        "lastModified": "2025-09-30T05:46:41.118Z",
         "ageInDays": 0,
-        "size": 1973,
+        "size": 1972,
         "status": "CURRENT",
         "accessibility": "IMMEDIATE"
       },
@@ -198,7 +198,7 @@
         "category": "DEVELOPMENT",
         "priority": 2,
         "exists": true,
-        "lastModified": "2025-09-30T04:56:38.303Z",
+        "lastModified": "2025-09-30T06:38:07.653Z",
         "ageInDays": 0,
         "size": 7451,
         "status": "CURRENT",
@@ -274,16 +274,16 @@
     ]
   },
   "workarounds": {
-    "total": 253,
+    "total": 272,
     "breakdown": {
-      "TODO": 62,
-      "FIXME": 43,
-      "HACK": 41,
+      "TODO": 73,
+      "FIXME": 50,
+      "HACK": 42,
       "TEMP": 58,
       "WORKAROUND": 49
     },
     "criticalCount": 0,
-    "highCount": 84,
+    "highCount": 92,
     "findings": [
       {
         "file": "scripts/generate_dev_session_report.js",
@@ -334,186 +334,6 @@
         "context": "? \"LOW\" | ? \"HIGH\"",
         "ageInDays": 5,
         "estimation": "30min-1 hour"
-      },
-      {
-        "file": "scripts/lib/workaround-resolution-engine.ts",
-        "line": 18,
-        "content": "type: \"TODO\" | \"FIXME\" | \"HACK\" | \"TEMP\" | \"WORKAROUND\";",
-        "type": "FIXME",
-        "severity": "HIGH",
-        "context": "content: string; | severity: \"LOW\" | \"MEDIUM\" | \"HIGH\" | \"CRITICAL\";",
-        "ageInDays": 5,
-        "estimation": "1-2 hours"
-      },
-      {
-        "file": "scripts/lib/workaround-resolution-engine.ts",
-        "line": 18,
-        "content": "type: \"TODO\" | \"FIXME\" | \"HACK\" | \"TEMP\" | \"WORKAROUND\";",
-        "type": "HACK",
-        "severity": "HIGH",
-        "context": "content: string; | severity: \"LOW\" | \"MEDIUM\" | \"HIGH\" | \"CRITICAL\";",
-        "ageInDays": 5,
-        "estimation": "1-2 hours"
-      },
-      {
-        "file": "scripts/lib/workaround-resolution-engine.ts",
-        "line": 74,
-        "content": "pattern: /\\/\\/ HACK: (.+)/gi,",
-        "type": "HACK",
-        "severity": "HIGH",
-        "context": "{ | replacement: (match: string, hackDescription: string) => {",
-        "ageInDays": 5,
-        "estimation": "30min-1 hour"
-      },
-      {
-        "file": "scripts/lib/workaround-resolution-engine.ts",
-        "line": 491,
-        "content": "if (finding.type === 'HACK' || finding.severity === 'HIGH') {",
-        "type": "HACK",
-        "severity": "HIGH",
-        "context": " | return finding.content.length > 100 ? 'manual-review' : 'guided-fix';",
-        "ageInDays": 5,
-        "estimation": "30min-1 hour"
-      },
-      {
-        "file": "scripts/lib/workaround-resolution-engine.ts",
-        "line": 534,
-        "content": "if (finding.type === 'HACK' && finding.content.includes('bypass')) {",
-        "type": "HACK",
-        "severity": "HIGH",
-        "context": " | return 'Implement proper validation or error handling instead of bypassing checks.';",
-        "ageInDays": 5,
-        "estimation": "30min-1 hour"
-      },
-      {
-        "file": "scripts/lib/workaround-resolution-engine.ts",
-        "line": 557,
-        "content": "} else if (finding.type === 'HACK') {",
-        "type": "HACK",
-        "severity": "HIGH",
-        "context": "steps.push('Run TypeScript checks to verify'); | steps.push('Understand why the hack was necessary')",
-        "ageInDays": 5,
-        "estimation": "30min-1 hour"
-      },
-      {
-        "file": "scripts/lib/workaround-resolution-engine.ts",
-        "line": 558,
-        "content": "steps.push('Understand why the hack was necessary');",
-        "type": "HACK",
-        "severity": "HIGH",
-        "context": "} else if (finding.type === 'HACK') { | steps.push('Research proper solution approach');",
-        "ageInDays": 5,
-        "estimation": "30min-1 hour"
-      },
-      {
-        "file": "scripts/lib/workaround-resolution-engine.ts",
-        "line": 562,
-        "content": "steps.push('Remove the hack code');",
-        "type": "HACK",
-        "severity": "HIGH",
-        "context": "steps.push('Test thoroughly to ensure no regressions'); | } else {",
-        "ageInDays": 5,
-        "estimation": "30min-1 hour"
-      },
-      {
-        "file": "scripts/lib/workaround-resolution-engine.ts",
-        "line": 584,
-        "content": "if (finding.type === 'HACK' || finding.content.includes('bypass')) {",
-        "type": "HACK",
-        "severity": "HIGH",
-        "context": " | return 'medium';",
-        "ageInDays": 5,
-        "estimation": "30min-1 hour"
-      },
-      {
-        "file": "scripts/resolve-workarounds.ts",
-        "line": 21,
-        "content": "type: \"TODO\" | \"FIXME\" | \"HACK\" | \"TEMP\" | \"WORKAROUND\";",
-        "type": "FIXME",
-        "severity": "HIGH",
-        "context": "content: string; | severity: \"LOW\" | \"MEDIUM\" | \"HIGH\" | \"CRITICAL\";",
-        "ageInDays": 5,
-        "estimation": "1-2 hours"
-      },
-      {
-        "file": "scripts/resolve-workarounds.ts",
-        "line": 21,
-        "content": "type: \"TODO\" | \"FIXME\" | \"HACK\" | \"TEMP\" | \"WORKAROUND\";",
-        "type": "HACK",
-        "severity": "HIGH",
-        "context": "content: string; | severity: \"LOW\" | \"MEDIUM\" | \"HIGH\" | \"CRITICAL\";",
-        "ageInDays": 5,
-        "estimation": "1-2 hours"
-      },
-      {
-        "file": "scripts/resolve-workarounds.ts",
-        "line": 100,
-        "content": "const searchCmd = `find . -name \"*.ts\" -not -path \"./node_modules/*\" -not -path \"./dist*/*\" -exec grep -n -E \"(TODO|FIXME|HACK|TEMP|WORKAROUND)\" {} + || true`;",
-        "type": "FIXME",
-        "severity": "HIGH",
-        "context": "// Search for common workaround patterns | const output = execSync(searchCmd, { encoding: 'utf8', st",
-        "ageInDays": 5,
-        "estimation": "1-2 hours"
-      },
-      {
-        "file": "scripts/resolve-workarounds.ts",
-        "line": 100,
-        "content": "const searchCmd = `find . -name \"*.ts\" -not -path \"./node_modules/*\" -not -path \"./dist*/*\" -exec grep -n -E \"(TODO|FIXME|HACK|TEMP|WORKAROUND)\" {} + || true`;",
-        "type": "HACK",
-        "severity": "HIGH",
-        "context": "// Search for common workaround patterns | const output = execSync(searchCmd, { encoding: 'utf8', st",
-        "ageInDays": 5,
-        "estimation": "1-2 hours"
-      },
-      {
-        "file": "scripts/resolve-workarounds.ts",
-        "line": 129,
-        "content": "private classifyType(content: string): \"TODO\" | \"FIXME\" | \"HACK\" | \"TEMP\" | \"WORKAROUND\" {",
-        "type": "FIXME",
-        "severity": "HIGH",
-        "context": " | if (content.includes('FIXME')) return 'FIXME';",
-        "ageInDays": 5,
-        "estimation": "1-2 hours"
-      },
-      {
-        "file": "scripts/resolve-workarounds.ts",
-        "line": 129,
-        "content": "private classifyType(content: string): \"TODO\" | \"FIXME\" | \"HACK\" | \"TEMP\" | \"WORKAROUND\" {",
-        "type": "HACK",
-        "severity": "HIGH",
-        "context": " | if (content.includes('FIXME')) return 'FIXME';",
-        "ageInDays": 5,
-        "estimation": "1-2 hours"
-      },
-      {
-        "file": "scripts/resolve-workarounds.ts",
-        "line": 131,
-        "content": "if (content.includes('HACK')) return 'HACK';",
-        "type": "HACK",
-        "severity": "HIGH",
-        "context": "if (content.includes('FIXME')) return 'FIXME'; | if (content.includes('TEMP')) return 'TEMP';",
-        "ageInDays": 5,
-        "estimation": "30min-1 hour"
-      },
-      {
-        "file": "scripts/resolve-workarounds.ts",
-        "line": 139,
-        "content": "if (content.includes('FIXME') || content.includes('HACK') || content.includes('security')) return 'HIGH';",
-        "type": "FIXME",
-        "severity": "HIGH",
-        "context": "if (content.includes('CRITICAL') || content.includes('URGENT')) return 'CRITICAL'; | if (content.inc",
-        "ageInDays": 5,
-        "estimation": "1-2 hours"
-      },
-      {
-        "file": "scripts/resolve-workarounds.ts",
-        "line": 139,
-        "content": "if (content.includes('FIXME') || content.includes('HACK') || content.includes('security')) return 'HIGH';",
-        "type": "HACK",
-        "severity": "HIGH",
-        "context": "if (content.includes('CRITICAL') || content.includes('URGENT')) return 'CRITICAL'; | if (content.inc",
-        "ageInDays": 5,
-        "estimation": "1-2 hours"
       },
       {
         "file": "scripts/sync-health-reporter.ts",
@@ -756,6 +576,226 @@
         "estimation": "30min-1 hour"
       },
       {
+        "file": "scripts/docs/doc-linter.ts",
+        "line": 144,
+        "content": "// Check for TODO/FIXME comments",
+        "type": "FIXME",
+        "severity": "HIGH",
+        "context": " | lineNum = 0;",
+        "ageInDays": 0,
+        "estimation": "1-2 hours"
+      },
+      {
+        "file": "scripts/docs/doc-linter.ts",
+        "line": 148,
+        "content": "if (line.includes(\"TODO\") || line.includes(\"FIXME\")) {",
+        "type": "FIXME",
+        "severity": "HIGH",
+        "context": "lineNum++; | issues.push({",
+        "ageInDays": 0,
+        "estimation": "1-2 hours"
+      },
+      {
+        "file": "scripts/docs/doc-linter.ts",
+        "line": 153,
+        "content": "message: \"Contains TODO/FIXME comment\",",
+        "type": "FIXME",
+        "severity": "HIGH",
+        "context": "severity: \"info\", | });",
+        "ageInDays": 0,
+        "estimation": "1-2 hours"
+      },
+      {
+        "file": "scripts/lib/workaround-resolution-engine.ts",
+        "line": 24,
+        "content": "type: \"TODO\" | \"FIXME\" | \"HACK\" | \"TEMP\" | \"WORKAROUND\";",
+        "type": "FIXME",
+        "severity": "HIGH",
+        "context": "content: string; | severity: \"LOW\" | \"MEDIUM\" | \"HIGH\" | \"CRITICAL\";",
+        "ageInDays": 0,
+        "estimation": "1-2 hours"
+      },
+      {
+        "file": "scripts/lib/workaround-resolution-engine.ts",
+        "line": 24,
+        "content": "type: \"TODO\" | \"FIXME\" | \"HACK\" | \"TEMP\" | \"WORKAROUND\";",
+        "type": "HACK",
+        "severity": "HIGH",
+        "context": "content: string; | severity: \"LOW\" | \"MEDIUM\" | \"HIGH\" | \"CRITICAL\";",
+        "ageInDays": 0,
+        "estimation": "1-2 hours"
+      },
+      {
+        "file": "scripts/lib/workaround-resolution-engine.ts",
+        "line": 84,
+        "content": "pattern: /\\/\\/ HACK: (.+)/gi,",
+        "type": "HACK",
+        "severity": "HIGH",
+        "context": "{ | replacement: (match: string, hackDescription: string) => {",
+        "ageInDays": 0,
+        "estimation": "30min-1 hour"
+      },
+      {
+        "file": "scripts/lib/workaround-resolution-engine.ts",
+        "line": 544,
+        "content": "if (finding.type === \"HACK\" || finding.severity === \"HIGH\") {",
+        "type": "HACK",
+        "severity": "HIGH",
+        "context": " | return finding.content.length > 100 ? \"manual-review\" : \"guided-fix\";",
+        "ageInDays": 0,
+        "estimation": "30min-1 hour"
+      },
+      {
+        "file": "scripts/lib/workaround-resolution-engine.ts",
+        "line": 593,
+        "content": "if (finding.type === \"HACK\" && finding.content.includes(\"bypass\")) {",
+        "type": "HACK",
+        "severity": "HIGH",
+        "context": " | return \"Implement proper validation or error handling instead of bypassing checks.\";",
+        "ageInDays": 0,
+        "estimation": "30min-1 hour"
+      },
+      {
+        "file": "scripts/lib/workaround-resolution-engine.ts",
+        "line": 616,
+        "content": "} else if (finding.type === \"HACK\") {",
+        "type": "HACK",
+        "severity": "HIGH",
+        "context": "steps.push(\"Run TypeScript checks to verify\"); | steps.push(\"Understand why the hack was necessary\")",
+        "ageInDays": 0,
+        "estimation": "30min-1 hour"
+      },
+      {
+        "file": "scripts/lib/workaround-resolution-engine.ts",
+        "line": 617,
+        "content": "steps.push(\"Understand why the hack was necessary\");",
+        "type": "HACK",
+        "severity": "HIGH",
+        "context": "} else if (finding.type === \"HACK\") { | steps.push(\"Research proper solution approach\");",
+        "ageInDays": 0,
+        "estimation": "30min-1 hour"
+      },
+      {
+        "file": "scripts/lib/workaround-resolution-engine.ts",
+        "line": 621,
+        "content": "steps.push(\"Remove the hack code\");",
+        "type": "HACK",
+        "severity": "HIGH",
+        "context": "steps.push(\"Test thoroughly to ensure no regressions\"); | } else {",
+        "ageInDays": 0,
+        "estimation": "30min-1 hour"
+      },
+      {
+        "file": "scripts/lib/workaround-resolution-engine.ts",
+        "line": 647,
+        "content": "if (finding.type === \"HACK\" || finding.content.includes(\"bypass\")) {",
+        "type": "HACK",
+        "severity": "HIGH",
+        "context": " | return \"medium\";",
+        "ageInDays": 0,
+        "estimation": "30min-1 hour"
+      },
+      {
+        "file": "scripts/resolve-workarounds.ts",
+        "line": 21,
+        "content": "type: \"TODO\" | \"FIXME\" | \"HACK\" | \"TEMP\" | \"WORKAROUND\";",
+        "type": "FIXME",
+        "severity": "HIGH",
+        "context": "content: string; | severity: \"LOW\" | \"MEDIUM\" | \"HIGH\" | \"CRITICAL\";",
+        "ageInDays": 0,
+        "estimation": "1-2 hours"
+      },
+      {
+        "file": "scripts/resolve-workarounds.ts",
+        "line": 21,
+        "content": "type: \"TODO\" | \"FIXME\" | \"HACK\" | \"TEMP\" | \"WORKAROUND\";",
+        "type": "HACK",
+        "severity": "HIGH",
+        "context": "content: string; | severity: \"LOW\" | \"MEDIUM\" | \"HIGH\" | \"CRITICAL\";",
+        "ageInDays": 0,
+        "estimation": "1-2 hours"
+      },
+      {
+        "file": "scripts/resolve-workarounds.ts",
+        "line": 105,
+        "content": "const searchCmd = `find . -name \"*.ts\" -not -path \"./node_modules/*\" -not -path \"./dist*/*\" -exec grep -n -E \"(TODO|FIXME|HACK|TEMP|WORKAROUND)\" {} + || true`;",
+        "type": "FIXME",
+        "severity": "HIGH",
+        "context": "// Search for common workaround patterns | const output = execSync(searchCmd, { encoding: \"utf8\", st",
+        "ageInDays": 0,
+        "estimation": "1-2 hours"
+      },
+      {
+        "file": "scripts/resolve-workarounds.ts",
+        "line": 105,
+        "content": "const searchCmd = `find . -name \"*.ts\" -not -path \"./node_modules/*\" -not -path \"./dist*/*\" -exec grep -n -E \"(TODO|FIXME|HACK|TEMP|WORKAROUND)\" {} + || true`;",
+        "type": "HACK",
+        "severity": "HIGH",
+        "context": "// Search for common workaround patterns | const output = execSync(searchCmd, { encoding: \"utf8\", st",
+        "ageInDays": 0,
+        "estimation": "1-2 hours"
+      },
+      {
+        "file": "scripts/resolve-workarounds.ts",
+        "line": 137,
+        "content": "): \"TODO\" | \"FIXME\" | \"HACK\" | \"TEMP\" | \"WORKAROUND\" {",
+        "type": "FIXME",
+        "severity": "HIGH",
+        "context": "content: string, | if (content.includes(\"FIXME\")) return \"FIXME\";",
+        "ageInDays": 0,
+        "estimation": "1-2 hours"
+      },
+      {
+        "file": "scripts/resolve-workarounds.ts",
+        "line": 137,
+        "content": "): \"TODO\" | \"FIXME\" | \"HACK\" | \"TEMP\" | \"WORKAROUND\" {",
+        "type": "HACK",
+        "severity": "HIGH",
+        "context": "content: string, | if (content.includes(\"FIXME\")) return \"FIXME\";",
+        "ageInDays": 0,
+        "estimation": "1-2 hours"
+      },
+      {
+        "file": "scripts/resolve-workarounds.ts",
+        "line": 138,
+        "content": "if (content.includes(\"FIXME\")) return \"FIXME\";",
+        "type": "FIXME",
+        "severity": "HIGH",
+        "context": "): \"TODO\" | \"FIXME\" | \"HACK\" | \"TEMP\" | \"WORKAROUND\" { | if (content.includes(\"HACK\")) return \"HACK\"",
+        "ageInDays": 0,
+        "estimation": "1-2 hours"
+      },
+      {
+        "file": "scripts/resolve-workarounds.ts",
+        "line": 139,
+        "content": "if (content.includes(\"HACK\")) return \"HACK\";",
+        "type": "HACK",
+        "severity": "HIGH",
+        "context": "if (content.includes(\"FIXME\")) return \"FIXME\"; | if (content.includes(\"TEMP\")) return \"TEMP\";",
+        "ageInDays": 0,
+        "estimation": "30min-1 hour"
+      },
+      {
+        "file": "scripts/resolve-workarounds.ts",
+        "line": 151,
+        "content": "content.includes(\"FIXME\") ||",
+        "type": "FIXME",
+        "severity": "HIGH",
+        "context": "if ( | content.includes(\"HACK\") ||",
+        "ageInDays": 0,
+        "estimation": "1-2 hours"
+      },
+      {
+        "file": "scripts/resolve-workarounds.ts",
+        "line": 152,
+        "content": "content.includes(\"HACK\") ||",
+        "type": "HACK",
+        "severity": "HIGH",
+        "context": "content.includes(\"FIXME\") || | content.includes(\"security\")",
+        "ageInDays": 0,
+        "estimation": "30min-1 hour"
+      },
+      {
         "file": "scripts/resolve-workarounds.ts",
         "line": 21,
         "content": "type: \"TODO\" | \"FIXME\" | \"HACK\" | \"TEMP\" | \"WORKAROUND\";",
@@ -766,7 +806,7 @@
       },
       {
         "file": "scripts/resolve-workarounds.ts",
-        "line": 100,
+        "line": 105,
         "content": "const searchCmd = `find . -name \"*.ts\" -not -path \"./node_modules/*\" -not -path \"./dist*/*\" -exec grep -n -E \"(TODO|FIXME|HACK|TEMP|WORKAROUND)\" {} + ...",
         "type": "FIXME",
         "severity": "HIGH",
@@ -775,8 +815,8 @@
       },
       {
         "file": "scripts/resolve-workarounds.ts",
-        "line": 129,
-        "content": "private classifyType(content: string): \"TODO\" | \"FIXME\" | \"HACK\" | \"TEMP\" | \"WORKAROUND\" {",
+        "line": 137,
+        "content": "): \"TODO\" | \"FIXME\" | \"HACK\" | \"TEMP\" | \"WORKAROUND\" {",
         "type": "FIXME",
         "severity": "HIGH",
         "context": "Detected via grep scan",
@@ -784,8 +824,8 @@
       },
       {
         "file": "scripts/resolve-workarounds.ts",
-        "line": 130,
-        "content": "if (content.includes('FIXME')) return 'FIXME';",
+        "line": 138,
+        "content": "if (content.includes(\"FIXME\")) return \"FIXME\";",
         "type": "FIXME",
         "severity": "HIGH",
         "context": "Detected via grep scan",
@@ -793,8 +833,8 @@
       },
       {
         "file": "scripts/resolve-workarounds.ts",
-        "line": 131,
-        "content": "if (content.includes('HACK')) return 'HACK';",
+        "line": 139,
+        "content": "if (content.includes(\"HACK\")) return \"HACK\";",
         "type": "HACK",
         "severity": "HIGH",
         "context": "Detected via grep scan",
@@ -802,12 +842,21 @@
       },
       {
         "file": "scripts/resolve-workarounds.ts",
-        "line": 139,
-        "content": "if (content.includes('FIXME') || content.includes('HACK') || content.includes('security')) return 'HIGH';",
+        "line": 151,
+        "content": "content.includes(\"FIXME\") ||",
         "type": "FIXME",
         "severity": "HIGH",
         "context": "Detected via grep scan",
         "estimation": "1-2 hours"
+      },
+      {
+        "file": "scripts/resolve-workarounds.ts",
+        "line": 152,
+        "content": "content.includes(\"HACK\") ||",
+        "type": "HACK",
+        "severity": "HIGH",
+        "context": "Detected via grep scan",
+        "estimation": "30min-1 hour"
       },
       {
         "file": "scripts/handoff-generator.ts",
@@ -826,6 +875,33 @@
         "severity": "HIGH",
         "context": "Detected via grep scan",
         "estimation": "30min-1 hour"
+      },
+      {
+        "file": "scripts/docs/doc-linter.ts",
+        "line": 144,
+        "content": "// Check for TODO/FIXME comments",
+        "type": "FIXME",
+        "severity": "HIGH",
+        "context": "Detected via grep scan",
+        "estimation": "1-2 hours"
+      },
+      {
+        "file": "scripts/docs/doc-linter.ts",
+        "line": 148,
+        "content": "if (line.includes(\"TODO\") || line.includes(\"FIXME\")) {",
+        "type": "FIXME",
+        "severity": "HIGH",
+        "context": "Detected via grep scan",
+        "estimation": "1-2 hours"
+      },
+      {
+        "file": "scripts/docs/doc-linter.ts",
+        "line": 153,
+        "content": "message: \"Contains TODO/FIXME comment\",",
+        "type": "FIXME",
+        "severity": "HIGH",
+        "context": "Detected via grep scan",
+        "estimation": "1-2 hours"
       },
       {
         "file": "scripts/workaround-detector.ts",
@@ -1018,7 +1094,7 @@
       },
       {
         "file": "scripts/lib/workaround-resolution-engine.ts",
-        "line": 18,
+        "line": 24,
         "content": "type: \"TODO\" | \"FIXME\" | \"HACK\" | \"TEMP\" | \"WORKAROUND\";",
         "type": "FIXME",
         "severity": "HIGH",
@@ -1027,7 +1103,7 @@
       },
       {
         "file": "scripts/lib/workaround-resolution-engine.ts",
-        "line": 74,
+        "line": 84,
         "content": "pattern: /\\/\\/ HACK: (.+)/gi,",
         "type": "HACK",
         "severity": "HIGH",
@@ -1036,8 +1112,8 @@
       },
       {
         "file": "scripts/lib/workaround-resolution-engine.ts",
-        "line": 491,
-        "content": "if (finding.type === 'HACK' || finding.severity === 'HIGH') {",
+        "line": 544,
+        "content": "if (finding.type === \"HACK\" || finding.severity === \"HIGH\") {",
         "type": "HACK",
         "severity": "HIGH",
         "context": "Detected via grep scan",
@@ -1045,8 +1121,8 @@
       },
       {
         "file": "scripts/lib/workaround-resolution-engine.ts",
-        "line": 534,
-        "content": "if (finding.type === 'HACK' && finding.content.includes('bypass')) {",
+        "line": 593,
+        "content": "if (finding.type === \"HACK\" && finding.content.includes(\"bypass\")) {",
         "type": "HACK",
         "severity": "HIGH",
         "context": "Detected via grep scan",
@@ -1054,8 +1130,8 @@
       },
       {
         "file": "scripts/lib/workaround-resolution-engine.ts",
-        "line": 557,
-        "content": "} else if (finding.type === 'HACK') {",
+        "line": 616,
+        "content": "} else if (finding.type === \"HACK\") {",
         "type": "HACK",
         "severity": "HIGH",
         "context": "Detected via grep scan",
@@ -1063,8 +1139,8 @@
       },
       {
         "file": "scripts/lib/workaround-resolution-engine.ts",
-        "line": 584,
-        "content": "if (finding.type === 'HACK' || finding.content.includes('bypass')) {",
+        "line": 647,
+        "content": "if (finding.type === \"HACK\" || finding.content.includes(\"bypass\")) {",
         "type": "HACK",
         "severity": "HIGH",
         "context": "Detected via grep scan",
@@ -1125,266 +1201,6 @@
         "type": "WORKAROUND",
         "severity": "MEDIUM",
         "context": "| \"WARNING\" | | \"DEPENDENCY\"",
-        "ageInDays": 5,
-        "estimation": "30min-1 hour"
-      },
-      {
-        "file": "scripts/lib/self-management-tracker.ts",
-        "line": 344,
-        "content": "// Check for workaround resolution activity",
-        "type": "WORKAROUND",
-        "severity": "MEDIUM",
-        "context": "try { | const resolutionEvents = this.eventBuffer",
-        "ageInDays": 5,
-        "estimation": "30min-1 hour"
-      },
-      {
-        "file": "scripts/lib/self-management-tracker.ts",
-        "line": 399,
-        "content": "recommendations.push('Accelerate technical debt resolution and workaround elimination');",
-        "type": "WORKAROUND",
-        "severity": "MEDIUM",
-        "context": "if (breakdown.technicalDebtReduction < this.criteria.technicalDebtReduction.target) { | }",
-        "ageInDays": 5,
-        "estimation": "30min-1 hour"
-      },
-      {
-        "file": "scripts/lib/workaround-resolution-engine.ts",
-        "line": 4,
-        "content": "* Workaround Resolution Engine",
-        "type": "WORKAROUND",
-        "severity": "MEDIUM",
-        "context": "/** | * Systematic conversion of temporary fixes to permanent solutions",
-        "ageInDays": 5,
-        "estimation": "30min-1 hour"
-      },
-      {
-        "file": "scripts/lib/workaround-resolution-engine.ts",
-        "line": 6,
-        "content": "* Implements the workaround resolution strategy from system philosophy analysis",
-        "type": "WORKAROUND",
-        "severity": "MEDIUM",
-        "context": "* Systematic conversion of temporary fixes to permanent solutions | */",
-        "ageInDays": 5,
-        "estimation": "4-8 hours"
-      },
-      {
-        "file": "scripts/lib/workaround-resolution-engine.ts",
-        "line": 18,
-        "content": "type: \"TODO\" | \"FIXME\" | \"HACK\" | \"TEMP\" | \"WORKAROUND\";",
-        "type": "WORKAROUND",
-        "severity": "MEDIUM",
-        "context": "content: string; | severity: \"LOW\" | \"MEDIUM\" | \"HIGH\" | \"CRITICAL\";",
-        "ageInDays": 5,
-        "estimation": "1-2 hours"
-      },
-      {
-        "file": "scripts/lib/workaround-resolution-engine.ts",
-        "line": 361,
-        "content": "let instructions = `# 🛠️ Workaround Resolution Guide\\n\\n`;",
-        "type": "WORKAROUND",
-        "severity": "MEDIUM",
-        "context": " | instructions += `Generated ${new Date().toISOString()}\\n\\n`;",
-        "ageInDays": 5,
-        "estimation": "30min-1 hour"
-      },
-      {
-        "file": "scripts/lib/workaround-resolution-engine.ts",
-        "line": 431,
-        "content": "let report = `# 📊 Workaround Resolution Progress\\n\\n`;",
-        "type": "WORKAROUND",
-        "severity": "MEDIUM",
-        "context": " | report += `**Total Processed**: ${totalResults}\\n`;",
-        "ageInDays": 5,
-        "estimation": "30min-1 hour"
-      },
-      {
-        "file": "scripts/resolve-workarounds.ts",
-        "line": 4,
-        "content": "* Comprehensive Workaround Resolution Orchestrator",
-        "type": "WORKAROUND",
-        "severity": "MEDIUM",
-        "context": "/** | * End-to-end system for systematically resolving the 157 temporary fixes",
-        "ageInDays": 5,
-        "estimation": "30min-1 hour"
-      },
-      {
-        "file": "scripts/resolve-workarounds.ts",
-        "line": 15,
-        "content": "import { workaroundResolutionEngine } from './lib/workaround-resolution-engine.js';",
-        "type": "WORKAROUND",
-        "severity": "MEDIUM",
-        "context": "import { join } from 'path'; | ",
-        "ageInDays": 5,
-        "estimation": "30min-1 hour"
-      },
-      {
-        "file": "scripts/resolve-workarounds.ts",
-        "line": 21,
-        "content": "type: \"TODO\" | \"FIXME\" | \"HACK\" | \"TEMP\" | \"WORKAROUND\";",
-        "type": "WORKAROUND",
-        "severity": "MEDIUM",
-        "context": "content: string; | severity: \"LOW\" | \"MEDIUM\" | \"HIGH\" | \"CRITICAL\";",
-        "ageInDays": 5,
-        "estimation": "1-2 hours"
-      },
-      {
-        "file": "scripts/resolve-workarounds.ts",
-        "line": 28,
-        "content": "private reportPath = join(this.projectRoot, 'reports', 'workaround-resolution.md');",
-        "type": "WORKAROUND",
-        "severity": "MEDIUM",
-        "context": "private projectRoot = process.cwd(); | ",
-        "ageInDays": 5,
-        "estimation": "30min-1 hour"
-      },
-      {
-        "file": "scripts/resolve-workarounds.ts",
-        "line": 31,
-        "content": "console.log('🔧 Workaround Resolution System v2.0');",
-        "type": "WORKAROUND",
-        "severity": "MEDIUM",
-        "context": "async executeResolution(mode: 'analyze' | 'auto-fix' | 'guided' | 'full' = 'analyze'): Promise<void>",
-        "ageInDays": 5,
-        "estimation": "30min-1 hour"
-      },
-      {
-        "file": "scripts/resolve-workarounds.ts",
-        "line": 68,
-        "content": "console.log('✅ Workaround resolution process completed!');",
-        "type": "WORKAROUND",
-        "severity": "MEDIUM",
-        "context": "console.log(''); | console.log(`   📄 Full report: ${this.reportPath}`);",
-        "ageInDays": 5,
-        "estimation": "30min-1 hour"
-      },
-      {
-        "file": "scripts/resolve-workarounds.ts",
-        "line": 78,
-        "content": "// Use the existing workaround detector",
-        "type": "WORKAROUND",
-        "severity": "MEDIUM",
-        "context": "private async detectWorkarounds(): Promise<WorkaroundFinding[]> { | try {",
-        "ageInDays": 5,
-        "estimation": "30min-1 hour"
-      },
-      {
-        "file": "scripts/resolve-workarounds.ts",
-        "line": 80,
-        "content": "const output = execSync('npx tsx scripts/workaround-detector.ts --json', {",
-        "type": "WORKAROUND",
-        "severity": "MEDIUM",
-        "context": "try { | encoding: 'utf8',",
-        "ageInDays": 5,
-        "estimation": "30min-1 hour"
-      },
-      {
-        "file": "scripts/resolve-workarounds.ts",
-        "line": 99,
-        "content": "// Search for common workaround patterns",
-        "type": "WORKAROUND",
-        "severity": "MEDIUM",
-        "context": "try { | const searchCmd = `find . -name \"*.ts\" -not -path \"./node_modules/*\" -not -path \"./dist*/*\" ",
-        "ageInDays": 5,
-        "estimation": "30min-1 hour"
-      },
-      {
-        "file": "scripts/resolve-workarounds.ts",
-        "line": 100,
-        "content": "const searchCmd = `find . -name \"*.ts\" -not -path \"./node_modules/*\" -not -path \"./dist*/*\" -exec grep -n -E \"(TODO|FIXME|HACK|TEMP|WORKAROUND)\" {} + || true`;",
-        "type": "WORKAROUND",
-        "severity": "MEDIUM",
-        "context": "// Search for common workaround patterns | const output = execSync(searchCmd, { encoding: 'utf8', st",
-        "ageInDays": 5,
-        "estimation": "1-2 hours"
-      },
-      {
-        "file": "scripts/resolve-workarounds.ts",
-        "line": 129,
-        "content": "private classifyType(content: string): \"TODO\" | \"FIXME\" | \"HACK\" | \"TEMP\" | \"WORKAROUND\" {",
-        "type": "WORKAROUND",
-        "severity": "MEDIUM",
-        "context": " | if (content.includes('FIXME')) return 'FIXME';",
-        "ageInDays": 5,
-        "estimation": "1-2 hours"
-      },
-      {
-        "file": "scripts/resolve-workarounds.ts",
-        "line": 133,
-        "content": "if (content.includes('WORKAROUND')) return 'WORKAROUND';",
-        "type": "WORKAROUND",
-        "severity": "MEDIUM",
-        "context": "if (content.includes('TEMP')) return 'TEMP'; | return 'TODO';",
-        "ageInDays": 5,
-        "estimation": "30min-1 hour"
-      },
-      {
-        "file": "scripts/resolve-workarounds.ts",
-        "line": 222,
-        "content": "const instructionsPath = join(this.projectRoot, 'reports', 'workaround-fix-guide.md');",
-        "type": "WORKAROUND",
-        "severity": "MEDIUM",
-        "context": "const instructions = workaroundResolutionEngine.generateGuidedFixInstructions(plans); | ",
-        "ageInDays": 5,
-        "estimation": "1-2 hours"
-      },
-      {
-        "file": "scripts/resolve-workarounds.ts",
-        "line": 263,
-        "content": "let implementationPlan = `# 🗓️ Workaround Resolution Implementation Plan\\n\\n`;",
-        "type": "WORKAROUND",
-        "severity": "MEDIUM",
-        "context": " | implementationPlan += `Generated: ${new Date().toISOString()}\\n\\n`;",
-        "ageInDays": 5,
-        "estimation": "4-8 hours"
-      },
-      {
-        "file": "scripts/resolve-workarounds.ts",
-        "line": 313,
-        "content": "let report = `# 🔧 Workaround Resolution Final Report\\n\\n`;",
-        "type": "WORKAROUND",
-        "severity": "MEDIUM",
-        "context": " | report += `Generated: ${new Date().toISOString()}\\n`;",
-        "ageInDays": 5,
-        "estimation": "30min-1 hour"
-      },
-      {
-        "file": "scripts/resolve-workarounds.ts",
-        "line": 361,
-        "content": "report += `- **This Report**: \\`reports/workaround-resolution.md\\`\\n`;",
-        "type": "WORKAROUND",
-        "severity": "MEDIUM",
-        "context": "report += `## 📄 Generated Artifacts\\n\\n`; | report += `- **Implementation Plan**: \\`reports/impleme",
-        "ageInDays": 5,
-        "estimation": "30min-1 hour"
-      },
-      {
-        "file": "scripts/resolve-workarounds.ts",
-        "line": 363,
-        "content": "report += `- **Guided Fix Instructions**: \\`reports/workaround-fix-guide.md\\`\\n\\n`;",
-        "type": "WORKAROUND",
-        "severity": "MEDIUM",
-        "context": "report += `- **Implementation Plan**: \\`reports/implementation-plan.md\\`\\n`; | ",
-        "ageInDays": 5,
-        "estimation": "1-2 hours"
-      },
-      {
-        "file": "scripts/resolve-workarounds.ts",
-        "line": 366,
-        "content": "report += `*This report was generated by the Workaround Resolution System as part of the comprehensive system optimization initiative.*\\n`;",
-        "type": "WORKAROUND",
-        "severity": "MEDIUM",
-        "context": "report += `---\\n\\n`; | ",
-        "ageInDays": 5,
-        "estimation": "30min-1 hour"
-      },
-      {
-        "file": "scripts/unified-dashboard.ts",
-        "line": 17,
-        "content": "import WorkaroundDetector from \"./workaround-detector.js\";",
-        "type": "WORKAROUND",
-        "severity": "MEDIUM",
-        "context": "import DocumentOptimizer from \"./document-optimizer.js\"; | import ReferenceTracker from \"./reference",
         "ageInDays": 5,
         "estimation": "30min-1 hour"
       },
@@ -1479,29 +1295,289 @@
         "estimation": "30min-1 hour"
       },
       {
-        "file": "scripts/lib/system-integration-orchestrator.ts",
-        "line": 21,
-        "content": "import { workaroundResolutionEngine } from './workaround-resolution-engine.js';",
+        "file": "scripts/lib/self-management-tracker.ts",
+        "line": 389,
+        "content": "// Check for workaround resolution activity",
         "type": "WORKAROUND",
         "severity": "MEDIUM",
-        "context": "import { smartDecisionMatrix } from './smart-decision-matrix.js'; | import { perfCache } from './per",
+        "context": "try { | const resolutionEvents = this.eventBuffer.filter(",
+        "ageInDays": 0,
+        "estimation": "30min-1 hour"
+      },
+      {
+        "file": "scripts/lib/self-management-tracker.ts",
+        "line": 462,
+        "content": "\"Accelerate technical debt resolution and workaround elimination\",",
+        "type": "WORKAROUND",
+        "severity": "MEDIUM",
+        "context": "recommendations.push( | );",
         "ageInDays": 0,
         "estimation": "30min-1 hour"
       },
       {
         "file": "scripts/lib/system-integration-orchestrator.ts",
-        "line": 209,
-        "content": "path: 'scripts/lib/workaround-resolution-engine.ts',",
+        "line": 24,
+        "content": "import { workaroundResolutionEngine } from \"./workaround-resolution-engine.js\";",
         "type": "WORKAROUND",
         "severity": "MEDIUM",
-        "context": "{ | component: 'workaround-resolution-engine' as ComponentId,",
+        "context": "import { smartDecisionMatrix } from \"./smart-decision-matrix.js\"; | import { perfCache } from \"./per",
+        "ageInDays": 0,
+        "estimation": "30min-1 hour"
+      },
+      {
+        "file": "scripts/lib/system-integration-orchestrator.ts",
+        "line": 227,
+        "content": "path: \"scripts/lib/workaround-resolution-engine.ts\",",
+        "type": "WORKAROUND",
+        "severity": "MEDIUM",
+        "context": "{ | component: \"workaround-resolution-engine\" as ComponentId,",
+        "ageInDays": 0,
+        "estimation": "30min-1 hour"
+      },
+      {
+        "file": "scripts/lib/workaround-resolution-engine.ts",
+        "line": 4,
+        "content": "* Workaround Resolution Engine",
+        "type": "WORKAROUND",
+        "severity": "MEDIUM",
+        "context": "/** | * Systematic conversion of temporary fixes to permanent solutions",
+        "ageInDays": 0,
+        "estimation": "30min-1 hour"
+      },
+      {
+        "file": "scripts/lib/workaround-resolution-engine.ts",
+        "line": 6,
+        "content": "* Implements the workaround resolution strategy from system philosophy analysis",
+        "type": "WORKAROUND",
+        "severity": "MEDIUM",
+        "context": "* Systematic conversion of temporary fixes to permanent solutions | */",
+        "ageInDays": 0,
+        "estimation": "4-8 hours"
+      },
+      {
+        "file": "scripts/lib/workaround-resolution-engine.ts",
+        "line": 24,
+        "content": "type: \"TODO\" | \"FIXME\" | \"HACK\" | \"TEMP\" | \"WORKAROUND\";",
+        "type": "WORKAROUND",
+        "severity": "MEDIUM",
+        "context": "content: string; | severity: \"LOW\" | \"MEDIUM\" | \"HIGH\" | \"CRITICAL\";",
+        "ageInDays": 0,
+        "estimation": "1-2 hours"
+      },
+      {
+        "file": "scripts/lib/workaround-resolution-engine.ts",
+        "line": 401,
+        "content": "let instructions = `# 🛠️ Workaround Resolution Guide\\n\\n`;",
+        "type": "WORKAROUND",
+        "severity": "MEDIUM",
+        "context": " | instructions += `Generated ${new Date().toISOString()}\\n\\n`;",
+        "ageInDays": 0,
+        "estimation": "30min-1 hour"
+      },
+      {
+        "file": "scripts/lib/workaround-resolution-engine.ts",
+        "line": 478,
+        "content": "let report = `# 📊 Workaround Resolution Progress\\n\\n`;",
+        "type": "WORKAROUND",
+        "severity": "MEDIUM",
+        "context": " | report += `**Total Processed**: ${totalResults}\\n`;",
         "ageInDays": 0,
         "estimation": "30min-1 hour"
       },
       {
         "file": "scripts/resolve-workarounds.ts",
-        "line": 133,
-        "content": "if (content.includes('WORKAROUND')) return 'WORKAROUND';",
+        "line": 4,
+        "content": "* Comprehensive Workaround Resolution Orchestrator",
+        "type": "WORKAROUND",
+        "severity": "MEDIUM",
+        "context": "/** | * End-to-end system for systematically resolving the 157 temporary fixes",
+        "ageInDays": 0,
+        "estimation": "30min-1 hour"
+      },
+      {
+        "file": "scripts/resolve-workarounds.ts",
+        "line": 15,
+        "content": "import { workaroundResolutionEngine } from \"./lib/workaround-resolution-engine.js\";",
+        "type": "WORKAROUND",
+        "severity": "MEDIUM",
+        "context": "import { join } from \"path\"; | ",
+        "ageInDays": 0,
+        "estimation": "30min-1 hour"
+      },
+      {
+        "file": "scripts/resolve-workarounds.ts",
+        "line": 21,
+        "content": "type: \"TODO\" | \"FIXME\" | \"HACK\" | \"TEMP\" | \"WORKAROUND\";",
+        "type": "WORKAROUND",
+        "severity": "MEDIUM",
+        "context": "content: string; | severity: \"LOW\" | \"MEDIUM\" | \"HIGH\" | \"CRITICAL\";",
+        "ageInDays": 0,
+        "estimation": "1-2 hours"
+      },
+      {
+        "file": "scripts/resolve-workarounds.ts",
+        "line": 31,
+        "content": "\"workaround-resolution.md\",",
+        "type": "WORKAROUND",
+        "severity": "MEDIUM",
+        "context": "\"reports\", | );",
+        "ageInDays": 0,
+        "estimation": "30min-1 hour"
+      },
+      {
+        "file": "scripts/resolve-workarounds.ts",
+        "line": 37,
+        "content": "console.log(\"🔧 Workaround Resolution System v2.0\");",
+        "type": "WORKAROUND",
+        "severity": "MEDIUM",
+        "context": "): Promise<void> { | console.log(`   Mode: ${mode}`);",
+        "ageInDays": 0,
+        "estimation": "30min-1 hour"
+      },
+      {
+        "file": "scripts/resolve-workarounds.ts",
+        "line": 75,
+        "content": "console.log(\"✅ Workaround resolution process completed!\");",
+        "type": "WORKAROUND",
+        "severity": "MEDIUM",
+        "context": "console.log(\"\"); | console.log(`   📄 Full report: ${this.reportPath}`);",
+        "ageInDays": 0,
+        "estimation": "30min-1 hour"
+      },
+      {
+        "file": "scripts/resolve-workarounds.ts",
+        "line": 84,
+        "content": "// Use the existing workaround detector",
+        "type": "WORKAROUND",
+        "severity": "MEDIUM",
+        "context": "private async detectWorkarounds(): Promise<WorkaroundFinding[]> { | try {",
+        "ageInDays": 0,
+        "estimation": "30min-1 hour"
+      },
+      {
+        "file": "scripts/resolve-workarounds.ts",
+        "line": 86,
+        "content": "const output = execSync(\"npx tsx scripts/workaround-detector.ts --json\", {",
+        "type": "WORKAROUND",
+        "severity": "MEDIUM",
+        "context": "try { | encoding: \"utf8\",",
+        "ageInDays": 0,
+        "estimation": "30min-1 hour"
+      },
+      {
+        "file": "scripts/resolve-workarounds.ts",
+        "line": 104,
+        "content": "// Search for common workaround patterns",
+        "type": "WORKAROUND",
+        "severity": "MEDIUM",
+        "context": "try { | const searchCmd = `find . -name \"*.ts\" -not -path \"./node_modules/*\" -not -path \"./dist*/*\" ",
+        "ageInDays": 0,
+        "estimation": "30min-1 hour"
+      },
+      {
+        "file": "scripts/resolve-workarounds.ts",
+        "line": 105,
+        "content": "const searchCmd = `find . -name \"*.ts\" -not -path \"./node_modules/*\" -not -path \"./dist*/*\" -exec grep -n -E \"(TODO|FIXME|HACK|TEMP|WORKAROUND)\" {} + || true`;",
+        "type": "WORKAROUND",
+        "severity": "MEDIUM",
+        "context": "// Search for common workaround patterns | const output = execSync(searchCmd, { encoding: \"utf8\", st",
+        "ageInDays": 0,
+        "estimation": "1-2 hours"
+      },
+      {
+        "file": "scripts/resolve-workarounds.ts",
+        "line": 137,
+        "content": "): \"TODO\" | \"FIXME\" | \"HACK\" | \"TEMP\" | \"WORKAROUND\" {",
+        "type": "WORKAROUND",
+        "severity": "MEDIUM",
+        "context": "content: string, | if (content.includes(\"FIXME\")) return \"FIXME\";",
+        "ageInDays": 0,
+        "estimation": "1-2 hours"
+      },
+      {
+        "file": "scripts/resolve-workarounds.ts",
+        "line": 141,
+        "content": "if (content.includes(\"WORKAROUND\")) return \"WORKAROUND\";",
+        "type": "WORKAROUND",
+        "severity": "MEDIUM",
+        "context": "if (content.includes(\"TEMP\")) return \"TEMP\"; | return \"TODO\";",
+        "ageInDays": 0,
+        "estimation": "30min-1 hour"
+      },
+      {
+        "file": "scripts/resolve-workarounds.ts",
+        "line": 261,
+        "content": "\"workaround-fix-guide.md\",",
+        "type": "WORKAROUND",
+        "severity": "MEDIUM",
+        "context": "\"reports\", | );",
+        "ageInDays": 0,
+        "estimation": "1-2 hours"
+      },
+      {
+        "file": "scripts/resolve-workarounds.ts",
+        "line": 307,
+        "content": "let implementationPlan = `# 🗓️ Workaround Resolution Implementation Plan\\n\\n`;",
+        "type": "WORKAROUND",
+        "severity": "MEDIUM",
+        "context": " | implementationPlan += `Generated: ${new Date().toISOString()}\\n\\n`;",
+        "ageInDays": 0,
+        "estimation": "4-8 hours"
+      },
+      {
+        "file": "scripts/resolve-workarounds.ts",
+        "line": 361,
+        "content": "let report = `# 🔧 Workaround Resolution Final Report\\n\\n`;",
+        "type": "WORKAROUND",
+        "severity": "MEDIUM",
+        "context": " | report += `Generated: ${new Date().toISOString()}\\n`;",
+        "ageInDays": 0,
+        "estimation": "30min-1 hour"
+      },
+      {
+        "file": "scripts/resolve-workarounds.ts",
+        "line": 409,
+        "content": "report += `- **This Report**: \\`reports/workaround-resolution.md\\`\\n`;",
+        "type": "WORKAROUND",
+        "severity": "MEDIUM",
+        "context": "report += `## 📄 Generated Artifacts\\n\\n`; | report += `- **Implementation Plan**: \\`reports/impleme",
+        "ageInDays": 0,
+        "estimation": "30min-1 hour"
+      },
+      {
+        "file": "scripts/resolve-workarounds.ts",
+        "line": 411,
+        "content": "report += `- **Guided Fix Instructions**: \\`reports/workaround-fix-guide.md\\`\\n\\n`;",
+        "type": "WORKAROUND",
+        "severity": "MEDIUM",
+        "context": "report += `- **Implementation Plan**: \\`reports/implementation-plan.md\\`\\n`; | ",
+        "ageInDays": 0,
+        "estimation": "1-2 hours"
+      },
+      {
+        "file": "scripts/resolve-workarounds.ts",
+        "line": 414,
+        "content": "report += `*This report was generated by the Workaround Resolution System as part of the comprehensive system optimization initiative.*\\n`;",
+        "type": "WORKAROUND",
+        "severity": "MEDIUM",
+        "context": "report += `---\\n\\n`; | ",
+        "ageInDays": 0,
+        "estimation": "30min-1 hour"
+      },
+      {
+        "file": "scripts/unified-dashboard.ts",
+        "line": 17,
+        "content": "import WorkaroundDetector from \"./workaround-detector.js\";",
+        "type": "WORKAROUND",
+        "severity": "MEDIUM",
+        "context": "import DocumentOptimizer from \"./document-optimizer.js\"; | import ReferenceTracker from \"./reference",
+        "ageInDays": 0,
+        "estimation": "30min-1 hour"
+      },
+      {
+        "file": "scripts/resolve-workarounds.ts",
+        "line": 141,
+        "content": "if (content.includes(\"WORKAROUND\")) return \"WORKAROUND\";",
         "type": "WORKAROUND",
         "severity": "MEDIUM",
         "context": "Detected via grep scan",
@@ -1691,26 +1767,6 @@
         "estimation": "30min-1 hour"
       },
       {
-        "file": "src/scripts/lib/budget_guardian.ts",
-        "line": 511,
-        "content": "// Save as temp file first, then atomic rename",
-        "type": "TEMP",
-        "severity": "LOW",
-        "context": "try { | const tempFile = this.budgetFile + \".tmp\";",
-        "ageInDays": 6,
-        "estimation": "30min-1 hour"
-      },
-      {
-        "file": "src/scripts/lib/checkpoint_manager.ts",
-        "line": 457,
-        "content": "// Atomic write using temp file",
-        "type": "TEMP",
-        "severity": "LOW",
-        "context": " | const tempPath = checkpointPath + \".tmp\";",
-        "ageInDays": 6,
-        "estimation": "30min-1 hour"
-      },
-      {
         "file": "scripts/ai-fix-engine.ts",
         "line": 302,
         "content": "`type ${missingName} = any; // TODO: Define proper type`,",
@@ -1841,206 +1897,6 @@
         "estimation": "30min-1 hour"
       },
       {
-        "file": "scripts/lib/workaround-resolution-engine.ts",
-        "line": 5,
-        "content": "* Systematic conversion of temporary fixes to permanent solutions",
-        "type": "TEMP",
-        "severity": "LOW",
-        "context": "* Workaround Resolution Engine | * Implements the workaround resolution strategy from system philoso",
-        "ageInDays": 5,
-        "estimation": "1-2 hours"
-      },
-      {
-        "file": "scripts/lib/workaround-resolution-engine.ts",
-        "line": 18,
-        "content": "type: \"TODO\" | \"FIXME\" | \"HACK\" | \"TEMP\" | \"WORKAROUND\";",
-        "type": "TODO",
-        "severity": "LOW",
-        "context": "content: string; | severity: \"LOW\" | \"MEDIUM\" | \"HIGH\" | \"CRITICAL\";",
-        "ageInDays": 5,
-        "estimation": "1-2 hours"
-      },
-      {
-        "file": "scripts/lib/workaround-resolution-engine.ts",
-        "line": 18,
-        "content": "type: \"TODO\" | \"FIXME\" | \"HACK\" | \"TEMP\" | \"WORKAROUND\";",
-        "type": "TEMP",
-        "severity": "LOW",
-        "context": "content: string; | severity: \"LOW\" | \"MEDIUM\" | \"HIGH\" | \"CRITICAL\";",
-        "ageInDays": 5,
-        "estimation": "1-2 hours"
-      },
-      {
-        "file": "scripts/lib/workaround-resolution-engine.ts",
-        "line": 60,
-        "content": "pattern: /\\/\\/ TODO: Define proper type/gi,",
-        "type": "TODO",
-        "severity": "LOW",
-        "context": "{ | replacement: (match: string, context: string) => {",
-        "ageInDays": 5,
-        "estimation": "30min-1 hour"
-      },
-      {
-        "file": "scripts/lib/workaround-resolution-engine.ts",
-        "line": 67,
-        "content": "pattern: /: any; \\/\\/ TODO/gi,",
-        "type": "TODO",
-        "severity": "LOW",
-        "context": "{ | replacement: (match: string, context: string) => {",
-        "ageInDays": 5,
-        "estimation": "30min-1 hour"
-      },
-      {
-        "file": "scripts/lib/workaround-resolution-engine.ts",
-        "line": 81,
-        "content": "pattern: /\\/\\/ TEMP.*stub/gi,",
-        "type": "TEMP",
-        "severity": "LOW",
-        "context": "{ | replacement: () => {",
-        "ageInDays": 5,
-        "estimation": "30min-1 hour"
-      },
-      {
-        "file": "scripts/lib/workaround-resolution-engine.ts",
-        "line": 495,
-        "content": "if (finding.type === 'TODO' && finding.content.includes('implement')) {",
-        "type": "TODO",
-        "severity": "LOW",
-        "context": " | return 'guided-fix';",
-        "ageInDays": 5,
-        "estimation": "4-8 hours"
-      },
-      {
-        "file": "scripts/lib/workaround-resolution-engine.ts",
-        "line": 515,
-        "content": "if (finding.content.includes('TODO') && finding.content.length < 50) confidence = 0.7;",
-        "type": "TODO",
-        "severity": "LOW",
-        "context": "if (finding.content.includes('Define proper type')) confidence = 0.9; | }",
-        "ageInDays": 5,
-        "estimation": "30min-1 hour"
-      },
-      {
-        "file": "scripts/lib/workaround-resolution-engine.ts",
-        "line": 538,
-        "content": "if (finding.type === 'TODO' && finding.content.includes('implement')) {",
-        "type": "TODO",
-        "severity": "LOW",
-        "context": " | return 'Complete the implementation based on the requirements and existing patterns.';",
-        "ageInDays": 5,
-        "estimation": "4-8 hours"
-      },
-      {
-        "file": "scripts/lib/workaround-resolution-engine.ts",
-        "line": 542,
-        "content": "if (finding.content.includes('temporary')) {",
-        "type": "TEMP",
-        "severity": "LOW",
-        "context": " | return 'Replace temporary solution with permanent implementation following project conventions.';",
-        "ageInDays": 5,
-        "estimation": "30min-1 hour"
-      },
-      {
-        "file": "scripts/resolve-workarounds.ts",
-        "line": 5,
-        "content": "* End-to-end system for systematically resolving the 157 temporary fixes",
-        "type": "TEMP",
-        "severity": "LOW",
-        "context": "* Comprehensive Workaround Resolution Orchestrator | * Implements the complete resolution strategy f",
-        "ageInDays": 5,
-        "estimation": "1-2 hours"
-      },
-      {
-        "file": "scripts/resolve-workarounds.ts",
-        "line": 21,
-        "content": "type: \"TODO\" | \"FIXME\" | \"HACK\" | \"TEMP\" | \"WORKAROUND\";",
-        "type": "TODO",
-        "severity": "LOW",
-        "context": "content: string; | severity: \"LOW\" | \"MEDIUM\" | \"HIGH\" | \"CRITICAL\";",
-        "ageInDays": 5,
-        "estimation": "1-2 hours"
-      },
-      {
-        "file": "scripts/resolve-workarounds.ts",
-        "line": 21,
-        "content": "type: \"TODO\" | \"FIXME\" | \"HACK\" | \"TEMP\" | \"WORKAROUND\";",
-        "type": "TEMP",
-        "severity": "LOW",
-        "context": "content: string; | severity: \"LOW\" | \"MEDIUM\" | \"HIGH\" | \"CRITICAL\";",
-        "ageInDays": 5,
-        "estimation": "1-2 hours"
-      },
-      {
-        "file": "scripts/resolve-workarounds.ts",
-        "line": 33,
-        "content": "console.log(`   Target: 157 temporary fixes (54 high-priority)`);",
-        "type": "TEMP",
-        "severity": "LOW",
-        "context": "console.log(`   Mode: ${mode}`); | console.log('');",
-        "ageInDays": 5,
-        "estimation": "1-2 hours"
-      },
-      {
-        "file": "scripts/resolve-workarounds.ts",
-        "line": 100,
-        "content": "const searchCmd = `find . -name \"*.ts\" -not -path \"./node_modules/*\" -not -path \"./dist*/*\" -exec grep -n -E \"(TODO|FIXME|HACK|TEMP|WORKAROUND)\" {} + || true`;",
-        "type": "TODO",
-        "severity": "LOW",
-        "context": "// Search for common workaround patterns | const output = execSync(searchCmd, { encoding: 'utf8', st",
-        "ageInDays": 5,
-        "estimation": "1-2 hours"
-      },
-      {
-        "file": "scripts/resolve-workarounds.ts",
-        "line": 100,
-        "content": "const searchCmd = `find . -name \"*.ts\" -not -path \"./node_modules/*\" -not -path \"./dist*/*\" -exec grep -n -E \"(TODO|FIXME|HACK|TEMP|WORKAROUND)\" {} + || true`;",
-        "type": "TEMP",
-        "severity": "LOW",
-        "context": "// Search for common workaround patterns | const output = execSync(searchCmd, { encoding: 'utf8', st",
-        "ageInDays": 5,
-        "estimation": "1-2 hours"
-      },
-      {
-        "file": "scripts/resolve-workarounds.ts",
-        "line": 129,
-        "content": "private classifyType(content: string): \"TODO\" | \"FIXME\" | \"HACK\" | \"TEMP\" | \"WORKAROUND\" {",
-        "type": "TODO",
-        "severity": "LOW",
-        "context": " | if (content.includes('FIXME')) return 'FIXME';",
-        "ageInDays": 5,
-        "estimation": "1-2 hours"
-      },
-      {
-        "file": "scripts/resolve-workarounds.ts",
-        "line": 129,
-        "content": "private classifyType(content: string): \"TODO\" | \"FIXME\" | \"HACK\" | \"TEMP\" | \"WORKAROUND\" {",
-        "type": "TEMP",
-        "severity": "LOW",
-        "context": " | if (content.includes('FIXME')) return 'FIXME';",
-        "ageInDays": 5,
-        "estimation": "1-2 hours"
-      },
-      {
-        "file": "scripts/resolve-workarounds.ts",
-        "line": 132,
-        "content": "if (content.includes('TEMP')) return 'TEMP';",
-        "type": "TEMP",
-        "severity": "LOW",
-        "context": "if (content.includes('HACK')) return 'HACK'; | if (content.includes('WORKAROUND')) return 'WORKAROUN",
-        "ageInDays": 5,
-        "estimation": "30min-1 hour"
-      },
-      {
-        "file": "scripts/resolve-workarounds.ts",
-        "line": 134,
-        "content": "return 'TODO';",
-        "type": "TODO",
-        "severity": "LOW",
-        "context": "if (content.includes('WORKAROUND')) return 'WORKAROUND'; | }",
-        "ageInDays": 5,
-        "estimation": "30min-1 hour"
-      },
-      {
         "file": "scripts/sync-health-reporter.ts",
         "line": 43,
         "content": "console.log(\"🔍 Analyzing system health and temporary fixes...\\n\");",
@@ -2117,16 +1973,6 @@
         "type": "TODO",
         "severity": "LOW",
         "context": "const prop = e.message.match(/'([^']+)'/)?.[1] || \"newProp\"; | })",
-        "ageInDays": 5,
-        "estimation": "30min-1 hour"
-      },
-      {
-        "file": "scripts/unified-dashboard.ts",
-        "line": 210,
-        "content": "console.log(\"   🔍 Temporary Workarounds...\");",
-        "type": "TEMP",
-        "severity": "LOW",
-        "context": " | const workaroundDetector = new WorkaroundDetector();",
         "ageInDays": 5,
         "estimation": "30min-1 hour"
       },
@@ -2291,58 +2137,8 @@
         "estimation": "30min-1 hour"
       },
       {
-        "file": "src/scripts/lib/export_enhanced.ts",
-        "line": 115,
-        "content": "// 6. Stream processing with temporary file + atomic rename",
-        "type": "TEMP",
-        "severity": "LOW",
-        "context": " | const recordCount = await this.streamProcess(",
-        "ageInDays": 4,
-        "estimation": "30min-1 hour"
-      },
-      {
-        "file": "src/scripts/lib/export_enhanced.ts",
-        "line": 333,
-        "content": "// Cleanup temp file on error",
-        "type": "TEMP",
-        "severity": "LOW",
-        "context": "} catch (error) { | if (fs.existsSync(tempPath)) {",
-        "ageInDays": 4,
-        "estimation": "30min-1 hour"
-      },
-      {
-        "file": "src/rag/embeddings.ts",
-        "line": 282,
-        "content": "// TODO: Implement actual OpenAI API call",
-        "type": "TODO",
-        "severity": "LOW",
-        "context": "async embed(texts: string[]): Promise<number[][]> { | // For now, return mock vectors to avoid API c",
-        "ageInDays": 1,
-        "estimation": "4-8 hours"
-      },
-      {
-        "file": "src/rag/embeddings.ts",
-        "line": 314,
-        "content": "// TODO: Implement local model inference",
-        "type": "TODO",
-        "severity": "LOW",
-        "context": "async embed(texts: string[]): Promise<number[][]> { | this.logger.trace({",
-        "ageInDays": 1,
-        "estimation": "4-8 hours"
-      },
-      {
-        "file": "src/rag/factory.ts",
-        "line": 150,
-        "content": "// TODO: Implement embedding generation for new document",
-        "type": "TODO",
-        "severity": "LOW",
-        "context": "if (this.config.enableEmbeddings && this.components.embeddingManager) { | this.logger.trace({",
-        "ageInDays": 1,
-        "estimation": "4-8 hours"
-      },
-      {
         "file": "scripts/architectural-evolution-engine.ts",
-        "line": 580,
+        "line": 586,
         "content": "/(console\\.log\\(\"   🔥 v4\\.0 Enhanced Analysis:\"\\);[\\s\\S]*?)(    console\\.log\\(\"   🔍 Temporary Workarounds\\.\\.\\.\"\\);)/,",
         "type": "TEMP",
         "severity": "LOW",
@@ -2351,8 +2147,38 @@
         "estimation": "30min-1 hour"
       },
       {
+        "file": "scripts/docs/doc-linter.ts",
+        "line": 144,
+        "content": "// Check for TODO/FIXME comments",
+        "type": "TODO",
+        "severity": "LOW",
+        "context": " | lineNum = 0;",
+        "ageInDays": 0,
+        "estimation": "1-2 hours"
+      },
+      {
+        "file": "scripts/docs/doc-linter.ts",
+        "line": 148,
+        "content": "if (line.includes(\"TODO\") || line.includes(\"FIXME\")) {",
+        "type": "TODO",
+        "severity": "LOW",
+        "context": "lineNum++; | issues.push({",
+        "ageInDays": 0,
+        "estimation": "1-2 hours"
+      },
+      {
+        "file": "scripts/docs/doc-linter.ts",
+        "line": 153,
+        "content": "message: \"Contains TODO/FIXME comment\",",
+        "type": "TODO",
+        "severity": "LOW",
+        "context": "severity: \"info\", | });",
+        "ageInDays": 0,
+        "estimation": "1-2 hours"
+      },
+      {
         "file": "scripts/lib/auto-fix-manager.ts",
-        "line": 323,
+        "line": 372,
         "content": "// Copy file to temp location first",
         "type": "TEMP",
         "severity": "LOW",
@@ -2362,7 +2188,7 @@
       },
       {
         "file": "scripts/lib/auto-fix-manager.ts",
-        "line": 337,
+        "line": 390,
         "content": "// Remove uncompressed temp file",
         "type": "TEMP",
         "severity": "LOW",
@@ -2372,8 +2198,8 @@
       },
       {
         "file": "scripts/lib/auto-fix-manager.ts",
-        "line": 1190,
-        "content": "`5. Clean up temporary files`",
+        "line": 1369,
+        "content": "`5. Clean up temporary files`,",
         "type": "TEMP",
         "severity": "LOW",
         "context": "`4. If failed: restore from snapshot`, | ];",
@@ -2381,19 +2207,339 @@
         "estimation": "30min-1 hour"
       },
       {
-        "file": "scripts/smart-refactor-auditor.ts",
-        "line": 321,
-        "content": "if (errorMsg.includes('not implemented') || errorMsg.includes('todo')) {",
+        "file": "scripts/lib/workaround-resolution-engine.ts",
+        "line": 5,
+        "content": "* Systematic conversion of temporary fixes to permanent solutions",
+        "type": "TEMP",
+        "severity": "LOW",
+        "context": "* Workaround Resolution Engine | * Implements the workaround resolution strategy from system philoso",
+        "ageInDays": 0,
+        "estimation": "1-2 hours"
+      },
+      {
+        "file": "scripts/lib/workaround-resolution-engine.ts",
+        "line": 24,
+        "content": "type: \"TODO\" | \"FIXME\" | \"HACK\" | \"TEMP\" | \"WORKAROUND\";",
         "type": "TODO",
         "severity": "LOW",
-        "context": "} | return 'NOT_IMPLEMENTED';",
+        "context": "content: string; | severity: \"LOW\" | \"MEDIUM\" | \"HIGH\" | \"CRITICAL\";",
+        "ageInDays": 0,
+        "estimation": "1-2 hours"
+      },
+      {
+        "file": "scripts/lib/workaround-resolution-engine.ts",
+        "line": 24,
+        "content": "type: \"TODO\" | \"FIXME\" | \"HACK\" | \"TEMP\" | \"WORKAROUND\";",
+        "type": "TEMP",
+        "severity": "LOW",
+        "context": "content: string; | severity: \"LOW\" | \"MEDIUM\" | \"HIGH\" | \"CRITICAL\";",
+        "ageInDays": 0,
+        "estimation": "1-2 hours"
+      },
+      {
+        "file": "scripts/lib/workaround-resolution-engine.ts",
+        "line": 70,
+        "content": "pattern: /\\/\\/ TODO: Define proper type/gi,",
+        "type": "TODO",
+        "severity": "LOW",
+        "context": "{ | replacement: (match: string, context: string) => {",
+        "ageInDays": 0,
+        "estimation": "30min-1 hour"
+      },
+      {
+        "file": "scripts/lib/workaround-resolution-engine.ts",
+        "line": 77,
+        "content": "pattern: /: any; \\/\\/ TODO/gi,",
+        "type": "TODO",
+        "severity": "LOW",
+        "context": "{ | replacement: (match: string, context: string) => {",
+        "ageInDays": 0,
+        "estimation": "30min-1 hour"
+      },
+      {
+        "file": "scripts/lib/workaround-resolution-engine.ts",
+        "line": 91,
+        "content": "pattern: /\\/\\/ TEMP.*stub/gi,",
+        "type": "TEMP",
+        "severity": "LOW",
+        "context": "{ | replacement: () => {",
+        "ageInDays": 0,
+        "estimation": "30min-1 hour"
+      },
+      {
+        "file": "scripts/lib/workaround-resolution-engine.ts",
+        "line": 548,
+        "content": "if (finding.type === \"TODO\" && finding.content.includes(\"implement\")) {",
+        "type": "TODO",
+        "severity": "LOW",
+        "context": " | return \"guided-fix\";",
         "ageInDays": 0,
         "estimation": "4-8 hours"
       },
       {
+        "file": "scripts/lib/workaround-resolution-engine.ts",
+        "line": 573,
+        "content": "if (finding.content.includes(\"TODO\") && finding.content.length < 50)",
+        "type": "TODO",
+        "severity": "LOW",
+        "context": "if (finding.content.includes(\"Define proper type\")) confidence = 0.9; | confidence = 0.7;",
+        "ageInDays": 0,
+        "estimation": "30min-1 hour"
+      },
+      {
+        "file": "scripts/lib/workaround-resolution-engine.ts",
+        "line": 597,
+        "content": "if (finding.type === \"TODO\" && finding.content.includes(\"implement\")) {",
+        "type": "TODO",
+        "severity": "LOW",
+        "context": " | return \"Complete the implementation based on the requirements and existing patterns.\";",
+        "ageInDays": 0,
+        "estimation": "4-8 hours"
+      },
+      {
+        "file": "scripts/lib/workaround-resolution-engine.ts",
+        "line": 601,
+        "content": "if (finding.content.includes(\"temporary\")) {",
+        "type": "TEMP",
+        "severity": "LOW",
+        "context": " | return \"Replace temporary solution with permanent implementation following project conventions.\";",
+        "ageInDays": 0,
+        "estimation": "30min-1 hour"
+      },
+      {
         "file": "scripts/resolve-workarounds.ts",
-        "line": 132,
-        "content": "if (content.includes('TEMP')) return 'TEMP';",
+        "line": 5,
+        "content": "* End-to-end system for systematically resolving the 157 temporary fixes",
+        "type": "TEMP",
+        "severity": "LOW",
+        "context": "* Comprehensive Workaround Resolution Orchestrator | * Implements the complete resolution strategy f",
+        "ageInDays": 0,
+        "estimation": "1-2 hours"
+      },
+      {
+        "file": "scripts/resolve-workarounds.ts",
+        "line": 21,
+        "content": "type: \"TODO\" | \"FIXME\" | \"HACK\" | \"TEMP\" | \"WORKAROUND\";",
+        "type": "TODO",
+        "severity": "LOW",
+        "context": "content: string; | severity: \"LOW\" | \"MEDIUM\" | \"HIGH\" | \"CRITICAL\";",
+        "ageInDays": 0,
+        "estimation": "1-2 hours"
+      },
+      {
+        "file": "scripts/resolve-workarounds.ts",
+        "line": 21,
+        "content": "type: \"TODO\" | \"FIXME\" | \"HACK\" | \"TEMP\" | \"WORKAROUND\";",
+        "type": "TEMP",
+        "severity": "LOW",
+        "context": "content: string; | severity: \"LOW\" | \"MEDIUM\" | \"HIGH\" | \"CRITICAL\";",
+        "ageInDays": 0,
+        "estimation": "1-2 hours"
+      },
+      {
+        "file": "scripts/resolve-workarounds.ts",
+        "line": 39,
+        "content": "console.log(`   Target: 157 temporary fixes (54 high-priority)`);",
+        "type": "TEMP",
+        "severity": "LOW",
+        "context": "console.log(`   Mode: ${mode}`); | console.log(\"\");",
+        "ageInDays": 0,
+        "estimation": "1-2 hours"
+      },
+      {
+        "file": "scripts/resolve-workarounds.ts",
+        "line": 105,
+        "content": "const searchCmd = `find . -name \"*.ts\" -not -path \"./node_modules/*\" -not -path \"./dist*/*\" -exec grep -n -E \"(TODO|FIXME|HACK|TEMP|WORKAROUND)\" {} + || true`;",
+        "type": "TODO",
+        "severity": "LOW",
+        "context": "// Search for common workaround patterns | const output = execSync(searchCmd, { encoding: \"utf8\", st",
+        "ageInDays": 0,
+        "estimation": "1-2 hours"
+      },
+      {
+        "file": "scripts/resolve-workarounds.ts",
+        "line": 105,
+        "content": "const searchCmd = `find . -name \"*.ts\" -not -path \"./node_modules/*\" -not -path \"./dist*/*\" -exec grep -n -E \"(TODO|FIXME|HACK|TEMP|WORKAROUND)\" {} + || true`;",
+        "type": "TEMP",
+        "severity": "LOW",
+        "context": "// Search for common workaround patterns | const output = execSync(searchCmd, { encoding: \"utf8\", st",
+        "ageInDays": 0,
+        "estimation": "1-2 hours"
+      },
+      {
+        "file": "scripts/resolve-workarounds.ts",
+        "line": 137,
+        "content": "): \"TODO\" | \"FIXME\" | \"HACK\" | \"TEMP\" | \"WORKAROUND\" {",
+        "type": "TODO",
+        "severity": "LOW",
+        "context": "content: string, | if (content.includes(\"FIXME\")) return \"FIXME\";",
+        "ageInDays": 0,
+        "estimation": "1-2 hours"
+      },
+      {
+        "file": "scripts/resolve-workarounds.ts",
+        "line": 137,
+        "content": "): \"TODO\" | \"FIXME\" | \"HACK\" | \"TEMP\" | \"WORKAROUND\" {",
+        "type": "TEMP",
+        "severity": "LOW",
+        "context": "content: string, | if (content.includes(\"FIXME\")) return \"FIXME\";",
+        "ageInDays": 0,
+        "estimation": "1-2 hours"
+      },
+      {
+        "file": "scripts/resolve-workarounds.ts",
+        "line": 140,
+        "content": "if (content.includes(\"TEMP\")) return \"TEMP\";",
+        "type": "TEMP",
+        "severity": "LOW",
+        "context": "if (content.includes(\"HACK\")) return \"HACK\"; | if (content.includes(\"WORKAROUND\")) return \"WORKAROUN",
+        "ageInDays": 0,
+        "estimation": "30min-1 hour"
+      },
+      {
+        "file": "scripts/resolve-workarounds.ts",
+        "line": 142,
+        "content": "return \"TODO\";",
+        "type": "TODO",
+        "severity": "LOW",
+        "context": "if (content.includes(\"WORKAROUND\")) return \"WORKAROUND\"; | }",
+        "ageInDays": 0,
+        "estimation": "30min-1 hour"
+      },
+      {
+        "file": "scripts/smart-refactor-auditor.ts",
+        "line": 323,
+        "content": "if (errorMsg.includes(\"not implemented\") || errorMsg.includes(\"todo\")) {",
+        "type": "TODO",
+        "severity": "LOW",
+        "context": "} | return \"NOT_IMPLEMENTED\";",
+        "ageInDays": 0,
+        "estimation": "4-8 hours"
+      },
+      {
+        "file": "scripts/unified-dashboard.ts",
+        "line": 210,
+        "content": "console.log(\"   🔍 Temporary Workarounds...\");",
+        "type": "TEMP",
+        "severity": "LOW",
+        "context": " | const workaroundDetector = new WorkaroundDetector();",
+        "ageInDays": 0,
+        "estimation": "30min-1 hour"
+      },
+      {
+        "file": "src/rag/embeddings.ts",
+        "line": 289,
+        "content": "// TODO: Implement actual OpenAI API call",
+        "type": "TODO",
+        "severity": "LOW",
+        "context": "async embed(texts: string[]): Promise<number[][]> { | // For now, return mock vectors to avoid API c",
+        "ageInDays": 0,
+        "estimation": "4-8 hours"
+      },
+      {
+        "file": "src/rag/embeddings.ts",
+        "line": 328,
+        "content": "// TODO: Implement local model inference",
+        "type": "TODO",
+        "severity": "LOW",
+        "context": "async embed(texts: string[]): Promise<number[][]> { | this.logger.trace({",
+        "ageInDays": 0,
+        "estimation": "4-8 hours"
+      },
+      {
+        "file": "src/rag/factory.ts",
+        "line": 157,
+        "content": "// TODO: Implement embedding generation for new document",
+        "type": "TODO",
+        "severity": "LOW",
+        "context": "if (this.config.enableEmbeddings && this.components.embeddingManager) { | this.logger.trace({",
+        "ageInDays": 0,
+        "estimation": "4-8 hours"
+      },
+      {
+        "file": "src/scripts/lib/budget_guardian.ts",
+        "line": 511,
+        "content": "// Save as temp file first, then atomic rename",
+        "type": "TEMP",
+        "severity": "LOW",
+        "context": "try { | const tempFile = this.budgetFile + \".tmp\";",
+        "ageInDays": 0,
+        "estimation": "30min-1 hour"
+      },
+      {
+        "file": "src/scripts/lib/checkpoint_manager.ts",
+        "line": 457,
+        "content": "// Atomic write using temp file",
+        "type": "TEMP",
+        "severity": "LOW",
+        "context": " | const tempPath = checkpointPath + \".tmp\";",
+        "ageInDays": 0,
+        "estimation": "30min-1 hour"
+      },
+      {
+        "file": "src/scripts/lib/export_enhanced.ts",
+        "line": 115,
+        "content": "// 6. Stream processing with temporary file + atomic rename",
+        "type": "TEMP",
+        "severity": "LOW",
+        "context": " | const recordCount = await this.streamProcess(",
+        "ageInDays": 0,
+        "estimation": "30min-1 hour"
+      },
+      {
+        "file": "src/scripts/lib/export_enhanced.ts",
+        "line": 333,
+        "content": "// Cleanup temp file on error",
+        "type": "TEMP",
+        "severity": "LOW",
+        "context": "} catch (error) { | if (fs.existsSync(tempPath)) {",
+        "ageInDays": 0,
+        "estimation": "30min-1 hour"
+      },
+      {
+        "file": "src/scripts/metrics/__all__.ts",
+        "line": 179,
+        "content": "* TODO: Currently unused but reserved for future statistical analysis features",
+        "type": "TODO",
+        "severity": "LOW",
+        "context": "* Calculate mean value | */",
+        "ageInDays": 0,
+        "estimation": "30min-1 hour"
+      },
+      {
+        "file": "src/scripts/metrics/baselineReportGenerator.ts",
+        "line": 517,
+        "content": "* TODO: Reserved for future enhanced reporting features",
+        "type": "TODO",
+        "severity": "LOW",
+        "context": "* Generate gate mapping banner | */",
+        "ageInDays": 0,
+        "estimation": "30min-1 hour"
+      },
+      {
+        "file": "src/scripts/metrics/baselineReportGenerator.ts",
+        "line": 546,
+        "content": "* TODO: Reserved for future trend visualization features",
+        "type": "TODO",
+        "severity": "LOW",
+        "context": "* Generate KPI trends section | */",
+        "ageInDays": 0,
+        "estimation": "30min-1 hour"
+      },
+      {
+        "file": "src/scripts/metrics/baselineReportGenerator.ts",
+        "line": 596,
+        "content": "* TODO: Reserved for future DLQ reporting features",
+        "type": "TODO",
+        "severity": "LOW",
+        "context": "* Generate DLQ summary section | */",
+        "ageInDays": 0,
+        "estimation": "30min-1 hour"
+      },
+      {
+        "file": "scripts/resolve-workarounds.ts",
+        "line": 140,
+        "content": "if (content.includes(\"TEMP\")) return \"TEMP\";",
         "type": "TEMP",
         "severity": "LOW",
         "context": "Detected via grep scan",
@@ -2401,8 +2547,8 @@
       },
       {
         "file": "scripts/resolve-workarounds.ts",
-        "line": 134,
-        "content": "return 'TODO';",
+        "line": 142,
+        "content": "return \"TODO\";",
         "type": "TODO",
         "severity": "LOW",
         "context": "Detected via grep scan",
@@ -2608,7 +2754,7 @@
       },
       {
         "file": "scripts/lib/workaround-resolution-engine.ts",
-        "line": 60,
+        "line": 70,
         "content": "pattern: /\\/\\/ TODO: Define proper type/gi,",
         "type": "TODO",
         "severity": "LOW",
@@ -2617,7 +2763,7 @@
       },
       {
         "file": "scripts/lib/workaround-resolution-engine.ts",
-        "line": 67,
+        "line": 77,
         "content": "pattern: /: any; \\/\\/ TODO/gi,",
         "type": "TODO",
         "severity": "LOW",
@@ -2626,7 +2772,7 @@
       },
       {
         "file": "scripts/lib/workaround-resolution-engine.ts",
-        "line": 81,
+        "line": 91,
         "content": "pattern: /\\/\\/ TEMP.*stub/gi,",
         "type": "TEMP",
         "severity": "LOW",
@@ -2635,8 +2781,8 @@
       },
       {
         "file": "scripts/lib/workaround-resolution-engine.ts",
-        "line": 495,
-        "content": "if (finding.type === 'TODO' && finding.content.includes('implement')) {",
+        "line": 548,
+        "content": "if (finding.type === \"TODO\" && finding.content.includes(\"implement\")) {",
         "type": "TODO",
         "severity": "LOW",
         "context": "Detected via grep scan",
@@ -2644,8 +2790,8 @@
       },
       {
         "file": "scripts/lib/workaround-resolution-engine.ts",
-        "line": 515,
-        "content": "if (finding.content.includes('TODO') && finding.content.length < 50) confidence = 0.7;",
+        "line": 573,
+        "content": "if (finding.content.includes(\"TODO\") && finding.content.length < 50)",
         "type": "TODO",
         "severity": "LOW",
         "context": "Detected via grep scan",
@@ -2653,8 +2799,8 @@
       },
       {
         "file": "scripts/lib/workaround-resolution-engine.ts",
-        "line": 538,
-        "content": "if (finding.type === 'TODO' && finding.content.includes('implement')) {",
+        "line": 597,
+        "content": "if (finding.type === \"TODO\" && finding.content.includes(\"implement\")) {",
         "type": "TODO",
         "severity": "LOW",
         "context": "Detected via grep scan",
@@ -2698,7 +2844,7 @@
       },
       {
         "file": "src/rag/embeddings.ts",
-        "line": 282,
+        "line": 289,
         "content": "// TODO: Implement actual OpenAI API call",
         "type": "TODO",
         "severity": "LOW",
@@ -2707,7 +2853,7 @@
       },
       {
         "file": "src/rag/embeddings.ts",
-        "line": 314,
+        "line": 328,
         "content": "// TODO: Implement local model inference",
         "type": "TODO",
         "severity": "LOW",
@@ -2716,12 +2862,48 @@
       },
       {
         "file": "src/rag/factory.ts",
-        "line": 150,
+        "line": 157,
         "content": "// TODO: Implement embedding generation for new document",
         "type": "TODO",
         "severity": "LOW",
         "context": "Detected via grep scan",
         "estimation": "4-8 hours"
+      },
+      {
+        "file": "src/scripts/metrics/baselineReportGenerator.ts",
+        "line": 517,
+        "content": "* TODO: Reserved for future enhanced reporting features",
+        "type": "TODO",
+        "severity": "LOW",
+        "context": "Detected via grep scan",
+        "estimation": "30min-1 hour"
+      },
+      {
+        "file": "src/scripts/metrics/baselineReportGenerator.ts",
+        "line": 546,
+        "content": "* TODO: Reserved for future trend visualization features",
+        "type": "TODO",
+        "severity": "LOW",
+        "context": "Detected via grep scan",
+        "estimation": "30min-1 hour"
+      },
+      {
+        "file": "src/scripts/metrics/baselineReportGenerator.ts",
+        "line": 596,
+        "content": "* TODO: Reserved for future DLQ reporting features",
+        "type": "TODO",
+        "severity": "LOW",
+        "context": "Detected via grep scan",
+        "estimation": "30min-1 hour"
+      },
+      {
+        "file": "src/scripts/metrics/__all__.ts",
+        "line": 179,
+        "content": "* TODO: Currently unused but reserved for future statistical analysis features",
+        "type": "TODO",
+        "severity": "LOW",
+        "context": "Detected via grep scan",
+        "estimation": "30min-1 hour"
       },
       {
         "file": "src/scripts/lib/seed_manager.ts",
@@ -2735,9 +2917,9 @@
     ],
     "stats": {
       "oldestWorkaround": 7,
-      "averageAge": 5,
-      "filesAffected": 32,
-      "estimatedEffort": "30.7d"
+      "averageAge": 3,
+      "filesAffected": 35,
+      "estimatedEffort": "32.4d"
     },
     "recommendations": [
       "🔧 High number of HACKs detected - schedule refactoring session",
@@ -2760,7 +2942,7 @@
     "unusedDirectories": [],
     "archiveActions": [],
     "stats": {
-      "totalFiles": 1808,
+      "totalFiles": 1848,
       "potentialSavings": "0.5MB",
       "cleanupScore": 95
     }

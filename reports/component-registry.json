@@ -1,10 +1,10 @@
 {
   "version": "1.0.0",
-  "lastUpdated": "2025-09-30T04:57:16.427Z",
-  "totalComponents": 184,
+  "lastUpdated": "2025-09-30T06:38:49.242Z",
+  "totalComponents": 186,
   "complianceStats": {
     "compliant": 60,
-    "violations": 124,
+    "violations": 126,
     "unregistered": 0
   },
   "components": [
@@ -81,7 +81,6 @@
       "riskLevel": "medium",
       "userImpact": "low",
       "dependencies": [
-        "./smart-decision-matrix.js",
         "./performance-cache.js",
         "./safe-automation-guard.js",
         "./interactive-approval-system.js",
@@ -132,12 +131,12 @@
         "violations": [
           "Required integration with unified-dashboard missing"
         ],
-        "lastChecked": "2025-09-30T04:56:47.564Z"
+        "lastChecked": "2025-09-30T06:38:17.316Z"
       },
       "lifecycle": {
         "created": "2025-09-29 18:54:21 +0900",
-        "lastUpdated": "2025-09-30T04:50:51.776Z",
-        "lastIntegrated": "2025-09-30T04:56:47.617Z",
+        "lastUpdated": "2025-09-30T05:46:42.366Z",
+        "lastIntegrated": "2025-09-30T06:38:17.378Z",
         "status": "active"
       }
     },
@@ -150,7 +149,6 @@
       "userImpact": "low",
       "dependencies": [
         "child_process",
-        "fs",
         "path",
         "glob"
       ],
@@ -193,12 +191,12 @@
         "violations": [
           "Required integration with unified-dashboard missing"
         ],
-        "lastChecked": "2025-09-30T04:56:47.512Z"
+        "lastChecked": "2025-09-30T06:38:17.250Z"
       },
       "lifecycle": {
         "created": "2025-09-29 18:54:21 +0900",
-        "lastUpdated": "2025-09-30T04:49:19.554Z",
-        "lastIntegrated": "2025-09-30T04:56:47.563Z",
+        "lastUpdated": "2025-09-30T05:46:42.393Z",
+        "lastIntegrated": "2025-09-30T06:38:17.313Z",
         "status": "active"
       }
     },
@@ -697,12 +695,12 @@
         "violations": [
           "Required integration with unified-dashboard missing"
         ],
-        "lastChecked": "2025-09-26T06:45:56.963Z"
+        "lastChecked": "2025-09-30T06:38:17.185Z"
       },
       "lifecycle": {
-        "created": "2025-09-26T06:45:57.038Z",
-        "lastUpdated": "2025-09-26T06:42:09.820Z",
-        "lastIntegrated": "2025-09-26T06:45:57.038Z",
+        "created": "2025-09-29 18:54:21 +0900",
+        "lastUpdated": "2025-09-30T05:46:42.417Z",
+        "lastIntegrated": "2025-09-30T06:38:17.249Z",
         "status": "active"
       }
     },
@@ -740,12 +738,12 @@
       "compliance": {
         "isCompliant": true,
         "violations": [],
-        "lastChecked": "2025-09-26T07:01:45.298Z"
+        "lastChecked": "2025-09-30T06:38:17.123Z"
       },
       "lifecycle": {
-        "created": "2025-09-26T07:01:45.358Z",
-        "lastUpdated": "2025-09-26T06:54:29.575Z",
-        "lastIntegrated": "2025-09-26T07:01:45.358Z",
+        "created": "2025-09-29 18:54:21 +0900",
+        "lastUpdated": "2025-09-30T05:46:42.424Z",
+        "lastIntegrated": "2025-09-30T06:38:17.184Z",
         "status": "active"
       }
     },
@@ -854,12 +852,12 @@
         "violations": [
           "Required integration with unified-dashboard missing"
         ],
-        "lastChecked": "2025-09-26T07:01:45.164Z"
+        "lastChecked": "2025-09-30T06:38:15.841Z"
       },
       "lifecycle": {
-        "created": "2025-09-26T07:01:45.233Z",
-        "lastUpdated": "2025-09-26T06:56:27.195Z",
-        "lastIntegrated": "2025-09-26T07:01:45.233Z",
+        "created": "2025-09-29 18:54:21 +0900",
+        "lastUpdated": "2025-09-30T05:46:41.331Z",
+        "lastIntegrated": "2025-09-30T06:38:15.897Z",
         "status": "active"
       }
     },
@@ -920,12 +918,12 @@
       "compliance": {
         "isCompliant": true,
         "violations": [],
-        "lastChecked": "2025-09-30T04:56:46.991Z"
+        "lastChecked": "2025-09-30T06:38:15.787Z"
       },
       "lifecycle": {
         "created": "2025-09-29 18:54:21 +0900",
-        "lastUpdated": "2025-09-30T04:44:09.411Z",
-        "lastIntegrated": "2025-09-30T04:56:47.043Z",
+        "lastUpdated": "2025-09-30T05:46:41.375Z",
+        "lastIntegrated": "2025-09-30T06:38:15.840Z",
         "status": "active"
       }
     },
@@ -1112,12 +1110,12 @@
         "violations": [
           "Required integration with unified-dashboard missing"
         ],
-        "lastChecked": "2025-09-30T04:56:47.458Z"
+        "lastChecked": "2025-09-30T06:38:17.063Z"
       },
       "lifecycle": {
         "created": "2025-09-29 18:54:21 +0900",
-        "lastUpdated": "2025-09-30T04:45:08.740Z",
-        "lastIntegrated": "2025-09-30T04:56:47.510Z",
+        "lastUpdated": "2025-09-30T05:46:42.471Z",
+        "lastIntegrated": "2025-09-30T06:38:17.122Z",
         "status": "active"
       }
     },
@@ -1476,12 +1474,12 @@
         "violations": [
           "Required integration with unified-dashboard missing"
         ],
-        "lastChecked": "2025-09-30T03:12:13.593Z"
+        "lastChecked": "2025-09-30T06:38:15.898Z"
       },
       "lifecycle": {
         "created": "2025-09-22 18:26:51 +0900",
-        "lastUpdated": "2025-09-26T09:38:29.198Z",
-        "lastIntegrated": "2025-09-30T03:12:13.654Z",
+        "lastUpdated": "2025-09-30T05:46:43.180Z",
+        "lastIntegrated": "2025-09-30T06:38:15.956Z",
         "status": "active"
       }
     },
@@ -2386,7 +2384,6 @@
       "userImpact": "low",
       "dependencies": [
         "events",
-        "fs",
         "path",
         "child_process"
       ],
@@ -2419,12 +2416,12 @@
       "compliance": {
         "isCompliant": true,
         "violations": [],
-        "lastChecked": "2025-09-26T01:32:26.573Z"
+        "lastChecked": "2025-09-30T06:38:17.007Z"
       },
       "lifecycle": {
-        "created": "2025-09-26T01:32:26.632Z",
-        "lastUpdated": "2025-09-25T10:45:54.280Z",
-        "lastIntegrated": "2025-09-26T01:32:26.632Z",
+        "created": "2025-09-29 18:54:21 +0900",
+        "lastUpdated": "2025-09-30T05:46:42.535Z",
+        "lastIntegrated": "2025-09-30T06:38:17.062Z",
         "status": "active"
       }
     },
@@ -2436,7 +2433,6 @@
       "riskLevel": "low",
       "userImpact": "low",
       "dependencies": [
-        "./core-system-hub.js",
         "perf_hooks"
       ],
       "integrationPoints": [],
@@ -2476,12 +2472,12 @@
         "violations": [
           "Required integration with unified-dashboard missing"
         ],
-        "lastChecked": "2025-09-26T01:32:26.511Z"
+        "lastChecked": "2025-09-30T06:38:16.952Z"
       },
       "lifecycle": {
-        "created": "2025-09-26T01:32:26.572Z",
-        "lastUpdated": "2025-09-25T10:09:27.261Z",
-        "lastIntegrated": "2025-09-26T01:32:26.572Z",
+        "created": "2025-09-29 18:54:21 +0900",
+        "lastUpdated": "2025-09-30T05:46:42.546Z",
+        "lastIntegrated": "2025-09-30T06:38:17.007Z",
         "status": "active"
       }
     },
@@ -2538,12 +2534,12 @@
       "compliance": {
         "isCompliant": true,
         "violations": [],
-        "lastChecked": "2025-09-26T01:32:25.546Z"
+        "lastChecked": "2025-09-30T06:38:15.733Z"
       },
       "lifecycle": {
-        "created": "2025-09-26T01:32:25.605Z",
-        "lastUpdated": "2025-09-25T09:44:14.293Z",
-        "lastIntegrated": "2025-09-26T01:32:25.605Z",
+        "created": "2025-09-29 18:54:21 +0900",
+        "lastUpdated": "2025-09-30T05:46:41.559Z",
+        "lastIntegrated": "2025-09-30T06:38:15.786Z",
         "status": "active"
       }
     },
@@ -2666,12 +2662,12 @@
         "violations": [
           "Required integration with unified-dashboard missing"
         ],
-        "lastChecked": "2025-09-26T03:58:15.322Z"
+        "lastChecked": "2025-09-30T06:38:16.897Z"
       },
       "lifecycle": {
-        "created": "2025-09-26T03:58:15.521Z",
-        "lastUpdated": "2025-09-26T03:51:16.516Z",
-        "lastIntegrated": "2025-09-26T03:58:15.521Z",
+        "created": "2025-09-29 18:54:21 +0900",
+        "lastUpdated": "2025-09-30T05:46:42.569Z",
+        "lastIntegrated": "2025-09-30T06:38:16.951Z",
         "status": "active"
       }
     },
@@ -2771,12 +2767,12 @@
         "violations": [
           "Required integration with unified-dashboard missing"
         ],
-        "lastChecked": "2025-09-30T04:56:47.404Z"
+        "lastChecked": "2025-09-30T06:38:16.840Z"
       },
       "lifecycle": {
         "created": "2025-09-29 18:54:21 +0900",
-        "lastUpdated": "2025-09-30T04:45:25.938Z",
-        "lastIntegrated": "2025-09-30T04:56:47.456Z",
+        "lastUpdated": "2025-09-30T05:46:42.620Z",
+        "lastIntegrated": "2025-09-30T06:38:16.896Z",
         "status": "active"
       }
     },
@@ -3067,12 +3063,12 @@
         "violations": [
           "Required integration with unified-dashboard missing"
         ],
-        "lastChecked": "2025-09-26T03:12:34.043Z"
+        "lastChecked": "2025-09-30T06:38:16.785Z"
       },
       "lifecycle": {
-        "created": "2025-09-26T03:12:34.105Z",
-        "lastUpdated": "2025-09-26T02:56:19.167Z",
-        "lastIntegrated": "2025-09-26T03:12:34.105Z",
+        "created": "2025-09-29 18:54:21 +0900",
+        "lastUpdated": "2025-09-30T05:46:42.631Z",
+        "lastIntegrated": "2025-09-30T06:38:16.839Z",
         "status": "active"
       }
     },
@@ -3182,12 +3178,12 @@
         "violations": [
           "Required integration with unified-dashboard missing"
         ],
-        "lastChecked": "2025-09-30T04:56:46.937Z"
+        "lastChecked": "2025-09-30T06:38:15.679Z"
       },
       "lifecycle": {
         "created": "2025-09-30 13:10:41 +0900",
-        "lastUpdated": "2025-09-30T04:25:18.937Z",
-        "lastIntegrated": "2025-09-30T04:56:46.989Z",
+        "lastUpdated": "2025-09-30T05:46:41.683Z",
+        "lastIntegrated": "2025-09-30T06:38:15.731Z",
         "status": "active"
       }
     },
@@ -3498,6 +3494,68 @@
       }
     },
     {
+      "name": "doc-audit",
+      "path": "scripts/docs/doc-audit.ts",
+      "type": "utility",
+      "purpose": "sync, test, check, audit",
+      "riskLevel": "medium",
+      "userImpact": "low",
+      "dependencies": [
+        "fs",
+        "path"
+      ],
+      "integrationPoints": [
+        "package.json"
+      ],
+      "constraints": [
+        "MUST_PASS_FOR_DEPLOYMENT",
+        "AUTO_INCLUDE_IN_HEALTH_METRICS",
+        "MUST_PROVIDE_STATUS_SUMMARY",
+        "MUST_BE_ATOMIC_OPERATION",
+        "MUST_SUPPORT_ROLLBACK",
+        "MUST_HAVE_COMPONENT_METADATA"
+      ],
+      "designDecision": {
+        "placement": "internal",
+        "integration": {
+          "includeInStatus": true,
+          "includeInSync": true,
+          "includeInFix": false,
+          "includeInShip": false
+        },
+        "constraints": [
+          "MUST_PASS_FOR_DEPLOYMENT",
+          "AUTO_INCLUDE_IN_HEALTH_METRICS",
+          "MUST_PROVIDE_STATUS_SUMMARY",
+          "MUST_BE_ATOMIC_OPERATION",
+          "MUST_SUPPORT_ROLLBACK",
+          "MUST_HAVE_COMPONENT_METADATA"
+        ],
+        "approvalRequired": false,
+        "reasoning": [
+          "Status/health/check components integrated into unified dashboard",
+          "Security components mandatory in status for safety",
+          "Sync/git/commit components integrated into sync workflow",
+          "Status integration requires health metrics and summary",
+          "Sync integration requires atomic operations and rollback support",
+          "All components must have metadata for automatic consistency"
+        ]
+      },
+      "compliance": {
+        "isCompliant": false,
+        "violations": [
+          "Required integration with unified-dashboard missing"
+        ],
+        "lastChecked": "2025-09-30T06:38:17.549Z"
+      },
+      "lifecycle": {
+        "created": "2025-09-30 14:59:42 +0900",
+        "lastUpdated": "2025-09-30T05:58:31.704Z",
+        "lastIntegrated": "2025-09-30T06:38:17.607Z",
+        "status": "active"
+      }
+    },
+    {
       "name": "doc-gate",
       "path": "scripts/docs/doc-gate.ts",
       "type": "utility",
@@ -3563,6 +3621,70 @@
       "name": "doc-gate-ci",
       "path": "scripts/docs/doc-gate-ci.ts",
       "type": "utility",
+      "purpose": "status, sync, check, audit",
+      "riskLevel": "medium",
+      "userImpact": "low",
+      "dependencies": [
+        "fs",
+        "path",
+        "./doc-audit.js",
+        "./doc-linter.js"
+      ],
+      "integrationPoints": [
+        "package.json"
+      ],
+      "constraints": [
+        "MUST_PASS_FOR_DEPLOYMENT",
+        "AUTO_INCLUDE_IN_HEALTH_METRICS",
+        "MUST_PROVIDE_STATUS_SUMMARY",
+        "MUST_BE_ATOMIC_OPERATION",
+        "MUST_SUPPORT_ROLLBACK",
+        "MUST_HAVE_COMPONENT_METADATA"
+      ],
+      "designDecision": {
+        "placement": "internal",
+        "integration": {
+          "includeInStatus": true,
+          "includeInSync": true,
+          "includeInFix": false,
+          "includeInShip": false
+        },
+        "constraints": [
+          "MUST_PASS_FOR_DEPLOYMENT",
+          "AUTO_INCLUDE_IN_HEALTH_METRICS",
+          "MUST_PROVIDE_STATUS_SUMMARY",
+          "MUST_BE_ATOMIC_OPERATION",
+          "MUST_SUPPORT_ROLLBACK",
+          "MUST_HAVE_COMPONENT_METADATA"
+        ],
+        "approvalRequired": false,
+        "reasoning": [
+          "Status/health/check components integrated into unified dashboard",
+          "Security components mandatory in status for safety",
+          "Sync/git/commit components integrated into sync workflow",
+          "Status integration requires health metrics and summary",
+          "Sync integration requires atomic operations and rollback support",
+          "All components must have metadata for automatic consistency"
+        ]
+      },
+      "compliance": {
+        "isCompliant": false,
+        "violations": [
+          "Required integration with unified-dashboard missing"
+        ],
+        "lastChecked": "2025-09-30T06:38:17.491Z"
+      },
+      "lifecycle": {
+        "created": "2025-09-30 13:52:16 +0900",
+        "lastUpdated": "2025-09-30T05:58:31.792Z",
+        "lastIntegrated": "2025-09-30T06:38:17.548Z",
+        "status": "active"
+      }
+    },
+    {
+      "name": "doc-linter",
+      "path": "scripts/docs/doc-linter.ts",
+      "type": "utility",
       "purpose": "sync, check",
       "riskLevel": "medium",
       "userImpact": "low",
@@ -3610,73 +3732,12 @@
         "violations": [
           "Required integration with unified-dashboard missing"
         ],
-        "lastChecked": "2025-09-30T04:56:47.618Z"
-      },
-      "lifecycle": {
-        "created": "2025-09-30 13:52:16 +0900",
-        "lastUpdated": "2025-09-30T04:39:20.320Z",
-        "lastIntegrated": "2025-09-30T04:56:47.672Z",
-        "status": "active"
-      }
-    },
-    {
-      "name": "doc-linter",
-      "path": "scripts/docs/doc-linter.ts",
-      "type": "utility",
-      "purpose": "sync, test, check",
-      "riskLevel": "low",
-      "userImpact": "low",
-      "dependencies": [
-        "fs",
-        "path",
-        "glob",
-        "yaml"
-      ],
-      "integrationPoints": [
-        "package.json"
-      ],
-      "constraints": [
-        "AUTO_INCLUDE_IN_HEALTH_METRICS",
-        "MUST_PROVIDE_STATUS_SUMMARY",
-        "MUST_BE_ATOMIC_OPERATION",
-        "MUST_SUPPORT_ROLLBACK",
-        "MUST_HAVE_COMPONENT_METADATA"
-      ],
-      "designDecision": {
-        "placement": "internal",
-        "integration": {
-          "includeInStatus": true,
-          "includeInSync": true,
-          "includeInFix": false,
-          "includeInShip": false
-        },
-        "constraints": [
-          "AUTO_INCLUDE_IN_HEALTH_METRICS",
-          "MUST_PROVIDE_STATUS_SUMMARY",
-          "MUST_BE_ATOMIC_OPERATION",
-          "MUST_SUPPORT_ROLLBACK",
-          "MUST_HAVE_COMPONENT_METADATA"
-        ],
-        "approvalRequired": false,
-        "reasoning": [
-          "Status/health/check components integrated into unified dashboard",
-          "Sync/git/commit components integrated into sync workflow",
-          "Status integration requires health metrics and summary",
-          "Sync integration requires atomic operations and rollback support",
-          "All components must have metadata for automatic consistency"
-        ]
-      },
-      "compliance": {
-        "isCompliant": false,
-        "violations": [
-          "Required integration with unified-dashboard missing"
-        ],
-        "lastChecked": "2025-09-25T09:41:49.299Z"
+        "lastChecked": "2025-09-30T06:38:17.437Z"
       },
       "lifecycle": {
         "created": "2025-09-25 11:24:04 +0900",
-        "lastUpdated": "2025-09-25T04:30:54.709Z",
-        "lastIntegrated": "2025-09-25T09:41:49.350Z",
+        "lastUpdated": "2025-09-30T05:58:15.886Z",
+        "lastIntegrated": "2025-09-30T06:38:17.490Z",
         "status": "active"
       }
     },
@@ -3740,6 +3801,65 @@
         "created": "2025-09-25 11:24:04 +0900",
         "lastUpdated": "2025-09-25T04:30:54.729Z",
         "lastIntegrated": "2025-09-25T09:41:49.298Z",
+        "status": "active"
+      }
+    },
+    {
+      "name": "doc-signals-validator",
+      "path": "scripts/docs/doc-signals-validator.ts",
+      "type": "validation",
+      "purpose": "sync, validate, check",
+      "riskLevel": "medium",
+      "userImpact": "low",
+      "dependencies": [
+        "fs",
+        "path"
+      ],
+      "integrationPoints": [
+        "package.json"
+      ],
+      "constraints": [
+        "AUTO_INCLUDE_IN_HEALTH_METRICS",
+        "MUST_PROVIDE_STATUS_SUMMARY",
+        "MUST_BE_ATOMIC_OPERATION",
+        "MUST_SUPPORT_ROLLBACK",
+        "MUST_HAVE_COMPONENT_METADATA"
+      ],
+      "designDecision": {
+        "placement": "internal",
+        "integration": {
+          "includeInStatus": true,
+          "includeInSync": true,
+          "includeInFix": false,
+          "includeInShip": false
+        },
+        "constraints": [
+          "AUTO_INCLUDE_IN_HEALTH_METRICS",
+          "MUST_PROVIDE_STATUS_SUMMARY",
+          "MUST_BE_ATOMIC_OPERATION",
+          "MUST_SUPPORT_ROLLBACK",
+          "MUST_HAVE_COMPONENT_METADATA"
+        ],
+        "approvalRequired": false,
+        "reasoning": [
+          "Status/health/check components integrated into unified dashboard",
+          "Sync/git/commit components integrated into sync workflow",
+          "Status integration requires health metrics and summary",
+          "Sync integration requires atomic operations and rollback support",
+          "All components must have metadata for automatic consistency"
+        ]
+      },
+      "compliance": {
+        "isCompliant": false,
+        "violations": [
+          "Required integration with unified-dashboard missing"
+        ],
+        "lastChecked": "2025-09-30T06:38:17.379Z"
+      },
+      "lifecycle": {
+        "created": "2025-09-30 14:59:42 +0900",
+        "lastUpdated": "2025-09-30T06:10:43.306Z",
+        "lastIntegrated": "2025-09-30T06:38:17.436Z",
         "status": "active"
       }
     },
@@ -3808,7 +3928,6 @@
       "riskLevel": "medium",
       "userImpact": "low",
       "dependencies": [
-        "./lib/auto-fix-manager.js",
         "fs",
         "path",
         "child_process"
@@ -3856,12 +3975,12 @@
         "violations": [
           "Required integration with unified-dashboard missing"
         ],
-        "lastChecked": "2025-09-30T04:56:46.885Z"
+        "lastChecked": "2025-09-30T06:38:15.626Z"
       },
       "lifecycle": {
         "created": "2025-09-29 18:54:21 +0900",
-        "lastUpdated": "2025-09-30T04:48:59.276Z",
-        "lastIntegrated": "2025-09-30T04:56:46.936Z",
+        "lastUpdated": "2025-09-30T05:46:41.827Z",
+        "lastIntegrated": "2025-09-30T06:38:15.678Z",
         "status": "active"
       }
     },
@@ -4387,12 +4506,12 @@
         "violations": [
           "Required integration with unified-dashboard missing"
         ],
-        "lastChecked": "2025-09-30T04:56:47.349Z"
+        "lastChecked": "2025-09-30T06:38:16.728Z"
       },
       "lifecycle": {
         "created": "2025-09-29 18:54:21 +0900",
-        "lastUpdated": "2025-09-30T04:45:33.126Z",
-        "lastIntegrated": "2025-09-30T04:56:47.402Z",
+        "lastUpdated": "2025-09-30T05:46:42.712Z",
+        "lastIntegrated": "2025-09-30T06:38:16.784Z",
         "status": "active"
       }
     },
@@ -4705,12 +4824,12 @@
       "compliance": {
         "isCompliant": true,
         "violations": [],
-        "lastChecked": "2025-09-25T09:41:44.566Z"
+        "lastChecked": "2025-09-30T06:38:15.573Z"
       },
       "lifecycle": {
-        "created": "2025-09-25T09:41:44.648Z",
-        "lastUpdated": "2025-09-25T09:07:53.701Z",
-        "lastIntegrated": "2025-09-25T09:41:44.648Z",
+        "created": "2025-09-29 18:54:21 +0900",
+        "lastUpdated": "2025-09-30T05:46:42.213Z",
+        "lastIntegrated": "2025-09-30T06:38:15.625Z",
         "status": "active"
       }
     },
@@ -5353,7 +5472,6 @@
       "riskLevel": "medium",
       "userImpact": "low",
       "dependencies": [
-        "./component-integration-adapter.js",
         "./core-system-hub.js",
         "./safe-automation-guard.js",
         "./interactive-approval-system.js",
@@ -5401,12 +5519,12 @@
         "violations": [
           "Required integration with unified-dashboard missing"
         ],
-        "lastChecked": "2025-09-30T04:56:47.295Z"
+        "lastChecked": "2025-09-30T06:38:16.674Z"
       },
       "lifecycle": {
         "created": "2025-09-29 18:54:21 +0900",
-        "lastUpdated": "2025-09-30T04:45:47.129Z",
-        "lastIntegrated": "2025-09-30T04:56:47.348Z",
+        "lastUpdated": "2025-09-30T05:46:42.742Z",
+        "lastIntegrated": "2025-09-30T06:38:16.727Z",
         "status": "active"
       }
     },
@@ -5468,12 +5586,12 @@
         "violations": [
           "Required integration with unified-dashboard missing"
         ],
-        "lastChecked": "2025-09-26T01:32:25.424Z"
+        "lastChecked": "2025-09-30T06:38:15.518Z"
       },
       "lifecycle": {
-        "created": "2025-09-26T01:32:25.484Z",
-        "lastUpdated": "2025-09-25T09:44:36.418Z",
-        "lastIntegrated": "2025-09-26T01:32:25.484Z",
+        "created": "2025-09-29 18:54:21 +0900",
+        "lastUpdated": "2025-09-30T05:46:42.275Z",
+        "lastIntegrated": "2025-09-30T06:38:15.573Z",
         "status": "active"
       }
     },
@@ -5526,12 +5644,12 @@
         "violations": [
           "Required integration with unified-dashboard missing"
         ],
-        "lastChecked": "2025-09-26T01:32:26.220Z"
+        "lastChecked": "2025-09-30T06:38:16.619Z"
       },
       "lifecycle": {
-        "created": "2025-09-26T01:32:26.279Z",
-        "lastUpdated": "2025-09-25T10:49:09.629Z",
-        "lastIntegrated": "2025-09-26T01:32:26.279Z",
+        "created": "2025-09-29 18:54:21 +0900",
+        "lastUpdated": "2025-09-30T05:46:42.772Z",
+        "lastIntegrated": "2025-09-30T06:38:16.673Z",
         "status": "active"
       }
     },
@@ -5614,7 +5732,6 @@
         "events",
         "fs",
         "path",
-        "./externalized-decision-matrix.js",
         "./component-harmony-analyzer.js",
         "./self-management-tracker.js"
       ],
@@ -5658,12 +5775,12 @@
         "violations": [
           "Required integration with unified-dashboard missing"
         ],
-        "lastChecked": "2025-09-26T01:32:26.157Z"
+        "lastChecked": "2025-09-30T06:38:16.564Z"
       },
       "lifecycle": {
-        "created": "2025-09-26T01:32:26.218Z",
-        "lastUpdated": "2025-09-25T10:47:49.415Z",
-        "lastIntegrated": "2025-09-26T01:32:26.218Z",
+        "created": "2025-09-29 18:54:21 +0900",
+        "lastUpdated": "2025-09-30T05:46:42.804Z",
+        "lastIntegrated": "2025-09-30T06:38:16.618Z",
         "status": "active"
       }
     },
@@ -5723,12 +5840,12 @@
         "violations": [
           "Required integration with unified-dashboard missing"
         ],
-        "lastChecked": "2025-09-30T04:56:46.828Z"
+        "lastChecked": "2025-09-30T06:38:15.463Z"
       },
       "lifecycle": {
         "created": "2025-09-29 18:54:21 +0900",
-        "lastUpdated": "2025-09-30T04:27:27.264Z",
-        "lastIntegrated": "2025-09-30T04:56:46.883Z",
+        "lastUpdated": "2025-09-30T05:46:42.305Z",
+        "lastIntegrated": "2025-09-30T06:38:15.517Z",
         "status": "active"
       }
     },
@@ -5782,12 +5899,12 @@
         "violations": [
           "Required integration with unified-dashboard missing"
         ],
-        "lastChecked": "2025-09-30T04:56:47.241Z"
+        "lastChecked": "2025-09-30T06:38:16.510Z"
       },
       "lifecycle": {
         "created": "2025-09-29 18:54:21 +0900",
-        "lastUpdated": "2025-09-30T04:27:08.553Z",
-        "lastIntegrated": "2025-09-30T04:56:47.294Z",
+        "lastUpdated": "2025-09-30T05:46:42.819Z",
+        "lastIntegrated": "2025-09-30T06:38:16.563Z",
         "status": "active"
       }
     },
@@ -5832,12 +5949,12 @@
       "compliance": {
         "isCompliant": true,
         "violations": [],
-        "lastChecked": "2025-09-26T01:32:25.363Z"
+        "lastChecked": "2025-09-30T06:38:15.405Z"
       },
       "lifecycle": {
-        "created": "2025-09-26T01:32:25.423Z",
-        "lastUpdated": "2025-09-26T01:08:18.136Z",
-        "lastIntegrated": "2025-09-26T01:32:25.423Z",
+        "created": "2025-09-29 18:54:21 +0900",
+        "lastUpdated": "2025-09-30T05:46:42.320Z",
+        "lastIntegrated": "2025-09-30T06:38:15.462Z",
         "status": "active"
       }
     },
@@ -5894,12 +6011,12 @@
         "violations": [
           "Required integration with unified-dashboard missing"
         ],
-        "lastChecked": "2025-09-25T09:41:47.973Z"
+        "lastChecked": "2025-09-30T06:38:16.455Z"
       },
       "lifecycle": {
-        "created": "2025-09-25T09:41:48.034Z",
-        "lastUpdated": "2025-09-25T08:20:41.521Z",
-        "lastIntegrated": "2025-09-25T09:41:48.034Z",
+        "created": "2025-09-29 18:54:21 +0900",
+        "lastUpdated": "2025-09-30T05:46:42.833Z",
+        "lastIntegrated": "2025-09-30T06:38:16.509Z",
         "status": "active"
       }
     },
@@ -6073,7 +6190,6 @@
       "riskLevel": "medium",
       "userImpact": "low",
       "dependencies": [
-        "fs",
         "path",
         "child_process"
       ],
@@ -6120,12 +6236,12 @@
         "violations": [
           "Required integration with unified-dashboard missing"
         ],
-        "lastChecked": "2025-09-26T03:12:33.970Z"
+        "lastChecked": "2025-09-30T06:38:15.348Z"
       },
       "lifecycle": {
-        "created": "2025-09-26T03:12:34.041Z",
-        "lastUpdated": "2025-09-26T02:59:12.851Z",
-        "lastIntegrated": "2025-09-26T03:12:34.041Z",
+        "created": "2025-09-29 18:54:21 +0900",
+        "lastUpdated": "2025-09-30T05:46:43.091Z",
+        "lastIntegrated": "2025-09-30T06:38:15.404Z",
         "status": "active"
       }
     },
@@ -6328,12 +6444,12 @@
       "compliance": {
         "isCompliant": true,
         "violations": [],
-        "lastChecked": "2025-09-25T09:41:43.476Z"
+        "lastChecked": "2025-09-30T06:38:15.293Z"
       },
       "lifecycle": {
-        "created": "2025-09-25T09:41:43.538Z",
-        "lastUpdated": "2025-09-25T08:21:48.617Z",
-        "lastIntegrated": "2025-09-25T09:41:43.538Z",
+        "created": "2025-09-29 18:54:21 +0900",
+        "lastUpdated": "2025-09-30T05:46:43.491Z",
+        "lastIntegrated": "2025-09-30T06:38:15.347Z",
         "status": "active"
       }
     },
@@ -6455,12 +6571,12 @@
         "violations": [
           "Required integration with unified-dashboard missing"
         ],
-        "lastChecked": "2025-09-26T03:49:22.273Z"
+        "lastChecked": "2025-09-30T06:38:15.236Z"
       },
       "lifecycle": {
-        "created": "2025-09-26T03:49:22.539Z",
-        "lastUpdated": "2025-09-26T03:48:55.583Z",
-        "lastIntegrated": "2025-09-26T03:49:22.539Z",
+        "created": "2025-09-29 18:54:21 +0900",
+        "lastUpdated": "2025-09-30T05:46:43.506Z",
+        "lastIntegrated": "2025-09-30T06:38:15.292Z",
         "status": "active"
       }
     },
@@ -6472,7 +6588,6 @@
       "riskLevel": "medium",
       "userImpact": "low",
       "dependencies": [
-        "fs",
         "path"
       ],
       "integrationPoints": [
@@ -6512,12 +6627,12 @@
       "compliance": {
         "isCompliant": true,
         "violations": [],
-        "lastChecked": "2025-09-26T01:32:26.034Z"
+        "lastChecked": "2025-09-30T06:38:16.398Z"
       },
       "lifecycle": {
-        "created": "2025-09-26T01:32:26.095Z",
-        "lastUpdated": "2025-09-25T09:52:41.508Z",
-        "lastIntegrated": "2025-09-26T01:32:26.095Z",
+        "created": "2025-09-29 18:54:21 +0900",
+        "lastUpdated": "2025-09-30T05:46:42.860Z",
+        "lastIntegrated": "2025-09-30T06:38:16.454Z",
         "status": "active"
       }
     },
@@ -6564,12 +6679,12 @@
       "compliance": {
         "isCompliant": true,
         "violations": [],
-        "lastChecked": "2025-09-26T01:32:25.240Z"
+        "lastChecked": "2025-09-30T06:38:15.178Z"
       },
       "lifecycle": {
-        "created": "2025-09-26T01:32:25.300Z",
-        "lastUpdated": "2025-09-25T10:57:12.762Z",
-        "lastIntegrated": "2025-09-26T01:32:25.300Z",
+        "created": "2025-09-29 18:54:21 +0900",
+        "lastUpdated": "2025-09-30T05:46:43.528Z",
+        "lastIntegrated": "2025-09-30T06:38:15.235Z",
         "status": "active"
       }
     },
@@ -6781,12 +6896,12 @@
       "compliance": {
         "isCompliant": true,
         "violations": [],
-        "lastChecked": "2025-09-30T04:56:47.186Z"
+        "lastChecked": "2025-09-30T06:38:16.343Z"
       },
       "lifecycle": {
         "created": "2025-09-30 13:28:40 +0900",
-        "lastUpdated": "2025-09-30T04:28:26.129Z",
-        "lastIntegrated": "2025-09-30T04:56:47.240Z",
+        "lastUpdated": "2025-09-30T05:46:42.870Z",
+        "lastIntegrated": "2025-09-30T06:38:16.398Z",
         "status": "active"
       }
     },
@@ -6821,12 +6936,12 @@
       "compliance": {
         "isCompliant": true,
         "violations": [],
-        "lastChecked": "2025-09-25T09:41:47.848Z"
+        "lastChecked": "2025-09-30T06:38:16.289Z"
       },
       "lifecycle": {
-        "created": "2025-09-25T09:41:47.910Z",
-        "lastUpdated": "2025-09-25T08:56:21.125Z",
-        "lastIntegrated": "2025-09-25T09:41:47.910Z",
+        "created": "2025-09-29 18:54:21 +0900",
+        "lastUpdated": "2025-09-30T05:46:42.880Z",
+        "lastIntegrated": "2025-09-30T06:38:16.343Z",
         "status": "active"
       }
     },
@@ -6922,12 +7037,12 @@
         "violations": [
           "Required integration with unified-dashboard missing"
         ],
-        "lastChecked": "2025-09-26T03:12:33.907Z"
+        "lastChecked": "2025-09-30T06:38:15.123Z"
       },
       "lifecycle": {
-        "created": "2025-09-26T03:12:33.967Z",
-        "lastUpdated": "2025-09-26T03:00:34.456Z",
-        "lastIntegrated": "2025-09-26T03:12:33.967Z",
+        "created": "2025-09-29 18:54:21 +0900",
+        "lastUpdated": "2025-09-30T05:46:43.547Z",
+        "lastIntegrated": "2025-09-30T06:38:15.177Z",
         "status": "active"
       }
     },
@@ -7215,12 +7330,12 @@
       "compliance": {
         "isCompliant": true,
         "violations": [],
-        "lastChecked": "2025-09-30T04:56:46.768Z"
+        "lastChecked": "2025-09-30T06:38:15.064Z"
       },
       "lifecycle": {
         "created": "2025-09-24 16:54:07 +0900",
-        "lastUpdated": "2025-09-30T03:45:31.620Z",
-        "lastIntegrated": "2025-09-30T04:56:46.827Z",
+        "lastUpdated": "2025-09-30T05:46:43.629Z",
+        "lastIntegrated": "2025-09-30T06:38:15.122Z",
         "status": "active"
       }
     },
@@ -7339,12 +7454,12 @@
         "violations": [
           "Required integration with unified-dashboard missing"
         ],
-        "lastChecked": "2025-09-26T01:32:25.180Z"
+        "lastChecked": "2025-09-30T06:38:15.007Z"
       },
       "lifecycle": {
-        "created": "2025-09-26T01:32:25.239Z",
-        "lastUpdated": "2025-09-25T10:34:48.898Z",
-        "lastIntegrated": "2025-09-26T01:32:25.239Z",
+        "created": "2025-09-29 18:54:21 +0900",
+        "lastUpdated": "2025-09-30T05:46:43.674Z",
+        "lastIntegrated": "2025-09-30T06:38:15.063Z",
         "status": "active"
       }
     },
@@ -7398,12 +7513,12 @@
         "violations": [
           "Required integration with unified-dashboard missing"
         ],
-        "lastChecked": "2025-09-26T01:32:25.119Z"
+        "lastChecked": "2025-09-30T06:38:14.952Z"
       },
       "lifecycle": {
-        "created": "2025-09-26T01:32:25.179Z",
-        "lastUpdated": "2025-09-25T10:54:28.161Z",
-        "lastIntegrated": "2025-09-26T01:32:25.179Z",
+        "created": "2025-09-29 18:54:21 +0900",
+        "lastUpdated": "2025-09-30T05:46:43.684Z",
+        "lastIntegrated": "2025-09-30T06:38:15.006Z",
         "status": "active"
       }
     },
@@ -7459,12 +7574,12 @@
         "violations": [
           "Required integration with unified-dashboard missing"
         ],
-        "lastChecked": "2025-09-26T01:32:25.973Z"
+        "lastChecked": "2025-09-30T06:38:16.233Z"
       },
       "lifecycle": {
-        "created": "2025-09-26T01:32:26.034Z",
-        "lastUpdated": "2025-09-25T09:57:23.819Z",
-        "lastIntegrated": "2025-09-26T01:32:26.034Z",
+        "created": "2025-09-29 18:54:21 +0900",
+        "lastUpdated": "2025-09-30T05:46:42.890Z",
+        "lastIntegrated": "2025-09-30T06:38:16.289Z",
         "status": "active"
       }
     },
@@ -7728,12 +7843,12 @@
       "compliance": {
         "isCompliant": true,
         "violations": [],
-        "lastChecked": "2025-09-26T01:32:25.066Z"
+        "lastChecked": "2025-09-30T06:38:14.895Z"
       },
       "lifecycle": {
         "created": "2025-09-25 13:25:09 +0900",
-        "lastUpdated": "2025-09-25T09:43:29.172Z",
-        "lastIntegrated": "2025-09-26T01:32:25.118Z",
+        "lastUpdated": "2025-09-30T05:46:43.714Z",
+        "lastIntegrated": "2025-09-30T06:38:14.951Z",
         "status": "active"
       }
     },
@@ -7830,12 +7945,12 @@
         "violations": [
           "Required integration with unified-dashboard missing"
         ],
-        "lastChecked": "2025-09-26T01:32:25.911Z"
+        "lastChecked": "2025-09-30T06:38:16.179Z"
       },
       "lifecycle": {
-        "created": "2025-09-26T01:32:25.972Z",
-        "lastUpdated": "2025-09-25T10:44:26.744Z",
-        "lastIntegrated": "2025-09-26T01:32:25.972Z",
+        "created": "2025-09-29 18:54:21 +0900",
+        "lastUpdated": "2025-09-30T05:46:42.928Z",
+        "lastIntegrated": "2025-09-30T06:38:16.232Z",
         "status": "active"
       }
     },
@@ -8197,12 +8312,12 @@
       "compliance": {
         "isCompliant": true,
         "violations": [],
-        "lastChecked": "2025-09-30T03:27:32.002Z"
+        "lastChecked": "2025-09-30T06:38:16.124Z"
       },
       "lifecycle": {
         "created": "2025-09-29 18:54:21 +0900",
-        "lastUpdated": "2025-09-30T03:22:26.091Z",
-        "lastIntegrated": "2025-09-30T03:27:32.069Z",
+        "lastUpdated": "2025-09-30T05:46:42.993Z",
+        "lastIntegrated": "2025-09-30T06:38:16.179Z",
         "status": "active"
       }
     },
@@ -8380,12 +8495,12 @@
         "violations": [
           "Required integration with unified-dashboard missing"
         ],
-        "lastChecked": "2025-09-30T04:56:47.130Z"
+        "lastChecked": "2025-09-30T06:38:16.070Z"
       },
       "lifecycle": {
         "created": "2025-09-29 18:54:21 +0900",
-        "lastUpdated": "2025-09-30T04:49:50.929Z",
-        "lastIntegrated": "2025-09-30T04:56:47.185Z",
+        "lastUpdated": "2025-09-30T05:46:43.018Z",
+        "lastIntegrated": "2025-09-30T06:38:16.123Z",
         "status": "active"
       }
     },
@@ -8449,12 +8564,12 @@
         "violations": [
           "Required integration with unified-dashboard missing"
         ],
-        "lastChecked": "2025-09-30T04:56:46.691Z"
+        "lastChecked": "2025-09-30T06:38:14.835Z"
       },
       "lifecycle": {
         "created": "2025-09-29 18:54:21 +0900",
-        "lastUpdated": "2025-09-30T03:40:13.792Z",
-        "lastIntegrated": "2025-09-30T04:56:46.766Z",
+        "lastUpdated": "2025-09-30T05:46:43.800Z",
+        "lastIntegrated": "2025-09-30T06:38:14.894Z",
         "status": "active"
       }
     },
@@ -8514,12 +8629,12 @@
       "compliance": {
         "isCompliant": true,
         "violations": [],
-        "lastChecked": "2025-09-30T04:56:46.523Z"
+        "lastChecked": "2025-09-30T06:38:14.778Z"
       },
       "lifecycle": {
         "created": "2025-09-24 17:41:28 +0900",
-        "lastUpdated": "2025-09-30T04:50:24.159Z",
-        "lastIntegrated": "2025-09-30T04:56:46.689Z",
+        "lastUpdated": "2025-09-30T05:46:43.824Z",
+        "lastIntegrated": "2025-09-30T06:38:14.834Z",
         "status": "active"
       }
     },
@@ -8888,12 +9003,12 @@
       "compliance": {
         "isCompliant": true,
         "violations": [],
-        "lastChecked": "2025-09-26T01:32:24.941Z"
+        "lastChecked": "2025-09-30T06:38:14.717Z"
       },
       "lifecycle": {
-        "created": "2025-09-26T01:32:25.002Z",
-        "lastUpdated": "2025-09-26T00:32:57.416Z",
-        "lastIntegrated": "2025-09-26T01:32:25.002Z",
+        "created": "2025-09-29 18:54:21 +0900",
+        "lastUpdated": "2025-09-30T05:46:43.863Z",
+        "lastIntegrated": "2025-09-30T06:38:14.776Z",
         "status": "active"
       }
     },
@@ -9209,7 +9324,6 @@
       "userImpact": "low",
       "dependencies": [
         "./core-system-hub.js",
-        "./component-integration-adapter.js",
         "./adaptive-execution-engine.js",
         "./smart-decision-matrix.js",
         "./workaround-resolution-engine.js",
@@ -9257,12 +9371,12 @@
         "violations": [
           "Required integration with unified-dashboard missing"
         ],
-        "lastChecked": "2025-09-30T04:56:47.044Z"
+        "lastChecked": "2025-09-30T06:38:16.015Z"
       },
       "lifecycle": {
         "created": "2025-09-29 18:54:21 +0900",
-        "lastUpdated": "2025-09-30T04:50:06.886Z",
-        "lastIntegrated": "2025-09-30T04:56:47.129Z",
+        "lastUpdated": "2025-09-30T05:46:43.038Z",
+        "lastIntegrated": "2025-09-30T06:38:16.069Z",
         "status": "active"
       }
     },
@@ -9367,12 +9481,12 @@
         "violations": [
           "Required integration with unified-dashboard missing"
         ],
-        "lastChecked": "2025-09-25T09:41:41.553Z"
+        "lastChecked": "2025-09-30T06:38:14.664Z"
       },
       "lifecycle": {
-        "created": "2025-09-25T09:41:41.616Z",
-        "lastUpdated": "2025-09-25T09:21:52.314Z",
-        "lastIntegrated": "2025-09-25T09:41:41.616Z",
+        "created": "2025-09-29 18:54:21 +0900",
+        "lastUpdated": "2025-09-30T05:46:43.913Z",
+        "lastIntegrated": "2025-09-30T06:38:14.716Z",
         "status": "experimental"
       }
     },
@@ -9671,12 +9785,12 @@
         "violations": [
           "Required integration with unified-dashboard missing"
         ],
-        "lastChecked": "2025-09-26T01:32:24.878Z"
+        "lastChecked": "2025-09-30T06:38:14.608Z"
       },
       "lifecycle": {
         "created": "2025-09-25 13:25:09 +0900",
-        "lastUpdated": "2025-09-25T10:06:47.645Z",
-        "lastIntegrated": "2025-09-26T01:32:24.939Z",
+        "lastUpdated": "2025-09-30T05:46:43.944Z",
+        "lastIntegrated": "2025-09-30T06:38:14.663Z",
         "status": "active"
       }
     },
@@ -9842,12 +9956,12 @@
         "violations": [
           "Required integration with unified-dashboard missing"
         ],
-        "lastChecked": "2025-09-26T01:32:24.660Z"
+        "lastChecked": "2025-09-30T06:38:14.533Z"
       },
       "lifecycle": {
-        "created": "2025-09-26T01:32:24.877Z",
-        "lastUpdated": "2025-09-25T09:47:15.004Z",
-        "lastIntegrated": "2025-09-26T01:32:24.877Z",
+        "created": "2025-09-29 18:54:21 +0900",
+        "lastUpdated": "2025-09-30T05:46:43.964Z",
+        "lastIntegrated": "2025-09-30T06:38:14.607Z",
         "status": "active"
       }
     },
@@ -10165,8 +10279,7 @@
       "dependencies": [
         "fs",
         "path",
-        "child_process",
-        "./auto-fix-manager.js"
+        "child_process"
       ],
       "integrationPoints": [],
       "constraints": [
@@ -10207,12 +10320,12 @@
         "violations": [
           "Required integration with unified-dashboard missing"
         ],
-        "lastChecked": "2025-09-26T01:32:25.727Z"
+        "lastChecked": "2025-09-30T06:38:15.957Z"
       },
       "lifecycle": {
-        "created": "2025-09-26T01:32:25.788Z",
-        "lastUpdated": "2025-09-25T10:33:49.786Z",
-        "lastIntegrated": "2025-09-26T01:32:25.788Z",
+        "created": "2025-09-29 18:54:21 +0900",
+        "lastUpdated": "2025-09-30T05:46:43.076Z",
+        "lastIntegrated": "2025-09-30T06:38:16.014Z",
         "status": "active"
       }
     },
@@ -10331,12 +10444,12 @@
         "violations": [
           "Required integration with unified-dashboard missing"
         ],
-        "lastChecked": "2025-09-25T09:41:40.930Z"
+        "lastChecked": "2025-09-30T06:38:14.305Z"
       },
       "lifecycle": {
-        "created": "2025-09-25T09:41:41.012Z",
-        "lastUpdated": "2025-09-25T08:03:00.694Z",
-        "lastIntegrated": "2025-09-25T09:41:41.012Z",
+        "created": "2025-09-29 18:54:21 +0900",
+        "lastUpdated": "2025-09-30T05:46:44.120Z",
+        "lastIntegrated": "2025-09-30T06:38:14.531Z",
         "status": "active"
       }
     },
@@ -10407,9 +10520,9 @@
     }
   ],
   "integrationHealth": {
-    "unifiedDashboard": 8.695652173913043,
-    "packageJson": 52.17391304347826,
+    "unifiedDashboard": 8.60215053763441,
+    "packageJson": 52.68817204301075,
     "coreCommands": 8,
-    "documented": 2.717391304347826
+    "documented": 2.6881720430107525
   }
 }

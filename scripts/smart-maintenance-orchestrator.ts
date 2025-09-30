@@ -337,7 +337,7 @@ class SmartMaintenanceOrchestrator {
       try {
         const healthResult = execSync("npm run status:quick", {
           encoding: "utf8",
-          stdio: "pipe",
+          stdio: "inherit",
         });
         const healthMatch = healthResult.match(/시스템 건강도: (\d+)\/100/);
         if (healthMatch) {
@@ -465,7 +465,7 @@ class SmartMaintenanceOrchestrator {
         console.log("\n🔄 자동수정 완료 후 시스템 재검증...");
         const healthResult = execSync("npm run status:quick", {
           encoding: "utf8",
-          stdio: "pipe",
+          stdio: "inherit",
         });
         const healthMatch = healthResult.match(/시스템 건강도: (\d+)\/100/);
         if (healthMatch) {
@@ -805,7 +805,7 @@ class SmartMaintenanceOrchestrator {
     try {
       const lintResult = execSync("npm run dev:lint", {
         encoding: "utf8",
-        stdio: "pipe",
+        stdio: "inherit",
       });
       const warningCount = (lintResult.match(/warning/g) || []).length;
       if (warningCount > 0) {
@@ -1452,7 +1452,7 @@ class SmartMaintenanceOrchestrator {
           for (const opt of safeOptimizations) {
             try {
               console.log(`   ⚡ ${opt.name}...`);
-              execSync(opt.command, { stdio: "pipe" });
+              execSync(opt.command, { stdio: "inherit" });
               session.fixed++;
             } catch (error) {
               console.log(`   ❌ ${opt.name} 실패`);
@@ -1853,8 +1853,8 @@ npm run optimize    # 성능 최적화 분석
 
     try {
       // 기본적인 검증 실행
-      execSync("npm run typecheck --silent", { stdio: "pipe" });
-      execSync("npm run lint --silent", { stdio: "pipe" });
+      execSync("npm run typecheck --silent", { stdio: "inherit" });
+      execSync("npm run lint --silent", { stdio: "inherit" });
 
       console.log("✅ 롤백 후 시스템 검증 통과");
     } catch (error) {
