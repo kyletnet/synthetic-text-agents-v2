@@ -907,5 +907,86 @@
     ],
     "results": [],
     "systemChanges": []
+  },
+  {
+    "sessionId": "comm-1759220116526",
+    "timestamp": "2025-09-30T08:15:16.526Z",
+    "items": [
+      {
+        "id": "approval-disconnected",
+        "type": "system_change",
+        "priority": "high",
+        "title": "승인 시스템이 메인 명령어에 연결되지 않음",
+        "description": "승인 관련 컴포넌트가 존재하지만 /maintain, /ship에 연결되지 않았습니다",
+        "context": "interactive-approval-handler.ts가 있지만 메인 워크플로우에 통합되지 않음",
+        "suggestedAction": "/maintain에 --with-approvals 옵션 추가 또는 자동 통합",
+        "command": "npm run approve:interactive",
+        "autoExecutable": false,
+        "created": "2025-09-30T08:15:16.525Z",
+        "requiresUserInput": true
+      },
+      {
+        "id": "architecture-evolution",
+        "type": "approval_needed",
+        "priority": "high",
+        "title": "아키텍처 진화 승인 필요 (4개)",
+        "description": "시스템 아키텍처 개선 사항이 승인을 기다리고 있습니다",
+        "context": "중복 제거, 구조 개선 등의 변경사항",
+        "command": "npm run evolution:approve",
+        "autoExecutable": false,
+        "created": "2025-09-30T08:15:16.526Z",
+        "requiresUserInput": true
+      },
+      {
+        "id": "docs-disconnected",
+        "type": "system_change",
+        "priority": "medium",
+        "title": "문서 시스템이 메인 명령어에 연결되지 않음",
+        "description": "문서 업데이트 시스템이 있지만 자동 실행되지 않습니다",
+        "context": "문서 동기화가 수동으로만 가능한 상태",
+        "suggestedAction": "메인 명령어에 docs:refresh 자동 통합",
+        "autoExecutable": true,
+        "created": "2025-09-30T08:15:16.525Z",
+        "requiresUserInput": false
+      },
+      {
+        "id": "command-complexity",
+        "type": "decision_required",
+        "priority": "medium",
+        "title": "명령어 구조 단순화 필요 (106개 스크립트)",
+        "description": "사용자 대면 명령어가 너무 많아 복잡성이 증가했습니다",
+        "context": "2-command 철학에서 벗어나 복잡성 증가",
+        "suggestedAction": "핵심 명령어 3개 (maintain, ship, optimize)로 재구조화",
+        "autoExecutable": false,
+        "created": "2025-09-30T08:15:16.526Z",
+        "requiresUserInput": true
+      },
+      {
+        "id": "automation-level",
+        "type": "decision_required",
+        "priority": "medium",
+        "title": "자동화 레벨 조정 결정 필요",
+        "description": "현재 85% 자동화 레벨을 95%까지 높일 수 있습니다",
+        "context": "더 많은 작업을 자동화할지 사용자 제어를 유지할지 결정 필요",
+        "suggestedAction": "단계적 자동화 증가 또는 현재 레벨 유지",
+        "autoExecutable": false,
+        "created": "2025-09-30T08:15:16.526Z",
+        "requiresUserInput": true
+      },
+      {
+        "id": "add-optimize-command",
+        "type": "notification",
+        "priority": "low",
+        "title": "/optimize 명령어를 3번째 핵심 명령어로 추가 제안",
+        "description": "최적화 시스템이 중요해져서 /maintain, /ship와 동등한 레벨로 승격 고려",
+        "context": "현재 최적화는 하위 명령어지만 핵심 기능으로 성장",
+        "suggestedAction": "/optimize를 3번째 핵심 명령어로 승격",
+        "autoExecutable": true,
+        "created": "2025-09-30T08:15:16.526Z",
+        "requiresUserInput": false
+      }
+    ],
+    "results": [],
+    "systemChanges": []
   }
 ]

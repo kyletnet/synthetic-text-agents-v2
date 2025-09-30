@@ -1,9 +1,9 @@
 {
   "version": "1.0.0",
-  "lastUpdated": "2025-09-30T06:38:49.242Z",
-  "totalComponents": 186,
+  "lastUpdated": "2025-09-30T08:15:16.483Z",
+  "totalComponents": 187,
   "complianceStats": {
-    "compliant": 60,
+    "compliant": 61,
     "violations": 126,
     "unregistered": 0
   },
@@ -8312,12 +8312,12 @@
       "compliance": {
         "isCompliant": true,
         "violations": [],
-        "lastChecked": "2025-09-30T06:38:16.124Z"
+        "lastChecked": "2025-09-30T08:14:47.800Z"
       },
       "lifecycle": {
         "created": "2025-09-29 18:54:21 +0900",
-        "lastUpdated": "2025-09-30T05:46:42.993Z",
-        "lastIntegrated": "2025-09-30T06:38:16.179Z",
+        "lastUpdated": "2025-09-30T07:55:25.410Z",
+        "lastIntegrated": "2025-09-30T08:14:47.867Z",
         "status": "active"
       }
     },
@@ -8564,12 +8564,12 @@
         "violations": [
           "Required integration with unified-dashboard missing"
         ],
-        "lastChecked": "2025-09-30T06:38:14.835Z"
+        "lastChecked": "2025-09-30T08:14:47.725Z"
       },
       "lifecycle": {
         "created": "2025-09-29 18:54:21 +0900",
-        "lastUpdated": "2025-09-30T05:46:43.800Z",
-        "lastIntegrated": "2025-09-30T06:38:14.894Z",
+        "lastUpdated": "2025-09-30T06:46:31.933Z",
+        "lastIntegrated": "2025-09-30T08:14:47.798Z",
         "status": "active"
       }
     },
@@ -9487,6 +9487,48 @@
         "created": "2025-09-29 18:54:21 +0900",
         "lastUpdated": "2025-09-30T05:46:43.913Z",
         "lastIntegrated": "2025-09-30T06:38:14.716Z",
+        "status": "experimental"
+      }
+    },
+    {
+      "name": "test-readline-approval",
+      "path": "scripts/test-readline-approval.ts",
+      "type": "test",
+      "purpose": "test",
+      "riskLevel": "low",
+      "userImpact": "none",
+      "dependencies": [
+        "readline"
+      ],
+      "integrationPoints": [],
+      "constraints": [
+        "MUST_HAVE_COMPONENT_METADATA"
+      ],
+      "designDecision": {
+        "placement": "internal",
+        "integration": {
+          "includeInStatus": false,
+          "includeInSync": false,
+          "includeInFix": false,
+          "includeInShip": false
+        },
+        "constraints": [
+          "MUST_HAVE_COMPONENT_METADATA"
+        ],
+        "approvalRequired": false,
+        "reasoning": [
+          "All components must have metadata for automatic consistency"
+        ]
+      },
+      "compliance": {
+        "isCompliant": true,
+        "violations": [],
+        "lastChecked": "2025-09-30T08:14:47.485Z"
+      },
+      "lifecycle": {
+        "created": "2025-09-30 16:56:24 +0900",
+        "lastUpdated": "2025-09-30T07:55:42.811Z",
+        "lastIntegrated": "2025-09-30T08:14:47.723Z",
         "status": "experimental"
       }
     },
@@ -10520,9 +10562,9 @@
     }
   ],
   "integrationHealth": {
-    "unifiedDashboard": 8.60215053763441,
-    "packageJson": 52.68817204301075,
+    "unifiedDashboard": 8.55614973262032,
+    "packageJson": 52.406417112299465,
     "coreCommands": 8,
-    "documented": 2.6881720430107525
+    "documented": 2.6737967914438503
   }
 }

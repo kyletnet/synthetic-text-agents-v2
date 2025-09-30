@@ -355,28 +355,39 @@ Before marking implementation complete:
 
 ### Command Workflow
 
-**명확한 책임 분리**:
-```
-/status   → 진단 전용 (읽기 전용)
-/fix      → 대화형 품질 수정 (사용자 제어)
-/maintain → CI/CD 자동 유지보수 (사람 없이)
-/ship     → 배포 준비 (문서 동기화 포함)
+**올인원 워크플로우 - `/fix` 하나로 모든 것**:
+
+개발자는 `/fix` 하나만 기억하면 됩니다:
+
+```bash
+npm run fix                # 진단 → 수정 → 테스트 → 문서화 → 검증
+npm run fix --check-only   # 진단만
+npm run fix --skip-tests   # 테스트 생략
+npm run fix --skip-docs    # 문서 동기화 생략
 ```
 
 **개발 워크플로우**:
+
 ```bash
-1. npm run status    # 문제 파악
-2. npm run fix       # 대화형 수정
-3. npm run test      # 테스트
-4. npm run ship      # 배포 준비 (문서 동기화)
+npm run fix          # 올인원 품질 관리
+git add -A
+git commit -m "fix: 품질 개선"
+npm run ship         # 배포 준비
 ```
 
 **CI/CD 워크플로우**:
+
 ```bash
-1. npm run maintain  # 자동 유지보수
-2. npm run test      # 테스트
-3. npm run ship      # 배포 (main 브랜치만)
+npm run maintain     # 자동 유지보수
+npm run test         # 테스트
+npm run ship         # 배포 (main 브랜치만)
 ```
+
+**다른 명령어들**:
+
+- `/status`: 진단 전용 (진단만 필요할 때)
+- `/maintain`: CI/CD 자동화 전용 (사람이 실행할 필요 없음)
+- `/ship`: 배포 준비 (문서 동기화 + 건강도 + 최적화)
 
 상세 가이드: `@docs/COMMAND_GUIDE.md`
 

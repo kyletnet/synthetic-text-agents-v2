@@ -1,18 +1,24 @@
 #!/usr/bin/env tsx
 
 /**
- * /fix 명령어 - 대화형 품질 수정 시스템
+ * /fix 명령어 - 올인원 품질 관리 시스템
  *
- * 목적:
- * - /maintain에서 진단 기능 분리
- * - 사용자가 하나씩 승인하며 수정
- * - 코드 품질, 문서화, 워크어라운드 모두 처리
+ * 철학: 하나의 명령어로 모든 품질 관리
  *
- * 특징:
- * 1. 진단 없이 수정만 수행
- * 2. 대화형 승인 (항목별)
- * 3. 롤백 가능
- * 4. 진행 상황 추적
+ * 자동 실행 순서:
+ * 1. 진단 (status 포함)
+ * 2. 대화형 수정
+ * 3. 테스트 실행
+ * 4. 문서 동기화
+ * 5. 최종 건강도 확인
+ *
+ * 옵션:
+ * - 기본: 전체 프로세스
+ * - --check-only: 진단만 (status 대체)
+ * - --skip-tests: 테스트 건너뛰기
+ * - --skip-docs: 문서 동기화 건너뛰기
+ *
+ * 목표: 사용자는 `/fix`만 기억하면 됨
  */
 
 import { execSync } from "child_process";
@@ -63,36 +69,75 @@ class FixOrchestrator {
   }
 
   /**
-   * 메인 실행
+   * 메인 실행 (올인원 워크플로우)
    */
   async run(): Promise<void> {
-    console.log("🔧 Fix Orchestrator");
+    console.log("🔧 Fix Orchestrator - 올인원 품질 관리");
     console.log("═".repeat(60));
-    console.log("대화형 품질 수정 시스템\n");
+    console.log("진단 → 수정 → 테스트 → 문서화 → 검증\n");
+
+    const checkOnly = process.argv.includes("--check-only");
+    const skipTests = process.argv.includes("--skip-tests");
+    const skipDocs = process.argv.includes("--skip-docs");
+
+    // 0. 초기 진단 (status)
+    console.log("📊 0단계: 시스템 진단 중...\n");
+    await this.showSystemStatus();
 
     // 1. 수정 항목 수집
-    console.log("📊 1단계: 수정 항목 수집 중...\n");
+    console.log("\n📊 1단계: 수정 항목 수집 중...\n");
     await this.collectFixItems();
 
     if (this.session.items.length === 0) {
       console.log("✨ 수정할 항목이 없습니다! 시스템이 완벽합니다.");
+      if (!skipDocs) {
+        console.log("\n📚 4단계: 문서 동기화 중...");
+        this.syncDocumentation();
+      }
+      console.log("\n🎉 완료! 시스템이 최상의 상태입니다.");
       return;
     }
 
-    console.log(
-      `\n📋 총 ${this.session.items.length}개 수정 항목 발견\n`,
-    );
+    console.log(`\n📋 총 ${this.session.items.length}개 수정 항목 발견\n`);
     this.showFixSummary();
+
+    // --check-only: 진단만 하고 종료
+    if (checkOnly) {
+      console.log("\n💡 --check-only 모드: 진단만 수행합니다.");
+      console.log("수정하려면: npm run fix");
+      return;
+    }
 
     // 2. 대화형 수정
     console.log("\n🔧 2단계: 대화형 수정 시작\n");
     await this.interactiveFix();
 
-    // 3. 결과 보고
+    // 3. 테스트 실행
+    if (!skipTests && this.session.fixed > 0) {
+      console.log("\n🧪 3단계: 테스트 실행 중...");
+      this.runTests();
+    }
+
+    // 4. 문서 동기화
+    if (!skipDocs && this.session.fixed > 0) {
+      console.log("\n📚 4단계: 문서 동기화 중...");
+      this.syncDocumentation();
+    }
+
+    // 5. 최종 건강도 확인
+    if (this.session.fixed > 0) {
+      console.log("\n🏥 5단계: 최종 건강도 확인...");
+      await this.showSystemStatus();
+    }
+
+    // 6. 결과 보고
     this.showResults();
 
-    // 4. 세션 저장
+    // 7. 세션 저장
     this.saveSession();
+
+    // 8. 다음 단계 안내
+    this.showNextSteps();
   }
 
   /**
@@ -256,10 +301,7 @@ class FixOrchestrator {
    */
   private async collectRefactorIssues(): Promise<void> {
     try {
-      const refactorStatePath = join(
-        this.projectRoot,
-        ".refactor/state.json",
-      );
+      const refactorStatePath = join(this.projectRoot, ".refactor/state.json");
       if (!existsSync(refactorStatePath)) {
         return;
       }
@@ -400,9 +442,7 @@ class FixOrchestrator {
       } else if (item.id === "component-documentation") {
         await this.fixComponentDocumentation();
       } else if (item.id === "workarounds") {
-        console.log(
-          "   💡 워크어라운드는 수동으로 검토가 필요합니다.",
-        );
+        console.log("   💡 워크어라운드는 수동으로 검토가 필요합니다.");
         console.log("   📝 다음 명령으로 목록 확인:");
         console.log(
           '      grep -rn "TODO\\|FIXME\\|HACK\\|WORKAROUND" src/ scripts/',
@@ -567,6 +607,71 @@ npm run ${component.name}
     if (this.session.skipped > 0 || this.session.failed > 0) {
       console.log("   4. /fix                # 나머지 항목 다시 수정");
     }
+  }
+
+  /**
+   * 시스템 상태 표시
+   */
+  private async showSystemStatus(): Promise<void> {
+    try {
+      execSync("npm run status:quick", { stdio: "inherit" });
+    } catch (error: any) {
+      console.log("   ⚠️  상태 확인 실패:", error.message);
+    }
+  }
+
+  /**
+   * 테스트 실행
+   */
+  private runTests(): void {
+    try {
+      console.log("   🧪 테스트 실행 중...\n");
+      execSync("npm run test", { stdio: "inherit" });
+      console.log("\n   ✅ 모든 테스트 통과");
+    } catch (error: any) {
+      console.log("\n   ⚠️  일부 테스트 실패 - 수동 확인 필요");
+    }
+  }
+
+  /**
+   * 문서 동기화
+   */
+  private syncDocumentation(): void {
+    try {
+      console.log("   📚 문서 인덱스 갱신 중...\n");
+      execSync("npm run docs:refresh", { stdio: "inherit" });
+      console.log("\n   ✅ 문서 동기화 완료");
+    } catch (error: any) {
+      console.log("\n   ⚠️  문서 동기화 실패:", error.message);
+    }
+  }
+
+  /**
+   * 다음 단계 안내
+   */
+  private showNextSteps(): void {
+    console.log("\n" + "═".repeat(60));
+    console.log("🎯 다음 단계");
+    console.log("═".repeat(60));
+
+    if (this.session.fixed > 0) {
+      console.log("\n✅ 수정 사항이 있습니다:");
+      console.log("   1. git add -A                    # 변경사항 스테이징");
+      console.log('   2. git commit -m "fix: 품질 개선" # 커밋');
+      console.log("   3. npm run ship                  # 배포 준비");
+    } else if (this.session.skipped > 0) {
+      console.log("\n💡 건너뛴 항목이 있습니다:");
+      console.log("   - npm run fix                    # 다시 실행");
+    } else {
+      console.log("\n✨ 모든 항목이 완료되었습니다!");
+      console.log("   - npm run ship                   # 배포 준비");
+    }
+
+    console.log("\n📚 도움말:");
+    console.log("   - npm run fix --check-only       # 진단만 (status 대체)");
+    console.log("   - npm run fix --skip-tests       # 테스트 건너뛰기");
+    console.log("   - npm run fix --skip-docs        # 문서 건너뛰기");
+    console.log("");
   }
 
   /**

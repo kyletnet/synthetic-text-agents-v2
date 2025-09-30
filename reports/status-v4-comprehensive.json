@@ -1,8 +1,8 @@
 {
-  "timestamp": "2025-09-30T06:38:10.157Z",
+  "timestamp": "2025-09-30T08:35:26.912Z",
   "version": "4.0",
   "documentation": {
-    "timestamp": "2025-09-30T06:38:09.885Z",
+    "timestamp": "2025-09-30T08:35:26.655Z",
     "overallScore": 72,
     "totalDocuments": 18,
     "missingCount": 7,
@@ -198,7 +198,7 @@
         "category": "DEVELOPMENT",
         "priority": 2,
         "exists": true,
-        "lastModified": "2025-09-30T06:38:07.653Z",
+        "lastModified": "2025-09-30T08:35:24.710Z",
         "ageInDays": 0,
         "size": 7451,
         "status": "CURRENT",
@@ -2937,14 +2937,20 @@
           "scripts/build_docs_indexes.ts"
         ],
         "reason": "Multiple build_docs_indexes implementations - consolidate to .ts version"
+      },
+      {
+        "files": [
+          ".system-backups/undo-stack"
+        ],
+        "reason": "Multiple system backup directories - archive older ones"
       }
     ],
     "unusedDirectories": [],
     "archiveActions": [],
     "stats": {
-      "totalFiles": 1848,
-      "potentialSavings": "0.5MB",
-      "cleanupScore": 95
+      "totalFiles": 1888,
+      "potentialSavings": "1MB",
+      "cleanupScore": 90
     }
   }
 }
