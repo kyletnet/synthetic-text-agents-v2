@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { spawn } from "child_process";
 import { promises as fs } from "fs";
 import path from "path";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+
+import { processLifecycleManager } from "@/lib/process-lifecycle-manager";
 
 // Generate a unique evaluation ID
 function generateEvalId(): string {
@@ -37,7 +38,7 @@ function executeEvaluation(
 
     console.log(`[Eval API] Executing: bash ${scriptPath} ${args.join(" ")}`);
 
-    const child = spawn("bash", [scriptPath, ...args], {
+    const child = processLifecycleManager.spawnManaged("bash", [scriptPath, ...args], {
       cwd: projectRoot,
       stdio: ["pipe", "pipe", "pipe"],
       env: { ...process.env, EVAL_ID: evalId },

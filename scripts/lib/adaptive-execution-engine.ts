@@ -11,7 +11,8 @@ import { perfCache } from './performance-cache.js';
 import { safeGuard } from './safe-automation-guard.js';
 import { approvalSystem } from './interactive-approval-system.js';
 import { ComponentAdapter } from './component-integration-adapter.js';
-import { execSync, spawn } from 'child_process';
+import { processLifecycleManager } from './process-lifecycle-manager.js';
+import { execSync } from 'child_process';
 import { performance } from 'perf_hooks';
 import { EventEmitter } from 'events';
 
@@ -504,7 +505,7 @@ export class AdaptiveExecutionEngine extends EventEmitter {
       });
 
       try {
-        const child = spawn(operation.command.split(' ')[0], operation.command.split(' ').slice(1), {
+        const child = processLifecycleManager.spawnManaged(operation.command.split(' ')[0], operation.command.split(' ').slice(1), {
           stdio: 'pipe',
           timeout: decision.configuration.timeoutMs
         });

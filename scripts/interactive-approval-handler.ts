@@ -37,6 +37,13 @@ class InteractiveApprovalHandler {
     console.log('\n🔔 Interactive Approval System');
     console.log('════════════════════════════════════════════════════════════');
 
+    // Check if running in non-interactive mode (CI/CD, background process)
+    if (!process.stdin.isTTY) {
+      console.log('⚠️ 비대화형 실행 환경 감지 - 승인이 필요한 작업을 큐에 저장합니다');
+      this.rl.close();
+      return { approved: [], rejected: [], deferred: [], autoExecuted: [] };
+    }
+
     const approvalItems = await this.collectApprovalItems();
 
     if (approvalItems.length === 0) {

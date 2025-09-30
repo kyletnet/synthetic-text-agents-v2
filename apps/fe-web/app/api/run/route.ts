@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { spawn } from "child_process";
 import fs from "fs";
 import { promises as fsPromises } from "fs";
 import path from "path";
@@ -8,6 +7,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 import { RunRequest, RunResult } from "@/lib/types";
+import { processLifecycleManager } from "@/lib/process-lifecycle-manager";
 
 // ===== log cleanup helpers =====
 function toInt(v: any, def: number): number {
@@ -148,10 +148,10 @@ async function cliProvider(request: RunRequest): Promise<RunResult> {
       session: request.session || {},
     };
 
-    // Spawn the CLI with absolute node binary
+    // Spawn the CLI with absolute node binary using ProcessLifecycleManager
     const feCwd = process.cwd();
     const cliScript = path.resolve(feCwd, "cli", "engine_cli.js");
-    const child = spawn(process.execPath, [cliScript], {
+    const child = processLifecycleManager.spawnManaged(process.execPath, [cliScript], {
       cwd: feCwd,
       stdio: ["pipe", "pipe", "pipe"],
     });

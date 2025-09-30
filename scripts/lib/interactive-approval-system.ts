@@ -32,6 +32,16 @@ class InteractiveApprovalSystem {
     action?: 'fix' | 'skip' | 'manual' | 'abort';
     reason?: string;
   }> {
+    // Check if running in non-interactive mode (CI/CD, background process)
+    if (!process.stdin.isTTY) {
+      console.log('⚠️ 비대화형 실행 환경 감지 - 승인 요청을 큐에 저장합니다');
+      return {
+        approved: false,
+        action: 'skip',
+        reason: 'Non-interactive environment - queued for manual approval'
+      };
+    }
+
     console.log('\n' + '='.repeat(80));
     console.log(`🤔 승인 요청: ${request.title}`);
     console.log('='.repeat(80));

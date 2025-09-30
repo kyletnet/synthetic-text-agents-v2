@@ -7,11 +7,12 @@
  * Implements URL-based deployment options and intelligent process management
  */
 
-import { execSync, spawn, ChildProcess } from 'child_process';
+import { execSync, ChildProcess } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 import net from 'net';
 import { circuitBreakerRegistry } from '../lib/circuit-breaker';
+import { processLifecycleManager } from '../lib/process-lifecycle-manager';
 
 interface DevEnvironmentConfig {
   mode: 'local' | 'container' | 'cloud' | 'production';
@@ -152,7 +153,7 @@ export class DevelopmentEnvironmentManager {
     await this.cleanBuildArtifacts();
 
     // Start dev server
-    const devProcess = spawn('npm', ['run', 'dev'], {
+    const devProcess = processLifecycleManager.spawnManaged('npm', ['run', 'dev'], {
       stdio: 'inherit',
       env: {
         ...process.env,
@@ -250,7 +251,7 @@ export class DevelopmentEnvironmentManager {
     const availablePort = await this.findAvailablePort(this.config.port);
 
     // Start production server
-    const prodProcess = spawn('npm', ['start'], {
+    const prodProcess = processLifecycleManager.spawnManaged('npm', ['start'], {
       stdio: 'inherit',
       env: {
         ...process.env,

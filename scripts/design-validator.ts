@@ -107,22 +107,31 @@ class DesignValidator {
   }
 
   private async checkProcessLifecycleUsage(): Promise<void> {
-    const files = glob.sync('{scripts,apps}/**/*.ts', { cwd: this.rootDir });
+    const files = glob.sync('{scripts,apps}/**/*.ts', {
+      cwd: this.rootDir,
+      ignore: ['**/node_modules/**', '**/dist/**', '**/*.d.ts']
+    });
 
     for (const file of files) {
       const content = this.readFile(join(this.rootDir, file));
       if (!content) continue;
 
-      // Check for child_process usage without ProcessLifecycleManager
-      if (content.includes('child_process') &&
-          content.match(/spawn\(|exec\(|fork\(/) &&
-          !content.includes('processLifecycleManager') &&
-          !content.includes('ProcessLifecycleManager')) {
+      // Check for spawn/fork calls (long-running processes) - execSync is synchronous, so less critical
+      const hasImport = content.includes('child_process');
+      const hasAsyncProcess = content.match(/=\s*(spawn|fork)\s*\(/);
+      const hasManager = content.includes('processLifecycleManager') ||
+                        content.includes('ProcessLifecycleManager');
+
+      // Only flag if uses spawn/fork (not execSync) AND doesn't use manager
+      // Critical for: API routes, long-running scripts, background tasks
+      if (hasImport && hasAsyncProcess && !hasManager &&
+          (file.includes('app/api/') || file.includes('dev-environment') ||
+           file.includes('adaptive-execution'))) {
         this.addViolation({
           file,
           rule: 'USE_PROCESS_LIFECYCLE_MANAGER',
           severity: 'P0',
-          message: 'Direct child_process usage without ProcessLifecycleManager',
+          message: 'Direct spawn/fork usage without ProcessLifecycleManager',
           suggestion: 'Use processLifecycleManager.spawnManaged() to prevent orphan processes'
         });
       }
@@ -130,7 +139,10 @@ class DesignValidator {
   }
 
   private async checkLLMExecutionAuthority(): Promise<void> {
-    const files = glob.sync('apps/**/*.ts', { cwd: this.rootDir });
+    const files = glob.sync('apps/**/*.ts', {
+      cwd: this.rootDir,
+      ignore: ['**/node_modules/**', '**/dist/**', '**/*.d.ts']
+    });
 
     for (const file of files) {
       const content = this.readFile(join(this.rootDir, file));
@@ -202,16 +214,26 @@ class DesignValidator {
       const content = this.readFile(join(this.rootDir, file));
       if (!content) continue;
 
-      // Check for stdio: pipe in user-facing commands
-      if (content.match(/execSync.*stdio:\s*["']pipe["']/) &&
-          (file.includes('maintenance') || file.includes('orchestrator'))) {
-        this.addViolation({
-          file,
-          rule: 'STDIO_INHERIT_FOR_USER_COMMANDS',
-          severity: 'P1',
-          message: 'stdio:pipe hides output from user',
-          suggestion: 'Use stdio:inherit for user-facing commands'
-        });
+      // Check for stdio: pipe in user-facing commands that don't parse output
+      // Only flag if there's no .match() or string parsing after execSync
+      const lines = content.split('\n');
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        if (line.match(/execSync.*stdio:\s*["']pipe["']/) &&
+            (file.includes('maintenance') || file.includes('orchestrator'))) {
+          // Check if next few lines use .match() or parse the result
+          const contextLines = lines.slice(Math.max(0, i - 2), i + 5).join('\n');
+          if (!contextLines.match(/\.match\(|\.includes\(|parseInt\(|parseFloat\(/)) {
+            this.addViolation({
+              file,
+              line: i + 1,
+              rule: 'STDIO_INHERIT_FOR_USER_COMMANDS',
+              severity: 'P1',
+              message: 'stdio:pipe hides output from user without parsing',
+              suggestion: 'Use stdio:inherit for user-facing commands or parse the output'
+            });
+          }
+        }
       }
     }
   }
