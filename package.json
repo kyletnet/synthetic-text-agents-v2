@@ -54,6 +54,8 @@
     "dev:typecheck": "tsc -p tsconfig.build.json --noEmit",
     "dev:lint": "eslint 'src/**/*.ts'",
     "lint:fix": "eslint 'src/**/*.ts' --fix",
+    "ci:quality": "npm run design:validate && npm run dev:typecheck",
+    "ci:strict": "npm run design:validate && npm run dev:typecheck && npm run build",
     "fix:unused-vars": "tsx scripts/fix-unused-vars-batch.ts",
     "test:approval": "tsx scripts/test-approval.ts",
     "dev:test": "vitest --run",

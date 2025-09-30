@@ -1,8 +1,8 @@
 {
-  "timestamp": "2025-09-30T03:27:26.233Z",
+  "timestamp": "2025-09-30T04:56:41.823Z",
   "version": "4.0",
   "documentation": {
-    "timestamp": "2025-09-30T03:27:25.932Z",
+    "timestamp": "2025-09-30T04:56:41.538Z",
     "overallScore": 72,
     "totalDocuments": 18,
     "missingCount": 7,
@@ -198,7 +198,7 @@
         "category": "DEVELOPMENT",
         "priority": 2,
         "exists": true,
-        "lastModified": "2025-09-30T03:27:23.939Z",
+        "lastModified": "2025-09-30T04:56:38.303Z",
         "ageInDays": 0,
         "size": 7451,
         "status": "CURRENT",
@@ -1149,26 +1149,6 @@
         "estimation": "30min-1 hour"
       },
       {
-        "file": "scripts/lib/system-integration-orchestrator.ts",
-        "line": 21,
-        "content": "import { workaroundResolutionEngine } from './workaround-resolution-engine.js';",
-        "type": "WORKAROUND",
-        "severity": "MEDIUM",
-        "context": "import { smartDecisionMatrix } from './smart-decision-matrix.js'; | import { perfCache } from './per",
-        "ageInDays": 5,
-        "estimation": "30min-1 hour"
-      },
-      {
-        "file": "scripts/lib/system-integration-orchestrator.ts",
-        "line": 209,
-        "content": "path: 'scripts/lib/workaround-resolution-engine.ts',",
-        "type": "WORKAROUND",
-        "severity": "MEDIUM",
-        "context": "{ | component: 'workaround-resolution-engine' as ComponentId,",
-        "ageInDays": 5,
-        "estimation": "30min-1 hour"
-      },
-      {
         "file": "scripts/lib/workaround-resolution-engine.ts",
         "line": 4,
         "content": "* Workaround Resolution Engine",
@@ -1499,6 +1479,26 @@
         "estimation": "30min-1 hour"
       },
       {
+        "file": "scripts/lib/system-integration-orchestrator.ts",
+        "line": 21,
+        "content": "import { workaroundResolutionEngine } from './workaround-resolution-engine.js';",
+        "type": "WORKAROUND",
+        "severity": "MEDIUM",
+        "context": "import { smartDecisionMatrix } from './smart-decision-matrix.js'; | import { perfCache } from './per",
+        "ageInDays": 0,
+        "estimation": "30min-1 hour"
+      },
+      {
+        "file": "scripts/lib/system-integration-orchestrator.ts",
+        "line": 209,
+        "content": "path: 'scripts/lib/workaround-resolution-engine.ts',",
+        "type": "WORKAROUND",
+        "severity": "MEDIUM",
+        "context": "{ | component: 'workaround-resolution-engine' as ComponentId,",
+        "ageInDays": 0,
+        "estimation": "30min-1 hour"
+      },
+      {
         "file": "scripts/resolve-workarounds.ts",
         "line": 133,
         "content": "if (content.includes('WORKAROUND')) return 'WORKAROUND';",
@@ -1729,16 +1729,6 @@
         "context": "lines[errorLine] = | ",
         "ageInDays": 5,
         "estimation": "1-2 hours"
-      },
-      {
-        "file": "scripts/architectural-evolution-engine.ts",
-        "line": 555,
-        "content": "/(console\\.log\\(\"   🔥 v4\\.0 Enhanced Analysis:\"\\);[\\s\\S]*?)(    console\\.log\\(\"   🔍 Temporary Workarounds\\.\\.\\.\"\\);)/,",
-        "type": "TEMP",
-        "severity": "LOW",
-        "context": "const enhancedSection = content.match( | );",
-        "ageInDays": 5,
-        "estimation": "30min-1 hour"
       },
       {
         "file": "scripts/comprehensive-doc-updater.ts",
@@ -2301,46 +2291,6 @@
         "estimation": "30min-1 hour"
       },
       {
-        "file": "scripts/lib/auto-fix-manager.ts",
-        "line": 330,
-        "content": "// Copy file to temp location first",
-        "type": "TEMP",
-        "severity": "LOW",
-        "context": " | await fs.copyFile(filePath, tempBackupPath);",
-        "ageInDays": 4,
-        "estimation": "30min-1 hour"
-      },
-      {
-        "file": "scripts/lib/auto-fix-manager.ts",
-        "line": 344,
-        "content": "// Remove uncompressed temp file",
-        "type": "TEMP",
-        "severity": "LOW",
-        "context": " | await fs.unlink(tempBackupPath);",
-        "ageInDays": 4,
-        "estimation": "30min-1 hour"
-      },
-      {
-        "file": "scripts/lib/auto-fix-manager.ts",
-        "line": 1208,
-        "content": "`5. Clean up temporary files`",
-        "type": "TEMP",
-        "severity": "LOW",
-        "context": "`4. If failed: restore from snapshot`, | ];",
-        "ageInDays": 4,
-        "estimation": "30min-1 hour"
-      },
-      {
-        "file": "scripts/smart-refactor-auditor.ts",
-        "line": 319,
-        "content": "if (errorMsg.includes('not implemented') || errorMsg.includes('todo')) {",
-        "type": "TODO",
-        "severity": "LOW",
-        "context": "} | return 'NOT_IMPLEMENTED';",
-        "ageInDays": 4,
-        "estimation": "4-8 hours"
-      },
-      {
         "file": "src/scripts/lib/export_enhanced.ts",
         "line": 115,
         "content": "// 6. Stream processing with temporary file + atomic rename",
@@ -2388,6 +2338,56 @@
         "severity": "LOW",
         "context": "if (this.config.enableEmbeddings && this.components.embeddingManager) { | this.logger.trace({",
         "ageInDays": 1,
+        "estimation": "4-8 hours"
+      },
+      {
+        "file": "scripts/architectural-evolution-engine.ts",
+        "line": 580,
+        "content": "/(console\\.log\\(\"   🔥 v4\\.0 Enhanced Analysis:\"\\);[\\s\\S]*?)(    console\\.log\\(\"   🔍 Temporary Workarounds\\.\\.\\.\"\\);)/,",
+        "type": "TEMP",
+        "severity": "LOW",
+        "context": "const enhancedSection = content.match( | );",
+        "ageInDays": 0,
+        "estimation": "30min-1 hour"
+      },
+      {
+        "file": "scripts/lib/auto-fix-manager.ts",
+        "line": 323,
+        "content": "// Copy file to temp location first",
+        "type": "TEMP",
+        "severity": "LOW",
+        "context": " | await fs.copyFile(filePath, tempBackupPath);",
+        "ageInDays": 0,
+        "estimation": "30min-1 hour"
+      },
+      {
+        "file": "scripts/lib/auto-fix-manager.ts",
+        "line": 337,
+        "content": "// Remove uncompressed temp file",
+        "type": "TEMP",
+        "severity": "LOW",
+        "context": " | await fs.unlink(tempBackupPath);",
+        "ageInDays": 0,
+        "estimation": "30min-1 hour"
+      },
+      {
+        "file": "scripts/lib/auto-fix-manager.ts",
+        "line": 1190,
+        "content": "`5. Clean up temporary files`",
+        "type": "TEMP",
+        "severity": "LOW",
+        "context": "`4. If failed: restore from snapshot`, | ];",
+        "ageInDays": 0,
+        "estimation": "30min-1 hour"
+      },
+      {
+        "file": "scripts/smart-refactor-auditor.ts",
+        "line": 321,
+        "content": "if (errorMsg.includes('not implemented') || errorMsg.includes('todo')) {",
+        "type": "TODO",
+        "severity": "LOW",
+        "context": "} | return 'NOT_IMPLEMENTED';",
+        "ageInDays": 0,
         "estimation": "4-8 hours"
       },
       {
@@ -2760,7 +2760,7 @@
     "unusedDirectories": [],
     "archiveActions": [],
     "stats": {
-      "totalFiles": 1791,
+      "totalFiles": 1808,
       "potentialSavings": "0.5MB",
       "cleanupScore": 95
     }
