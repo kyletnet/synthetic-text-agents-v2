@@ -355,39 +355,42 @@ Before marking implementation complete:
 
 ### Command Workflow
 
-**올인원 워크플로우 - `/fix` 하나로 모든 것**:
+**4단계 워크플로우**:
 
-개발자는 `/fix` 하나만 기억하면 됩니다:
-
-```bash
-npm run fix                # 진단 → 수정 → 테스트 → 문서화 → 검증
-npm run fix --check-only   # 진단만
-npm run fix --skip-tests   # 테스트 생략
-npm run fix --skip-docs    # 문서 동기화 생략
-```
-
-**개발 워크플로우**:
+모든 개발은 이 4단계를 순서대로:
 
 ```bash
-npm run fix          # 올인원 품질 관리
-git add -A
-git commit -m "fix: 품질 개선"
-npm run ship         # 배포 준비
+1. npm run status      # 진단
+2. npm run maintain    # 자동 수정
+3. npm run fix         # 대화형 수정
+4. npm run ship        # 배포 준비
 ```
 
-**CI/CD 워크플로우**:
+**일상 개발 (3단계)**:
 
 ```bash
-npm run maintain     # 자동 유지보수
-npm run test         # 테스트
-npm run ship         # 배포 (main 브랜치만)
+npm run status       # 1. 진단
+npm run maintain     # 2. 자동 수정 (Prettier, ESLint)
+npm run fix          # 3. 대화형 수정 (승인 필요)
+git add -A && git commit -m "fix: 품질 개선"
 ```
 
-**다른 명령어들**:
+**배포 전 (4단계)**:
 
-- `/status`: 진단 전용 (진단만 필요할 때)
-- `/maintain`: CI/CD 자동화 전용 (사람이 실행할 필요 없음)
-- `/ship`: 배포 준비 (문서 동기화 + 건강도 + 최적화)
+```bash
+npm run status       # 1. 진단
+npm run maintain     # 2. 자동 수정
+npm run fix          # 3. 대화형 수정
+npm run ship         # 4. 통합 검증 + 문서 + 최적화
+git push origin main
+```
+
+**각 명령어 역할**:
+
+- `/status`: 시스템 진단 (건강도, 준수율, 워크어라운드)
+- `/maintain`: 자동 수정 (Prettier, ESLint --fix, 설계 검증)
+- `/fix`: 대화형 수정 (워크어라운드, 리팩토링, 문서화)
+- `/ship`: 배포 준비 (통합 검증, 시스템 분석, 문서 동기화, 최적화)
 
 상세 가이드: `@docs/COMMAND_GUIDE.md`
 

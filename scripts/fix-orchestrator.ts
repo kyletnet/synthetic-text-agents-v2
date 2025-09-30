@@ -1,24 +1,21 @@
 #!/usr/bin/env tsx
 
 /**
- * /fix 명령어 - 올인원 품질 관리 시스템
+ * /fix 명령어 - 대화형 품질 수정 시스템
  *
- * 철학: 하나의 명령어로 모든 품질 관리
+ * 철학: 사용자가 하나씩 승인하며 수정
  *
- * 자동 실행 순서:
- * 1. 진단 (status 포함)
- * 2. 대화형 수정
- * 3. 테스트 실행
- * 4. 문서 동기화
- * 5. 최종 건강도 확인
+ * 역할:
+ * - 수정 항목 수집 (code-quality, documentation, workaround, refactor)
+ * - 심각도별 우선순위 정렬
+ * - 대화형 승인 (y/n/m/a/i)
+ * - 수정 실행 및 결과 보고
  *
- * 옵션:
- * - 기본: 전체 프로세스
- * - --check-only: 진단만 (status 대체)
- * - --skip-tests: 테스트 건너뛰기
- * - --skip-docs: 문서 동기화 건너뛰기
- *
- * 목표: 사용자는 `/fix`만 기억하면 됨
+ * 워크플로우 위치:
+ * 1. npm run status    (진단)
+ * 2. npm run maintain  (자동 수정)
+ * 3. npm run fix       (대화형 수정) ← 여기
+ * 4. npm run ship      (배포 준비)
  */
 
 import { execSync } from "child_process";
@@ -69,74 +66,37 @@ class FixOrchestrator {
   }
 
   /**
-   * 메인 실행 (올인원 워크플로우)
+   * 메인 실행 (대화형 수정)
    */
   async run(): Promise<void> {
-    console.log("🔧 Fix Orchestrator - 올인원 품질 관리");
+    console.log("🔧 Fix Orchestrator - 대화형 품질 수정");
     console.log("═".repeat(60));
-    console.log("진단 → 수정 → 테스트 → 문서화 → 검증\n");
-
-    const checkOnly = process.argv.includes("--check-only");
-    const skipTests = process.argv.includes("--skip-tests");
-    const skipDocs = process.argv.includes("--skip-docs");
-
-    // 0. 초기 진단 (status)
-    console.log("📊 0단계: 시스템 진단 중...\n");
-    await this.showSystemStatus();
+    console.log("💡 이 명령어 실행 전: npm run status, npm run maintain\n");
 
     // 1. 수정 항목 수집
-    console.log("\n📊 1단계: 수정 항목 수집 중...\n");
+    console.log("📊 1단계: 수정 항목 수집 중...\n");
     await this.collectFixItems();
 
     if (this.session.items.length === 0) {
-      console.log("✨ 수정할 항목이 없습니다! 시스템이 완벽합니다.");
-      if (!skipDocs) {
-        console.log("\n📚 4단계: 문서 동기화 중...");
-        this.syncDocumentation();
-      }
-      console.log("\n🎉 완료! 시스템이 최상의 상태입니다.");
+      console.log("✨ 수정할 항목이 없습니다!");
+      console.log("\n💡 다음 단계: npm run ship (배포 준비)");
       return;
     }
 
     console.log(`\n📋 총 ${this.session.items.length}개 수정 항목 발견\n`);
     this.showFixSummary();
 
-    // --check-only: 진단만 하고 종료
-    if (checkOnly) {
-      console.log("\n💡 --check-only 모드: 진단만 수행합니다.");
-      console.log("수정하려면: npm run fix");
-      return;
-    }
-
     // 2. 대화형 수정
     console.log("\n🔧 2단계: 대화형 수정 시작\n");
     await this.interactiveFix();
 
-    // 3. 테스트 실행
-    if (!skipTests && this.session.fixed > 0) {
-      console.log("\n🧪 3단계: 테스트 실행 중...");
-      this.runTests();
-    }
-
-    // 4. 문서 동기화
-    if (!skipDocs && this.session.fixed > 0) {
-      console.log("\n📚 4단계: 문서 동기화 중...");
-      this.syncDocumentation();
-    }
-
-    // 5. 최종 건강도 확인
-    if (this.session.fixed > 0) {
-      console.log("\n🏥 5단계: 최종 건강도 확인...");
-      await this.showSystemStatus();
-    }
-
-    // 6. 결과 보고
+    // 3. 결과 보고
     this.showResults();
 
-    // 7. 세션 저장
+    // 4. 세션 저장
     this.saveSession();
 
-    // 8. 다음 단계 안내
+    // 5. 다음 단계 안내
     this.showNextSteps();
   }
 
@@ -610,43 +570,6 @@ npm run ${component.name}
   }
 
   /**
-   * 시스템 상태 표시
-   */
-  private async showSystemStatus(): Promise<void> {
-    try {
-      execSync("npm run status:quick", { stdio: "inherit" });
-    } catch (error: any) {
-      console.log("   ⚠️  상태 확인 실패:", error.message);
-    }
-  }
-
-  /**
-   * 테스트 실행
-   */
-  private runTests(): void {
-    try {
-      console.log("   🧪 테스트 실행 중...\n");
-      execSync("npm run test", { stdio: "inherit" });
-      console.log("\n   ✅ 모든 테스트 통과");
-    } catch (error: any) {
-      console.log("\n   ⚠️  일부 테스트 실패 - 수동 확인 필요");
-    }
-  }
-
-  /**
-   * 문서 동기화
-   */
-  private syncDocumentation(): void {
-    try {
-      console.log("   📚 문서 인덱스 갱신 중...\n");
-      execSync("npm run docs:refresh", { stdio: "inherit" });
-      console.log("\n   ✅ 문서 동기화 완료");
-    } catch (error: any) {
-      console.log("\n   ⚠️  문서 동기화 실패:", error.message);
-    }
-  }
-
-  /**
    * 다음 단계 안내
    */
   private showNextSteps(): void {
@@ -667,10 +590,11 @@ npm run ${component.name}
       console.log("   - npm run ship                   # 배포 준비");
     }
 
-    console.log("\n📚 도움말:");
-    console.log("   - npm run fix --check-only       # 진단만 (status 대체)");
-    console.log("   - npm run fix --skip-tests       # 테스트 건너뛰기");
-    console.log("   - npm run fix --skip-docs        # 문서 건너뛰기");
+    console.log("\n📚 전체 워크플로우:");
+    console.log("   1. npm run status    # 진단");
+    console.log("   2. npm run maintain  # 자동 수정");
+    console.log("   3. npm run fix       # 대화형 수정");
+    console.log("   4. npm run ship      # 배포 준비");
     console.log("");
   }
 

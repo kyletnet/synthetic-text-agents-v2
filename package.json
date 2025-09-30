@@ -35,7 +35,7 @@
     "queue:demo": "tsx scripts/dry-run-approval-queue.ts demo",
     "fix": "tsx scripts/fix-orchestrator.ts",
     "fix:legacy": "tsx scripts/ai-fix-engine.ts",
-    "ship": "npm run docs:refresh && npm run status:quick && npm run optimize:analyze && echo '🚢 Ready for deployment'",
+    "ship": "npm run design:validate && npm run _hidden:integration-guard && npm run _hidden:system-integration && npm run advanced:audit && npm run docs:refresh && npm run status:quick && npm run optimize:analyze && echo '🚢 Ready for deployment'",
     "confirm-sync": "tsx scripts/approval-workflow.ts confirm && npm run _hidden:sync-execute",
     "deny-sync": "tsx scripts/approval-workflow.ts deny",
     "prepare-release": "tsx scripts/approval-workflow.ts request RELEASE && echo \"릴리즈 준비 완료. /confirm-release로 승인하세요\"",
