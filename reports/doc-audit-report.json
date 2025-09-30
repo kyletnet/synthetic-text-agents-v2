@@ -1,0 +1,56 @@
+{
+  "overall": "PASS",
+  "timestamp": "2025-09-30T05:57:55.121Z",
+  "summary": {
+    "critical": 0,
+    "warning": 2,
+    "info": 0,
+    "totalRules": 5
+  },
+  "rules": [
+    {
+      "name": "CLAUDE.md exists and has content",
+      "severity": "critical",
+      "result": {
+        "passed": true,
+        "message": "CLAUDE.md exists with 15215 characters"
+      }
+    },
+    {
+      "name": "Core documentation files exist",
+      "severity": "critical",
+      "result": {
+        "passed": true,
+        "message": "All core documentation files exist"
+      }
+    },
+    {
+      "name": "DEVELOPMENT_STANDARDS.md completeness",
+      "severity": "warning",
+      "result": {
+        "passed": false,
+        "message": "Missing sections: Logging Standards, TypeScript Standards, Error Handling, Code Organization"
+      }
+    },
+    {
+      "name": "LLM_DEVELOPMENT_CONTRACT.md completeness",
+      "severity": "warning",
+      "result": {
+        "passed": false,
+        "message": "Missing keywords: testing"
+      }
+    },
+    {
+      "name": "docs/ directory structure",
+      "severity": "info",
+      "result": {
+        "passed": true,
+        "message": "1/3 standard directories exist",
+        "details": [
+          "docs/architecture",
+          "docs/guides"
+        ]
+      }
+    }
+  ]
+}

@@ -1,42 +1,441 @@
 {
   "overall": "PASS",
-  "summary": {
-    "passed": 3,
-    "failed": 1,
-    "totalRules": 4
-  },
-  "rules": [
-    {
-      "name": "CLAUDE.md exists",
-      "blocking": true,
-      "result": {
-        "passed": true,
-        "message": "CLAUDE.md exists and has content"
+  "timestamp": "2025-09-30T05:57:55.121Z",
+  "stages": {
+    "audit": {
+      "status": "PASS",
+      "report": {
+        "overall": "PASS",
+        "timestamp": "2025-09-30T05:57:55.121Z",
+        "summary": {
+          "critical": 0,
+          "warning": 2,
+          "info": 0,
+          "totalRules": 5
+        },
+        "rules": [
+          {
+            "name": "CLAUDE.md exists and has content",
+            "severity": "critical",
+            "result": {
+              "passed": true,
+              "message": "CLAUDE.md exists with 15215 characters"
+            }
+          },
+          {
+            "name": "Core documentation files exist",
+            "severity": "critical",
+            "result": {
+              "passed": true,
+              "message": "All core documentation files exist"
+            }
+          },
+          {
+            "name": "DEVELOPMENT_STANDARDS.md completeness",
+            "severity": "warning",
+            "result": {
+              "passed": false,
+              "message": "Missing sections: Logging Standards, TypeScript Standards, Error Handling, Code Organization"
+            }
+          },
+          {
+            "name": "LLM_DEVELOPMENT_CONTRACT.md completeness",
+            "severity": "warning",
+            "result": {
+              "passed": false,
+              "message": "Missing keywords: testing"
+            }
+          },
+          {
+            "name": "docs/ directory structure",
+            "severity": "info",
+            "result": {
+              "passed": true,
+              "message": "1/3 standard directories exist",
+              "details": [
+                "docs/architecture",
+                "docs/guides"
+              ]
+            }
+          }
+        ]
       }
     },
-    {
-      "name": "Core documentation files exist",
-      "blocking": true,
-      "result": {
-        "passed": true,
-        "message": "All core documentation files exist"
+    "signals": {
+      "status": "FAIL",
+      "report": {
+        "overall": "FAIL",
+        "timestamp": "2025-09-30T05:57:55.123Z",
+        "checks": [
+          {
+            "name": "File exists",
+            "result": {
+              "passed": false,
+              "message": "LLM signals index not found - run npm run docs:refresh"
+            }
+          },
+          {
+            "name": "Valid JSON",
+            "result": {
+              "passed": false,
+              "message": "Invalid JSON: ENOENT: no such file or directory, open '/Users/kyle/synthetic-text-agents-v2/docs/.llm-signals-index.json'"
+            }
+          },
+          {
+            "name": "Required fields",
+            "result": {
+              "passed": false,
+              "message": "Cannot validate - file read error"
+            }
+          },
+          {
+            "name": "Signals structure",
+            "result": {
+              "passed": false,
+              "message": "Validation error: ENOENT: no such file or directory, open '/Users/kyle/synthetic-text-agents-v2/docs/.llm-signals-index.json'"
+            }
+          },
+          {
+            "name": "Freshness",
+            "result": {
+              "passed": false,
+              "message": "Cannot check freshness - invalid lastUpdated field"
+            }
+          }
+        ],
+        "summary": {
+          "totalSignals": 0,
+          "categories": [],
+          "avgPriority": 0
+        }
       }
     },
-    {
-      "name": "No empty markdown files",
-      "blocking": false,
-      "result": {
-        "passed": true,
-        "message": "No empty markdown files found"
-      }
-    },
-    {
-      "name": "LLM signals index is valid",
-      "blocking": false,
-      "result": {
-        "passed": false,
-        "message": "LLM signals index not found - run npm run docs:refresh"
+    "lint": {
+      "status": "PASS",
+      "report": {
+        "overall": "PASS",
+        "timestamp": "2025-09-30T05:57:55.162Z",
+        "summary": {
+          "errors": 0,
+          "warnings": 0,
+          "info": 52,
+          "totalFiles": 99,
+          "totalIssues": 52
+        },
+        "issues": [
+          {
+            "file": "docs/super_claude_runbook.md",
+            "line": 26,
+            "severity": "info",
+            "message": "Contains TODO/FIXME comment"
+          },
+          {
+            "file": "docs/super_claude_runbook.md",
+            "line": 43,
+            "severity": "info",
+            "message": "Contains TODO/FIXME comment"
+          },
+          {
+            "file": "docs/TYPESCRIPT_GUIDELINES.md",
+            "line": 163,
+            "severity": "info",
+            "message": "Contains TODO/FIXME comment"
+          },
+          {
+            "file": "docs/NEW_DEVELOPER_ONBOARDING.md",
+            "line": 165,
+            "severity": "info",
+            "message": "Contains TODO/FIXME comment"
+          },
+          {
+            "file": "docs/FE_WIRING_RUNBOOK.md",
+            "line": 87,
+            "severity": "info",
+            "message": "Contains TODO/FIXME comment"
+          },
+          {
+            "file": "docs/RFC/2025-09-llm-qa-mvp.md",
+            "severity": "info",
+            "message": "No top-level heading found"
+          },
+          {
+            "file": "PRODUCTION_TODO_COMPREHENSIVE.md",
+            "line": 1,
+            "severity": "info",
+            "message": "Contains TODO/FIXME comment"
+          },
+          {
+            "file": "HANDOFF_TECH_FIXES.md",
+            "line": 129,
+            "severity": "info",
+            "message": "Contains TODO/FIXME comment"
+          },
+          {
+            "file": "HANDOFF_TECH_FIXES.md",
+            "line": 150,
+            "severity": "info",
+            "message": "Contains TODO/FIXME comment"
+          },
+          {
+            "file": "HANDOFF_TECH_FIXES.md",
+            "line": 159,
+            "severity": "info",
+            "message": "Contains TODO/FIXME comment"
+          },
+          {
+            "file": "HANDOFF_TECH_FIXES.md",
+            "line": 164,
+            "severity": "info",
+            "message": "Contains TODO/FIXME comment"
+          },
+          {
+            "file": "HANDOFF_TECH_FIXES.md",
+            "line": 169,
+            "severity": "info",
+            "message": "Contains TODO/FIXME comment"
+          },
+          {
+            "file": "HANDOFF_TECH_FIXES.md",
+            "line": 174,
+            "severity": "info",
+            "message": "Contains TODO/FIXME comment"
+          },
+          {
+            "file": "HANDOFF_TECH_FIXES.md",
+            "line": 179,
+            "severity": "info",
+            "message": "Contains TODO/FIXME comment"
+          },
+          {
+            "file": "HANDOFF_TECH_FIXES.md",
+            "line": 184,
+            "severity": "info",
+            "message": "Contains TODO/FIXME comment"
+          },
+          {
+            "file": "HANDOFF_TECH_FIXES.md",
+            "line": 189,
+            "severity": "info",
+            "message": "Contains TODO/FIXME comment"
+          },
+          {
+            "file": "HANDOFF_TECH_FIXES.md",
+            "line": 194,
+            "severity": "info",
+            "message": "Contains TODO/FIXME comment"
+          },
+          {
+            "file": "HANDOFF_TECH_FIXES.md",
+            "line": 199,
+            "severity": "info",
+            "message": "Contains TODO/FIXME comment"
+          },
+          {
+            "file": "HANDOFF_TECH_FIXES.md",
+            "line": 205,
+            "severity": "info",
+            "message": "Contains TODO/FIXME comment"
+          },
+          {
+            "file": "HANDOFF_TECH_FIXES.md",
+            "line": 211,
+            "severity": "info",
+            "message": "Contains TODO/FIXME comment"
+          },
+          {
+            "file": "HANDOFF_TECH_FIXES.md",
+            "line": 217,
+            "severity": "info",
+            "message": "Contains TODO/FIXME comment"
+          },
+          {
+            "file": "HANDOFF_TECH_FIXES.md",
+            "line": 223,
+            "severity": "info",
+            "message": "Contains TODO/FIXME comment"
+          },
+          {
+            "file": "HANDOFF_TECH_FIXES.md",
+            "line": 251,
+            "severity": "info",
+            "message": "Contains TODO/FIXME comment"
+          },
+          {
+            "file": "HANDOFF_TECH_FIXES.md",
+            "line": 272,
+            "severity": "info",
+            "message": "Contains TODO/FIXME comment"
+          },
+          {
+            "file": "HANDOFF_TECH_FIXES.md",
+            "line": 281,
+            "severity": "info",
+            "message": "Contains TODO/FIXME comment"
+          },
+          {
+            "file": "HANDOFF_TECH_FIXES.md",
+            "line": 286,
+            "severity": "info",
+            "message": "Contains TODO/FIXME comment"
+          },
+          {
+            "file": "HANDOFF_TECH_FIXES.md",
+            "line": 291,
+            "severity": "info",
+            "message": "Contains TODO/FIXME comment"
+          },
+          {
+            "file": "HANDOFF_TECH_FIXES.md",
+            "line": 296,
+            "severity": "info",
+            "message": "Contains TODO/FIXME comment"
+          },
+          {
+            "file": "HANDOFF_TECH_FIXES.md",
+            "line": 301,
+            "severity": "info",
+            "message": "Contains TODO/FIXME comment"
+          },
+          {
+            "file": "HANDOFF_TECH_FIXES.md",
+            "line": 306,
+            "severity": "info",
+            "message": "Contains TODO/FIXME comment"
+          },
+          {
+            "file": "HANDOFF_TECH_FIXES.md",
+            "line": 311,
+            "severity": "info",
+            "message": "Contains TODO/FIXME comment"
+          },
+          {
+            "file": "HANDOFF_TECH_FIXES.md",
+            "line": 316,
+            "severity": "info",
+            "message": "Contains TODO/FIXME comment"
+          },
+          {
+            "file": "HANDOFF_TECH_FIXES.md",
+            "line": 321,
+            "severity": "info",
+            "message": "Contains TODO/FIXME comment"
+          },
+          {
+            "file": "HANDOFF_TECH_FIXES.md",
+            "line": 327,
+            "severity": "info",
+            "message": "Contains TODO/FIXME comment"
+          },
+          {
+            "file": "HANDOFF_TECH_FIXES.md",
+            "line": 333,
+            "severity": "info",
+            "message": "Contains TODO/FIXME comment"
+          },
+          {
+            "file": "HANDOFF_TECH_FIXES.md",
+            "line": 361,
+            "severity": "info",
+            "message": "Contains TODO/FIXME comment"
+          },
+          {
+            "file": "HANDOFF_TECH_FIXES.md",
+            "line": 382,
+            "severity": "info",
+            "message": "Contains TODO/FIXME comment"
+          },
+          {
+            "file": "HANDOFF_TECH_FIXES.md",
+            "line": 391,
+            "severity": "info",
+            "message": "Contains TODO/FIXME comment"
+          },
+          {
+            "file": "HANDOFF_TECH_FIXES.md",
+            "line": 396,
+            "severity": "info",
+            "message": "Contains TODO/FIXME comment"
+          },
+          {
+            "file": "HANDOFF_TECH_FIXES.md",
+            "line": 401,
+            "severity": "info",
+            "message": "Contains TODO/FIXME comment"
+          },
+          {
+            "file": "HANDOFF_TECH_FIXES.md",
+            "line": 406,
+            "severity": "info",
+            "message": "Contains TODO/FIXME comment"
+          },
+          {
+            "file": "HANDOFF_TECH_FIXES.md",
+            "line": 411,
+            "severity": "info",
+            "message": "Contains TODO/FIXME comment"
+          },
+          {
+            "file": "HANDOFF_TECH_FIXES.md",
+            "line": 416,
+            "severity": "info",
+            "message": "Contains TODO/FIXME comment"
+          },
+          {
+            "file": "HANDOFF_TECH_FIXES.md",
+            "line": 421,
+            "severity": "info",
+            "message": "Contains TODO/FIXME comment"
+          },
+          {
+            "file": "HANDOFF_TECH_FIXES.md",
+            "line": 426,
+            "severity": "info",
+            "message": "Contains TODO/FIXME comment"
+          },
+          {
+            "file": "HANDOFF_TECH_FIXES.md",
+            "line": 431,
+            "severity": "info",
+            "message": "Contains TODO/FIXME comment"
+          },
+          {
+            "file": "HANDOFF_TECH_FIXES.md",
+            "line": 437,
+            "severity": "info",
+            "message": "Contains TODO/FIXME comment"
+          },
+          {
+            "file": "HANDOFF_TECH_FIXES.md",
+            "line": 443,
+            "severity": "info",
+            "message": "Contains TODO/FIXME comment"
+          },
+          {
+            "file": "SYSTEM_OVERVIEW.md",
+            "severity": "info",
+            "message": "Duplicate filename in 2 locations: docs/SYSTEM_OVERVIEW.md, docs/SYSTEM_DOCS/architecture/SYSTEM_OVERVIEW.md"
+          },
+          {
+            "file": "SECURITY.md",
+            "severity": "info",
+            "message": "Duplicate filename in 2 locations: docs/SECURITY.md, SECURITY.md"
+          },
+          {
+            "file": "DEVELOPMENT_STANDARDS.md",
+            "severity": "info",
+            "message": "Duplicate filename in 2 locations: docs/DEVELOPMENT_STANDARDS.md, DEVELOPMENT_STANDARDS.md"
+          },
+          {
+            "file": "CHANGELOG.md",
+            "severity": "info",
+            "message": "Duplicate filename in 2 locations: docs/CHANGELOG.md, CHANGELOG.md"
+          }
+        ]
       }
     }
-  ]
+  },
+  "summary": {
+    "totalIssues": 59,
+    "blockingIssues": 0
+  }
 }

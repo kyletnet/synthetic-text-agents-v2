@@ -1,0 +1,46 @@
+{
+  "overall": "FAIL",
+  "timestamp": "2025-09-30T05:57:55.123Z",
+  "checks": [
+    {
+      "name": "File exists",
+      "result": {
+        "passed": false,
+        "message": "LLM signals index not found - run npm run docs:refresh"
+      }
+    },
+    {
+      "name": "Valid JSON",
+      "result": {
+        "passed": false,
+        "message": "Invalid JSON: ENOENT: no such file or directory, open '/Users/kyle/synthetic-text-agents-v2/docs/.llm-signals-index.json'"
+      }
+    },
+    {
+      "name": "Required fields",
+      "result": {
+        "passed": false,
+        "message": "Cannot validate - file read error"
+      }
+    },
+    {
+      "name": "Signals structure",
+      "result": {
+        "passed": false,
+        "message": "Validation error: ENOENT: no such file or directory, open '/Users/kyle/synthetic-text-agents-v2/docs/.llm-signals-index.json'"
+      }
+    },
+    {
+      "name": "Freshness",
+      "result": {
+        "passed": false,
+        "message": "Cannot check freshness - invalid lastUpdated field"
+      }
+    }
+  ],
+  "summary": {
+    "totalSignals": 0,
+    "categories": [],
+    "avgPriority": 0
+  }
+}

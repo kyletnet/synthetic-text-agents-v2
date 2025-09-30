@@ -3,218 +3,134 @@
 /**
  * Documentation Quality Gate for CI/CD
  *
- * Validates documentation quality and blocks CI if critical issues found
+ * Orchestrates all documentation checks and blocks CI if critical issues found
+ * This is the final gate that runs: audit → signals → lint
  */
 
-import { existsSync, readFileSync, writeFileSync } from "fs";
+import { existsSync, writeFileSync } from "fs";
 import { join } from "path";
-import * as glob from "glob";
-
-interface GateRule {
-  name: string;
-  blocking: boolean;
-  check: () => { passed: boolean; message: string; details?: string[] };
-}
+import { DocumentationAuditor, AuditReport } from "./doc-audit.js";
+import {
+  LLMSignalsValidator,
+  SignalsValidationReport,
+} from "./doc-signals-validator.js";
+import { DocumentationLinter, LintReport } from "./doc-linter.js";
 
 interface GateReport {
   overall: "PASS" | "FAIL";
-  summary: {
-    passed: number;
-    failed: number;
-    totalRules: number;
-  };
-  rules: Array<{
-    name: string;
-    blocking: boolean;
-    result: {
-      passed: boolean;
-      message: string;
-      details?: string[];
+  timestamp: string;
+  stages: {
+    audit: {
+      status: "PASS" | "FAIL";
+      report: AuditReport | null;
     };
-  }>;
+    signals: {
+      status: "PASS" | "FAIL";
+      report: SignalsValidationReport | null;
+    };
+    lint: {
+      status: "PASS" | "FAIL";
+      report: LintReport | null;
+    };
+  };
+  summary: {
+    totalIssues: number;
+    blockingIssues: number;
+  };
 }
 
 class DocQualityGate {
   private rootDir: string;
-  private rules: GateRule[];
 
   constructor() {
     this.rootDir = process.cwd();
-    this.rules = [
-      {
-        name: "CLAUDE.md exists",
-        blocking: true,
-        check: () => this.checkCLAUDEmdExists(),
-      },
-      {
-        name: "Core documentation files exist",
-        blocking: true,
-        check: () => this.checkCoreDocsExist(),
-      },
-      {
-        name: "No empty markdown files",
-        blocking: false,
-        check: () => this.checkNoEmptyMarkdown(),
-      },
-      {
-        name: "LLM signals index is valid",
-        blocking: false,
-        check: () => this.checkLLMSignalsIndex(),
-      },
-    ];
   }
 
-  private checkCLAUDEmdExists(): { passed: boolean; message: string } {
-    const claudePath = join(this.rootDir, "CLAUDE.md");
-    if (!existsSync(claudePath)) {
-      return {
-        passed: false,
-        message: "CLAUDE.md is missing - required for project instructions",
-      };
-    }
-
-    const content = readFileSync(claudePath, "utf-8");
-    if (content.length < 100) {
-      return {
-        passed: false,
-        message:
-          "CLAUDE.md is too short - must contain meaningful instructions",
-      };
-    }
-
-    return {
-      passed: true,
-      message: "CLAUDE.md exists and has content",
-    };
-  }
-
-  private checkCoreDocsExist(): {
-    passed: boolean;
-    message: string;
-    details?: string[];
-  } {
-    const requiredDocs = [
-      "DEVELOPMENT_STANDARDS.md",
-      "LLM_DEVELOPMENT_CONTRACT.md",
-      "docs/llm_friendly_summary.md",
-    ];
-
-    const missing: string[] = [];
-    for (const doc of requiredDocs) {
-      if (!existsSync(join(this.rootDir, doc))) {
-        missing.push(doc);
-      }
-    }
-
-    if (missing.length > 0) {
-      return {
-        passed: false,
-        message: `${missing.length} core documentation files missing`,
-        details: missing,
-      };
-    }
-
-    return {
-      passed: true,
-      message: "All core documentation files exist",
-    };
-  }
-
-  private checkNoEmptyMarkdown(): {
-    passed: boolean;
-    message: string;
-    details?: string[];
-  } {
-    const mdFiles = glob.sync("docs/**/*.md", { cwd: this.rootDir });
-    const emptyFiles: string[] = [];
-
-    for (const file of mdFiles) {
-      const fullPath = join(this.rootDir, file);
-      const content = readFileSync(fullPath, "utf-8").trim();
-      if (content.length < 10) {
-        emptyFiles.push(file);
-      }
-    }
-
-    if (emptyFiles.length > 0) {
-      return {
-        passed: false,
-        message: `${emptyFiles.length} markdown files are empty or too short`,
-        details: emptyFiles.slice(0, 5),
-      };
-    }
-
-    return {
-      passed: true,
-      message: "No empty markdown files found",
-    };
-  }
-
-  private checkLLMSignalsIndex(): { passed: boolean; message: string } {
-    const indexPath = join(this.rootDir, "docs/.llm-signals-index.json");
-    if (!existsSync(indexPath)) {
-      return {
-        passed: false,
-        message: "LLM signals index not found - run npm run docs:refresh",
-      };
-    }
-
-    try {
-      const content = readFileSync(indexPath, "utf-8");
-      JSON.parse(content); // Validate JSON
-      return {
-        passed: true,
-        message: "LLM signals index is valid",
-      };
-    } catch {
-      return {
-        passed: false,
-        message: "LLM signals index is invalid JSON",
-      };
-    }
-  }
-
-  async execute(): Promise<void> {
+  async execute(): Promise<GateReport> {
     console.log("🔐 Running Documentation Quality Gate...\n");
+    console.log("=".repeat(60));
 
     const report: GateReport = {
       overall: "PASS",
-      summary: {
-        passed: 0,
-        failed: 0,
-        totalRules: this.rules.length,
+      timestamp: new Date().toISOString(),
+      stages: {
+        audit: { status: "PASS", report: null },
+        signals: { status: "PASS", report: null },
+        lint: { status: "PASS", report: null },
       },
-      rules: [],
+      summary: {
+        totalIssues: 0,
+        blockingIssues: 0,
+      },
     };
 
-    for (const rule of this.rules) {
-      console.log(`📋 Checking: ${rule.name}...`);
-      const result = rule.check();
+    // Stage 1: Documentation Audit
+    console.log("\n📋 STAGE 1: Documentation Audit");
+    console.log("-".repeat(60));
+    try {
+      const auditor = new DocumentationAuditor();
+      const auditReport = await auditor.execute();
+      report.stages.audit.report = auditReport;
+      report.stages.audit.status = auditReport.overall;
 
-      report.rules.push({
-        name: rule.name,
-        blocking: rule.blocking,
-        result,
-      });
-
-      if (result.passed) {
-        report.summary.passed++;
-        console.log(`   ✅ ${result.message}`);
-      } else {
-        report.summary.failed++;
-        console.log(`   ❌ ${result.message}`);
-        if (result.details) {
-          result.details.forEach((detail) => {
-            console.log(`      - ${detail}`);
-          });
-        }
-        if (rule.blocking) {
-          report.overall = "FAIL";
-        }
+      if (auditReport.overall === "FAIL") {
+        report.overall = "FAIL";
+        report.summary.blockingIssues += auditReport.summary.critical;
       }
+      report.summary.totalIssues +=
+        auditReport.summary.critical +
+        auditReport.summary.warning +
+        auditReport.summary.info;
+    } catch (error) {
+      console.error("❌ Audit stage failed:", error);
+      report.stages.audit.status = "FAIL";
+      report.overall = "FAIL";
+      report.summary.blockingIssues++;
     }
 
-    // Write report
+    // Stage 2: LLM Signals Validation
+    console.log("\n\n🔍 STAGE 2: LLM Signals Validation");
+    console.log("-".repeat(60));
+    try {
+      const validator = new LLMSignalsValidator();
+      const signalsReport = await validator.execute();
+      report.stages.signals.report = signalsReport;
+      report.stages.signals.status = signalsReport.overall;
+
+      if (signalsReport.overall === "FAIL") {
+        // Signals validation is non-blocking but logged
+        console.log("⚠️  LLM Signals validation failed (non-blocking)");
+      }
+      report.summary.totalIssues += signalsReport.checks.filter(
+        (c) => !c.result.passed,
+      ).length;
+    } catch (error) {
+      console.error("⚠️  Signals validation failed (non-blocking):", error);
+      report.stages.signals.status = "FAIL";
+    }
+
+    // Stage 3: Documentation Linting
+    console.log("\n\n🔎 STAGE 3: Documentation Linting");
+    console.log("-".repeat(60));
+    try {
+      const linter = new DocumentationLinter();
+      const lintReport = await linter.execute();
+      report.stages.lint.report = lintReport;
+      report.stages.lint.status = lintReport.overall;
+
+      if (lintReport.overall === "FAIL") {
+        report.overall = "FAIL";
+        report.summary.blockingIssues += lintReport.summary.errors;
+      }
+      report.summary.totalIssues += lintReport.summary.totalIssues;
+    } catch (error) {
+      console.error("❌ Linting stage failed:", error);
+      report.stages.lint.status = "FAIL";
+      report.overall = "FAIL";
+      report.summary.blockingIssues++;
+    }
+
+    // Write consolidated report
     const reportsDir = join(this.rootDir, "reports");
     if (!existsSync(reportsDir)) {
       require("fs").mkdirSync(reportsDir, { recursive: true });
@@ -223,32 +139,49 @@ class DocQualityGate {
     const reportPath = join(reportsDir, "doc-gate-report.json");
     writeFileSync(reportPath, JSON.stringify(report, null, 2));
 
-    console.log(`\n📊 Quality Gate Summary:`);
+    // Final summary
+    console.log("\n\n" + "=".repeat(60));
+    console.log("📊 DOCUMENTATION QUALITY GATE SUMMARY");
+    console.log("=".repeat(60));
     console.log(
       `   Overall: ${report.overall === "PASS" ? "✅" : "❌"} ${report.overall}`,
     );
+    console.log(`   Total issues: ${report.summary.totalIssues}`);
+    console.log(`   Blocking issues: ${report.summary.blockingIssues}`);
+    console.log("\n   Stage Results:");
     console.log(
-      `   Passed: ${report.summary.passed}/${report.summary.totalRules}`,
+      `   - Audit: ${report.stages.audit.status === "PASS" ? "✅" : "❌"} ${report.stages.audit.status}`,
     );
     console.log(
-      `   Failed: ${report.summary.failed}/${report.summary.totalRules}`,
+      `   - Signals: ${report.stages.signals.status === "PASS" ? "✅" : "⚠️"} ${report.stages.signals.status} (non-blocking)`,
+    );
+    console.log(
+      `   - Linting: ${report.stages.lint.status === "PASS" ? "✅" : "❌"} ${report.stages.lint.status}`,
     );
     console.log(`\n📄 Report saved to: ${reportPath}`);
+    console.log("=".repeat(60));
 
-    if (report.overall === "FAIL") {
-      console.log("\n❌ Documentation Quality Gate FAILED");
-      console.log("💡 Fix blocking issues before proceeding");
-      process.exit(1);
-    }
-
-    console.log("\n✅ Documentation Quality Gate PASSED");
+    return report;
   }
 }
 
 // CLI execution
 async function main() {
   const gate = new DocQualityGate();
-  await gate.execute();
+  const report = await gate.execute();
+
+  if (report.overall === "FAIL") {
+    console.log("\n❌ Documentation Quality Gate FAILED");
+    console.log("💡 Fix blocking issues before proceeding");
+    process.exit(1);
+  }
+
+  console.log("\n✅ Documentation Quality Gate PASSED");
+  if (report.summary.totalIssues > report.summary.blockingIssues) {
+    console.log(
+      "⚠️  Some non-blocking issues found - consider addressing them",
+    );
+  }
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {
@@ -259,3 +192,4 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 }
 
 export { DocQualityGate };
+export type { GateReport };
