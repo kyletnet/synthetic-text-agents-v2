@@ -36,10 +36,10 @@ export default defineConfig({
       // Coverage thresholds (Phase 1: Current baseline + safety margin)
       // Roadmap: 9%→20%→40%→80% over 6 months
       thresholds: {
-        statements: 9,  // Current: 9.17% ✓
-        branches: 60,   // Current: 60.06% ✓
-        functions: 27,  // Current: 27.57% ✓
-        lines: 9,       // Current: 9.17% ✓
+        statements: 9, // Current: 9.17% ✓
+        branches: 60, // Current: 60.06% ✓
+        functions: 27, // Current: 27.57% ✓
+        lines: 9, // Current: 9.17% ✓
       },
 
       // Include/exclude patterns for coverage
