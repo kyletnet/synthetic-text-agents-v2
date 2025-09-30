@@ -197,6 +197,7 @@
     "@types/yargs": "^17.0.33",
     "@typescript-eslint/eslint-plugin": "^8.44.0",
     "@typescript-eslint/parser": "^8.44.0",
+    "@vitest/coverage-v8": "^1.6.1",
     "@vitest/ui": "^1.6.1",
     "ajv": "^8.17.1",
     "dotenv": "17.2.2",
