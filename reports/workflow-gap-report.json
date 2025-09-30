@@ -1,0 +1,623 @@
+{
+  "timestamp": "2025-09-30T03:27:49.030Z",
+  "totalGaps": 51,
+  "bySeverity": {
+    "critical": 0,
+    "high": 1,
+    "medium": 50,
+    "low": 0
+  },
+  "gaps": [
+    {
+      "type": "notification_only",
+      "severity": "medium",
+      "component": "scripts/workflow-prevention-system.ts",
+      "description": "Shows recommendations but provides no interactive way to act on them",
+      "evidence": [
+        "Found console.log with recommendations",
+        "No interactive prompts found"
+      ],
+      "suggestedFix": "Add interactive prompt or auto-execution option",
+      "autoFixApplied": false
+    },
+    {
+      "type": "notification_only",
+      "severity": "medium",
+      "component": "scripts/workflow-completeness-auditor.ts",
+      "description": "Shows recommendations but provides no interactive way to act on them",
+      "evidence": [
+        "Found console.log with recommendations",
+        "No interactive prompts found"
+      ],
+      "suggestedFix": "Add interactive prompt or auto-execution option",
+      "autoFixApplied": false
+    },
+    {
+      "type": "notification_only",
+      "severity": "medium",
+      "component": "scripts/workaround-detector.ts",
+      "description": "Shows recommendations but provides no interactive way to act on them",
+      "evidence": [
+        "Found console.log with recommendations",
+        "No interactive prompts found"
+      ],
+      "suggestedFix": "Add interactive prompt or auto-execution option",
+      "autoFixApplied": false
+    },
+    {
+      "type": "notification_only",
+      "severity": "medium",
+      "component": "scripts/user-communication-system.ts",
+      "description": "Shows recommendations but provides no interactive way to act on them",
+      "evidence": [
+        "Found console.log with recommendations",
+        "No interactive prompts found"
+      ],
+      "suggestedFix": "Add interactive prompt or auto-execution option",
+      "autoFixApplied": false
+    },
+    {
+      "type": "notification_only",
+      "severity": "medium",
+      "component": "scripts/ts-compile-checker.ts",
+      "description": "Shows recommendations but provides no interactive way to act on them",
+      "evidence": [
+        "Found console.log with recommendations",
+        "No interactive prompts found"
+      ],
+      "suggestedFix": "Add interactive prompt or auto-execution option",
+      "autoFixApplied": false
+    },
+    {
+      "type": "notification_only",
+      "severity": "medium",
+      "component": "scripts/system-integration-analyzer.ts",
+      "description": "Shows recommendations but provides no interactive way to act on them",
+      "evidence": [
+        "Found console.log with recommendations",
+        "No interactive prompts found"
+      ],
+      "suggestedFix": "Add interactive prompt or auto-execution option",
+      "autoFixApplied": false
+    },
+    {
+      "type": "notification_only",
+      "severity": "medium",
+      "component": "scripts/sync-health-reporter.ts",
+      "description": "Shows recommendations but provides no interactive way to act on them",
+      "evidence": [
+        "Found console.log with recommendations",
+        "No interactive prompts found"
+      ],
+      "suggestedFix": "Add interactive prompt or auto-execution option",
+      "autoFixApplied": false
+    },
+    {
+      "type": "notification_only",
+      "severity": "medium",
+      "component": "scripts/security-audit-checker.ts",
+      "description": "Shows recommendations but provides no interactive way to act on them",
+      "evidence": [
+        "Found console.log with recommendations",
+        "No interactive prompts found"
+      ],
+      "suggestedFix": "Add interactive prompt or auto-execution option",
+      "autoFixApplied": false
+    },
+    {
+      "type": "notification_only",
+      "severity": "medium",
+      "component": "scripts/routing-status.ts",
+      "description": "Shows recommendations but provides no interactive way to act on them",
+      "evidence": [
+        "Found console.log with recommendations",
+        "No interactive prompts found"
+      ],
+      "suggestedFix": "Add interactive prompt or auto-execution option",
+      "autoFixApplied": false
+    },
+    {
+      "type": "notification_only",
+      "severity": "medium",
+      "component": "scripts/reference-tracker.ts",
+      "description": "Shows recommendations but provides no interactive way to act on them",
+      "evidence": [
+        "Found console.log with recommendations",
+        "No interactive prompts found"
+      ],
+      "suggestedFix": "Add interactive prompt or auto-execution option",
+      "autoFixApplied": false
+    },
+    {
+      "type": "notification_only",
+      "severity": "medium",
+      "component": "scripts/performance-metrics-reporter.ts",
+      "description": "Shows recommendations but provides no interactive way to act on them",
+      "evidence": [
+        "Found console.log with recommendations",
+        "No interactive prompts found"
+      ],
+      "suggestedFix": "Add interactive prompt or auto-execution option",
+      "autoFixApplied": false
+    },
+    {
+      "type": "notification_only",
+      "severity": "medium",
+      "component": "scripts/optimization-engine.ts",
+      "description": "Shows recommendations but provides no interactive way to act on them",
+      "evidence": [
+        "Found console.log with recommendations",
+        "No interactive prompts found"
+      ],
+      "suggestedFix": "Add interactive prompt or auto-execution option",
+      "autoFixApplied": false
+    },
+    {
+      "type": "notification_only",
+      "severity": "medium",
+      "component": "scripts/maintain-report-generator.ts",
+      "description": "Shows recommendations but provides no interactive way to act on them",
+      "evidence": [
+        "Found console.log with recommendations",
+        "No interactive prompts found"
+      ],
+      "suggestedFix": "Add interactive prompt or auto-execution option",
+      "autoFixApplied": false
+    },
+    {
+      "type": "notification_only",
+      "severity": "medium",
+      "component": "scripts/fix-eslint-issues.ts",
+      "description": "Shows recommendations but provides no interactive way to act on them",
+      "evidence": [
+        "Found console.log with recommendations",
+        "No interactive prompts found"
+      ],
+      "suggestedFix": "Add interactive prompt or auto-execution option",
+      "autoFixApplied": false
+    },
+    {
+      "type": "notification_only",
+      "severity": "medium",
+      "component": "scripts/export_cli.ts",
+      "description": "Shows recommendations but provides no interactive way to act on them",
+      "evidence": [
+        "Found console.log with recommendations",
+        "No interactive prompts found"
+      ],
+      "suggestedFix": "Add interactive prompt or auto-execution option",
+      "autoFixApplied": false
+    },
+    {
+      "type": "notification_only",
+      "severity": "medium",
+      "component": "scripts/document-optimizer.ts",
+      "description": "Shows recommendations but provides no interactive way to act on them",
+      "evidence": [
+        "Found console.log with recommendations",
+        "No interactive prompts found"
+      ],
+      "suggestedFix": "Add interactive prompt or auto-execution option",
+      "autoFixApplied": false
+    },
+    {
+      "type": "notification_only",
+      "severity": "medium",
+      "component": "scripts/dlq_reprocess.ts",
+      "description": "Shows recommendations but provides no interactive way to act on them",
+      "evidence": [
+        "Found console.log with recommendations",
+        "No interactive prompts found"
+      ],
+      "suggestedFix": "Add interactive prompt or auto-execution option",
+      "autoFixApplied": false
+    },
+    {
+      "type": "notification_only",
+      "severity": "medium",
+      "component": "scripts/command-optimizer.ts",
+      "description": "Shows recommendations but provides no interactive way to act on them",
+      "evidence": [
+        "Found console.log with recommendations",
+        "No interactive prompts found"
+      ],
+      "suggestedFix": "Add interactive prompt or auto-execution option",
+      "autoFixApplied": false
+    },
+    {
+      "type": "notification_only",
+      "severity": "medium",
+      "component": "scripts/auto-integration-guard.ts",
+      "description": "Shows recommendations but provides no interactive way to act on them",
+      "evidence": [
+        "Found console.log with recommendations",
+        "No interactive prompts found"
+      ],
+      "suggestedFix": "Add interactive prompt or auto-execution option",
+      "autoFixApplied": false
+    },
+    {
+      "type": "notification_only",
+      "severity": "medium",
+      "component": "scripts/audit-trigger.ts",
+      "description": "Shows recommendations but provides no interactive way to act on them",
+      "evidence": [
+        "Found console.log with recommendations",
+        "No interactive prompts found"
+      ],
+      "suggestedFix": "Add interactive prompt or auto-execution option",
+      "autoFixApplied": false
+    },
+    {
+      "type": "notification_only",
+      "severity": "medium",
+      "component": "scripts/utils/threshold_gating.ts",
+      "description": "Shows recommendations but provides no interactive way to act on them",
+      "evidence": [
+        "Found console.log with recommendations",
+        "No interactive prompts found"
+      ],
+      "suggestedFix": "Add interactive prompt or auto-execution option",
+      "autoFixApplied": false
+    },
+    {
+      "type": "notification_only",
+      "severity": "medium",
+      "component": "scripts/utils/budget_guard.ts",
+      "description": "Shows recommendations but provides no interactive way to act on them",
+      "evidence": [
+        "Found console.log with recommendations",
+        "No interactive prompts found"
+      ],
+      "suggestedFix": "Add interactive prompt or auto-execution option",
+      "autoFixApplied": false
+    },
+    {
+      "type": "notification_only",
+      "severity": "medium",
+      "component": "scripts/dx/persist_reports.ts",
+      "description": "Shows recommendations but provides no interactive way to act on them",
+      "evidence": [
+        "Found console.log with recommendations",
+        "No interactive prompts found"
+      ],
+      "suggestedFix": "Add interactive prompt or auto-execution option",
+      "autoFixApplied": false
+    },
+    {
+      "type": "notification_only",
+      "severity": "medium",
+      "component": "scripts/dx/gating.ts",
+      "description": "Shows recommendations but provides no interactive way to act on them",
+      "evidence": [
+        "Found console.log with recommendations",
+        "No interactive prompts found"
+      ],
+      "suggestedFix": "Add interactive prompt or auto-execution option",
+      "autoFixApplied": false
+    },
+    {
+      "type": "notification_only",
+      "severity": "medium",
+      "component": "scripts/dx/detect_anomalies.ts",
+      "description": "Shows recommendations but provides no interactive way to act on them",
+      "evidence": [
+        "Found console.log with recommendations",
+        "No interactive prompts found"
+      ],
+      "suggestedFix": "Add interactive prompt or auto-execution option",
+      "autoFixApplied": false
+    },
+    {
+      "type": "notification_only",
+      "severity": "medium",
+      "component": "scripts/dx/cli.ts",
+      "description": "Shows recommendations but provides no interactive way to act on them",
+      "evidence": [
+        "Found console.log with recommendations",
+        "No interactive prompts found"
+      ],
+      "suggestedFix": "Add interactive prompt or auto-execution option",
+      "autoFixApplied": false
+    },
+    {
+      "type": "notification_only",
+      "severity": "medium",
+      "component": "scripts/dx/autocalibrate.ts",
+      "description": "Shows recommendations but provides no interactive way to act on them",
+      "evidence": [
+        "Found console.log with recommendations",
+        "No interactive prompts found"
+      ],
+      "suggestedFix": "Add interactive prompt or auto-execution option",
+      "autoFixApplied": false
+    },
+    {
+      "type": "notification_only",
+      "severity": "medium",
+      "component": "scripts/metrics/threshold_manager.ts",
+      "description": "Shows recommendations but provides no interactive way to act on them",
+      "evidence": [
+        "Found console.log with recommendations",
+        "No interactive prompts found"
+      ],
+      "suggestedFix": "Add interactive prompt or auto-execution option",
+      "autoFixApplied": false
+    },
+    {
+      "type": "notification_only",
+      "severity": "medium",
+      "component": "scripts/docs/doc-quality-auditor.ts",
+      "description": "Shows recommendations but provides no interactive way to act on them",
+      "evidence": [
+        "Found console.log with recommendations",
+        "No interactive prompts found"
+      ],
+      "suggestedFix": "Add interactive prompt or auto-execution option",
+      "autoFixApplied": false
+    },
+    {
+      "type": "notification_only",
+      "severity": "medium",
+      "component": "scripts/docs/doc-linter.ts",
+      "description": "Shows recommendations but provides no interactive way to act on them",
+      "evidence": [
+        "Found console.log with recommendations",
+        "No interactive prompts found"
+      ],
+      "suggestedFix": "Add interactive prompt or auto-execution option",
+      "autoFixApplied": false
+    },
+    {
+      "type": "notification_only",
+      "severity": "medium",
+      "component": "scripts/lib/system-integration-orchestrator.ts",
+      "description": "Shows recommendations but provides no interactive way to act on them",
+      "evidence": [
+        "Found console.log with recommendations",
+        "No interactive prompts found"
+      ],
+      "suggestedFix": "Add interactive prompt or auto-execution option",
+      "autoFixApplied": false
+    },
+    {
+      "type": "notification_only",
+      "severity": "medium",
+      "component": "scripts/lib/smart-decision-matrix.ts",
+      "description": "Shows recommendations but provides no interactive way to act on them",
+      "evidence": [
+        "Found console.log with recommendations",
+        "No interactive prompts found"
+      ],
+      "suggestedFix": "Add interactive prompt or auto-execution option",
+      "autoFixApplied": false
+    },
+    {
+      "type": "notification_only",
+      "severity": "medium",
+      "component": "scripts/lib/session_report.ts",
+      "description": "Shows recommendations but provides no interactive way to act on them",
+      "evidence": [
+        "Found console.log with recommendations",
+        "No interactive prompts found"
+      ],
+      "suggestedFix": "Add interactive prompt or auto-execution option",
+      "autoFixApplied": false
+    },
+    {
+      "type": "notification_only",
+      "severity": "medium",
+      "component": "scripts/lib/self-management-tracker.ts",
+      "description": "Shows recommendations but provides no interactive way to act on them",
+      "evidence": [
+        "Found console.log with recommendations",
+        "No interactive prompts found"
+      ],
+      "suggestedFix": "Add interactive prompt or auto-execution option",
+      "autoFixApplied": false
+    },
+    {
+      "type": "notification_only",
+      "severity": "medium",
+      "component": "scripts/lib/manifest_manager.ts",
+      "description": "Shows recommendations but provides no interactive way to act on them",
+      "evidence": [
+        "Found console.log with recommendations",
+        "No interactive prompts found"
+      ],
+      "suggestedFix": "Add interactive prompt or auto-execution option",
+      "autoFixApplied": false
+    },
+    {
+      "type": "notification_only",
+      "severity": "medium",
+      "component": "scripts/lib/integration-strategy-handler.ts",
+      "description": "Shows recommendations but provides no interactive way to act on them",
+      "evidence": [
+        "Found console.log with recommendations",
+        "No interactive prompts found"
+      ],
+      "suggestedFix": "Add interactive prompt or auto-execution option",
+      "autoFixApplied": false
+    },
+    {
+      "type": "notification_only",
+      "severity": "medium",
+      "component": "scripts/lib/integration-history-tracker.ts",
+      "description": "Shows recommendations but provides no interactive way to act on them",
+      "evidence": [
+        "Found console.log with recommendations",
+        "No interactive prompts found"
+      ],
+      "suggestedFix": "Add interactive prompt or auto-execution option",
+      "autoFixApplied": false
+    },
+    {
+      "type": "notification_only",
+      "severity": "medium",
+      "component": "scripts/lib/gating_integrator.ts",
+      "description": "Shows recommendations but provides no interactive way to act on them",
+      "evidence": [
+        "Found console.log with recommendations",
+        "No interactive prompts found"
+      ],
+      "suggestedFix": "Add interactive prompt or auto-execution option",
+      "autoFixApplied": false
+    },
+    {
+      "type": "notification_only",
+      "severity": "medium",
+      "component": "scripts/lib/externalized-decision-matrix.ts",
+      "description": "Shows recommendations but provides no interactive way to act on them",
+      "evidence": [
+        "Found console.log with recommendations",
+        "No interactive prompts found"
+      ],
+      "suggestedFix": "Add interactive prompt or auto-execution option",
+      "autoFixApplied": false
+    },
+    {
+      "type": "notification_only",
+      "severity": "medium",
+      "component": "scripts/lib/core-system-hub.ts",
+      "description": "Shows recommendations but provides no interactive way to act on them",
+      "evidence": [
+        "Found console.log with recommendations",
+        "No interactive prompts found"
+      ],
+      "suggestedFix": "Add interactive prompt or auto-execution option",
+      "autoFixApplied": false
+    },
+    {
+      "type": "notification_only",
+      "severity": "medium",
+      "component": "scripts/lib/contextual-trigger-system.ts",
+      "description": "Shows recommendations but provides no interactive way to act on them",
+      "evidence": [
+        "Found console.log with recommendations",
+        "No interactive prompts found"
+      ],
+      "suggestedFix": "Add interactive prompt or auto-execution option",
+      "autoFixApplied": false
+    },
+    {
+      "type": "notification_only",
+      "severity": "medium",
+      "component": "scripts/lib/component-integration-adapter.ts",
+      "description": "Shows recommendations but provides no interactive way to act on them",
+      "evidence": [
+        "Found console.log with recommendations",
+        "No interactive prompts found"
+      ],
+      "suggestedFix": "Add interactive prompt or auto-execution option",
+      "autoFixApplied": false
+    },
+    {
+      "type": "notification_only",
+      "severity": "medium",
+      "component": "scripts/lib/component-harmony-analyzer.ts",
+      "description": "Shows recommendations but provides no interactive way to act on them",
+      "evidence": [
+        "Found console.log with recommendations",
+        "No interactive prompts found"
+      ],
+      "suggestedFix": "Add interactive prompt or auto-execution option",
+      "autoFixApplied": false
+    },
+    {
+      "type": "notification_only",
+      "severity": "medium",
+      "component": "scripts/lib/checkpoint_manager.ts",
+      "description": "Shows recommendations but provides no interactive way to act on them",
+      "evidence": [
+        "Found console.log with recommendations",
+        "No interactive prompts found"
+      ],
+      "suggestedFix": "Add interactive prompt or auto-execution option",
+      "autoFixApplied": false
+    },
+    {
+      "type": "notification_only",
+      "severity": "medium",
+      "component": "scripts/lib/budget_guardian.ts",
+      "description": "Shows recommendations but provides no interactive way to act on them",
+      "evidence": [
+        "Found console.log with recommendations",
+        "No interactive prompts found"
+      ],
+      "suggestedFix": "Add interactive prompt or auto-execution option",
+      "autoFixApplied": false
+    },
+    {
+      "type": "notification_only",
+      "severity": "medium",
+      "component": "scripts/lib/auto-fix-manager.ts",
+      "description": "Shows recommendations but provides no interactive way to act on them",
+      "evidence": [
+        "Found console.log with recommendations",
+        "No interactive prompts found"
+      ],
+      "suggestedFix": "Add interactive prompt or auto-execution option",
+      "autoFixApplied": false
+    },
+    {
+      "type": "notification_only",
+      "severity": "medium",
+      "component": "scripts/lib/advanced-system-diagnostics.ts",
+      "description": "Shows recommendations but provides no interactive way to act on them",
+      "evidence": [
+        "Found console.log with recommendations",
+        "No interactive prompts found"
+      ],
+      "suggestedFix": "Add interactive prompt or auto-execution option",
+      "autoFixApplied": false
+    },
+    {
+      "type": "notification_only",
+      "severity": "medium",
+      "component": "scripts/lib/adaptive-execution-engine.ts",
+      "description": "Shows recommendations but provides no interactive way to act on them",
+      "evidence": [
+        "Found console.log with recommendations",
+        "No interactive prompts found"
+      ],
+      "suggestedFix": "Add interactive prompt or auto-execution option",
+      "autoFixApplied": false
+    },
+    {
+      "type": "notification_only",
+      "severity": "medium",
+      "component": "scripts/ci/fix_taxonomy_labels.ts",
+      "description": "Shows recommendations but provides no interactive way to act on them",
+      "evidence": [
+        "Found console.log with recommendations",
+        "No interactive prompts found"
+      ],
+      "suggestedFix": "Add interactive prompt or auto-execution option",
+      "autoFixApplied": false
+    },
+    {
+      "type": "broken_chain",
+      "severity": "high",
+      "component": "package.json:scripts:advanced:audit",
+      "description": "Refactor command may fail if state is not properly initialized",
+      "evidence": [
+        "Script: tsx scripts/smart-refactor-auditor.ts audit",
+        "No setup/init scripts found"
+      ],
+      "suggestedFix": "Add state verification or auto-initialization",
+      "autoFixApplied": false
+    },
+    {
+      "type": "manual_dependency",
+      "severity": "medium",
+      "component": "scripts/lib/system-integration-orchestrator.ts",
+      "description": "Workflow requires manual steps but provides no automation options",
+      "evidence": [
+        "Found: \"manual\""
+      ],
+      "suggestedFix": "Add automation options or interactive prompts",
+      "autoFixApplied": false
+    }
+  ]
+}

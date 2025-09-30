@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { DataAugmentationSystem, AugmentationRequest } from '@/lib/augmentation-utils';
+import { withAPIGuard } from '@/lib/api-guard';
 
-export async function POST(request: NextRequest) {
+async function augmentHandler(request: NextRequest) {
   const sessionId = `augment_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
 
   try {
@@ -70,7 +71,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function GET() {
+async function getHandler() {
   // 증강 시스템 정보 제공
   const stats = DataAugmentationSystem.getAugmentationStats();
 
@@ -89,3 +90,7 @@ export async function GET() {
     },
   });
 }
+
+// 🛡️ Apply API Guard protection
+export const POST = withAPIGuard(augmentHandler);
+export const GET = withAPIGuard(getHandler);

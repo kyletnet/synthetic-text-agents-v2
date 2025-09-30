@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-09-26T07:44:27.743Z",
+  "timestamp": "2025-09-30T03:10:00.876Z",
   "version": "1.0.0",
   "analysisResults": {
     "patternsFound": [
@@ -2432,6 +2432,118 @@
       },
       "afterState": {
         "timestamp": "2025-09-26T07:44:27.742Z",
+        "componentCount": 181
+      },
+      "outcome": "success",
+      "impactMeasured": {
+        "componentCountChange": 0
+      }
+    },
+    {
+      "timestamp": "2025-09-30T03:10:00.864Z",
+      "improvementApplied": "Consolidate design-prefixed-components pattern (5 components)",
+      "beforeState": {
+        "timestamp": "2025-09-30T03:10:00.862Z",
+        "componentCount": 181
+      },
+      "afterState": {
+        "timestamp": "2025-09-30T03:10:00.863Z",
+        "componentCount": 181
+      },
+      "outcome": "success",
+      "impactMeasured": {
+        "componentCountChange": 0
+      }
+    },
+    {
+      "timestamp": "2025-09-30T03:10:00.866Z",
+      "improvementApplied": "Consolidate fix-prefixed-components pattern (5 components)",
+      "beforeState": {
+        "timestamp": "2025-09-30T03:10:00.864Z",
+        "componentCount": 181
+      },
+      "afterState": {
+        "timestamp": "2025-09-30T03:10:00.865Z",
+        "componentCount": 181
+      },
+      "outcome": "success",
+      "impactMeasured": {
+        "componentCountChange": 0
+      }
+    },
+    {
+      "timestamp": "2025-09-30T03:10:00.867Z",
+      "improvementApplied": "Consolidate utility-related-components pattern (4 components)",
+      "beforeState": {
+        "timestamp": "2025-09-30T03:10:00.866Z",
+        "componentCount": 181
+      },
+      "afterState": {
+        "timestamp": "2025-09-30T03:10:00.867Z",
+        "componentCount": 181
+      },
+      "outcome": "success",
+      "impactMeasured": {
+        "componentCountChange": 0
+      }
+    },
+    {
+      "timestamp": "2025-09-30T03:10:00.869Z",
+      "improvementApplied": "Consolidate approval-prefixed-components pattern (4 components)",
+      "beforeState": {
+        "timestamp": "2025-09-30T03:10:00.867Z",
+        "componentCount": 181
+      },
+      "afterState": {
+        "timestamp": "2025-09-30T03:10:00.868Z",
+        "componentCount": 181
+      },
+      "outcome": "success",
+      "impactMeasured": {
+        "componentCountChange": 0
+      }
+    },
+    {
+      "timestamp": "2025-09-30T03:10:00.871Z",
+      "improvementApplied": "Consolidate integration-prefixed-components pattern (4 components)",
+      "beforeState": {
+        "timestamp": "2025-09-30T03:10:00.869Z",
+        "componentCount": 181
+      },
+      "afterState": {
+        "timestamp": "2025-09-30T03:10:00.870Z",
+        "componentCount": 181
+      },
+      "outcome": "success",
+      "impactMeasured": {
+        "componentCountChange": 0
+      }
+    },
+    {
+      "timestamp": "2025-09-30T03:10:00.873Z",
+      "improvementApplied": "Consolidate interactive-prefixed-components pattern (4 components)",
+      "beforeState": {
+        "timestamp": "2025-09-30T03:10:00.871Z",
+        "componentCount": 181
+      },
+      "afterState": {
+        "timestamp": "2025-09-30T03:10:00.872Z",
+        "componentCount": 181
+      },
+      "outcome": "success",
+      "impactMeasured": {
+        "componentCountChange": 0
+      }
+    },
+    {
+      "timestamp": "2025-09-30T03:10:00.875Z",
+      "improvementApplied": "Consolidate duplicate build_docs_indexes implementations",
+      "beforeState": {
+        "timestamp": "2025-09-30T03:10:00.873Z",
+        "componentCount": 181
+      },
+      "afterState": {
+        "timestamp": "2025-09-30T03:10:00.874Z",
         "componentCount": 181
       },
       "outcome": "success",

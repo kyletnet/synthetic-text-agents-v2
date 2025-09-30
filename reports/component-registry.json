@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "lastUpdated": "2025-09-26T07:46:19.726Z",
+  "lastUpdated": "2025-09-30T03:28:10.623Z",
   "totalComponents": 181,
   "complianceStats": {
     "compliant": 59,
@@ -64,12 +64,12 @@
         "violations": [
           "Required integration with unified-dashboard missing"
         ],
-        "lastChecked": "2025-09-25T09:41:47.672Z"
+        "lastChecked": "2025-09-30T03:12:13.726Z"
       },
       "lifecycle": {
         "created": "2025-09-22 18:26:51 +0900",
-        "lastUpdated": "2025-09-24T09:14:45.240Z",
-        "lastIntegrated": "2025-09-25T09:41:47.727Z",
+        "lastUpdated": "2025-09-26T09:38:08.692Z",
+        "lastIntegrated": "2025-09-30T03:12:13.786Z",
         "status": "active"
       }
     },
@@ -1409,12 +1409,12 @@
         "violations": [
           "Required integration with unified-dashboard missing"
         ],
-        "lastChecked": "2025-09-25T09:41:47.613Z"
+        "lastChecked": "2025-09-30T03:12:13.656Z"
       },
       "lifecycle": {
         "created": "2025-09-22 18:26:51 +0900",
-        "lastUpdated": "2025-09-23T08:53:35.380Z",
-        "lastIntegrated": "2025-09-25T09:41:47.670Z",
+        "lastUpdated": "2025-09-26T09:29:46.248Z",
+        "lastIntegrated": "2025-09-30T03:12:13.724Z",
         "status": "active"
       }
     },
@@ -1475,12 +1475,12 @@
         "violations": [
           "Required integration with unified-dashboard missing"
         ],
-        "lastChecked": "2025-09-25T09:41:47.553Z"
+        "lastChecked": "2025-09-30T03:12:13.593Z"
       },
       "lifecycle": {
         "created": "2025-09-22 18:26:51 +0900",
-        "lastUpdated": "2025-09-23T08:53:35.424Z",
-        "lastIntegrated": "2025-09-25T09:41:47.611Z",
+        "lastUpdated": "2025-09-26T09:38:29.198Z",
+        "lastIntegrated": "2025-09-30T03:12:13.654Z",
         "status": "active"
       }
     },
@@ -2814,12 +2814,12 @@
       "compliance": {
         "isCompliant": true,
         "violations": [],
-        "lastChecked": "2025-09-25T09:41:47.498Z"
+        "lastChecked": "2025-09-30T03:12:13.532Z"
       },
       "lifecycle": {
         "created": "2025-09-22 18:26:51 +0900",
-        "lastUpdated": "2025-09-24T09:14:45.322Z",
-        "lastIntegrated": "2025-09-25T09:41:47.552Z",
+        "lastUpdated": "2025-09-26T09:29:46.293Z",
+        "lastIntegrated": "2025-09-30T03:12:13.591Z",
         "status": "active"
       }
     },
@@ -3792,12 +3792,12 @@
         "violations": [
           "Required integration with unified-dashboard missing"
         ],
-        "lastChecked": "2025-09-25T09:41:47.428Z"
+        "lastChecked": "2025-09-30T03:12:13.469Z"
       },
       "lifecycle": {
         "created": "2025-09-22 18:26:51 +0900",
-        "lastUpdated": "2025-09-23T08:53:35.470Z",
-        "lastIntegrated": "2025-09-25T09:41:47.497Z",
+        "lastUpdated": "2025-09-26T09:29:46.264Z",
+        "lastIntegrated": "2025-09-30T03:12:13.529Z",
         "status": "active"
       }
     },
@@ -3952,12 +3952,12 @@
       "compliance": {
         "isCompliant": true,
         "violations": [],
-        "lastChecked": "2025-09-25T09:41:47.369Z"
+        "lastChecked": "2025-09-30T03:12:13.408Z"
       },
       "lifecycle": {
         "created": "2025-09-22 18:26:51 +0900",
-        "lastUpdated": "2025-09-23T08:53:35.484Z",
-        "lastIntegrated": "2025-09-25T09:41:47.427Z",
+        "lastUpdated": "2025-09-26T09:29:46.288Z",
+        "lastIntegrated": "2025-09-30T03:12:13.468Z",
         "status": "active"
       }
     },
@@ -5097,12 +5097,12 @@
       "compliance": {
         "isCompliant": true,
         "violations": [],
-        "lastChecked": "2025-09-25T09:41:47.309Z"
+        "lastChecked": "2025-09-30T03:12:13.348Z"
       },
       "lifecycle": {
         "created": "2025-09-22 18:26:51 +0900",
-        "lastUpdated": "2025-09-23T08:53:35.498Z",
-        "lastIntegrated": "2025-09-25T09:41:47.368Z",
+        "lastUpdated": "2025-09-26T09:29:46.275Z",
+        "lastIntegrated": "2025-09-30T03:12:13.406Z",
         "status": "active"
       }
     },
@@ -6555,12 +6555,12 @@
         "violations": [
           "Required integration with unified-dashboard missing"
         ],
-        "lastChecked": "2025-09-25T09:41:47.248Z"
+        "lastChecked": "2025-09-30T03:12:13.288Z"
       },
       "lifecycle": {
         "created": "2025-09-22 18:26:51 +0900",
-        "lastUpdated": "2025-09-23T08:53:35.512Z",
-        "lastIntegrated": "2025-09-25T09:41:47.308Z",
+        "lastUpdated": "2025-09-26T09:29:46.268Z",
+        "lastIntegrated": "2025-09-30T03:12:13.346Z",
         "status": "active"
       }
     },
@@ -6691,12 +6691,12 @@
       "compliance": {
         "isCompliant": true,
         "violations": [],
-        "lastChecked": "2025-09-25T09:41:47.187Z"
+        "lastChecked": "2025-09-30T03:12:13.228Z"
       },
       "lifecycle": {
         "created": "2025-09-22 18:26:51 +0900",
-        "lastUpdated": "2025-09-23T08:53:35.524Z",
-        "lastIntegrated": "2025-09-25T09:41:47.245Z",
+        "lastUpdated": "2025-09-26T09:29:46.279Z",
+        "lastIntegrated": "2025-09-30T03:12:13.285Z",
         "status": "active"
       }
     },
@@ -7043,12 +7043,12 @@
       "compliance": {
         "isCompliant": true,
         "violations": [],
-        "lastChecked": "2025-09-26T03:12:33.850Z"
+        "lastChecked": "2025-09-30T03:27:31.910Z"
       },
       "lifecycle": {
         "created": "2025-09-24 16:54:07 +0900",
-        "lastUpdated": "2025-09-26T02:56:56.769Z",
-        "lastIntegrated": "2025-09-26T03:12:33.905Z",
+        "lastUpdated": "2025-09-30T03:23:27.234Z",
+        "lastIntegrated": "2025-09-30T03:27:32.000Z",
         "status": "active"
       }
     },
@@ -8025,12 +8025,12 @@
       "compliance": {
         "isCompliant": true,
         "violations": [],
-        "lastChecked": "2025-09-26T07:01:45.235Z"
+        "lastChecked": "2025-09-30T03:27:32.002Z"
       },
       "lifecycle": {
-        "created": "2025-09-26T07:01:45.297Z",
-        "lastUpdated": "2025-09-26T07:00:07.165Z",
-        "lastIntegrated": "2025-09-26T07:01:45.297Z",
+        "created": "2025-09-29 18:54:21 +0900",
+        "lastUpdated": "2025-09-30T03:22:26.091Z",
+        "lastIntegrated": "2025-09-30T03:27:32.069Z",
         "status": "active"
       }
     },
@@ -8277,12 +8277,12 @@
         "violations": [
           "Required integration with unified-dashboard missing"
         ],
-        "lastChecked": "2025-09-26T07:01:44.983Z"
+        "lastChecked": "2025-09-30T03:27:31.750Z"
       },
       "lifecycle": {
-        "created": "2025-09-26T07:01:45.161Z",
-        "lastUpdated": "2025-09-26T07:01:14.046Z",
-        "lastIntegrated": "2025-09-26T07:01:45.162Z",
+        "created": "2025-09-29 18:54:21 +0900",
+        "lastUpdated": "2025-09-30T03:21:54.622Z",
+        "lastIntegrated": "2025-09-30T03:27:31.908Z",
         "status": "active"
       }
     },
@@ -9134,12 +9134,12 @@
         "violations": [
           "Required integration with unified-dashboard missing"
         ],
-        "lastChecked": "2025-09-25T09:41:47.128Z"
+        "lastChecked": "2025-09-30T03:12:13.161Z"
       },
       "lifecycle": {
         "created": "2025-09-22 18:26:51 +0900",
-        "lastUpdated": "2025-09-23T08:53:35.530Z",
-        "lastIntegrated": "2025-09-25T09:41:47.185Z",
+        "lastUpdated": "2025-09-26T09:29:46.259Z",
+        "lastIntegrated": "2025-09-30T03:12:13.227Z",
         "status": "active"
       }
     },
@@ -9310,12 +9310,12 @@
         "violations": [
           "Required integration with unified-dashboard missing"
         ],
-        "lastChecked": "2025-09-25T09:41:47.069Z"
+        "lastChecked": "2025-09-30T03:12:13.069Z"
       },
       "lifecycle": {
         "created": "2025-09-22 18:26:51 +0900",
-        "lastUpdated": "2025-09-23T08:53:35.562Z",
-        "lastIntegrated": "2025-09-25T09:41:47.127Z",
+        "lastUpdated": "2025-09-26T09:29:46.255Z",
+        "lastIntegrated": "2025-09-30T03:12:13.159Z",
         "status": "legacy"
       }
     },

@@ -263,8 +263,8 @@ export class ContextInjector extends BaseAgent {
     const estimateTokens = (text: string): number => Math.ceil(text.length / 3);
 
     // Select chunks within token budget
-    let selectedChunks = [...ragContext.retrievedChunks];
-    let totalTokens = estimateTokens(request.originalPrompt) + 50; // Base prompt + template overhead
+    const selectedChunks = [...ragContext.retrievedChunks];
+    const totalTokens = estimateTokens(request.originalPrompt) + 50; // Base prompt + template overhead
 
     // Reduce chunks if budget exceeded
     while (selectedChunks.length > 0) {

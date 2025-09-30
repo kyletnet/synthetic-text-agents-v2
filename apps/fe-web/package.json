@@ -9,7 +9,28 @@
     "lint": "next lint",
     "dev:cli": "cross-env RUN_PROVIDER=${RUN_PROVIDER:-CLI} next dev -p ${PORT:-3001}",
     "logs": "mkdir -p outputs && tail -f outputs/fe_requests.log",
-    "dev:cli+logs": "concurrently -n WEB,LOGS -c auto \"npm:dev:cli\" \"npm:logs\""
+    "dev:cli+logs": "concurrently -n WEB,LOGS -c auto \"npm:dev:cli\" \"npm:logs\"",
+    "dev:env": "tsx scripts/dev-environment-manager.ts",
+    "dev:local": "tsx scripts/dev-environment-manager.ts local",
+    "dev:container": "tsx scripts/dev-environment-manager.ts container",
+    "dev:cloud": "tsx scripts/dev-environment-manager.ts cloud",
+    "dev:production": "tsx scripts/dev-environment-manager.ts production",
+    "dev:status": "tsx scripts/dev-environment-manager.ts status",
+    "dev:clean": "pkill -f \"npm run dev\" || true && pkill -f \"next dev\" || true && rm -f .dev-environment.lock",
+    "health:check": "tsx scripts/health-check.ts",
+    "health:watch": "tsx scripts/health-check.ts -- --watch",
+    "health:history": "tsx scripts/health-check.ts -- --history",
+    "health:api": "tsx scripts/health-check.ts -- --category \"API Key Health\"",
+    "health:mock": "tsx scripts/health-check.ts -- --category \"Mock Contamination\"",
+    "health:security": "tsx scripts/health-check.ts -- --category \"Security\"",
+    "heal:system": "tsx scripts/heal-system.ts",
+    "heal:api-keys": "tsx scripts/heal-system.ts -- --type api_key_rotation",
+    "heal:processes": "tsx scripts/heal-system.ts -- --type process_cleanup",
+    "heal:mock": "tsx scripts/heal-system.ts -- --type mock_recovery",
+    "heal:maintenance": "tsx scripts/heal-system.ts -- --type preventive_maintenance",
+    "heal:stats": "tsx scripts/heal-system.ts -- --stats",
+    "heal:history": "tsx scripts/heal-system.ts -- --history",
+    "heal:monitor": "tsx scripts/heal-system.ts -- --monitor"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.64.0",
@@ -38,6 +59,7 @@
     "eslint-config-next": "14.2.5",
     "postcss": "^8.4.40",
     "tailwindcss": "^3.4.7",
+    "tsx": "^4.20.6",
     "typescript": "^5.5.4"
   }
 }

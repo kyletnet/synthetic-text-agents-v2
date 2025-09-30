@@ -1,71 +1,5 @@
 [
   {
-    "timestamp": "2025-09-26T04:14:31.860Z",
-    "totalTasks": 3,
-    "completed": 3,
-    "failed": 0,
-    "fixed": 0,
-    "pendingApprovals": [],
-    "results": [
-      {
-        "task": "documentation-sync",
-        "status": "success",
-        "duration": 2018,
-        "output": "\n> meta-adaptive-expert-orchestration@1.1.0 docs:refresh\n> tsx scripts/comprehensive-doc-updater.ts && tsx scripts/build_docs_indexes.ts\n\n📚 Starting comprehensive document update...\n\n\n📚 Document Update Report\n==========================\n📋 Total documents analyzed: 37\n✅ Auto-updated: 0\n🔄 Semi-auto updates needed: 3\n👤 Manual updates required: 1\n\n🔥 High Priority Updates Needed:\n   1. CLAUDE.md (SEMI_AUTO)\n      Claude system configuration - needs feature updates\n   2. LLM_DEVELOPMENT_CONTRACT.",
-        "fixApplied": false
-      },
-      {
-        "task": "docs-refresh",
-        "status": "success",
-        "duration": 1447,
-        "output": "\n> meta-adaptive-expert-orchestration@1.1.0 docs:refresh\n> tsx scripts/comprehensive-doc-updater.ts && tsx scripts/build_docs_indexes.ts\n\n📚 Starting comprehensive document update...\n\n\n📚 Document Update Report\n==========================\n📋 Total documents analyzed: 37\n✅ Auto-updated: 0\n🔄 Semi-auto updates needed: 3\n👤 Manual updates required: 1\n\n🔥 High Priority Updates Needed:\n   1. CLAUDE.md (SEMI_AUTO)\n      Claude system configuration - needs feature updates\n   2. LLM_DEVELOPMENT_CONTRACT.",
-        "fixApplied": false
-      },
-      {
-        "task": "component-registry-refresh",
-        "status": "success",
-        "duration": 409,
-        "output": "\n> meta-adaptive-expert-orchestration@1.1.0 registry:generate\n> tsx scripts/component-registry-system.ts generate\n\n🏗️ Generating complete component registry...\n   📊 Loading existing registry (177 components)\n   🔍 Scanning script files...\n   📁 Found 177 scripts to analyze\n   📈 Progress: 10/177 (10 cached)\n   📈 Progress: 20/177 (20 cached)\n   📈 Progress: 30/177 (30 cached)\n   📈 Progress: 40/177 (40 cached)\n   📈 Progress: 50/177 (50 cached)\n   📈 Progress: 60/177 (60 cached)\n   📈 Progress",
-        "fixApplied": false
-      }
-    ],
-    "tasksCompleted": [],
-    "issuesFound": 0
-  },
-  {
-    "timestamp": "2025-09-26T04:17:08.979Z",
-    "totalTasks": 3,
-    "completed": 3,
-    "failed": 0,
-    "fixed": 0,
-    "pendingApprovals": [],
-    "results": [
-      {
-        "task": "documentation-sync",
-        "status": "success",
-        "duration": 1435,
-        "output": "\n> meta-adaptive-expert-orchestration@1.1.0 docs:refresh\n> tsx scripts/comprehensive-doc-updater.ts && tsx scripts/build_docs_indexes.ts\n\n📚 Starting comprehensive document update...\n\n\n📚 Document Update Report\n==========================\n📋 Total documents analyzed: 37\n✅ Auto-updated: 0\n🔄 Semi-auto updates needed: 3\n👤 Manual updates required: 1\n\n🔥 High Priority Updates Needed:\n   1. CLAUDE.md (SEMI_AUTO)\n      Claude system configuration - needs feature updates\n   2. LLM_DEVELOPMENT_CONTRACT.",
-        "fixApplied": false
-      },
-      {
-        "task": "docs-refresh",
-        "status": "success",
-        "duration": 1367,
-        "output": "\n> meta-adaptive-expert-orchestration@1.1.0 docs:refresh\n> tsx scripts/comprehensive-doc-updater.ts && tsx scripts/build_docs_indexes.ts\n\n📚 Starting comprehensive document update...\n\n\n📚 Document Update Report\n==========================\n📋 Total documents analyzed: 37\n✅ Auto-updated: 0\n🔄 Semi-auto updates needed: 3\n👤 Manual updates required: 1\n\n🔥 High Priority Updates Needed:\n   1. CLAUDE.md (SEMI_AUTO)\n      Claude system configuration - needs feature updates\n   2. LLM_DEVELOPMENT_CONTRACT.",
-        "fixApplied": false
-      },
-      {
-        "task": "component-registry-refresh",
-        "status": "success",
-        "duration": 439,
-        "output": "\n> meta-adaptive-expert-orchestration@1.1.0 registry:generate\n> tsx scripts/component-registry-system.ts generate\n\n🏗️ Generating complete component registry...\n   📊 Loading existing registry (177 components)\n   🔍 Scanning script files...\n   📁 Found 177 scripts to analyze\n   📈 Progress: 10/177 (10 cached)\n   📈 Progress: 20/177 (20 cached)\n   📈 Progress: 30/177 (30 cached)\n   📈 Progress: 40/177 (40 cached)\n   📈 Progress: 50/177 (50 cached)\n   📈 Progress: 60/177 (60 cached)\n   📈 Progress",
-        "fixApplied": false
-      }
-    ],
-    "tasksCompleted": [],
-    "issuesFound": 0
-  },
-  {
     "timestamp": "2025-09-26T05:56:07.110Z",
     "totalTasks": 3,
     "completed": 3,
@@ -344,6 +278,188 @@
         "status": "success",
         "duration": 510,
         "output": "\n> meta-adaptive-expert-orchestration@1.1.0 registry:generate\n> tsx scripts/component-registry-system.ts generate\n\n🏗️ Generating complete component registry...\n   📊 Loading existing registry (181 components)\n   🔍 Scanning script files...\n   📁 Found 181 scripts to analyze\n   📈 Progress: 10/181 (10 cached)\n   📈 Progress: 20/181 (20 cached)\n   📈 Progress: 30/181 (30 cached)\n   📈 Progress: 40/181 (40 cached)\n   📈 Progress: 50/181 (50 cached)\n   📈 Progress: 60/181 (60 cached)\n   📈 Progress",
+        "fixApplied": false
+      }
+    ],
+    "tasksCompleted": [],
+    "issuesFound": 0
+  },
+  {
+    "timestamp": "2025-09-30T03:09:29.859Z",
+    "totalTasks": 6,
+    "completed": 5,
+    "failed": 0,
+    "fixed": 1,
+    "pendingApprovals": [],
+    "results": [
+      {
+        "task": "system-health-check",
+        "status": "success",
+        "duration": 24219,
+        "output": "\n> meta-adaptive-expert-orchestration@1.1.0 status\n> tsx scripts/unified-dashboard.ts\n\n🎛️ 통합 시스템 대시보드 (v4.0)\n================================\n🚀 Complete Developer Handoff & System Optimization Platform\n\n🔍 포괄적 품질 분석:\n   🔄 TypeScript 컴파일...\n   🎨 Code style (Prettier/ESLint)...\n   🧪 Tests...\n   🛡️ Security audit...\n   💾 Cache hit: typescript-check (age: 1s)\n🛡️ Running security audit...\nℹ️ npm audit check completed (no critical issues found)\n\n🛡️ Security Audit Results\n=====================",
+        "fixApplied": false
+      },
+      {
+        "task": "auto-evolution",
+        "status": "success",
+        "duration": 585,
+        "output": "\n> meta-adaptive-expert-orchestration@1.1.0 evolution:evolve\n> tsx scripts/architectural-evolution-engine.ts evolve\n\n🧬 Starting architectural evolution...\n🔍 Analyzing system architecture for evolutionary improvements...\n🛡️ Validating improvements against design principles...\n   ✅ Validated: Consolidate smart-prefixed-components pattern (7 components)\n   ✅ Validated: Consolidate design-prefixed-components pattern (5 components)\n   ✅ Validated: Consolidate fix-prefixed-components pattern (5 com",
+        "fixApplied": false
+      },
+      {
+        "task": "documentation-sync",
+        "status": "success",
+        "duration": 127677,
+        "output": "\n> meta-adaptive-expert-orchestration@1.1.0 docs:refresh\n> tsx scripts/comprehensive-doc-updater.ts && tsx scripts/build_docs_indexes.ts\n\n📚 Starting comprehensive document update...\n\n✅ Auto-updated: .claude/commands/_hidden/README.md\n✅ Auto-updated: docs/LEDGER/README.md\n✅ Auto-updated: docs/SYSTEM_DOCS/README.md\n✅ Auto-updated: docs/SYSTEM_DOCS/modules/README.md\n✅ Auto-updated: docs/RUN_LOGS/README.md\n✅ Auto-updated: docs/REFACTOR/README.md\n✅ Auto-updated: README.md\n✅ Auto-updated: .system-bac",
+        "fixApplied": false
+      },
+      {
+        "task": "typescript-autofix",
+        "status": "fixed",
+        "duration": 819,
+        "output": "\n> meta-adaptive-expert-orchestration@1.1.0 fix\n> tsx scripts/ai-fix-engine.ts\n\n🤖 Starting AI-powered automatic fixes...\n🔧 Running TypeScript Compilation Check...\n✅ No TypeScript errors found!\n",
+        "fixApplied": true
+      },
+      {
+        "task": "docs-refresh",
+        "status": "success",
+        "duration": 2975,
+        "output": "\n> meta-adaptive-expert-orchestration@1.1.0 docs:refresh\n> tsx scripts/comprehensive-doc-updater.ts && tsx scripts/build_docs_indexes.ts\n\n📚 Starting comprehensive document update...\n\n\n📚 Document Update Report\n==========================\n📋 Total documents analyzed: 37\n✅ Auto-updated: 0\n🔄 Semi-auto updates needed: 6\n👤 Manual updates required: 1\n\n🔥 High Priority Updates Needed:\n   1. LLM_DEVELOPMENT_CONTRACT.md (MANUAL_ONLY)\n      Development contract - manual updates only\n   2. HANDOFF_NAVIGA",
+        "fixApplied": false
+      },
+      {
+        "task": "component-registry-refresh",
+        "status": "success",
+        "duration": 1461,
+        "output": "\n> meta-adaptive-expert-orchestration@1.1.0 registry:generate\n> tsx scripts/component-registry-system.ts generate\n\n🏗️ Generating complete component registry...\n   📊 Loading existing registry (181 components)\n   🔍 Scanning script files...\n   📁 Found 181 scripts to analyze\n   📈 Progress: 10/181 (10 cached)\n   📈 Progress: 20/181 (20 cached)\n   📈 Progress: 30/181 (29 cached)\n   📈 Progress: 40/181 (39 cached)\n   📈 Progress: 50/181 (49 cached)\n   📈 Progress: 60/181 (59 cached)\n   📈 Progress",
+        "fixApplied": false
+      }
+    ],
+    "tasksCompleted": [],
+    "issuesFound": 0
+  },
+  {
+    "timestamp": "2025-09-30T03:27:01.466Z",
+    "totalTasks": 17,
+    "completed": 13,
+    "failed": 3,
+    "fixed": 1,
+    "pendingApprovals": [],
+    "results": [
+      {
+        "task": "system-health-check",
+        "status": "success",
+        "duration": 20038,
+        "output": "✅ Command executed successfully",
+        "fixApplied": false
+      },
+      {
+        "task": "documentation-sync",
+        "status": "success",
+        "duration": 2736,
+        "output": "✅ Command executed successfully",
+        "fixApplied": false
+      },
+      {
+        "task": "typescript-autofix",
+        "status": "fixed",
+        "duration": 740,
+        "output": "✅ Command executed successfully",
+        "fixApplied": true
+      },
+      {
+        "task": "docs-refresh",
+        "status": "success",
+        "duration": 1521,
+        "output": "✅ Command executed successfully",
+        "fixApplied": false
+      },
+      {
+        "task": "component-registry-refresh",
+        "status": "success",
+        "duration": 834,
+        "output": "✅ Command executed successfully",
+        "fixApplied": false
+      },
+      {
+        "task": "typescript-validation",
+        "status": "failed",
+        "duration": 3935,
+        "output": "Command failed: npm run dev:typecheck"
+      },
+      {
+        "task": "lint-validation",
+        "status": "success",
+        "duration": 4075,
+        "output": "✅ Command executed successfully",
+        "fixApplied": false
+      },
+      {
+        "task": "test-execution",
+        "status": "failed",
+        "duration": 2398,
+        "output": "Command failed: npm run test"
+      },
+      {
+        "task": "quality-integration",
+        "status": "failed",
+        "duration": 276,
+        "output": "Command failed: npm run ci:quality"
+      },
+      {
+        "task": "self-healing-status-check",
+        "status": "success",
+        "duration": 134,
+        "output": "✅ Self-Healing Engine: Healthy\n\n📊 Status Summary:\n   - Dormant Mode: ✅ NO\n   - Consecutive Failures: 0/10\n   - Circuit Breakers: 0 total, 0 PERMANENT_OPEN\n   - Background Tasks: 2/10\n",
+        "fixApplied": false
+      },
+      {
+        "task": "advanced-refactor-audit",
+        "status": "success",
+        "duration": 4474,
+        "output": "✅ Command executed successfully",
+        "fixApplied": false
+      },
+      {
+        "task": "self-designing-status",
+        "status": "success",
+        "duration": 437,
+        "output": "✅ Command executed successfully",
+        "fixApplied": false
+      },
+      {
+        "task": "design-principle-audit",
+        "status": "success",
+        "duration": 430,
+        "output": "✅ Command executed successfully",
+        "fixApplied": false
+      },
+      {
+        "task": "integration-enforcement",
+        "status": "success",
+        "duration": 453,
+        "output": "✅ Command executed successfully",
+        "fixApplied": false
+      },
+      {
+        "task": "workflow-gap-detection",
+        "status": "success",
+        "duration": 232,
+        "output": "✅ Command executed successfully",
+        "fixApplied": false
+      },
+      {
+        "task": "workflow-gap-detection",
+        "status": "success",
+        "duration": 64,
+        "output": "워크플로우 갭 탐지 완료: 51개 발견",
+        "fixApplied": false
+      },
+      {
+        "task": "smart-refactor-audit",
+        "status": "success",
+        "duration": 4417,
+        "output": "✅ Command executed successfully",
         "fixApplied": false
       }
     ],

@@ -11,6 +11,7 @@
     "/update": "npm run smart:update",
     "smart:update": "tsx scripts/smart-approval-system.ts && npm run _hidden:sync-execute",
     "/fix": "npm run fix",
+    "/maintain": "npm run maintain",
     "/ship": "npm run prepare-release",
     "status": "tsx scripts/unified-dashboard.ts",
     "status:quick": "tsx scripts/unified-dashboard.ts --quick",

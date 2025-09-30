@@ -6,8 +6,8 @@
     "priority": "critical",
     "autoRun": true,
     "description": "시스템 전체 건강도 체크",
-    "lastRun": "2025-09-26T07:44:27.298Z",
-    "nextRun": "2025-09-27T07:44:27.298Z"
+    "lastRun": "2025-09-30T03:27:26.290Z",
+    "nextRun": "2025-10-01T03:27:26.290Z"
   },
   {
     "name": "auto-evolution",
@@ -16,8 +16,8 @@
     "priority": "high",
     "autoRun": true,
     "description": "Self-Designing System 자동 진화",
-    "lastRun": "2025-09-26T07:44:27.777Z",
-    "nextRun": "2025-09-27T07:44:27.777Z"
+    "lastRun": "2025-09-30T03:10:00.916Z",
+    "nextRun": "2025-10-01T03:10:00.916Z"
   },
   {
     "name": "documentation-sync",
@@ -26,8 +26,8 @@
     "priority": "medium",
     "autoRun": true,
     "description": "문서 자동 동기화",
-    "lastRun": "2025-09-26T07:44:30.254Z",
-    "nextRun": "2025-09-26T07:44:30.254Z"
+    "lastRun": "2025-09-30T03:27:29.026Z",
+    "nextRun": "2025-09-30T03:27:29.026Z"
   },
   {
     "name": "typescript-autofix",
@@ -36,8 +36,8 @@
     "priority": "critical",
     "autoRun": true,
     "description": "TypeScript + ESLint 자동 수정",
-    "lastRun": "2025-09-26T07:44:30.953Z",
-    "nextRun": "2025-09-27T07:44:30.953Z"
+    "lastRun": "2025-09-30T03:27:29.766Z",
+    "nextRun": "2025-10-01T03:27:29.766Z"
   },
   {
     "name": "docs-refresh",
@@ -46,8 +46,8 @@
     "priority": "medium",
     "autoRun": true,
     "description": "문서 자동 갱신 및 동기화",
-    "lastRun": "2025-09-26T07:44:32.393Z",
-    "nextRun": "2025-09-26T07:44:32.393Z"
+    "lastRun": "2025-09-30T03:27:31.287Z",
+    "nextRun": "2025-09-30T03:27:31.287Z"
   },
   {
     "name": "security-audit",
@@ -66,8 +66,8 @@
     "priority": "medium",
     "autoRun": true,
     "description": "컴포넌트 레지스트리 갱신",
-    "lastRun": "2025-09-26T07:44:32.903Z",
-    "nextRun": "2025-09-26T07:44:32.903Z"
+    "lastRun": "2025-09-30T03:27:32.122Z",
+    "nextRun": "2025-09-30T03:27:32.122Z"
   },
   {
     "name": "integration-audit",
@@ -78,5 +78,119 @@
     "description": "통합 규칙 감사",
     "lastRun": "2025-09-25T07:27:37.411Z",
     "nextRun": "2025-10-02T07:27:37.411Z"
+  },
+  {
+    "name": "typescript-validation",
+    "command": "npm run dev:typecheck",
+    "frequency": "daily",
+    "priority": "critical",
+    "autoRun": true,
+    "description": "TypeScript 검증 (MUST PASS)"
+  },
+  {
+    "name": "lint-validation",
+    "command": "npm run dev:lint",
+    "frequency": "daily",
+    "priority": "critical",
+    "autoRun": true,
+    "description": "ESLint 검증 (MUST PASS)",
+    "lastRun": "2025-09-30T03:27:40.133Z",
+    "nextRun": "2025-10-01T03:27:40.133Z"
+  },
+  {
+    "name": "test-execution",
+    "command": "npm run test",
+    "frequency": "daily",
+    "priority": "critical",
+    "autoRun": true,
+    "description": "테스트 실행 (MUST PASS)"
+  },
+  {
+    "name": "quality-integration",
+    "command": "npm run ci:quality",
+    "frequency": "before-commit",
+    "priority": "critical",
+    "autoRun": true,
+    "description": "통합 품질 검사 (MUST PASS)"
+  },
+  {
+    "name": "self-healing-status-check",
+    "command": "internal:self-healing-check",
+    "frequency": "daily",
+    "priority": "critical",
+    "autoRun": true,
+    "description": "Self-Healing Engine 건강도 체크 (Dormant/Circuit Breaker/Task 과부하)",
+    "lastRun": "2025-09-30T03:27:42.941Z",
+    "nextRun": "2025-10-01T03:27:42.941Z"
+  },
+  {
+    "name": "advanced-refactor-audit",
+    "command": "npm run advanced:audit",
+    "frequency": "weekly",
+    "priority": "high",
+    "autoRun": true,
+    "description": "전체 리팩토링 감사 및 자동 적용",
+    "lastRun": "2025-09-30T03:27:47.415Z",
+    "nextRun": "2025-10-07T03:27:47.415Z"
+  },
+  {
+    "name": "self-designing-status",
+    "command": "npm run registry:summary",
+    "frequency": "daily",
+    "priority": "medium",
+    "autoRun": true,
+    "description": "Self-Designing System 준수도 체크",
+    "lastRun": "2025-09-30T03:27:47.852Z",
+    "nextRun": "2025-10-01T03:27:47.852Z"
+  },
+  {
+    "name": "design-principle-audit",
+    "command": "npm run design:audit",
+    "frequency": "daily",
+    "priority": "high",
+    "autoRun": true,
+    "description": "설계 원칙 감사 및 적용",
+    "lastRun": "2025-09-30T03:27:48.282Z",
+    "nextRun": "2025-10-01T03:27:48.282Z"
+  },
+  {
+    "name": "integration-enforcement",
+    "command": "npm run integration:create",
+    "frequency": "weekly",
+    "priority": "high",
+    "autoRun": true,
+    "description": "통합 규칙 강제 적용",
+    "lastRun": "2025-09-30T03:27:48.735Z",
+    "nextRun": "2025-10-07T03:27:48.735Z"
+  },
+  {
+    "name": "workflow-gap-detection",
+    "command": "tsx scripts/workflow-gap-detector.ts",
+    "frequency": "weekly",
+    "priority": "high",
+    "autoRun": true,
+    "description": "워크플로우 결함 자동 감지",
+    "lastRun": "2025-09-30T03:27:48.967Z",
+    "nextRun": "2025-10-07T03:27:48.967Z"
+  },
+  {
+    "name": "workflow-gap-detection",
+    "command": "internal:workflow-gap-check",
+    "frequency": "daily",
+    "priority": "medium",
+    "autoRun": true,
+    "description": "워크플로우 갭 및 자동화 누락 탐지",
+    "lastRun": "2025-09-30T03:27:49.031Z",
+    "nextRun": "2025-10-01T03:27:49.031Z"
+  },
+  {
+    "name": "smart-refactor-audit",
+    "command": "npm run advanced:audit",
+    "frequency": "daily",
+    "priority": "critical",
+    "autoRun": true,
+    "description": "10가지 대분류 리팩토링 + 치명적 이슈 탐지 통합",
+    "lastRun": "2025-09-30T03:27:53.448Z",
+    "nextRun": "2025-10-01T03:27:53.448Z"
   }
 ]

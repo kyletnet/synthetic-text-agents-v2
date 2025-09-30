@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { SmartAugmentationSystem } from '@/lib/smart-augmentation';
 import { ExecutionVerifier } from '@/lib/execution-verifier';
+import { withAPIGuard } from '@/lib/api-guard';
 
-export async function POST(request: NextRequest) {
+async function smartAugmentHandler(request: NextRequest) {
   const sessionId = `smart_aug_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
 
   try {
@@ -70,7 +71,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function GET() {
+async function getHandler() {
   // 스마트 증강 시스템 정보
   return NextResponse.json({
     success: true,
@@ -99,3 +100,7 @@ export async function GET() {
     },
   });
 }
+
+// 🛡️ Apply API Guard protection
+export const POST = withAPIGuard(smartAugmentHandler);
+export const GET = withAPIGuard(getHandler);

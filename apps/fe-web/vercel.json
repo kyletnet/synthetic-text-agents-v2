@@ -1,21 +1,56 @@
 {
-  "name": "qa-generation-frontend",
+  "name": "synthetic-text-agents-dev",
   "version": 2,
   "buildCommand": "npm run build",
   "installCommand": "npm install",
   "framework": "nextjs",
   "regions": ["iad1"],
   "env": {
-    "NEXT_PUBLIC_API_BASE": "@next_public_api_base"
+    "NEXT_PUBLIC_API_BASE": "@next_public_api_base",
+    "FEATURE_LLM_EXECUTION_AUTHORITY": "true",
+    "FEATURE_UNIVERSAL_GUARD_INJECTION": "true",
+    "FEATURE_EXECUTION_TRANSPARENCY": "true",
+    "LLM_STRICT_MODE": "true",
+    "LLM_REQUIRED": "true",
+    "NODE_ENV": "production"
   },
   "build": {
     "env": {
-      "NEXT_PUBLIC_API_BASE": "@next_public_api_base"
+      "NEXT_PUBLIC_API_BASE": "@next_public_api_base",
+      "FEATURE_LLM_EXECUTION_AUTHORITY": "true",
+      "FEATURE_UNIVERSAL_GUARD_INJECTION": "true",
+      "FEATURE_EXECUTION_TRANSPARENCY": "true",
+      "LLM_STRICT_MODE": "true",
+      "LLM_REQUIRED": "true"
     }
   },
   "functions": {
     "app/api/**/*.ts": {
-      "runtime": "nodejs18.x"
+      "runtime": "nodejs18.x",
+      "maxDuration": 30
     }
-  }
+  },
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        },
+        {
+          "key": "X-LLM-Protection-Enabled",
+          "value": "true"
+        }
+      ]
+    }
+  ]
 }

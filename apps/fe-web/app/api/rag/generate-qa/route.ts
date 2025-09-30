@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { RAGSystem } from '@/lib/rag-utils';
+import { withAPIGuard } from '@/lib/api-guard';
 
 export interface QAGenerationRequest {
   topic: string;
@@ -28,7 +29,7 @@ export interface QAComparisonResult {
   };
 }
 
-export async function POST(request: NextRequest) {
+async function generateQAHandler(request: NextRequest) {
   const sessionId = `qa_gen_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
   try {
@@ -135,3 +136,6 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+
+// 🛡️ Apply API Guard protection
+export const POST = withAPIGuard(generateQAHandler);
