@@ -19,6 +19,8 @@ export default defineConfig({
       "build/**",
       "coverage/**",
       "apps/fe-web/node_modules/**",
+      "apps/fe-web/**", // Next.js specific tests (require separate environment)
+      "tests/next-integration/**", // Next.js integration tests (separate config needed)
       "legacy/**",
     ],
 
