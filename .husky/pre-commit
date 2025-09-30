@@ -3,6 +3,15 @@
 
 echo "🔍 Running pre-commit checks..."
 
+# Check Design Principles (P0 CRITICAL)
+echo "🎨 Validating design principles..."
+npm run design:validate
+if [ $? -ne 0 ]; then
+  echo "❌ Design principle violations detected. Please fix before committing."
+  echo "💡 Run: npm run design:validate"
+  exit 1
+fi
+
 # Check TypeScript compilation
 echo "📝 Checking TypeScript compilation..."
 npm run dev:typecheck
