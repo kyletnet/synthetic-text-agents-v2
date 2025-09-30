@@ -66,15 +66,15 @@ jobs:
           if [ -f "reports/doc-gate-report.json" ]; then
             # 게이트 결과 요약
             OVERALL=$(jq -r '.overall' reports/doc-gate-report.json)
-            PASSED=$(jq -r '.summary.passed' reports/doc-gate-report.json)
-            TOTAL=$(jq -r '.summary.totalRules' reports/doc-gate-report.json)
+            PASSED=$(jq -r '.stages.audit.report.rules | map(select(.result.passed == true)) | length' reports/doc-gate-report.json)
+            TOTAL=$(jq -r '.stages.audit.report.summary.totalRules' reports/doc-gate-report.json)
 
             echo "### 🔐 Quality Gate: **$OVERALL**" >> $GITHUB_STEP_SUMMARY
             echo "- ✅ Rules Passed: $PASSED/$TOTAL" >> $GITHUB_STEP_SUMMARY
             echo "" >> $GITHUB_STEP_SUMMARY
 
             # 실패한 규칙들 표시
-            jq -r '.rules[] | select(.result.passed == false) | "- ❌ \(.name): \(.result.message)"' reports/doc-gate-report.json >> $GITHUB_STEP_SUMMARY
+            jq -r '.stages.audit.report.rules[]? | select(.result.passed == false) | "- ❌ \(.name): \(.result.message)"' reports/doc-gate-report.json >> $GITHUB_STEP_SUMMARY || true
           fi
 
       - name: 📋 Upload Quality Reports
@@ -100,7 +100,8 @@ jobs:
 
             try {
               const gateReport = JSON.parse(fs.readFileSync('reports/doc-gate-report.json', 'utf8'));
-              const failed = gateReport.rules.filter(r => !r.result.passed && r.blocking);
+              const rules = gateReport.stages?.audit?.report?.rules || [];
+              const failed = rules.filter(r => !r.result.passed && r.blocking);
 
               if (failed.length > 0) {
                 comment += '### Blocking Issues:\n';
