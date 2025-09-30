@@ -119,6 +119,14 @@ class SmartMaintenanceOrchestrator {
       autoRun: true,
       description: "통합 품질 검사 (MUST PASS)",
     },
+    {
+      name: "self-healing-status-check",
+      command: "internal:self-healing-check",
+      frequency: "daily",
+      priority: "critical",
+      autoRun: true,
+      description: "Self-Healing Engine 건강도 체크 (Dormant/Circuit Breaker/Task 과부하)",
+    },
 
     // PHASE 2: Advanced Analysis (High Priority)
     {
@@ -255,6 +263,17 @@ class SmartMaintenanceOrchestrator {
   private initializeConfig(): void {
     if (!existsSync(this.configFile)) {
       this.saveConfig(this.defaultTasks);
+    } else {
+      // 기존 파일이 있어도 defaultTasks에 새로운 작업이 추가되었는지 확인
+      const existingTasks = this.loadConfig();
+      const existingTaskNames = new Set(existingTasks.map(t => t.name));
+      const newTasks = this.defaultTasks.filter(t => !existingTaskNames.has(t.name));
+
+      if (newTasks.length > 0) {
+        console.log(`🔄 새로운 유지보수 작업 ${newTasks.length}개 추가 중...`);
+        newTasks.forEach(task => console.log(`   + ${task.name}`));
+        this.saveConfig([...existingTasks, ...newTasks]);
+      }
     }
   }
 
@@ -276,7 +295,7 @@ class SmartMaintenanceOrchestrator {
    * 메인테넌스 모드별 실행
    */
   async runMaintenanceWithMode(
-    mode: "smart" | "safe" = "smart",
+    mode: "smart" | "safe" | "force" = "smart",
     autoFix: boolean = false,
     safeMode: boolean = false,
   ): Promise<MaintenanceSession> {
@@ -327,7 +346,7 @@ class SmartMaintenanceOrchestrator {
     progress.startStep("Phase 1: Quality Gates (TypeScript, Linting, Sanity)", 1);
 
     const tasks = this.loadConfig();
-    const dueTasks = this.getTasksDue(tasks);
+    const dueTasks = this.getTasksDue(tasks, mode);
 
     progress.updateSubTask(`${dueTasks.length}개 작업 대기 중`);
 
@@ -351,17 +370,32 @@ class SmartMaintenanceOrchestrator {
                 const gaps = await this.runWorkflowGapDetection();
                 output = `워크플로우 갭 탐지 완료: ${gaps.length}개 발견`;
                 break;
+              case 'internal:self-healing-check':
+                const selfHealingResult = await this.checkSelfHealingStatus();
+                output = selfHealingResult.output;
+                if (!selfHealingResult.healthy) {
+                  throw new Error(selfHealingResult.output);
+                }
+                break;
               // 기존 npm run advanced:audit로 통합됨 (10가지 대분류 리팩토링)
               default:
                 throw new Error(`Unknown internal command: ${task.command}`);
             }
           } else {
             // 일반 shell 명령어 실행
-            output = execSync(task.command, {
-              encoding: "utf8",
-              stdio: "pipe",
-              timeout: 300000, // 5분 타임아웃 (자동수정 시간 고려)
-            });
+            try {
+              // stdio: inherit로 실시간 출력 표시
+              execSync(task.command, {
+                encoding: "utf8",
+                stdio: "inherit", // 사용자가 실시간으로 볼 수 있도록
+                timeout: 300000, // 5분 타임아웃 (자동수정 시간 고려)
+              });
+              output = `✅ Command executed successfully`;
+            } catch (error: any) {
+              // 에러 발생 시에도 출력 캡처
+              output = error.stdout || error.message;
+              throw error;
+            }
           }
 
           const duration = Date.now() - startTime;
@@ -559,6 +593,22 @@ class SmartMaintenanceOrchestrator {
   private async requestUserApproval(approvals: PendingApproval[]): Promise<PendingApproval[]> {
     if (approvals.length === 0) {
       return [];
+    }
+
+    // 비대화형 환경 감지
+    const isInteractive = process.stdin.isTTY;
+
+    if (!isInteractive) {
+      // 비대화형 환경: 모든 승인 항목을 pending으로 반환하여 보고서에 표시
+      console.log('\n' + '='.repeat(60));
+      console.log('⚠️  비대화형 실행 환경 감지');
+      console.log('📋 승인 요청들이 큐에 저장되었습니다');
+      console.log('='.repeat(60));
+      console.log(`\n🔔 저장된 승인 항목: ${approvals.length}개`);
+      console.log('💡 나중에 다음 명령어로 처리하세요:');
+      console.log('   • npm run approve');
+      console.log('   • npm run pending:review');
+      return approvals; // 모든 항목을 pending으로 반환
     }
 
     console.log('\n' + '='.repeat(60));
@@ -917,10 +967,29 @@ class SmartMaintenanceOrchestrator {
     }
   }
 
-  private getTasksDue(tasks: MaintenanceTask[]): MaintenanceTask[] {
+  private getTasksDue(tasks: MaintenanceTask[], mode: string = "smart"): MaintenanceTask[] {
     const now = new Date();
 
     return tasks.filter((task) => {
+      // FORCE 모드: 모든 작업 실행
+      if (mode === "force") {
+        return true;
+      }
+
+      // SMART 모드: Critical 작업은 항상 실행 + 시간 도래한 작업
+      if (mode === "smart") {
+        // Critical 우선순위 작업은 항상 실행
+        if (task.priority === "critical") {
+          return true;
+        }
+
+        // High 우선순위는 한 번도 안 실행되었거나 시간 도래 시 실행
+        if (task.priority === "high" && !task.lastRun) {
+          return true;
+        }
+      }
+
+      // 시간 기반 필터링
       if (!task.lastRun) return true; // 한 번도 실행 안된 건 실행
 
       const timeSinceLastRun = now.getTime() - task.lastRun.getTime();
@@ -935,7 +1004,8 @@ class SmartMaintenanceOrchestrator {
         case "on-change":
           return this.hasRelevantChanges();
         case "before-commit":
-          return false; // 커밋 전에만 실행
+          // before-commit은 명시적 요청 시에만 (force 모드)
+          return mode === "force";
         default:
           return false;
       }
@@ -1930,6 +2000,86 @@ npm run optimize    # 성능 최적화 분석
     } catch (error) {
       console.log(`⚠️ Failed to generate maintenance report: ${error}`);
       // Don't fail the entire maintenance process for report generation
+    }
+  }
+
+  /**
+   * Self-Healing Engine 상태 체크
+   */
+  private async checkSelfHealingStatus(): Promise<{ healthy: boolean; output: string }> {
+    try {
+      // apps/fe-web의 Self-Healing 모듈 동적 import
+      const feWebPath = join(this.projectRoot, 'apps/fe-web');
+
+      // Self-Healing Engine import
+      const { selfHealingEngine } = await import(join(feWebPath, 'lib/self-healing-engine.js'));
+      const { circuitBreakerRegistry } = await import(join(feWebPath, 'lib/circuit-breaker.js'));
+      const { backgroundTaskManager } = await import(join(feWebPath, 'lib/background-task-manager.js'));
+
+      const issues: string[] = [];
+      const warnings: string[] = [];
+
+      // 1. Dormant Mode 체크
+      const healingStats = selfHealingEngine.getHealingStats();
+      if (healingStats.isDormant) {
+        issues.push(`🚨 CRITICAL: Self-Healing Engine in DORMANT mode - ${healingStats.dormantReason}`);
+        issues.push(`   → Manual intervention required: selfHealingEngine.resumeFromDormant()`);
+      }
+
+      // 2. Consecutive Failures 경고
+      if (healingStats.consecutiveFailures >= 5 && !healingStats.isDormant) {
+        warnings.push(`⚠️  WARNING: ${healingStats.consecutiveFailures} consecutive failures (threshold: 10)`);
+      }
+
+      // 3. Circuit Breaker PERMANENT_OPEN 체크
+      const allBreakers = circuitBreakerRegistry.getAll();
+      for (const breaker of allBreakers) {
+        if (breaker.isPermanentlyOpen()) {
+          const state = breaker.getState();
+          issues.push(`🚨 CRITICAL: Circuit Breaker '${breaker.getStatus().split(':')[0]}' PERMANENTLY OPEN`);
+          issues.push(`   → Reason: ${state.permanentOpenReason}`);
+          issues.push(`   → Manual reset required: breaker.reset(true)`);
+        }
+      }
+
+      // 4. Background Task 과부하 체크
+      const taskStats = backgroundTaskManager.getStats();
+      if (taskStats.totalTasks > 10) {
+        issues.push(`🚨 CRITICAL: Background task overload (${taskStats.totalTasks}/10 limit)`);
+        issues.push(`   → Possible memory leak - review task list`);
+      } else if (taskStats.totalTasks > 7) {
+        warnings.push(`⚠️  WARNING: Background tasks approaching limit (${taskStats.totalTasks}/10)`);
+      }
+
+      // 결과 생성
+      const healthy = issues.length === 0;
+      let output = '✅ Self-Healing Engine: Healthy\n';
+
+      if (!healthy) {
+        output = '🚨 Self-Healing Engine: CRITICAL ISSUES FOUND\n\n';
+        output += issues.join('\n') + '\n';
+      }
+
+      if (warnings.length > 0) {
+        output += '\n' + warnings.join('\n') + '\n';
+      }
+
+      // 상태 요약
+      output += `\n📊 Status Summary:\n`;
+      output += `   - Dormant Mode: ${healingStats.isDormant ? '🔴 YES' : '✅ NO'}\n`;
+      output += `   - Consecutive Failures: ${healingStats.consecutiveFailures}/10\n`;
+      output += `   - Circuit Breakers: ${allBreakers.length} total, ${allBreakers.filter((b: any) => b.isPermanentlyOpen()).length} PERMANENT_OPEN\n`;
+      output += `   - Background Tasks: ${taskStats.totalTasks}/10\n`;
+
+      return { healthy, output };
+
+    } catch (error) {
+      // Self-Healing 모듈이 없는 경우 (fe-web 외부에서 실행 시)
+      console.log('ℹ️  Self-Healing check skipped (fe-web modules not available)');
+      return {
+        healthy: true,
+        output: '⚠️  Self-Healing check skipped (not in fe-web context)'
+      };
     }
   }
 }

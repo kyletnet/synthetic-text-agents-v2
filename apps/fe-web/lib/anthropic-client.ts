@@ -1,5 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { LLMCallManager, recordLLMCall } from './llm-call-manager';
+import { apiKeyManager } from './api-key-manager';
+import { guardLLMClient, GuardedLLMClient } from './universal-llm-guard';
 
 export class AnthropicClient {
   private client: Anthropic | null = null;
@@ -10,10 +12,12 @@ export class AnthropicClient {
   }
 
   private initialize() {
-    const apiKey = process.env.ANTHROPIC_API_KEY;
+    // API Key Manager에서 현재 키 확인
+    const apiKey = apiKeyManager.getCurrentKey();
 
-    if (!apiKey || apiKey === 'your_api_key_here') {
-      console.warn('ANTHROPIC_API_KEY not configured. LLM features will be disabled.');
+    if (!apiKey) {
+      console.warn('No valid API keys available. LLM features will be disabled.');
+      console.warn('API Key Manager Stats:', apiKeyManager.getStats());
       return;
     }
 
@@ -22,51 +26,101 @@ export class AnthropicClient {
         apiKey: apiKey,
       });
       this.initialized = true;
-      console.log('Anthropic client initialized successfully');
+      const stats = apiKeyManager.getStats();
+      console.log(`Anthropic client initialized with ${stats.activeKeys}/${stats.totalKeys} available keys`);
     } catch (error) {
       console.error('Failed to initialize Anthropic client:', error);
+      // 현재 키를 실패로 기록
+      if (apiKey) {
+        apiKeyManager.recordFailure(apiKey, error);
+      }
     }
   }
 
   isReady(): boolean {
+    // API Key Manager에 사용 가능한 키가 있는지 체크
+    if (!apiKeyManager.hasAvailableKeys()) {
+      console.error('❌ No available API keys - system cannot function');
+      return false;
+    }
+
     return this.initialized && this.client !== null;
   }
 
   async generateText(prompt: string, maxTokens: number = 1000, sessionId: string = 'default'): Promise<string> {
     if (!this.isReady()) {
-      throw new Error('Anthropic client not initialized. Please check ANTHROPIC_API_KEY configuration.');
+      throw new Error('❌ CRITICAL: No valid API keys available. System cannot function without proper API configuration.');
     }
 
-    // LLMCallManager로 관리되는 실제 API 호출
-    const result = await LLMCallManager.callWithRetry(
-      sessionId,
-      async () => {
-        const response = await this.client!.messages.create({
-          model: 'claude-3-haiku-20240307',
-          max_tokens: maxTokens,
-          messages: [
-            {
-              role: 'user',
-              content: prompt
-            }
-          ]
+    // API 키 로테이션을 지원하는 향상된 호출 로직
+    let lastError: Error | null = null;
+    let attempts = 0;
+    const maxAttempts = Math.min(3, apiKeyManager.getStats().activeKeys); // 최대 3회 또는 활성 키 수만큼
+
+    while (attempts < maxAttempts) {
+      const currentKey = apiKeyManager.getCurrentKey();
+
+      if (!currentKey) {
+        throw new Error('❌ CRITICAL: All API keys exhausted. Cannot proceed.');
+      }
+
+      try {
+        // 클라이언트를 현재 키로 재초기화 (키가 바뀌었을 수 있음)
+        this.client = new Anthropic({
+          apiKey: currentKey,
         });
 
-        if (response.content[0].type === 'text') {
-          return response.content[0].text;
-        } else {
-          throw new Error('Unexpected response format from Anthropic API');
-        }
-      },
-      'generateText'
-    );
+        // LLMCallManager로 관리되는 실제 API 호출
+        const result = await LLMCallManager.callWithRetry(
+          sessionId,
+          async () => {
+            const response = await this.client!.messages.create({
+              model: 'claude-3-haiku-20240307',
+              max_tokens: maxTokens,
+              messages: [
+                {
+                  role: 'user',
+                  content: prompt
+                }
+              ]
+            });
 
-    if (result.success) {
-      return result.data as string;
-    } else {
-      // LLM 호출 실패 - 에러 로깅은 LLMCallManager에서 처리됨
-      throw new Error(`Failed to generate text: ${result.error?.message || 'Unknown error'}`);
+            if (response.content[0].type === 'text') {
+              return response.content[0].text;
+            } else {
+              throw new Error('Unexpected response format from Anthropic API');
+            }
+          },
+          'generateText'
+        );
+
+        if (result.success) {
+          // 성공적인 API 호출 기록
+          apiKeyManager.recordSuccess(currentKey);
+          return result.data as string;
+        } else {
+          // 실패 기록 및 다음 키로 시도
+          apiKeyManager.recordFailure(currentKey, result.error);
+          lastError = result.error || new Error('Unknown LLM call error');
+          attempts++;
+          continue;
+        }
+      } catch (error) {
+        // 직접적인 API 에러 처리
+        console.warn(`API call failed with key ${apiKeyManager.getStats().currentKeyIndex + 1}: ${error}`);
+        apiKeyManager.recordFailure(currentKey, error);
+        lastError = error as Error;
+        attempts++;
+      }
     }
+
+    // 모든 시도 실패
+    const stats = apiKeyManager.getStats();
+    throw new Error(
+      `❌ CRITICAL: Failed to generate text after ${attempts} attempts. ` +
+      `Active keys: ${stats.activeKeys}/${stats.totalKeys}. ` +
+      `Last error: ${lastError?.message || 'Unknown error'}`
+    );
   }
 
   async generateAugmentation(input: string, augmentationType: string, ragContext?: string, sessionId: string = 'default'): Promise<string> {
@@ -196,4 +250,14 @@ JSON만 반환해주세요:`;
   }
 }
 
-export const anthropicClient = new AnthropicClient();
+// 🛡️ Create guarded anthropic client instance
+const rawAnthropicClient = new AnthropicClient();
+
+// 🎯 Apply Universal Guard System
+export const anthropicClient = guardLLMClient(rawAnthropicClient, 'AnthropicClient') as AnthropicClient & GuardedLLMClient;
+
+// 📊 Log guard injection status
+console.log(`🛡️ AnthropicClient guard injection: ${anthropicClient._isGuarded ? 'ACTIVE' : 'DISABLED'}`);
+
+// 🔍 Export raw client for internal testing (DO NOT USE DIRECTLY)
+export const _rawAnthropicClient = rawAnthropicClient;

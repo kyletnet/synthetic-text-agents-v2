@@ -261,6 +261,281 @@ npm run generate:agent -- --name=MyAgent
 - any 타입 사용률: **5% 이하**
 - 문서-코드 일치율: **100%**
 
+## 🔍 근본 원인 우선 문제 해결 (Root-Cause-First Approach)
+
+### 원칙: 설계부터 건드려서 유기적으로 통합 관점으로 해결
+
+모든 버그와 이슈는 **증상이 아닌 근본 원인**을 찾아 **설계 관점**에서 해결해야 합니다.
+
+#### ❌ 잘못된 접근법 (하드코딩/우회)
+
+```typescript
+// BAD: 증상만 막는 임시방편
+if (taskName === 'typescript-validation') {
+  forceExecute = true; // 강제 실행 하드코딩
+}
+
+// BAD: 우회 처리
+if (approvalTimeout) {
+  skipApproval = true; // 타임아웃 시 자동 건너뛰기
+}
+
+// BAD: 출력 숨기기
+execSync(command, { stdio: 'pipe' }); // 문제 안보이게 숨김
+```
+
+#### ✅ 올바른 접근법 (근본 원인 해결)
+
+```typescript
+// GOOD: 스케줄링 설계 자체를 수정
+private getTasksDue(tasks: MaintenanceTask[], mode: string): MaintenanceTask[] {
+  // Critical 작업은 시간과 무관하게 항상 실행되도록 설계
+  if (task.priority === 'critical') {
+    return true;
+  }
+  // 시간 기반 필터링은 non-critical에만 적용
+}
+
+// GOOD: 대화형/비대화형 환경 감지하여 적절히 처리
+if (!process.stdin.isTTY) {
+  // 비대화형: 큐에 저장 (블로킹 방지)
+  approvalQueue.addToQueue(request);
+} else {
+  // 대화형: 실시간 사용자 입력
+  await getUserInput();
+}
+
+// GOOD: 사용자에게 진행상황을 투명하게 표시
+execSync(command, { stdio: 'inherit' }); // 실시간 출력
+```
+
+### 문제 해결 프로세스
+
+#### 1단계: 근본 원인 식별
+
+증상을 발견하면 즉시 **왜 이런 현상이 발생했는지** 추적:
+
+```
+증상: typescript-validation 작업이 실행되지 않음
+  ↓ 왜?
+lastRun이 최근이라 시간 필터에 걸림
+  ↓ 왜?
+getTasksDue()가 모든 작업에 시간 필터를 동일하게 적용
+  ↓ 근본 원인
+Critical 작업은 시간과 무관하게 항상 실행되어야 하는데
+우선순위 개념이 스케줄링 로직에 반영되지 않음
+```
+
+#### 2단계: 설계 관점에서 해결
+
+시스템 아키텍처와 통합 관점에서 해결책 설계:
+
+- **하드코딩 금지**: 특정 작업 이름을 하드코딩하지 말고, priority 속성 기반 동작
+- **범용성**: 새로운 critical 작업이 추가되어도 자동으로 동작
+- **일관성**: 다른 시스템(approval, output)과 동일한 철학 적용
+
+#### 3단계: 자동 감지 메커니즘 추가
+
+동일한 문제가 재발하지 않도록 refactor-auditor.ts에 진단 규칙 추가:
+
+```typescript
+// scripts/refactor-auditor.ts에 추가
+private async checkTaskSchedulingLogic(): Promise<void> {
+  // before-commit frequency가 항상 false 리턴하는지 감지
+  if (content.includes('case "before-commit":') && content.includes('return false')) {
+    this.addFinding({
+      severity: "P0",
+      title: "before-commit tasks always skipped",
+      recommendation: "Implement mode-based execution (SMART/FORCE)"
+    });
+  }
+
+  // Critical 작업이 시간 필터링으로 스킵될 수 있는지 감지
+  if (content.includes('getTasksDue') && !content.includes('task.priority === "critical"')) {
+    this.addFinding({
+      severity: "P1",
+      title: "Critical tasks can be skipped by time filter",
+      recommendation: "Always execute critical priority tasks regardless of lastRun"
+    });
+  }
+}
+```
+
+### 실제 사례 연구 (Case Study)
+
+#### Case 1: Task Scheduling Logic
+
+**증상**: Critical 작업들(typescript-validation, lint-validation, test-execution)이 /maintain 실행 시 건너뛰어짐
+
+**잘못된 해결**:
+```typescript
+// 각 작업마다 강제 실행 플래그 추가 (하드코딩)
+if (task.name === 'typescript-validation' || task.name === 'lint-validation') {
+  forceRun = true;
+}
+```
+
+**올바른 해결**:
+```typescript
+// Priority 기반 스케줄링 설계 개선
+private getTasksDue(tasks: MaintenanceTask[], mode: string): MaintenanceTask[] {
+  return tasks.filter(task => {
+    // SMART 모드: Critical 우선순위는 항상 실행
+    if (mode === 'smart' && task.priority === 'critical') {
+      return true;
+    }
+    // 시간 기반 필터링은 non-critical에만
+    return this.isTimeDue(task);
+  });
+}
+```
+
+**자동 감지 추가**: scripts/refactor-auditor.ts:1310-1352
+
+#### Case 2: Interactive Approval System
+
+**증상**: 승인 요청이 사용자에게 표시되지 않고 타임아웃
+
+**잘못된 해결**:
+```typescript
+// 타임아웃 시 자동 승인 (보안 위험)
+if (timeoutElapsed) {
+  return { approved: true, reason: 'timeout' };
+}
+```
+
+**올바른 해결**:
+```typescript
+// TTY 환경 감지 후 적절한 처리
+if (!process.stdin.isTTY) {
+  // 비대화형: 큐에 저장하여 나중에 처리
+  approvalQueue.addToQueue(request);
+  return { approved: false, reason: '비대화형 환경 - 큐에 저장' };
+} else {
+  // 대화형: 실시간 사용자 입력 대기
+  return await getUserDecision(request);
+}
+```
+
+**자동 감지 추가**: scripts/refactor-auditor.ts:1354-1393
+
+#### Case 3: Output Visibility
+
+**증상**: 명령어 실행 중 아무 출력도 안보여서 멈춘 것처럼 보임
+
+**잘못된 해결**:
+```typescript
+// setInterval로 "작업중..." 메시지만 표시 (실제 진행상황 숨김)
+setInterval(() => console.log('작업중...'), 1000);
+execSync(command, { stdio: 'pipe' });
+```
+
+**올바른 해결**:
+```typescript
+// 실제 명령어 출력을 사용자에게 투명하게 전달
+execSync(command, {
+  stdio: 'inherit',  // stdout/stderr를 부모 프로세스에 직접 전달
+  encoding: 'utf8'
+});
+```
+
+**자동 감지 추가**: scripts/refactor-auditor.ts:1395-1453
+
+#### Case 4: Self-Healing Infinite Loop
+
+**증상**: Self-Healing 엔진이 5초마다 healing 시도하지만 0/3 성공률로 무한 반복
+
+**잘못된 해결**:
+```typescript
+// 매번 재시도하면서 로그만 쌓임 (리소스 낭비)
+setInterval(() => {
+  tryHealing(); // 실패해도 계속 재시도
+}, 5000);
+```
+
+**올바른 해결**:
+```typescript
+// 1. 연속 실패 카운터 추가
+if (successCount > 0) {
+  this.consecutiveFailures = 0;
+} else {
+  this.consecutiveFailures++;
+
+  // 최대 실패 횟수 도달 시 dormant mode
+  if (this.consecutiveFailures >= this.maxConsecutiveFailures) {
+    this.enterDormantMode(
+      `Maximum consecutive failures (${this.maxConsecutiveFailures}) reached`,
+      'max_failures'
+    );
+  }
+}
+
+// 2. 복구 불가능한 이슈는 즉시 dormant mode
+if (stats.activeKeys === 0) {
+  this.enterDormantMode(
+    'No API keys found - requires manual configuration',
+    'api_key_rotation'
+  );
+  return { success: false, dormantModeTriggered: true };
+}
+
+// 3. Dormant mode 체크 후 healing 시작
+if (this.dormantMode) {
+  console.log('🛌 [SelfHealing] In dormant mode - skipping healing');
+  return [];
+}
+```
+
+**자동 감지 추가**: scripts/refactor-auditor.ts:1458-1531
+
+**추가 개선 (Dormant Mode 체크 & 백그라운드 태스크 취소)**:
+```typescript
+// 문제 5: Dormant mode에 진입해도 healing이 계속 실행됨
+async performAutomaticHealing(): Promise<HealingResult[]> {
+  // ❌ BAD: dormant mode 체크 없음
+  return await this.performHealingInternal();
+}
+
+// ✅ GOOD: Dormant mode 최우선 체크
+async performAutomaticHealing(): Promise<HealingResult[]> {
+  if (this.dormantMode) {
+    console.log('🛌 System in dormant mode - healing suspended');
+    return [];
+  }
+  return await this.performHealingInternal();
+}
+
+// 문제 6: Dormant mode 진입 시 예약된 백그라운드 태스크 취소 안함
+private enterDormantMode(reason: string, triggeredBy: string): void {
+  this.dormantMode = { reason, timestamp: new Date(), ... };
+  // ❌ BAD: 이미 예약된 healing-alert 타임아웃이 계속 실행됨
+  backgroundTaskManager.pauseTask('self-healing-preventive');
+}
+
+// ✅ GOOD: 패턴 매칭으로 모든 pending 태스크 취소
+private enterDormantMode(reason: string, triggeredBy: string): void {
+  this.dormantMode = { reason, timestamp: new Date(), ... };
+  backgroundTaskManager.pauseTask('self-healing-preventive');
+  backgroundTaskManager.cancelTasksByPattern('healing-alert-*');
+
+  console.error('🛌 DORMANT MODE ACTIVATED');
+  console.error('💡 Recovery: npm run healing:resume');
+}
+```
+
+**자동 감지 추가**:
+- scripts/refactor-auditor.ts:1501-1514 (Dormant mode 체크)
+- scripts/refactor-auditor.ts:1517-1530 (백그라운드 태스크 취소)
+
+### 체크리스트: 모든 수정 시 확인
+
+- [ ] 증상이 아닌 **근본 원인**을 찾았는가?
+- [ ] 하드코딩/우회가 아닌 **설계 수정**으로 해결했는가?
+- [ ] **통합 관점**에서 다른 시스템과 일관성이 있는가?
+- [ ] 새로운 케이스가 추가되어도 **자동으로 동작**하는가?
+- [ ] **refactor-auditor.ts에 진단 규칙**을 추가했는가?
+- [ ] **문서(CHANGELOG, RFC)**에 근본 원인과 해결책을 기록했는가?
+
 ## 🆘 문제 발생 시 대응
 
 ### 1. **표준 위반 발견 시**
@@ -283,6 +558,16 @@ npm run format
 2. 팀 리뷰 및 승인
 3. 이 문서 업데이트
 4. 기존 코드 마이그레이션 계획 수립
+```
+
+### 3. **버그 발견 시**
+
+```markdown
+1. 근본 원인 식별 ("왜?" 질문 반복)
+2. 설계 관점에서 해결책 수립
+3. 통합 관점에서 일관성 확인
+4. refactor-auditor.ts에 진단 규칙 추가
+5. 문서에 Case Study 추가 (docs/DEVELOPMENT_STANDARDS.md)
 ```
 
 ---

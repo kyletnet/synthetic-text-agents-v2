@@ -85,13 +85,43 @@ class SimplifiedApprovalSystem {
   }
 
   /**
-   * 사용자 결정 요청 (간소화된 인터페이스)
+   * 사용자 결정 요청 (비대화형 모드 지원)
    */
   private async getUserDecision(
     request: SimplifiedApprovalRequest,
     analysis: any,
     safeMode: boolean = false
   ): Promise<ApprovalResult> {
+    // 비대화형 환경 감지 (stdin이 TTY가 아닌 경우)
+    const isInteractive = process.stdin.isTTY;
+
+    if (!isInteractive) {
+      // 비대화형 환경: 즉시 큐에 저장
+      console.log('\n⚠️  비대화형 실행 환경 감지');
+      console.log('📋 승인 대기 큐에 저장합니다 - 나중에 npm run approve 명령어로 처리하세요.');
+
+      const priority = this.riskToPriority(analysis.riskLevel);
+      approvalQueue.addToQueue({
+        title: request.title,
+        description: request.description,
+        command: request.command || '',
+        impact: request.impact,
+        riskLevel: analysis.riskLevel,
+        priority: priority,
+        timeoutAt: new Date(),
+        source: 'maintenance'
+      });
+
+      return {
+        approved: false,
+        action: 'skip',
+        reason: '비대화형 환경 - 승인 큐에 저장됨 (npm run approve로 처리)',
+        matchedCriteria: analysis.matchedCriteria,
+        rollbackStrategy: analysis.matchedCriteria?.rollbackStrategy
+      };
+    }
+
+    // 대화형 환경: 기존 로직
     console.log('\n' + '-'.repeat(80));
     console.log('🤔 어떻게 처리하시겠습니까?');
     console.log('  y/Y: 승인하고 실행');
@@ -117,7 +147,7 @@ class SimplifiedApprovalSystem {
       if (timeoutMs > 0) {
         timeoutHandle = setTimeout(() => {
           console.log(`\n⏰ 시간 초과 (${timeoutMs / 1000}초)`);
-          console.log(`📋 승인 대기 큐에 저장합니다 - 나중에 /approve 명령어로 처리하세요.`);
+          console.log(`📋 승인 대기 큐에 저장합니다 - 나중에 npm run approve 명령어로 처리하세요.`);
 
           // 큐에 저장
           const priority = this.riskToPriority(analysis.riskLevel);

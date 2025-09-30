@@ -77,6 +77,18 @@ class RefactorAuditor {
 
     // 4. Runtime Guardrails
     await this.checkRuntimeGuardrails();
+
+    // 5. Task Scheduling Logic (NEW - Phase 6 후속조치)
+    await this.checkTaskSchedulingLogic();
+
+    // 6. Interactive Approval System (NEW - Phase 6 후속조치)
+    await this.checkInteractiveApprovalSystem();
+
+    // 7. Output Visibility (NEW - Phase 6 후속조치)
+    await this.checkOutputVisibility();
+
+    // 8. Self-Healing Infinite Loop (NEW - Phase 6 후속조치)
+    await this.checkSelfHealingInfiniteLoop();
   }
 
   private async auditP2Core(): Promise<void> {
@@ -1295,6 +1307,227 @@ class RefactorAuditor {
       console.log("✅ System health is good - ready for ship process");
     } else {
       console.log("⚠️ Consider addressing findings before major releases");
+    }
+  }
+
+  /**
+   * NEW: Task Scheduling Logic 검사
+   * Phase 6 후속조치 - getTasksDue() 로직 문제 방지
+   */
+  private async checkTaskSchedulingLogic(): Promise<void> {
+    const maintenanceFiles = glob.sync("scripts/*maintenance*.ts", { cwd: this.rootDir });
+
+    for (const file of maintenanceFiles) {
+      const content = this.safeReadFile(join(this.rootDir, file));
+      if (!content) continue;
+
+      // 문제 1: before-commit frequency가 항상 false 리턴
+      if (content.includes('case "before-commit":') && content.includes('return false')) {
+        this.addFinding({
+          category: "Task Scheduling Logic",
+          priority: "HIGH",
+          severity: "P0",
+          title: `before-commit tasks always skipped in ${file}`,
+          description: "before-commit frequency returns false, preventing critical tasks from running",
+          files: [file],
+          impact: "Critical validation tasks (typecheck, lint, test) never execute",
+          recommendation: "Implement mode-based execution (SMART/FORCE) or remove before-commit frequency"
+        });
+      }
+
+      // 문제 2: Critical tasks 시간 필터링으로 스킵
+      if (content.includes('getTasksDue') && !content.includes('task.priority === "critical"')) {
+        const hasTimeFilter = content.includes('timeSinceLastRun') && content.includes('oneDayMs');
+        if (hasTimeFilter) {
+          this.addFinding({
+            category: "Task Scheduling Logic",
+            priority: "HIGH",
+            severity: "P1",
+            title: `Critical tasks can be skipped by time filter in ${file}`,
+            description: "Critical priority tasks filtered by lastRun time, may not execute when needed",
+            files: [file],
+            impact: "Critical tasks (Self-Healing check, TypeScript validation) may be skipped",
+            recommendation: "Always execute critical priority tasks regardless of lastRun time"
+          });
+        }
+      }
+    }
+  }
+
+  /**
+   * NEW: Interactive Approval System 검사
+   * Phase 6 후속조치 - process.stdin 사용 문제 방지
+   */
+  private async checkInteractiveApprovalSystem(): Promise<void> {
+    const approvalFiles = glob.sync("scripts/**/*approval*.ts", { cwd: this.rootDir });
+
+    for (const file of approvalFiles) {
+      const content = this.safeReadFile(join(this.rootDir, file));
+      if (!content) continue;
+
+      // 문제: process.stdin 사용하지만 isTTY 체크 없음
+      if (content.includes('process.stdin') && !content.includes('process.stdin.isTTY')) {
+        this.addFinding({
+          category: "Interactive Approval System",
+          priority: "HIGH",
+          severity: "P0",
+          title: `Non-interactive execution not handled in ${file}`,
+          description: "Uses process.stdin without checking isTTY, fails in background/CI environments",
+          files: [file],
+          impact: "Approval requests block or timeout in non-interactive environments",
+          recommendation: "Check process.stdin.isTTY and queue approvals in non-interactive mode"
+        });
+      }
+
+      // 문제: readline timeout 후 자동 건너뛰기
+      if (content.includes('setTimeout') && content.includes('readline') && !content.includes('queue')) {
+        this.addFinding({
+          category: "Interactive Approval System",
+          priority: "MEDIUM",
+          severity: "P2",
+          title: `Timeout without queuing in ${file}`,
+          description: "Approval timeout skips items without saving to queue",
+          files: [file],
+          impact: "User unaware of skipped approval items",
+          recommendation: "Always queue timed-out approvals for later review"
+        });
+      }
+    }
+  }
+
+  /**
+   * NEW: Output Visibility 검사
+   * Phase 6 후속조치 - stdio: pipe 문제 방지
+   */
+  private async checkOutputVisibility(): Promise<void> {
+    const orchestratorFiles = glob.sync("scripts/**/*orchestrator*.ts", { cwd: this.rootDir });
+
+    for (const file of orchestratorFiles) {
+      const content = this.safeReadFile(join(this.rootDir, file));
+      if (!content) continue;
+
+      // 문제: stdio: pipe로 출력 숨김
+      if (content.includes('execSync') && content.includes('stdio: "pipe"')) {
+        this.addFinding({
+          category: "Output Visibility",
+          priority: "MEDIUM",
+          severity: "P2",
+          title: `Command output hidden with stdio:pipe in ${file}`,
+          description: "execSync with stdio:pipe hides command output from user",
+          files: [file],
+          impact: "User cannot see progress or errors during maintenance tasks",
+          recommendation: "Use stdio:inherit for user-facing commands, or log output explicitly"
+        });
+      }
+
+      // 문제: 에러 출력 캡처 안됨
+      if (content.includes('execSync') && !content.includes('catch')) {
+        const lines = content.split('\n');
+        let inExecSync = false;
+        let hasCatch = false;
+
+        for (let i = 0; i < lines.length; i++) {
+          if (lines[i].includes('execSync')) {
+            inExecSync = true;
+          }
+          if (inExecSync && lines[i].includes('catch')) {
+            hasCatch = true;
+            break;
+          }
+          if (inExecSync && lines[i].includes('}')) {
+            break;
+          }
+        }
+
+        if (inExecSync && !hasCatch) {
+          this.addFinding({
+            category: "Output Visibility",
+            priority: "MEDIUM",
+            severity: "P2",
+            title: `execSync without error handling in ${file}`,
+            description: "execSync without try-catch may crash without showing error details",
+            files: [file],
+            impact: "Maintenance fails without clear error messages",
+            recommendation: "Wrap execSync in try-catch and log error details"
+          });
+        }
+      }
+    }
+  }
+
+  /**
+   * 🔄 Self-Healing 무한 루프 감지 (NEW - Phase 6 후속조치)
+   */
+  private async checkSelfHealingInfiniteLoop(): Promise<void> {
+    const healingFiles = glob.sync("apps/**/lib/*healing*.ts", { cwd: this.rootDir });
+
+    for (const file of healingFiles) {
+      const content = this.safeReadFile(join(this.rootDir, file));
+      if (!content) continue;
+
+      // 문제 1: Healing 실패 시 연속 실패 카운터 증가 없음
+      if (content.includes('performAutomaticHealingInternal') &&
+          content.includes('filter(r => r.success)') &&
+          !content.includes('consecutiveFailures++')) {
+        this.addFinding({
+          category: "Self-Healing Infinite Loop",
+          priority: "HIGH",
+          severity: "P0",
+          title: `Self-Healing lacks failure tracking in ${file}`,
+          description: "Healing cycle doesn't increment consecutive failures when all actions fail",
+          files: [file],
+          impact: "System will retry healing indefinitely without dormant mode activation",
+          recommendation: "Increment consecutiveFailures counter when successCount === 0"
+        });
+      }
+
+      // 문제 2: 복구 불가능한 에러(API Key 없음 등)에 대한 즉시 dormant mode 진입 없음
+      if (content.includes('performAPIKeyRotation') &&
+          content.includes('No API keys found') &&
+          !content.includes('enterDormantMode')) {
+        this.addFinding({
+          category: "Self-Healing Infinite Loop",
+          priority: "HIGH",
+          severity: "P1",
+          title: `Unrecoverable failures not handled in ${file}`,
+          description: "API key absence should trigger immediate dormant mode, not retry",
+          files: [file],
+          impact: "System wastes resources retrying unrecoverable issues",
+          recommendation: "Call enterDormantMode() immediately for external configuration errors"
+        });
+      }
+
+      // 문제 3: Dormant mode 체크 없이 healing 재시도
+      if (content.includes('performAutomaticHealing') &&
+          content.includes('async performAutomaticHealing') &&
+          !content.includes('if (this.dormantMode)')) {
+        this.addFinding({
+          category: "Self-Healing Infinite Loop",
+          priority: "HIGH",
+          severity: "P0",
+          title: `Missing dormant mode check at entry point in ${file}`,
+          description: "performAutomaticHealing() doesn't check dormant mode, allowing healing to continue",
+          files: [file],
+          impact: "System wastes resources on healing attempts while in dormant state",
+          recommendation: "Add 'if (this.dormantMode) return []' check at start of performAutomaticHealing()"
+        });
+      }
+
+      // 문제 4: enterDormantMode()에서 백그라운드 태스크 취소 누락
+      if (content.includes('enterDormantMode') &&
+          content.includes('backgroundTaskManager') &&
+          !content.includes('cancelTasksByPattern')) {
+        this.addFinding({
+          category: "Self-Healing Infinite Loop",
+          priority: "HIGH",
+          severity: "P1",
+          title: `Dormant mode doesn't cancel pending tasks in ${file}`,
+          description: "enterDormantMode() only pauses tasks but doesn't cancel pending timeouts",
+          files: [file],
+          impact: "Scheduled healing-alert timeouts continue to fire after dormant mode activation",
+          recommendation: "Call cancelTasksByPattern('healing-alert-*') in enterDormantMode()"
+        });
+      }
     }
   }
 }
