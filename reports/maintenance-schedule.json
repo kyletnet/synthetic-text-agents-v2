@@ -6,8 +6,8 @@
     "priority": "critical",
     "autoRun": true,
     "description": "시스템 전체 건강도 체크",
-    "lastRun": "2025-09-30T08:14:43.447Z",
-    "nextRun": "2025-10-01T08:14:43.447Z"
+    "lastRun": "2025-09-30T09:36:54.618Z",
+    "nextRun": "2025-10-01T09:36:54.618Z"
   },
   {
     "name": "auto-evolution",
@@ -26,8 +26,8 @@
     "priority": "medium",
     "autoRun": true,
     "description": "문서 자동 동기화",
-    "lastRun": "2025-09-30T08:14:45.451Z",
-    "nextRun": "2025-09-30T08:14:45.451Z"
+    "lastRun": "2025-09-30T09:36:57.054Z",
+    "nextRun": "2025-09-30T09:36:57.054Z"
   },
   {
     "name": "typescript-autofix",
@@ -36,8 +36,8 @@
     "priority": "critical",
     "autoRun": true,
     "description": "TypeScript + ESLint 자동 수정",
-    "lastRun": "2025-09-30T08:14:45.879Z",
-    "nextRun": "2025-10-01T08:14:45.879Z"
+    "lastRun": "2025-09-30T09:37:11.645Z",
+    "nextRun": "2025-10-01T09:37:11.645Z"
   },
   {
     "name": "docs-refresh",
@@ -46,8 +46,8 @@
     "priority": "medium",
     "autoRun": true,
     "description": "문서 자동 갱신 및 동기화",
-    "lastRun": "2025-09-30T08:14:47.170Z",
-    "nextRun": "2025-09-30T08:14:47.170Z"
+    "lastRun": "2025-09-30T09:37:13.157Z",
+    "nextRun": "2025-09-30T09:37:13.157Z"
   },
   {
     "name": "security-audit",
@@ -66,8 +66,8 @@
     "priority": "medium",
     "autoRun": true,
     "description": "컴포넌트 레지스트리 갱신",
-    "lastRun": "2025-09-30T08:14:47.902Z",
-    "nextRun": "2025-09-30T08:14:47.902Z"
+    "lastRun": "2025-09-30T09:37:13.985Z",
+    "nextRun": "2025-09-30T09:37:13.985Z"
   },
   {
     "name": "integration-audit",
@@ -86,8 +86,8 @@
     "priority": "critical",
     "autoRun": true,
     "description": "TypeScript 검증 (MUST PASS)",
-    "lastRun": "2025-09-30T08:14:50.779Z",
-    "nextRun": "2025-10-01T08:14:50.779Z"
+    "lastRun": "2025-09-30T09:37:16.744Z",
+    "nextRun": "2025-10-01T09:37:16.744Z"
   },
   {
     "name": "lint-validation",
@@ -96,8 +96,8 @@
     "priority": "critical",
     "autoRun": true,
     "description": "ESLint 검증 (MUST PASS)",
-    "lastRun": "2025-09-30T08:14:54.500Z",
-    "nextRun": "2025-10-01T08:14:54.500Z"
+    "lastRun": "2025-09-30T09:37:20.029Z",
+    "nextRun": "2025-10-01T09:37:20.029Z"
   },
   {
     "name": "test-execution",
@@ -106,8 +106,8 @@
     "priority": "critical",
     "autoRun": true,
     "description": "테스트 실행 (MUST PASS)",
-    "lastRun": "2025-09-30T08:14:56.522Z",
-    "nextRun": "2025-10-01T08:14:56.522Z"
+    "lastRun": "2025-09-30T09:37:22.294Z",
+    "nextRun": "2025-10-01T09:37:22.294Z"
   },
   {
     "name": "quality-integration",
@@ -116,8 +116,8 @@
     "priority": "critical",
     "autoRun": true,
     "description": "통합 품질 검사 (MUST PASS)",
-    "lastRun": "2025-09-30T08:15:00.103Z",
-    "nextRun": "2025-09-30T08:15:00.103Z"
+    "lastRun": "2025-09-30T09:37:26.227Z",
+    "nextRun": "2025-09-30T09:37:26.227Z"
   },
   {
     "name": "self-healing-status-check",
@@ -126,8 +126,8 @@
     "priority": "critical",
     "autoRun": true,
     "description": "Self-Healing Engine 건강도 체크 (Dormant/Circuit Breaker/Task 과부하)",
-    "lastRun": "2025-09-30T08:15:00.213Z",
-    "nextRun": "2025-10-01T08:15:00.213Z"
+    "lastRun": "2025-09-30T09:37:26.333Z",
+    "nextRun": "2025-10-01T09:37:26.333Z"
   },
   {
     "name": "advanced-refactor-audit",
@@ -196,7 +196,7 @@
     "priority": "critical",
     "autoRun": true,
     "description": "10가지 대분류 리팩토링 + 치명적 이슈 탐지 통합",
-    "lastRun": "2025-09-30T08:15:03.868Z",
-    "nextRun": "2025-10-01T08:15:03.868Z"
+    "lastRun": "2025-09-30T09:37:30.883Z",
+    "nextRun": "2025-10-01T09:37:30.883Z"
   }
 ]

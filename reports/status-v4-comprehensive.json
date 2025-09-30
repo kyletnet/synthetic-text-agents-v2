@@ -1,8 +1,8 @@
 {
-  "timestamp": "2025-09-30T08:35:26.912Z",
+  "timestamp": "2025-09-30T09:36:54.574Z",
   "version": "4.0",
   "documentation": {
-    "timestamp": "2025-09-30T08:35:26.655Z",
+    "timestamp": "2025-09-30T09:36:54.283Z",
     "overallScore": 72,
     "totalDocuments": 18,
     "missingCount": 7,
@@ -15,9 +15,9 @@
         "category": "CRITICAL",
         "priority": 1,
         "exists": true,
-        "lastModified": "2025-09-29T06:36:47.977Z",
-        "ageInDays": 1,
-        "size": 16170,
+        "lastModified": "2025-09-30T09:28:00.575Z",
+        "ageInDays": 0,
+        "size": 17116,
         "status": "CURRENT",
         "accessibility": "IMMEDIATE"
       },
@@ -198,7 +198,7 @@
         "category": "DEVELOPMENT",
         "priority": 2,
         "exists": true,
-        "lastModified": "2025-09-30T08:35:24.710Z",
+        "lastModified": "2025-09-30T09:36:52.029Z",
         "ageInDays": 0,
         "size": 7451,
         "status": "CURRENT",
@@ -274,16 +274,16 @@
     ]
   },
   "workarounds": {
-    "total": 272,
+    "total": 293,
     "breakdown": {
-      "TODO": 73,
-      "FIXME": 50,
-      "HACK": 42,
+      "TODO": 78,
+      "FIXME": 56,
+      "HACK": 45,
       "TEMP": 58,
-      "WORKAROUND": 49
+      "WORKAROUND": 56
     },
     "criticalCount": 0,
-    "highCount": 92,
+    "highCount": 101,
     "findings": [
       {
         "file": "scripts/generate_dev_session_report.js",
@@ -606,6 +606,66 @@
         "estimation": "1-2 hours"
       },
       {
+        "file": "scripts/fix-orchestrator.ts",
+        "line": 228,
+        "content": "// TODO, FIXME, HACK, WORKAROUND 패턴 검색",
+        "type": "FIXME",
+        "severity": "HIGH",
+        "context": "try { | const patterns = [\"TODO\", \"FIXME\", \"HACK\", \"WORKAROUND\"];",
+        "ageInDays": 0,
+        "estimation": "1-2 hours"
+      },
+      {
+        "file": "scripts/fix-orchestrator.ts",
+        "line": 228,
+        "content": "// TODO, FIXME, HACK, WORKAROUND 패턴 검색",
+        "type": "HACK",
+        "severity": "HIGH",
+        "context": "try { | const patterns = [\"TODO\", \"FIXME\", \"HACK\", \"WORKAROUND\"];",
+        "ageInDays": 0,
+        "estimation": "1-2 hours"
+      },
+      {
+        "file": "scripts/fix-orchestrator.ts",
+        "line": 229,
+        "content": "const patterns = [\"TODO\", \"FIXME\", \"HACK\", \"WORKAROUND\"];",
+        "type": "FIXME",
+        "severity": "HIGH",
+        "context": "// TODO, FIXME, HACK, WORKAROUND 패턴 검색 | let totalCount = 0;",
+        "ageInDays": 0,
+        "estimation": "1-2 hours"
+      },
+      {
+        "file": "scripts/fix-orchestrator.ts",
+        "line": 229,
+        "content": "const patterns = [\"TODO\", \"FIXME\", \"HACK\", \"WORKAROUND\"];",
+        "type": "HACK",
+        "severity": "HIGH",
+        "context": "// TODO, FIXME, HACK, WORKAROUND 패턴 검색 | let totalCount = 0;",
+        "ageInDays": 0,
+        "estimation": "1-2 hours"
+      },
+      {
+        "file": "scripts/fix-orchestrator.ts",
+        "line": 408,
+        "content": "'      grep -rn \"TODO\\\\|FIXME\\\\|HACK\\\\|WORKAROUND\" src/ scripts/',",
+        "type": "FIXME",
+        "severity": "HIGH",
+        "context": "console.log( | );",
+        "ageInDays": 0,
+        "estimation": "1-2 hours"
+      },
+      {
+        "file": "scripts/fix-orchestrator.ts",
+        "line": 408,
+        "content": "'      grep -rn \"TODO\\\\|FIXME\\\\|HACK\\\\|WORKAROUND\" src/ scripts/',",
+        "type": "HACK",
+        "severity": "HIGH",
+        "context": "console.log( | );",
+        "ageInDays": 0,
+        "estimation": "1-2 hours"
+      },
+      {
         "file": "scripts/lib/workaround-resolution-engine.ts",
         "line": 24,
         "content": "type: \"TODO\" | \"FIXME\" | \"HACK\" | \"TEMP\" | \"WORKAROUND\";",
@@ -794,6 +854,33 @@
         "context": "content.includes(\"FIXME\") || | content.includes(\"security\")",
         "ageInDays": 0,
         "estimation": "30min-1 hour"
+      },
+      {
+        "file": "scripts/fix-orchestrator.ts",
+        "line": 228,
+        "content": "// TODO, FIXME, HACK, WORKAROUND 패턴 검색",
+        "type": "FIXME",
+        "severity": "HIGH",
+        "context": "Detected via grep scan",
+        "estimation": "1-2 hours"
+      },
+      {
+        "file": "scripts/fix-orchestrator.ts",
+        "line": 229,
+        "content": "const patterns = [\"TODO\", \"FIXME\", \"HACK\", \"WORKAROUND\"];",
+        "type": "FIXME",
+        "severity": "HIGH",
+        "context": "Detected via grep scan",
+        "estimation": "1-2 hours"
+      },
+      {
+        "file": "scripts/fix-orchestrator.ts",
+        "line": 408,
+        "content": "'      grep -rn \"TODO\\\\|FIXME\\\\|HACK\\\\|WORKAROUND\" src/ scripts/',",
+        "type": "FIXME",
+        "severity": "HIGH",
+        "context": "Detected via grep scan",
+        "estimation": "1-2 hours"
       },
       {
         "file": "scripts/resolve-workarounds.ts",
@@ -1293,6 +1380,76 @@
         "context": "### 📈 Statistics | - **Average Age**: ${report.stats.averageAge} days",
         "ageInDays": 5,
         "estimation": "30min-1 hour"
+      },
+      {
+        "file": "scripts/fix-orchestrator.ts",
+        "line": 9,
+        "content": "* - 수정 항목 수집 (code-quality, documentation, workaround, refactor)",
+        "type": "WORKAROUND",
+        "severity": "MEDIUM",
+        "context": "* 역할: | * - 심각도별 우선순위 정렬",
+        "ageInDays": 0,
+        "estimation": "2-4 days"
+      },
+      {
+        "file": "scripts/fix-orchestrator.ts",
+        "line": 28,
+        "content": "category: \"code-quality\" | \"documentation\" | \"workaround\" | \"refactor\";",
+        "type": "WORKAROUND",
+        "severity": "MEDIUM",
+        "context": "id: string; | severity: \"low\" | \"medium\" | \"high\" | \"critical\";",
+        "ageInDays": 0,
+        "estimation": "2-4 days"
+      },
+      {
+        "file": "scripts/fix-orchestrator.ts",
+        "line": 228,
+        "content": "// TODO, FIXME, HACK, WORKAROUND 패턴 검색",
+        "type": "WORKAROUND",
+        "severity": "MEDIUM",
+        "context": "try { | const patterns = [\"TODO\", \"FIXME\", \"HACK\", \"WORKAROUND\"];",
+        "ageInDays": 0,
+        "estimation": "1-2 hours"
+      },
+      {
+        "file": "scripts/fix-orchestrator.ts",
+        "line": 229,
+        "content": "const patterns = [\"TODO\", \"FIXME\", \"HACK\", \"WORKAROUND\"];",
+        "type": "WORKAROUND",
+        "severity": "MEDIUM",
+        "context": "// TODO, FIXME, HACK, WORKAROUND 패턴 검색 | let totalCount = 0;",
+        "ageInDays": 0,
+        "estimation": "1-2 hours"
+      },
+      {
+        "file": "scripts/fix-orchestrator.ts",
+        "line": 247,
+        "content": "category: \"workaround\",",
+        "type": "WORKAROUND",
+        "severity": "MEDIUM",
+        "context": "id: \"workarounds\", | severity: \"medium\",",
+        "ageInDays": 0,
+        "estimation": "30min-1 hour"
+      },
+      {
+        "file": "scripts/fix-orchestrator.ts",
+        "line": 312,
+        "content": "workaround: \"🔧\",",
+        "type": "WORKAROUND",
+        "severity": "MEDIUM",
+        "context": "documentation: \"📚\", | refactor: \"♻️\",",
+        "ageInDays": 0,
+        "estimation": "30min-1 hour"
+      },
+      {
+        "file": "scripts/fix-orchestrator.ts",
+        "line": 408,
+        "content": "'      grep -rn \"TODO\\\\|FIXME\\\\|HACK\\\\|WORKAROUND\" src/ scripts/',",
+        "type": "WORKAROUND",
+        "severity": "MEDIUM",
+        "context": "console.log( | );",
+        "ageInDays": 0,
+        "estimation": "1-2 hours"
       },
       {
         "file": "scripts/lib/self-management-tracker.ts",
@@ -2177,6 +2334,46 @@
         "estimation": "1-2 hours"
       },
       {
+        "file": "scripts/fix-orchestrator.ts",
+        "line": 228,
+        "content": "// TODO, FIXME, HACK, WORKAROUND 패턴 검색",
+        "type": "TODO",
+        "severity": "LOW",
+        "context": "try { | const patterns = [\"TODO\", \"FIXME\", \"HACK\", \"WORKAROUND\"];",
+        "ageInDays": 0,
+        "estimation": "1-2 hours"
+      },
+      {
+        "file": "scripts/fix-orchestrator.ts",
+        "line": 229,
+        "content": "const patterns = [\"TODO\", \"FIXME\", \"HACK\", \"WORKAROUND\"];",
+        "type": "TODO",
+        "severity": "LOW",
+        "context": "// TODO, FIXME, HACK, WORKAROUND 패턴 검색 | let totalCount = 0;",
+        "ageInDays": 0,
+        "estimation": "1-2 hours"
+      },
+      {
+        "file": "scripts/fix-orchestrator.ts",
+        "line": 249,
+        "content": "description: `워크어라운드/TODO 마커 ${totalCount}개`,",
+        "type": "TODO",
+        "severity": "LOW",
+        "context": "severity: \"medium\", | autoFixable: false,",
+        "ageInDays": 0,
+        "estimation": "30min-1 hour"
+      },
+      {
+        "file": "scripts/fix-orchestrator.ts",
+        "line": 408,
+        "content": "'      grep -rn \"TODO\\\\|FIXME\\\\|HACK\\\\|WORKAROUND\" src/ scripts/',",
+        "type": "TODO",
+        "severity": "LOW",
+        "context": "console.log( | );",
+        "ageInDays": 0,
+        "estimation": "1-2 hours"
+      },
+      {
         "file": "scripts/lib/auto-fix-manager.ts",
         "line": 372,
         "content": "// Copy file to temp location first",
@@ -2534,6 +2731,15 @@
         "severity": "LOW",
         "context": "* Generate DLQ summary section | */",
         "ageInDays": 0,
+        "estimation": "30min-1 hour"
+      },
+      {
+        "file": "scripts/fix-orchestrator.ts",
+        "line": 249,
+        "content": "description: `워크어라운드/TODO 마커 ${totalCount}개`,",
+        "type": "TODO",
+        "severity": "LOW",
+        "context": "Detected via grep scan",
         "estimation": "30min-1 hour"
       },
       {
@@ -2917,9 +3123,9 @@
     ],
     "stats": {
       "oldestWorkaround": 7,
-      "averageAge": 3,
-      "filesAffected": 35,
-      "estimatedEffort": "32.4d"
+      "averageAge": 2,
+      "filesAffected": 36,
+      "estimatedEffort": "38.6d"
     },
     "recommendations": [
       "🔧 High number of HACKs detected - schedule refactoring session",
@@ -2948,7 +3154,7 @@
     "unusedDirectories": [],
     "archiveActions": [],
     "stats": {
-      "totalFiles": 1888,
+      "totalFiles": 1911,
       "potentialSavings": "1MB",
       "cleanupScore": 90
     }

@@ -1,10 +1,10 @@
 {
   "version": "1.0.0",
-  "lastUpdated": "2025-09-30T08:15:16.483Z",
-  "totalComponents": 187,
+  "lastUpdated": "2025-09-30T09:39:20.488Z",
+  "totalComponents": 188,
   "complianceStats": {
     "compliant": 61,
-    "violations": 126,
+    "violations": 127,
     "unregistered": 0
   },
   "components": [
@@ -4737,6 +4737,68 @@
       }
     },
     {
+      "name": "fix-orchestrator",
+      "path": "scripts/fix-orchestrator.ts",
+      "type": "utility",
+      "purpose": "status, sync, fix, test, check, git",
+      "riskLevel": "medium",
+      "userImpact": "medium",
+      "dependencies": [
+        "child_process",
+        "fs",
+        "path",
+        "./lib/simplified-approval-system.js"
+      ],
+      "integrationPoints": [
+        "package.json"
+      ],
+      "constraints": [
+        "AUTO_INCLUDE_IN_HEALTH_METRICS",
+        "MUST_PROVIDE_STATUS_SUMMARY",
+        "MUST_BE_ATOMIC_OPERATION",
+        "MUST_SUPPORT_ROLLBACK",
+        "MUST_HAVE_COMPONENT_METADATA"
+      ],
+      "designDecision": {
+        "placement": "internal",
+        "integration": {
+          "includeInStatus": true,
+          "includeInSync": true,
+          "includeInFix": true,
+          "includeInShip": false
+        },
+        "constraints": [
+          "AUTO_INCLUDE_IN_HEALTH_METRICS",
+          "MUST_PROVIDE_STATUS_SUMMARY",
+          "MUST_BE_ATOMIC_OPERATION",
+          "MUST_SUPPORT_ROLLBACK",
+          "MUST_HAVE_COMPONENT_METADATA"
+        ],
+        "approvalRequired": false,
+        "reasoning": [
+          "Status/health/check components integrated into unified dashboard",
+          "Sync/git/commit components integrated into sync workflow",
+          "Fix/repair/lint components integrated into fix workflow",
+          "Status integration requires health metrics and summary",
+          "Sync integration requires atomic operations and rollback support",
+          "All components must have metadata for automatic consistency"
+        ]
+      },
+      "compliance": {
+        "isCompliant": false,
+        "violations": [
+          "Required integration with unified-dashboard missing"
+        ],
+        "lastChecked": "2025-09-30T09:37:13.816Z"
+      },
+      "lifecycle": {
+        "created": "2025-09-30 17:49:54 +0900",
+        "lastUpdated": "2025-09-30T09:25:37.129Z",
+        "lastIntegrated": "2025-09-30T09:37:13.873Z",
+        "status": "active"
+      }
+    },
+    {
       "name": "fix-unused-vars",
       "path": "scripts/fix-unused-vars.sh",
       "type": "utility",
@@ -8312,12 +8374,12 @@
       "compliance": {
         "isCompliant": true,
         "violations": [],
-        "lastChecked": "2025-09-30T08:14:47.800Z"
+        "lastChecked": "2025-09-30T09:37:13.875Z"
       },
       "lifecycle": {
         "created": "2025-09-29 18:54:21 +0900",
-        "lastUpdated": "2025-09-30T07:55:25.410Z",
-        "lastIntegrated": "2025-09-30T08:14:47.867Z",
+        "lastUpdated": "2025-09-30T08:35:51.889Z",
+        "lastIntegrated": "2025-09-30T09:37:13.934Z",
         "status": "active"
       }
     },
@@ -8564,12 +8626,12 @@
         "violations": [
           "Required integration with unified-dashboard missing"
         ],
-        "lastChecked": "2025-09-30T08:14:47.725Z"
+        "lastChecked": "2025-09-30T09:37:13.739Z"
       },
       "lifecycle": {
         "created": "2025-09-29 18:54:21 +0900",
-        "lastUpdated": "2025-09-30T06:46:31.933Z",
-        "lastIntegrated": "2025-09-30T08:14:47.798Z",
+        "lastUpdated": "2025-09-30T08:35:52.141Z",
+        "lastIntegrated": "2025-09-30T09:37:13.814Z",
         "status": "active"
       }
     },
@@ -9523,12 +9585,12 @@
       "compliance": {
         "isCompliant": true,
         "violations": [],
-        "lastChecked": "2025-09-30T08:14:47.485Z"
+        "lastChecked": "2025-09-30T09:37:13.489Z"
       },
       "lifecycle": {
         "created": "2025-09-30 16:56:24 +0900",
-        "lastUpdated": "2025-09-30T07:55:42.811Z",
-        "lastIntegrated": "2025-09-30T08:14:47.723Z",
+        "lastUpdated": "2025-09-30T08:35:52.151Z",
+        "lastIntegrated": "2025-09-30T09:37:13.737Z",
         "status": "experimental"
       }
     },
@@ -10562,9 +10624,9 @@
     }
   ],
   "integrationHealth": {
-    "unifiedDashboard": 8.55614973262032,
-    "packageJson": 52.406417112299465,
+    "unifiedDashboard": 8.51063829787234,
+    "packageJson": 52.659574468085104,
     "coreCommands": 8,
-    "documented": 2.6737967914438503
+    "documented": 2.6595744680851063
   }
 }

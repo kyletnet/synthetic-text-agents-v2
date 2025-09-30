@@ -1,124 +1,32 @@
 {
-  "feature_name": "시스템 통합 분석",
-  "files_added": [
-    "docs/SYNC_OPTIMIZATION_OPTIONS.md",
-    "scripts/auto-integration-guard.ts",
-    "scripts/command-wrapper.ts",
-    "scripts/comprehensive-doc-updater.ts",
-    "scripts/integration-improvement-engine.ts",
-    "scripts/issue-tracker.ts",
-    "scripts/quick-doc-updater.ts",
-    "scripts/security-audit-checker.ts",
-    "scripts/sync-transaction-system.ts",
-    "scripts/system-integration-analyzer.ts",
-    "scripts/workflow-completeness-auditor.ts",
-    "scripts/workflow-prevention-system.ts",
-    ".claude/commands/_hidden/",
-    ".claude/commands/fix.md",
-    ".claude/config.yaml",
-    ".claude/system-metadata.yaml",
-    ".github/workflows/doc-quality-gate.yml",
-    ".system-backups/",
-    "COMMAND_DIRECTORY.md",
-    "HANDOFF_TECH_FIXES.md",
-    "docs/APPROVAL_PROCESS.md",
-    "docs/ARCHITECTURE.md",
-    "docs/DESIGN_EXECUTION.md",
-    "docs/USER_GUIDE.md",
-    "package.clean.json",
-    "plugins/",
-    "reports/.fix-sessions/",
-    "reports/command-optimization.json",
-    "reports/feature-impact-analysis.json",
-    "reports/integration-improvement-plan.json",
-    "reports/refactor-learning.json",
-    "reports/security-audit.json",
-    "reports/sync-health-report.json",
-    "reports/system-consolidation-plan.json",
-    "reports/system-integration-analysis.json",
-    "reports/tracked-issues.json",
-    "reports/ts-compile-report.json",
-    "reports/workflow-completeness-audit.json",
-    "reports/workflow-prevention.json",
-    "scripts/approval-workflow.ts",
-    "scripts/design-first-system-architect.ts",
-    "scripts/design-metadata-manager.ts",
-    "scripts/design-rollback-system.ts",
-    "scripts/unified-dashboard.ts",
-    "src/shared/pluginLoader.ts",
-    "src/shared/pluginTypes.ts"
-  ],
+  "feature_name": "보안 검사 시스템",
+  "files_added": [],
   "files_modified": [
-    ".claude/commands/refactor-audit.md",
-    ".claude/commands/status.md",
-    ".refactor/state.json",
-    "CHANGELOG.md",
-    "DEVELOPER_HANDOFF_COMPLETE.md",
-    "DEVELOPMENT_ONBOARDING.md",
-    "HANDOFF_NAVIGATION.md",
-    "README.md",
-    "SYSTEM_MAP.md",
+    "refactor/state.json",
     "apps/fe-web/docs/DECISIONS/INDEX.md",
     "apps/fe-web/docs/EXPERIMENTS/INDEX.md",
     "apps/fe-web/docs/RUN_LOGS/INDEX.md",
-    "docs/SYSTEM_DOCS/README.md",
-    "package.json",
-    "scripts/slash-commands.sh",
+    "reports/.cache/typescript-check.json",
+    "reports/.fix-sessions/latest.json",
+    "reports/approval-queue.json",
+    "reports/communication-sessions.json",
+    "reports/component-registry.json",
+    "reports/comprehensive-doc-update-report.json",
+    "reports/improvement-queue.json",
+    "reports/maintain-report.md",
+    "reports/maintenance-schedule.json",
+    "reports/maintenance-sessions.json",
+    "reports/security-audit.json",
+    "reports/self-designing-system-status.json",
+    "reports/status-v4-comprehensive.json",
+    "reports/system-integration-report.md",
+    "reports/unified-system-report.json",
+    "reports/user-communication.json",
     "test-results/html.meta.json.gz",
-    "test-results/results.json",
-    "tsconfig.build.json"
+    "test-results/results.json"
   ],
-  "commands_added": [
-    "issues:report",
-    "issues:track",
-    "system:integration",
-    "system:improve",
-    "workflow:prevention:check",
-    "security:audit:check"
-  ],
+  "commands_added": [],
   "dependencies_added": [],
-  "integration_concerns": [
-    {
-      "type": "DUPLICATION",
-      "severity": "HIGH",
-      "description": "새로운 보고서/추적 시스템이 기존 시스템과 중복될 수 있음",
-      "recommendation": "기존 시스템과 통합하거나 명확한 역할 분담 정의"
-    },
-    {
-      "type": "COMPLEXITY",
-      "severity": "MEDIUM",
-      "description": "6개의 새 명령어 추가로 사용자 복잡도 증가",
-      "recommendation": "명령어 그룹핑 또는 단일 인터페이스로 통합 검토"
-    },
-    {
-      "type": "CONFLICT",
-      "severity": "LOW",
-      "description": "reports/ 디렉토리에 새 파일 추가로 기존 보고서와 충돌 가능성",
-      "recommendation": "보고서 네이밍 규칙 정의 및 기존 파일과 구분"
-    },
-    {
-      "type": "MAINTENANCE",
-      "severity": "MEDIUM",
-      "description": "46개 새 파일 추가로 유지보수 복잡도 증가",
-      "recommendation": "모듈화 및 공통 유틸리티 함수 활용"
-    }
-  ],
-  "auto_actions": [
-    {
-      "action": "시스템 통합 분석 자동 실행",
-      "reason": "새 기능 추가로 인한 전체 시스템 영향도 측정"
-    },
-    {
-      "action": "help 명령어 자동 업데이트",
-      "reason": "새 명령어 추가로 인한 도움말 갱신 필요"
-    },
-    {
-      "action": "충돌 방지 검사 실행",
-      "reason": "높은 심각도 우려사항으로 인한 사전 검증 필요"
-    },
-    {
-      "action": "명령어 그룹핑 검토 제안",
-      "reason": "명령어 과다로 인한 사용자 혼란 방지"
-    }
-  ]
+  "integration_concerns": [],
+  "auto_actions": []
 }

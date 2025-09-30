@@ -1,1 +1,31 @@
-{"sessionId":"fix-1759220085737"}
+{
+  "timestamp": "2025-09-30T09:42:14.949Z",
+  "totalItems": 1,
+  "fixed": 0,
+  "skipped": 1,
+  "failed": 0,
+  "items": [
+    {
+      "id": "workarounds",
+      "category": "workaround",
+      "severity": "medium",
+      "description": "워크어라운드/TODO 마커 132개",
+      "autoFixable": false,
+      "impact": "기술 부채 감소, 코드 품질 개선"
+    }
+  ],
+  "results": [
+    {
+      "item": {
+        "id": "workarounds",
+        "category": "workaround",
+        "severity": "medium",
+        "description": "워크어라운드/TODO 마커 132개",
+        "autoFixable": false,
+        "impact": "기술 부채 감소, 코드 품질 개선"
+      },
+      "status": "skipped",
+      "message": "사용자가 건너뜀"
+    }
+  ]
+}
