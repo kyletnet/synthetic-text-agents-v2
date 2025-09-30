@@ -353,13 +353,32 @@ Before marking implementation complete:
 - Dev demo: `npm run dev`
 - Test: `npm run test`
 
-### Runbook /ship
+### Command Workflow
 
-    ship
-        1) /verify-observability
-        2) /handoff → /export
-        3) /verify-bundle
-        4) (선택) full run → /handoff → /export
+**명확한 책임 분리**:
+```
+/status   → 진단 전용 (읽기 전용)
+/fix      → 대화형 품질 수정 (사용자 제어)
+/maintain → CI/CD 자동 유지보수 (사람 없이)
+/ship     → 배포 준비 (문서 동기화 포함)
+```
+
+**개발 워크플로우**:
+```bash
+1. npm run status    # 문제 파악
+2. npm run fix       # 대화형 수정
+3. npm run test      # 테스트
+4. npm run ship      # 배포 준비 (문서 동기화)
+```
+
+**CI/CD 워크플로우**:
+```bash
+1. npm run maintain  # 자동 유지보수
+2. npm run test      # 테스트
+3. npm run ship      # 배포 (main 브랜치만)
+```
+
+상세 가이드: `@docs/COMMAND_GUIDE.md`
 
 ### TypeScript Development Guidelines
 
