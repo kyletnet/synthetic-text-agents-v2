@@ -107,7 +107,9 @@ class SimplifiedApprovalSystem {
   ): Promise<ApprovalResult> {
     // 비대화형 환경 감지 (stdin이 TTY가 아닌 경우)
     // Claude Code 환경은 stdin.isTTY가 undefined지만 대화형 지원
-    const isClaudeCode = process.env.CLAUDECODE === '1' || process.env.CLAUDE_CODE_ENTRYPOINT === 'cli';
+    const isClaudeCode =
+      process.env.CLAUDECODE === "1" ||
+      process.env.CLAUDE_CODE_ENTRYPOINT === "cli";
     const isInteractive = process.stdin.isTTY || isClaudeCode;
 
     if (!isInteractive) {

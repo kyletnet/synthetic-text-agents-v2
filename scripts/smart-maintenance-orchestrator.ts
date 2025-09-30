@@ -626,7 +626,11 @@ class SmartMaintenanceOrchestrator {
     }
 
     // 비대화형 환경 감지
-    const isInteractive = process.stdin.isTTY;
+    // Claude Code 환경은 stdin.isTTY가 undefined지만 대화형 지원
+    const isClaudeCode =
+      process.env.CLAUDECODE === "1" ||
+      process.env.CLAUDE_CODE_ENTRYPOINT === "cli";
+    const isInteractive = process.stdin.isTTY || isClaudeCode;
 
     if (!isInteractive) {
       // 비대화형 환경: 모든 승인 항목을 pending으로 반환하여 보고서에 표시
@@ -834,16 +838,22 @@ class SmartMaintenanceOrchestrator {
   ): Promise<number> {
     let fixedCount = 0;
 
-    console.log("   🤔 발견된 이슈들 (자동 수정 안 함):");
+    console.log("\n🔧 안전한 항목 자동 수정 시작...");
 
     for (const approval of approvals) {
-      // 1. ESLint 오류 - 사용자 선택
-      if (approval.source === "eslint") {
-        console.log(`\n📊 ESLint ${approval.count}개 경고 발견:`);
-        console.log("   📝 대부분 미사용 변수 경고로, 당장 고칠 필요 없음");
-        console.log("   ✅ 지금 고치기: npm run lint:fix");
-        console.log("   ⏭️  나중에 고치기: 이후 대화형 승인에서 선택 가능");
-        console.log("   🚀 지금은 더 중요한 이슈로 넘어갑니다.");
+      // 1. ESLint 오류 - 자동 수정 (안전)
+      if (
+        approval.source === "eslint" &&
+        approval.command === "npm run lint:fix"
+      ) {
+        try {
+          console.log(`\n📊 ESLint ${approval.count}개 경고 자동 수정 중...`);
+          execSync("npm run lint:fix", { stdio: "inherit" });
+          fixedCount++;
+          console.log("   ✅ ESLint 자동 수정 완료");
+        } catch (error) {
+          console.log("   ⚠️  ESLint 일부 수정 실패 (계속 진행)");
+        }
       }
 
       // 2. TypeScript 자동 수정 (비교적 안전)
@@ -852,23 +862,24 @@ class SmartMaintenanceOrchestrator {
         approval.description.includes("컴파일")
       ) {
         try {
-          console.log("   ⚡ TypeScript 자동 수정 시도...");
+          console.log("\n⚡ TypeScript 타입 체크 중...");
           execSync("npm run dev:typecheck", { stdio: "inherit" });
           fixedCount++;
-          console.log("   ✅ TypeScript 자동 수정 완료");
+          console.log("   ✅ TypeScript 검증 완료");
         } catch (error) {
-          console.log("   ❌ TypeScript 자동 수정 실패 (수동 검토 필요)");
+          console.log("   ❌ TypeScript 오류 발견 - 수동 검토 필요");
         }
       }
 
       // 3. Prettier 자동 포매팅 (매우 안전)
       if (
         approval.description.includes("포매팅") ||
-        approval.description.includes("prettier")
+        approval.description.includes("prettier") ||
+        approval.description.includes("Code Style")
       ) {
         try {
-          console.log("   ⚡ Prettier 자동 포매팅 실행...");
-          execSync('npx prettier --write "**/*.{ts,js,json,md}"', {
+          console.log("\n⚡ Prettier 자동 포매팅 실행 중...");
+          execSync("npx prettier --write .", {
             stdio: "inherit",
           });
           fixedCount++;
@@ -880,24 +891,21 @@ class SmartMaintenanceOrchestrator {
 
       // 4. 아키텍처 진화 - 모든 아키텍처 변경은 대화형 승인으로 처리
       if (approval.type === "evolution") {
-        console.log("   ⚠️  아키텍처 진화 감지: 대화형 승인 단계에서 처리됨");
-        console.log("       (곧 승인 요청이 나타납니다)");
+        console.log("\n⚠️  아키텍처 진화 항목 발견: 대화형 승인 단계로 이동");
       }
 
       // 5. 보안 관련 - 항상 수동 검토
       if (approval.type === "security") {
-        console.log("   🛡️  보안 관련 변경: 수동 검토 필수");
+        console.log("\n🛡️  보안 관련 변경: 수동 검토 필수");
       }
     }
 
     if (fixedCount > 0) {
-      console.log(`   🎉 ${fixedCount}개 항목 자동 수정 완료!`);
-
-      console.log(
-        "\n🚀 이슈 검토 완룼 - 이제 중요한 결정사항에 대해 물어보겠습니다!",
-      );
+      console.log(`\n🎉 ${fixedCount}개 항목 자동 수정 완료!`);
     } else {
-      console.log("   💡 안전하게 자동 수정 가능한 항목이 없습니다.");
+      console.log(
+        "\n💡 자동 수정 가능한 항목이 없습니다 (위험한 항목은 승인 필요).",
+      );
     }
 
     return fixedCount;

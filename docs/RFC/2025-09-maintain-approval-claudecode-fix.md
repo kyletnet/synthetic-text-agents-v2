@@ -22,6 +22,7 @@
 ### 증상
 
 `/maintain` 명령이 Claude Code 환경에서 실행 시 무한 대기 상태에 빠짐.
+
 - 사용자 승인이 필요한 작업에서 멈춤
 - 타임아웃도 작동하지 않음
 - readline 입력이 전혀 받아지지 않음
@@ -62,12 +63,13 @@ if (!isInteractive) {
 
 ```typescript
 // Claude Code 환경에서의 실제 값
-process.stdin.isTTY = undefined  // ← 문제!
-process.env.CLAUDECODE = "1"
-process.env.CLAUDE_CODE_ENTRYPOINT = "cli"
+process.stdin.isTTY = undefined; // ← 문제!
+process.env.CLAUDECODE = "1";
+process.env.CLAUDE_CODE_ENTRYPOINT = "cli";
 ```
 
 **핵심 문제**:
+
 - `undefined`는 JavaScript에서 falsy
 - `if (!process.stdin.isTTY)`는 `true`가 됨
 - Claude Code 환경이 "비대화형"으로 잘못 판단됨
@@ -108,24 +110,25 @@ process.env.CLAUDE_CODE_ENTRYPOINT = "cli"
 
 #### 옵션 비교
 
-| 옵션 | 장점 | 단점 | 선택 |
-|------|------|------|------|
-| A. 환경변수 기반 감지 | 명확, 안정적 | - | ✅ |
-| B. 플래그 추가 | 유연함 | 사용자가 매번 지정 | ❌ |
-| C. stdin 직접 테스트 | 정확함 | 복잡, 느림 | ❌ |
+| 옵션                  | 장점         | 단점               | 선택 |
+| --------------------- | ------------ | ------------------ | ---- |
+| A. 환경변수 기반 감지 | 명확, 안정적 | -                  | ✅   |
+| B. 플래그 추가        | 유연함       | 사용자가 매번 지정 | ❌   |
+| C. stdin 직접 테스트  | 정확함       | 복잡, 느림         | ❌   |
 
 #### 선택된 해결책: 옵션 A
 
 ```typescript
 // 수정된 코드
 const isClaudeCode =
-  process.env.CLAUDECODE === '1' ||
-  process.env.CLAUDE_CODE_ENTRYPOINT === 'cli';
+  process.env.CLAUDECODE === "1" ||
+  process.env.CLAUDE_CODE_ENTRYPOINT === "cli";
 
 const isInteractive = process.stdin.isTTY || isClaudeCode;
 ```
 
 **이점**:
+
 1. Claude Code 환경을 명시적으로 대화형으로 처리
 2. 기존 터미널 환경도 정상 작동
 3. 코드 변경 최소화
@@ -142,16 +145,18 @@ const isInteractive = process.stdin.isTTY || isClaudeCode;
 **변경 위치**: Line 108-111
 
 **Before**:
+
 ```typescript
 const isInteractive = process.stdin.isTTY;
 ```
 
 **After**:
+
 ```typescript
 // Claude Code 환경은 stdin.isTTY가 undefined지만 대화형 지원
 const isClaudeCode =
-  process.env.CLAUDECODE === '1' ||
-  process.env.CLAUDE_CODE_ENTRYPOINT === 'cli';
+  process.env.CLAUDECODE === "1" ||
+  process.env.CLAUDE_CODE_ENTRYPOINT === "cli";
 const isInteractive = process.stdin.isTTY || isClaudeCode;
 ```
 
@@ -160,6 +165,7 @@ const isInteractive = process.stdin.isTTY || isClaudeCode;
 **목적**: readline이 Claude Code 환경에서 작동하는지 독립 검증
 
 **기능**:
+
 - 환경 감지 로직 검증
 - readline 대화형 입력 테스트
 - 타임아웃 동작 확인
@@ -169,6 +175,7 @@ const isInteractive = process.stdin.isTTY || isClaudeCode;
 **목적**: 회귀 방지 테스트
 
 **테스트 케이스** (13개):
+
 1. 환경 감지 (4개)
 2. 승인 결정 로직 (3개)
 3. Readline 인터페이스 (1개)
@@ -178,6 +185,7 @@ const isInteractive = process.stdin.isTTY || isClaudeCode;
 ### 실행 흐름 변경
 
 **Before** (잘못된 흐름):
+
 ```
 Claude Code 실행
 → stdin.isTTY = undefined
@@ -188,6 +196,7 @@ Claude Code 실행
 ```
 
 **After** (올바른 흐름):
+
 ```
 Claude Code 실행
 → stdin.isTTY = undefined
@@ -208,6 +217,7 @@ Claude Code 실행
 **파일**: `tests/integration/maintain-approval.test.ts`
 
 **커버리지**:
+
 - 환경 감지 로직
 - 승인 결정 분기
 - 타임아웃 설정
@@ -220,6 +230,7 @@ Claude Code 실행
 **파일**: `scripts/test-readline-approval.ts`
 
 **검증 항목**:
+
 1. Claude Code 환경 감지
 2. readline 인터페이스 생성
 3. 사용자 입력 수신
@@ -236,6 +247,7 @@ Claude Code 실행
 **환경**: Claude Code CLI
 
 **시나리오**:
+
 1. `/maintain` 실행
 2. 승인 필요한 작업 대기
 3. `y` 입력 → 승인됨
@@ -253,6 +265,7 @@ Claude Code 실행
 **파일**: `tests/integration/maintain-approval.test.ts`
 
 **핵심 테스트**:
+
 ```typescript
 it("should always check Claude Code environment before isTTY", () => {
   process.env.CLAUDECODE = "1";
@@ -270,6 +283,7 @@ it("should always check Claude Code environment before isTTY", () => {
 **이 RFC 문서**: 근본 원인과 해결책 명시
 
 **코드 주석**: 왜 이런 로직이 필요한지 설명
+
 ```typescript
 // Claude Code 환경은 stdin.isTTY가 undefined지만 대화형 지원
 const isClaudeCode = ...
@@ -278,10 +292,12 @@ const isClaudeCode = ...
 ### 3. CI/CD 통합
 
 **Pre-commit hook**:
+
 - 전체 테스트 스위트 실행
 - 회귀 테스트 포함
 
 **GitHub CI**:
+
 - 모든 환경에서 테스트
 - Claude Code 환경 시뮬레이션
 
@@ -308,12 +324,14 @@ const isClaudeCode = ...
 ### 배포 절차
 
 1. **로컬 검증**
+
    ```bash
    npm run ci:quality  # 모든 품질 체크
    npm run test        # 전체 테스트
    ```
 
 2. **Git 푸시**
+
    ```bash
    git push origin main
    ```
@@ -332,12 +350,14 @@ const isClaudeCode = ...
 **만약 문제 발생 시**:
 
 1. **즉시 롤백**:
+
    ```bash
    git revert HEAD~2..HEAD
    git push origin main
    ```
 
 2. **우회 방법**:
+
    ```bash
    # 일반 터미널에서 실행
    # 또는
@@ -379,8 +399,8 @@ const isClaudeCode = ...
 
 ## 변경 이력
 
-| 날짜 | 버전 | 변경 내용 |
-|------|------|-----------|
-| 2025-09-30 | 1.0 | 초안 작성 |
-| 2025-09-30 | 1.1 | 구현 완료 및 테스트 결과 반영 |
-| 2025-09-30 | 1.2 | RFC 최종 승인 |
+| 날짜       | 버전 | 변경 내용                     |
+| ---------- | ---- | ----------------------------- |
+| 2025-09-30 | 1.0  | 초안 작성                     |
+| 2025-09-30 | 1.1  | 구현 완료 및 테스트 결과 반영 |
+| 2025-09-30 | 1.2  | RFC 최종 승인                 |

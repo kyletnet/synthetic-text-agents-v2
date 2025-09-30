@@ -8,10 +8,12 @@
 import { createInterface } from "readline";
 
 console.log("🧪 Readline Approval Test");
-console.log("=" .repeat(60));
+console.log("=".repeat(60));
 
 // 환경 감지
-const isClaudeCode = process.env.CLAUDECODE === '1' || process.env.CLAUDE_CODE_ENTRYPOINT === 'cli';
+const isClaudeCode =
+  process.env.CLAUDECODE === "1" ||
+  process.env.CLAUDE_CODE_ENTRYPOINT === "cli";
 const isTTY = process.stdin.isTTY;
 
 console.log(`\n📊 Environment Detection:`);
@@ -26,7 +28,9 @@ if (!isTTY && !isClaudeCode) {
   process.exit(0);
 }
 
-console.log("\n✅ Interactive environment detected - proceeding with readline test");
+console.log(
+  "\n✅ Interactive environment detected - proceeding with readline test",
+);
 
 // Readline 테스트
 const rl = createInterface({
@@ -47,20 +51,22 @@ rl.question("\n👉 Your choice: ", (answer) => {
   console.log(`\n✅ Received input: "${answer}"`);
 
   switch (choice) {
-    case 'y':
-    case 'yes':
+    case "y":
+    case "yes":
       console.log("✅ APPROVED - Test successful!");
       break;
-    case 'n':
-    case 'no':
+    case "n":
+    case "no":
       console.log("❌ DENIED - Test successful!");
       break;
-    case 's':
-    case 'skip':
+    case "s":
+    case "skip":
       console.log("⏭️  SKIPPED - Test successful!");
       break;
     default:
-      console.log(`⚠️  Unknown input: "${answer}" - Test successful (input received)!`);
+      console.log(
+        `⚠️  Unknown input: "${answer}" - Test successful (input received)!`,
+      );
   }
 
   rl.close();
@@ -76,6 +82,6 @@ const timeout = setTimeout(() => {
 }, 30000);
 
 // Cleanup
-rl.on('close', () => {
+rl.on("close", () => {
   clearTimeout(timeout);
 });
