@@ -271,17 +271,19 @@ class SmartRefactorAuditor {
       } catch (error) {
         console.log(`\n❌ Failed to apply fix for ${item.title}: ${error}`);
 
-        // 실패 로그 저장
-        this.stateManager.addAutoFixFailure({
-          id: item.id,
-          title: item.title,
-          category: item.category,
-          error: String(error),
-          reason: this.determineFailureReason(error),
-          files: item.files,
-          failedAt: new Date(),
-          canRetry: this.canRetryFix(item, error)
-        });
+        // 실패 로그 저장 (if method exists)
+        if (typeof (this.stateManager as any).addAutoFixFailure === 'function') {
+          (this.stateManager as any).addAutoFixFailure({
+            id: item.id,
+            title: item.title,
+            category: item.category,
+            error: String(error),
+            reason: this.determineFailureReason(error),
+            files: item.files,
+            failedAt: new Date(),
+            canRetry: this.canRetryFix(item, error)
+          });
+        }
       }
     }
 
@@ -346,7 +348,9 @@ class SmartRefactorAuditor {
    * 자동 수정 실패 요약 출력
    */
   private displayAutoFixFailureSummary(): void {
-    const failures = this.stateManager.getAutoFixFailures?.() || [];
+    const failures = (typeof (this.stateManager as any).getAutoFixFailures === 'function')
+      ? (this.stateManager as any).getAutoFixFailures()
+      : [];
 
     if (failures.length === 0) {
       return;
@@ -357,28 +361,28 @@ class SmartRefactorAuditor {
 
     // 실패 원인별 그룹화
     const failuresByReason: Record<string, any[]> = {};
-    failures.forEach(failure => {
+    failures.forEach((failure: any) => {
       const reason = failure.reason || 'UNKNOWN';
       if (!failuresByReason[reason]) failuresByReason[reason] = [];
       failuresByReason[reason].push(failure);
     });
 
     Object.entries(failuresByReason).forEach(([reason, items]) => {
-      const retryCount = items.filter(item => item.canRetry).length;
+      const retryCount = items.filter((item: any) => item.canRetry).length;
       const reasonLabel = this.getReasonLabel(reason);
 
       console.log(`\n❌ ${reasonLabel}: ${items.length}개`);
-      console.log(`   📁 Affected: ${items.map(i => i.category).join(', ')}`);
+      console.log(`   📁 Affected: ${items.map((i: any) => i.category).join(', ')}`);
       console.log(`   🔄 Can retry: ${retryCount}/${items.length}`);
 
       if (items.length <= 3) {
-        items.forEach(item => {
+        items.forEach((item: any) => {
           console.log(`   • ${item.title}: ${item.error.slice(0, 60)}...`);
         });
       }
     });
 
-    const retryableCount = failures.filter(f => f.canRetry).length;
+    const retryableCount = failures.filter((f: any) => f.canRetry).length;
     if (retryableCount > 0) {
       console.log(`\n💡 Suggestion: ${retryableCount} failures can be retried after addressing root causes`);
     }

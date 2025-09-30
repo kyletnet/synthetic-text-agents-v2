@@ -480,7 +480,7 @@ export class SystemIntegrationOrchestrator {
       steps.unshift({
         phase: 'compatibility-fixes',
         action: 'Address compatibility issues',
-        risk: 'high' as const,
+        risk: 'medium' as const,
         automation: false
       });
     }
@@ -727,7 +727,7 @@ export class SystemIntegrationOrchestrator {
       report += `- **Cohesion Score**: ${result.cohesionScore.overallScore}/100\n`;
       if (result.nextSteps.length > 0) {
         report += `- **Next Steps**:\n`;
-        result.nextSteps.forEach(step => report += `  - ${step}\n`);
+        result.nextSteps.forEach((step: string) => report += `  - ${step}\n`);
       }
       report += '\n';
     });

@@ -273,16 +273,17 @@ export class SmartDecisionMatrix {
   ): void {
     // Find the most recent decision for this operation
     const recentDecision = this.decisionHistory
+      .slice()
       .reverse()
       .find(entry => entry.operation === operationName && !entry.actualOutcome);
 
     if (recentDecision) {
-      recentDecision.actualOutcome = outcome;
-      this.learnFromOutcome(recentDecision);
+      const decisionWithOutcome = {
+        ...recentDecision,
+        actualOutcome: outcome
+      };
+      this.learnFromOutcome(decisionWithOutcome);
     }
-
-    // Reverse back to maintain chronological order
-    this.decisionHistory.reverse();
   }
 
   /**
@@ -306,10 +307,10 @@ export class SmartDecisionMatrix {
 
     if (slowOperations.length > 3) {
       recommendations.push({
-        area: 'performance',
+        area: 'performance' as const,
         issue: 'Operations consistently taking longer than expected',
         recommendation: 'Consider implementing parallel execution and better caching',
-        impact: 'high'
+        impact: 'high' as const
       });
     }
 
@@ -320,10 +321,10 @@ export class SmartDecisionMatrix {
 
     if (failedOperations.length > 2) {
       recommendations.push({
-        area: 'safety',
+        area: 'safety' as const,
         issue: 'Higher than expected failure rate',
         recommendation: 'Increase validation steps and implement better error recovery',
-        impact: 'high'
+        impact: 'high' as const
       });
     }
 
@@ -334,10 +335,10 @@ export class SmartDecisionMatrix {
 
     if (lowSatisfactionOperations.length > 3) {
       recommendations.push({
-        area: 'usability',
+        area: 'usability' as const,
         issue: 'User satisfaction scores below expectations',
         recommendation: 'Improve progress feedback and error messaging',
-        impact: 'medium'
+        impact: 'medium' as const
       });
     }
 

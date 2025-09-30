@@ -10,6 +10,30 @@ import { join, dirname } from "path";
 import ComponentRegistrySystem from "./component-registry-system.js";
 import DesignPrincipleEngine from "./design-principle-engine.js";
 
+interface ComponentMetadata {
+  name: string;
+  path: string;
+  type: string;
+  purpose: string;
+  riskLevel: "low" | "medium" | "high" | "critical";
+  userImpact: "none" | "low" | "medium" | "high" | "blocking";
+  dependencies: string[];
+  integrationPoints: string[];
+  constraints: string[];
+  designDecision: any;
+  compliance: {
+    isCompliant: boolean;
+    violations: string[];
+    lastChecked: string;
+  };
+  lifecycle: {
+    created: string;
+    lastUpdated: string;
+    lastIntegrated: string;
+    status: "active" | "deprecated" | "legacy" | "experimental";
+  };
+}
+
 interface StructuralPattern {
   name: string;
   description: string;
@@ -169,7 +193,7 @@ class ArchitecturalEvolutionEngine {
     const registryData = await this.loadComponentRegistry();
 
     // 중복 1: build_docs_indexes.js vs build_docs_indexes.ts
-    const buildDocsComponents = registryData.components.filter((c: any) =>
+    const buildDocsComponents = registryData.components.filter((c: ComponentMetadata) =>
       c.name.includes("build_docs_indexes"),
     );
 
@@ -211,7 +235,7 @@ class ArchitecturalEvolutionEngine {
 
     // 중복 2: 여러 refactor-* 컴포넌트들
     const refactorComponents = registryData.components.filter(
-      (c) => c.name.includes("refactor") && !c.name.includes("smart-refactor"),
+      (c: ComponentMetadata) => c.name.includes("refactor") && !c.name.includes("smart-refactor"),
     );
 
     if (refactorComponents.length > 2) {
@@ -219,7 +243,7 @@ class ArchitecturalEvolutionEngine {
         type: "consolidation",
         priority: "high",
         description: "Consolidate multiple refactor-related components",
-        affectedComponents: refactorComponents.map((c) => c.name),
+        affectedComponents: refactorComponents.map((c: ComponentMetadata) => c.name),
         estimatedImpact: {
           complexity: -25,
           maintainability: 35,
@@ -300,7 +324,7 @@ class ArchitecturalEvolutionEngine {
 
     // 불일치 1: 보안 관련 컴포넌트가 status에 통합되지 않음
     const securityComponents = registryData.components.filter(
-      (c) =>
+      (c: ComponentMetadata) =>
         c.purpose.includes("security") &&
         !c.integrationPoints.includes("unified-dashboard"),
     );
@@ -311,7 +335,7 @@ class ArchitecturalEvolutionEngine {
         priority: "critical",
         description:
           "Integrate all security components into unified status system",
-        affectedComponents: securityComponents.map((c) => c.name),
+        affectedComponents: securityComponents.map((c: ComponentMetadata) => c.name),
         estimatedImpact: {
           complexity: 0,
           maintainability: 25,
@@ -338,7 +362,7 @@ class ArchitecturalEvolutionEngine {
 
     // 불일치 2: 대부분의 컴포넌트가 package.json에 없음
     const unregisteredComponents = registryData.components.filter(
-      (c) => !c.integrationPoints.includes("package.json"),
+      (c: ComponentMetadata) => !c.integrationPoints.includes("package.json"),
     );
 
     if (unregisteredComponents.length > registryData.totalComponents * 0.5) {
@@ -349,7 +373,7 @@ class ArchitecturalEvolutionEngine {
           "Register all components in package.json for discoverability",
         affectedComponents: unregisteredComponents
           .slice(0, 20)
-          .map((c) => c.name), // 처음 20개만
+          .map((c: ComponentMetadata) => c.name), // 처음 20개만
         estimatedImpact: {
           complexity: 10,
           maintainability: 40,
@@ -471,8 +495,9 @@ class ArchitecturalEvolutionEngine {
 
           console.log(`   ✅ Applied successfully: ${improvement.description}`);
         } catch (error) {
+          const errorMessage = error instanceof Error ? error.message : String(error);
           console.log(
-            `   ❌ Failed to apply: ${improvement.description} - ${error}`,
+            `   ❌ Failed to apply: ${improvement.description} - ${errorMessage}`,
           );
 
           // 실패 기록
@@ -482,7 +507,7 @@ class ArchitecturalEvolutionEngine {
             beforeState,
             afterState: null,
             outcome: "failed",
-            impactMeasured: { error: error.toString() },
+            impactMeasured: { error: errorMessage },
           });
         }
       } else {
@@ -533,7 +558,7 @@ class ArchitecturalEvolutionEngine {
 
     for (const componentName of componentNames) {
       const component = registryData.components.find(
-        (c) => c.name === componentName,
+        (c: ComponentMetadata) => c.name === componentName,
       );
       if (!component) continue;
 
@@ -585,7 +610,7 @@ class ArchitecturalEvolutionEngine {
     for (const componentName of componentNames.slice(0, 20)) {
       // 처음 20개만
       const component = registryData.components.find(
-        (c) => c.name === componentName,
+        (c: ComponentMetadata) => c.name === componentName,
       );
       if (!component) continue;
 

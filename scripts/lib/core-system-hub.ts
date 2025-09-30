@@ -22,7 +22,8 @@ export type ComponentId =
   | 'architectural-evolution'
   | 'performance-cache'
   | 'approval-system'
-  | 'safe-automation-guard';
+  | 'safe-automation-guard'
+  | 'broadcast';
 
 export type MessageType = 'request' | 'response' | 'event' | 'metric';
 export type Priority = 'P0' | 'P1' | 'P2';

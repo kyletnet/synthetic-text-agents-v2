@@ -101,7 +101,7 @@ export interface SystemHarmonyScore {
  * Externalized Decision Matrix - Configuration-driven decision making
  */
 export class ExternalizedDecisionMatrix extends EventEmitter {
-  private config: StrategyMatrixConfig;
+  private config!: StrategyMatrixConfig;
   private configPath: string;
   private harmonyHistory: Array<{
     timestamp: Date;

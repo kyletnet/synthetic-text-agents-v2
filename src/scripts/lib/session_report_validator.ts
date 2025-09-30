@@ -3,7 +3,7 @@
  */
 
 import { promises as fs } from "fs";
-import Ajv, { _____ValidateFunction, ErrorObject } from "ajv";
+import Ajv, { ValidateFunction, ErrorObject } from "ajv";
 import addFormats from "ajv-formats";
 
 interface ValidationResult {

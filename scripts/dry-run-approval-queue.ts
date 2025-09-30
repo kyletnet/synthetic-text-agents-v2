@@ -43,6 +43,7 @@ interface ApprovalQueue {
     manuallyApproved: number;
     rejected: number;
     executed: number;
+    failed: number;
   };
 }
 
@@ -300,6 +301,8 @@ class DryRunApprovalQueue {
         item.executedAt = new Date();
         item.executionResult = `❌ Failed: ${error.message}`;
 
+        queue.stats.failed = (queue.stats.failed || 0) + 1;
+
         console.log(`   ❌ Execution failed: ${error.message}`);
       }
     }
@@ -322,6 +325,7 @@ class DryRunApprovalQueue {
     console.log(`   👤 Manually approved: ${queue.stats.manuallyApproved}`);
     console.log(`   ❌ Rejected: ${queue.stats.rejected}`);
     console.log(`   ✅ Executed: ${queue.stats.executed}`);
+    console.log(`   💥 Failed: ${queue.stats.failed || 0}`);
 
     // Active items
     const activeItems = queue.queue.filter(item =>
@@ -332,15 +336,18 @@ class DryRunApprovalQueue {
       console.log(`\n⏳ **Active Queue** (${activeItems.length} items):`);
 
       activeItems.forEach((item, index) => {
-        const statusEmoji = {
+        const statusEmoji: Record<string, string> = {
           'pending': '⏳',
           'auto-approved': '🤖',
-          'manually-approved': '👤'
-        }[item.status] || '❓';
+          'manually-approved': '👤',
+          'rejected': '❌',
+          'failed': '💥'
+        };
+        const emoji = statusEmoji[item.status] || '❓';
 
         const ageHours = (Date.now() - new Date(item.queuedAt).getTime()) / (1000 * 60 * 60);
 
-        console.log(`   ${index + 1}. ${statusEmoji} **${item.operation.name}**`);
+        console.log(`   ${index + 1}. ${emoji} **${item.operation.name}**`);
         console.log(`      ID: ${item.id}`);
         console.log(`      Status: ${item.status}`);
         console.log(`      Safety score: ${item.autoApprovalScore}`);
@@ -372,7 +379,8 @@ class DryRunApprovalQueue {
           autoApproved: 0,
           manuallyApproved: 0,
           rejected: 0,
-          executed: 0
+          executed: 0,
+          failed: 0
         }
       };
     }

@@ -1,0 +1,31 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Check if commit was made with --no-verify
+if [ -n "$HUSKY_SKIP_HOOKS" ]; then
+  echo "⚠️  WARNING: Commit hooks were bypassed with --no-verify"
+  echo "⚠️  This should only be used in emergency situations"
+  echo "⚠️  CI will still validate design principles and may fail"
+fi
+
+# Validate commit message format
+COMMIT_MSG=$(cat "$1")
+
+# Check for minimum message length
+if [ ${#COMMIT_MSG} -lt 10 ]; then
+  echo "❌ Commit message too short (minimum 10 characters)"
+  echo "💡 Please provide a meaningful commit message"
+  exit 1
+fi
+
+# Check if using --no-verify (by checking if pre-commit was skipped)
+if ! git log -1 --pretty=%B 2>/dev/null | grep -q "pre-commit"; then
+  # Add warning to commit message if hooks were bypassed
+  if echo "$COMMIT_MSG" | grep -q "no-verify"; then
+    echo "" >> "$1"
+    echo "⚠️ WARNING: This commit bypassed pre-commit hooks" >> "$1"
+    echo "Design principles validation was skipped and may cause CI failures" >> "$1"
+  fi
+fi
+
+echo "✅ Commit message validated"

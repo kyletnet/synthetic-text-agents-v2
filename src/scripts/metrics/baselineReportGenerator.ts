@@ -1201,7 +1201,7 @@ export async function generateBaselineReports(
     sessionId = `baseline_${Date.now()}`,
     budgetLimit = 0,
     sourceTexts = [],
-    _____includeFullData = true,
+    includeFullData = true,
     profile = "dev",
     enableAutocalibration = false,
     applyCalibration = false,

@@ -134,7 +134,7 @@ export class AdaptiveExecutionEngine extends EventEmitter {
       smartDecisionMatrix.recordOutcome(operation.name, {
         duration: result.duration,
         success: result.success,
-        userFeedback: result.userInteraction.userSatisfaction
+        userFeedback: result.userInteraction?.userSatisfaction
       });
 
       // Update safety guard
@@ -424,7 +424,12 @@ export class AdaptiveExecutionEngine extends EventEmitter {
     }
 
     return {
-      ...result,
+      operationId: result.operationId || operation.id,
+      success: result.success ?? false,
+      duration: result.duration ?? 0,
+      strategy: result.strategy ?? 'unknown',
+      output: result.output,
+      error: result.error,
       performance: {
         cpuUsage: this.systemMetrics.cpuLoad,
         memoryUsage: process.memoryUsage().heapUsed / 1024 / 1024,
@@ -432,7 +437,7 @@ export class AdaptiveExecutionEngine extends EventEmitter {
       },
       userInteraction: {
         approvalsRequested,
-        progressUpdates: progressUpdates + result.userInteraction.progressUpdates
+        progressUpdates: progressUpdates + (result.userInteraction?.progressUpdates || 0)
       }
     };
   }

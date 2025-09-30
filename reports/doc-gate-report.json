@@ -1,0 +1,42 @@
+{
+  "overall": "PASS",
+  "summary": {
+    "passed": 3,
+    "failed": 1,
+    "totalRules": 4
+  },
+  "rules": [
+    {
+      "name": "CLAUDE.md exists",
+      "blocking": true,
+      "result": {
+        "passed": true,
+        "message": "CLAUDE.md exists and has content"
+      }
+    },
+    {
+      "name": "Core documentation files exist",
+      "blocking": true,
+      "result": {
+        "passed": true,
+        "message": "All core documentation files exist"
+      }
+    },
+    {
+      "name": "No empty markdown files",
+      "blocking": false,
+      "result": {
+        "passed": true,
+        "message": "No empty markdown files found"
+      }
+    },
+    {
+      "name": "LLM signals index is valid",
+      "blocking": false,
+      "result": {
+        "passed": false,
+        "message": "LLM signals index not found - run npm run docs:refresh"
+      }
+    }
+  ]
+}

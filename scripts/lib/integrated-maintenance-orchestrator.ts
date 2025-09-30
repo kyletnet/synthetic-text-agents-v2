@@ -185,12 +185,13 @@ export class IntegratedMaintenanceOrchestrator extends ComponentAdapter {
   private async performMaintenance(operation: Operation): Promise<void> {
     const { mode, tasks } = operation.metadata;
 
-    console.log(`🔧 Performing ${mode} maintenance with ${tasks.length} tasks`);
+    console.log(`🔧 Performing ${mode} maintenance with ${Array.isArray(tasks) ? tasks.length : 0} tasks`);
 
     const results = [];
     const startTime = performance.now();
+    const taskArray = (Array.isArray(tasks) ? tasks : []) as MaintenanceTask[];
 
-    for (const task of tasks as MaintenanceTask[]) {
+    for (const task of taskArray) {
       const taskResult = await this.executeMaintenanceTask(task);
       results.push(taskResult);
 
@@ -198,7 +199,7 @@ export class IntegratedMaintenanceOrchestrator extends ComponentAdapter {
       await this.sendMessage('broadcast', 'event', {
         type: 'maintenance:progress',
         taskCompleted: task.name,
-        overallProgress: results.length / tasks.length,
+        overallProgress: results.length / taskArray.length,
         currentResult: taskResult
       }, 'P2');
     }
@@ -212,9 +213,9 @@ export class IntegratedMaintenanceOrchestrator extends ComponentAdapter {
       status: 'completed',
       duration,
       results: {
-        totalTasks: tasks.length,
+        totalTasks: taskArray.length,
         successful: successCount,
-        failed: tasks.length - successCount,
+        failed: taskArray.length - successCount,
         details: results
       }
     }, operation.metadata.priority as 'P0' | 'P1' | 'P2');
@@ -222,8 +223,8 @@ export class IntegratedMaintenanceOrchestrator extends ComponentAdapter {
     // Update our metrics
     this.reportMetrics({
       maintenanceOperations: 1,
-      tasksExecuted: tasks.length,
-      successRate: successCount / tasks.length,
+      tasksExecuted: taskArray.length,
+      successRate: successCount / taskArray.length,
       maintenanceDuration: duration
     });
   }

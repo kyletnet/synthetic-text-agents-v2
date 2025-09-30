@@ -273,16 +273,9 @@ export class AutoFixManager extends EventEmitter {
   private async calculateChecksum(filePath: string): Promise<string> {
     const crypto = await import('crypto');
     const hash = crypto.createHash('sha256');
-    const readStream = await fs.open(filePath, 'r');
-
-    try {
-      for await (const chunk of readStream.createReadStream()) {
-        hash.update(chunk);
-      }
-      return hash.digest('hex');
-    } finally {
-      await readStream.close();
-    }
+    const content = await fs.readFile(filePath);
+    hash.update(content);
+    return hash.digest('hex');
   }
 
   private async collectSystemEnvironment(): Promise<Record<string, string>> {
@@ -883,8 +876,8 @@ export class AutoFixManager extends EventEmitter {
     checksum: string;
   }> {
     const content = await fs.readFile(filePath, 'utf8');
-    const checksum = this.calculateChecksum(content);
-    const backupFileName = `${snapshotId}_${path.basename(filePath)}_${checksum.substr(0, 8)}`;
+    const checksum = await this.calculateChecksum(filePath);
+    const backupFileName = `${snapshotId}_${path.basename(filePath)}_${checksum.substring(0, 8)}`;
     const backupPath = path.join(this.backupsDir, backupFileName);
 
     await fs.writeFile(backupPath, content);
@@ -894,17 +887,6 @@ export class AutoFixManager extends EventEmitter {
       backup: backupFileName,
       checksum
     };
-  }
-
-  private calculateChecksum(content: string): string {
-    // Simple hash for file content verification
-    let hash = 0;
-    for (let i = 0; i < content.length; i++) {
-      const char = content.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
-      hash = hash & hash; // Convert to 32-bit integer
-    }
-    return Math.abs(hash).toString(16);
   }
 
   private async fileExists(filePath: string): Promise<boolean> {

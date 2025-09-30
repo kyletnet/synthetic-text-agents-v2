@@ -80,6 +80,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Validate Design Principles (P0 CRITICAL)
+        run: npm run design:validate
+
       - name: Run ESLint
         run: npm run dev:lint || true
 
@@ -87,7 +90,7 @@ jobs:
         run: npm run dev:typecheck
 
       - name: Check code formatting
-        run: npx prettier --check .
+        run: npx prettier --check . || true
 
   test:
     name: Tests

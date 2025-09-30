@@ -137,8 +137,8 @@ export class AdvancedSystemDiagnostics {
 
           // Named import가 export되지 않는 경우
           if (imp.type === 'named') {
-            const missingExports = imp.names.filter(name =>
-              !targetExports.some(exp => exp.names.includes(name))
+            const missingExports = imp.names.filter((name: string) =>
+              !targetExports.some((exp: any) => exp.names?.includes(name))
             );
 
             if (missingExports.length > 0) {
@@ -544,13 +544,13 @@ export class AdvancedSystemDiagnostics {
     const imports: any[] = [];
     const lines = content.split('\n');
 
-    lines.forEach((line, index) => {
+    lines.forEach((line: string, index: number) => {
       // Named imports
       const namedMatch = line.match(/import\s*\{\s*([^}]+)\s*\}\s*from\s*['"]([^'"]+)['"]/);
       if (namedMatch) {
         imports.push({
           type: 'named',
-          names: namedMatch[1].split(',').map(n => n.trim()),
+          names: namedMatch[1].split(',').map((n: string) => n.trim()),
           from: namedMatch[2],
           line: index + 1,
           original: line.trim()
@@ -577,13 +577,13 @@ export class AdvancedSystemDiagnostics {
     const exports: any[] = [];
     const lines = content.split('\n');
 
-    lines.forEach((line, index) => {
+    lines.forEach((line: string, index: number) => {
       // Named exports
       const namedMatch = line.match(/export\s*\{\s*([^}]+)\s*\}/);
       if (namedMatch) {
         exports.push({
           type: 'named',
-          names: namedMatch[1].split(',').map(n => n.trim()),
+          names: namedMatch[1].split(',').map((n: string) => n.trim()),
           line: index + 1
         });
       }
