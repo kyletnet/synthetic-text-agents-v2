@@ -46,28 +46,28 @@ class APIKeyManager {
 
     // 메인 API 키
     const mainKey = process.env.ANTHROPIC_API_KEY;
-    if (mainKey && mainKey !== 'your_api_key_here') {
+    if (mainKey && mainKey !== "your_api_key_here") {
       keys.push({
         key: mainKey,
-        name: 'PRIMARY',
+        name: "PRIMARY",
         usageCount: 0,
         failureCount: 0,
         lastUsed: null,
-        isActive: true
+        isActive: true,
       });
     }
 
     // 백업 키들 (ANTHROPIC_API_KEY_2, ANTHROPIC_API_KEY_3, ...)
     for (let i = 2; i <= 10; i++) {
       const backupKey = process.env[`ANTHROPIC_API_KEY_${i}`];
-      if (backupKey && backupKey !== 'your_api_key_here') {
+      if (backupKey && backupKey !== "your_api_key_here") {
         keys.push({
           key: backupKey,
           name: `BACKUP_${i}`,
           usageCount: 0,
           failureCount: 0,
           lastUsed: null,
-          isActive: true
+          isActive: true,
         });
       }
     }
@@ -79,14 +79,14 @@ class APIKeyManager {
         const parsedKeys = JSON.parse(fallbackKeys);
         if (Array.isArray(parsedKeys)) {
           parsedKeys.forEach((keyData, index) => {
-            if (typeof keyData === 'string') {
+            if (typeof keyData === "string") {
               keys.push({
                 key: keyData,
                 name: `FALLBACK_${index + 1}`,
                 usageCount: 0,
                 failureCount: 0,
                 lastUsed: null,
-                isActive: true
+                isActive: true,
               });
             } else if (keyData && keyData.key) {
               keys.push({
@@ -96,13 +96,13 @@ class APIKeyManager {
                 failureCount: 0,
                 lastUsed: null,
                 isActive: true,
-                quotaLimit: keyData.quotaLimit
+                quotaLimit: keyData.quotaLimit,
               });
             }
           });
         }
       } catch (error) {
-        console.warn('Failed to parse ANTHROPIC_FALLBACK_KEYS:', error);
+        console.warn("Failed to parse ANTHROPIC_FALLBACK_KEYS:", error);
       }
     }
 
@@ -118,9 +118,9 @@ class APIKeyManager {
       return null;
     }
 
-    const activeKeys = this.keys.filter(k => k.isActive);
+    const activeKeys = this.keys.filter((k) => k.isActive);
     if (activeKeys.length === 0) {
-      console.error('All API keys are disabled');
+      console.error("All API keys are disabled");
       return null;
     }
 
@@ -176,14 +176,16 @@ class APIKeyManager {
     this.rotationCount++;
 
     const currentKey = this.keys[this.currentIndex];
-    console.log(`Rotated to key: ${currentKey?.name || 'UNKNOWN'} (rotation #${this.rotationCount})`);
+    console.log(
+      `Rotated to key: ${currentKey?.name || "UNKNOWN"} (rotation #${this.rotationCount})`,
+    );
   }
 
   /**
    * API 키 사용 성공 기록
    */
   recordSuccess(key: string): void {
-    const keyConfig = this.keys.find(k => k.key === key);
+    const keyConfig = this.keys.find((k) => k.key === key);
     if (keyConfig) {
       keyConfig.usageCount++;
       keyConfig.lastUsed = new Date();
@@ -195,14 +197,16 @@ class APIKeyManager {
    * API 키 사용 실패 기록
    */
   recordFailure(key: string, error: any): void {
-    const keyConfig = this.keys.find(k => k.key === key);
+    const keyConfig = this.keys.find((k) => k.key === key);
     if (keyConfig) {
       keyConfig.failureCount++;
 
       // 실패 횟수가 임계점을 넘으면 키 비활성화
       if (keyConfig.failureCount >= this.maxFailuresBeforeDisable) {
         keyConfig.isActive = false;
-        console.warn(`API key ${keyConfig.name} disabled after ${keyConfig.failureCount} failures`);
+        console.warn(
+          `API key ${keyConfig.name} disabled after ${keyConfig.failureCount} failures`,
+        );
 
         // 현재 키가 비활성화되면 즉시 로테이션
         if (this.keys[this.currentIndex] === keyConfig) {
@@ -213,7 +217,9 @@ class APIKeyManager {
       // 특정 에러 코드에 대해서는 즉시 비활성화
       if (this.shouldDisableImmediately(error)) {
         keyConfig.isActive = false;
-        console.warn(`API key ${keyConfig.name} immediately disabled due to: ${error.message}`);
+        console.warn(
+          `API key ${keyConfig.name} immediately disabled due to: ${error.message}`,
+        );
       }
     }
   }
@@ -223,17 +229,18 @@ class APIKeyManager {
    */
   private shouldDisableImmediately(error: any): boolean {
     const immediateDisableErrors = [
-      'invalid_api_key',
-      'api_key_invalid',
-      'unauthorized',
-      'forbidden'
+      "invalid_api_key",
+      "api_key_invalid",
+      "unauthorized",
+      "forbidden",
     ];
 
-    const errorMessage = error?.message?.toLowerCase() || '';
-    const errorCode = error?.code?.toLowerCase() || '';
+    const errorMessage = error?.message?.toLowerCase() || "";
+    const errorCode = error?.code?.toLowerCase() || "";
 
-    return immediateDisableErrors.some(pattern =>
-      errorMessage.includes(pattern) || errorCode.includes(pattern)
+    return immediateDisableErrors.some(
+      (pattern) =>
+        errorMessage.includes(pattern) || errorCode.includes(pattern),
     );
   }
 
@@ -241,15 +248,15 @@ class APIKeyManager {
    * 모든 키가 사용 가능한지 체크
    */
   hasAvailableKeys(): boolean {
-    return this.keys.some(k => k.isActive);
+    return this.keys.some((k) => k.isActive);
   }
 
   /**
    * API 키 통계 반환
    */
   getStats(): APIKeyStats {
-    const activeKeys = this.keys.filter(k => k.isActive);
-    const failedKeys = this.keys.filter(k => !k.isActive);
+    const activeKeys = this.keys.filter((k) => k.isActive);
+    const failedKeys = this.keys.filter((k) => !k.isActive);
     const totalUsage = this.keys.reduce((sum, k) => sum + k.usageCount, 0);
 
     return {
@@ -258,23 +265,23 @@ class APIKeyManager {
       failedKeys: failedKeys.length,
       currentKeyIndex: this.currentIndex,
       totalUsage,
-      rotationCount: this.rotationCount
+      rotationCount: this.rotationCount,
     };
   }
 
   /**
    * 키 상태 상세 정보 반환 (디버깅용)
    */
-  getDetailedStatus(): { keys: Omit<APIKeyConfig, 'key'>[] } {
+  getDetailedStatus(): { keys: Omit<APIKeyConfig, "key">[] } {
     return {
-      keys: this.keys.map(k => ({
+      keys: this.keys.map((k) => ({
         name: k.name,
         usageCount: k.usageCount,
         failureCount: k.failureCount,
         lastUsed: k.lastUsed,
         isActive: k.isActive,
-        quotaLimit: k.quotaLimit
-      }))
+        quotaLimit: k.quotaLimit,
+      })),
     };
   }
 
@@ -282,7 +289,7 @@ class APIKeyManager {
    * 비활성화된 키 재활성화 (관리자용)
    */
   reactivateKey(keyName: string): boolean {
-    const keyConfig = this.keys.find(k => k.name === keyName);
+    const keyConfig = this.keys.find((k) => k.name === keyName);
     if (keyConfig) {
       keyConfig.isActive = true;
       keyConfig.failureCount = 0;
@@ -296,11 +303,11 @@ class APIKeyManager {
    * 모든 키 사용량 리셋 (일일 리셋용)
    */
   resetUsageCounters(): void {
-    this.keys.forEach(k => {
+    this.keys.forEach((k) => {
       k.usageCount = 0;
       k.failureCount = 0;
     });
-    console.log('All API key usage counters reset');
+    console.log("All API key usage counters reset");
   }
 }
 

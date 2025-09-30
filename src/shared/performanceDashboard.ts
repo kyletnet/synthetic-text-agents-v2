@@ -3,7 +3,7 @@
  * Generates real-time performance data for monitoring dashboards
  */
 
-import { PerformanceMonitor, PerformanceMetric } from "./performanceMonitoring";
+import { PerformanceMonitor } from "./performanceMonitoring";
 import { Logger } from "./logger";
 
 export interface DashboardMetrics {
@@ -226,14 +226,10 @@ export class PerformanceDashboard {
     };
   }
 
-  private async getTopErrors(timeWindow: number): Promise<ErrorSummary[]> {
-    const now = Date.now();
-    const _____cutoff = now - timeWindow;
-
-    const _____errorMap: Map<string, ErrorSummary> = new Map();
-
+  private async getTopErrors(_timeWindow: number): Promise<ErrorSummary[]> {
     // This would typically pull from error tracking system
     // For now, we'll generate some sample data
+    const now = Date.now();
     const sampleErrors: ErrorSummary[] = [
       {
         errorType: "APITimeoutError",

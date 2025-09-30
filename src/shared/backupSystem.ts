@@ -264,7 +264,7 @@ export class BackupSystem extends EventEmitter {
     }
 
     this.logger.info(`Starting restore from backup: ${request.backupId}`);
-    const _____startTime = Date.now();
+    // const _____startTime = Date.now();
 
     try {
       const result = await this.executeRestore(backup, request);
@@ -701,7 +701,7 @@ export class BackupSystem extends EventEmitter {
         if (!parentFileInfo || stats.mtime > parentFileInfo.modifiedTime) {
           changedFiles.push(file);
         }
-      } catch (_____error) {
+      } catch {
         // File may have been deleted, include it anyway
         changedFiles.push(file);
       }
@@ -859,7 +859,7 @@ export class BackupSystem extends EventEmitter {
 
   private async executeBackupRestoreStep(
     step: RecoveryStep,
-    context?: Record<string, unknown>,
+    _context?: Record<string, unknown>,
   ): Promise<void> {
     const config = step.configuration;
     const backupId = config.backupId as string;
@@ -876,7 +876,7 @@ export class BackupSystem extends EventEmitter {
 
   private async executeServiceRestartStep(
     step: RecoveryStep,
-    context?: Record<string, unknown>,
+    _context?: Record<string, unknown>,
   ): Promise<void> {
     // Service restart implementation would go here
     this.logger.info(`Service restart step: ${step.name}`);
@@ -884,7 +884,7 @@ export class BackupSystem extends EventEmitter {
 
   private async executeDatabaseRecoveryStep(
     step: RecoveryStep,
-    context?: Record<string, unknown>,
+    _context?: Record<string, unknown>,
   ): Promise<void> {
     // Database recovery implementation would go here
     this.logger.info(`Database recovery step: ${step.name}`);
@@ -892,7 +892,7 @@ export class BackupSystem extends EventEmitter {
 
   private async executeConfigurationUpdateStep(
     step: RecoveryStep,
-    context?: Record<string, unknown>,
+    _context?: Record<string, unknown>,
   ): Promise<void> {
     // Configuration update implementation would go here
     this.logger.info(`Configuration update step: ${step.name}`);
@@ -900,7 +900,7 @@ export class BackupSystem extends EventEmitter {
 
   private async executeCustomScriptStep(
     step: RecoveryStep,
-    context?: Record<string, unknown>,
+    _context?: Record<string, unknown>,
   ): Promise<void> {
     // Custom script execution implementation would go here
     this.logger.info(`Custom script step: ${step.name}`);

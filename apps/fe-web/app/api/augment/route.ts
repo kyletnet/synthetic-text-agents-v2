@@ -1,6 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { DataAugmentationSystem, AugmentationRequest } from '@/lib/augmentation-utils';
-import { withAPIGuard } from '@/lib/api-guard';
+import { NextRequest, NextResponse } from "next/server";
+import {
+  DataAugmentationSystem,
+  AugmentationRequest,
+} from "@/lib/augmentation-utils";
+import { withAPIGuard } from "@/lib/api-guard";
 
 async function augmentHandler(request: NextRequest) {
   const sessionId = `augment_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
@@ -12,22 +15,22 @@ async function augmentHandler(request: NextRequest) {
     // 입력 검증
     if (!input?.trim()) {
       return NextResponse.json(
-        { error: '입력 텍스트가 필요합니다.' },
-        { status: 400 }
+        { error: "입력 텍스트가 필요합니다." },
+        { status: 400 },
       );
     }
 
     if (!augmentationType) {
       return NextResponse.json(
-        { error: '증강 타입을 선택해주세요.' },
-        { status: 400 }
+        { error: "증강 타입을 선택해주세요." },
+        { status: 400 },
       );
     }
 
     if (count < 1 || count > 20) {
       return NextResponse.json(
-        { error: '증강 개수는 1-20 사이여야 합니다.' },
-        { status: 400 }
+        { error: "증강 개수는 1-20 사이여야 합니다." },
+        { status: 400 },
       );
     }
 
@@ -38,7 +41,7 @@ async function augmentHandler(request: NextRequest) {
       augmentationType,
       count,
       options: {
-        useRAG: options?.useRAG ?? true,  // 기본적으로 RAG 사용
+        useRAG: options?.useRAG ?? true, // 기본적으로 RAG 사용
         style: options?.style,
         length: options?.length,
         domain: options?.domain,
@@ -47,7 +50,9 @@ async function augmentHandler(request: NextRequest) {
 
     const processingTime = Date.now() - startTime;
 
-    console.log(`🔄 Data augmentation: "${input.substring(0, 50)}..." (${augmentationType}, ${count} variants, ${processingTime}ms)`);
+    console.log(
+      `🔄 Data augmentation: "${input.substring(0, 50)}..." (${augmentationType}, ${count} variants, ${processingTime}ms)`,
+    );
 
     return NextResponse.json({
       success: true,
@@ -61,12 +66,11 @@ async function augmentHandler(request: NextRequest) {
         timestamp: new Date().toISOString(),
       },
     });
-
   } catch (error) {
-    console.error('Augmentation error:', error);
+    console.error("Augmentation error:", error);
     return NextResponse.json(
-      { error: '데이터 증강에 실패했습니다.', sessionId },
-      { status: 500 }
+      { error: "데이터 증강에 실패했습니다.", sessionId },
+      { status: 500 },
     );
   }
 }
@@ -79,13 +83,13 @@ async function getHandler() {
     success: true,
     stats,
     info: {
-      description: '범용 데이터 증강 시스템',
-      supportedInputs: ['문장', '문서', 'Q&A', '코드', '설명'],
+      description: "범용 데이터 증강 시스템",
+      supportedInputs: ["문장", "문서", "Q&A", "코드", "설명"],
       features: [
-        'RAG 컨텍스트 통합',
-        '다양한 증강 타입',
-        '실시간 품질 평가',
-        '배치 처리 지원'
+        "RAG 컨텍스트 통합",
+        "다양한 증강 타입",
+        "실시간 품질 평가",
+        "배치 처리 지원",
       ],
     },
   });

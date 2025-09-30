@@ -6,17 +6,23 @@
  * Implements GPT recommendation for clear metric definitions and tracking
  */
 
-import { EventEmitter } from 'events';
-import { readFileSync, writeFileSync, existsSync, readdirSync, statSync } from 'fs';
-import { join, extname, relative } from 'path';
-import { execSync } from 'child_process';
+import { EventEmitter } from "events";
+import {
+  readFileSync,
+  writeFileSync,
+  existsSync,
+  readdirSync,
+  statSync,
+} from "fs";
+import { join, extname, relative } from "path";
+import { execSync } from "child_process";
 
 export interface DependencyNode {
   name: string;
   path: string;
   dependencies: string[];
   dependents: string[];
-  type: 'script' | 'component' | 'utility' | 'config';
+  type: "script" | "component" | "utility" | "config";
   complexity: number;
   size: number;
 }
@@ -43,7 +49,7 @@ export interface CommunicationPattern {
   frequency: number;
   latency: number;
   errorRate: number;
-  protocol: 'direct' | 'hub' | 'event' | 'api';
+  protocol: "direct" | "hub" | "event" | "api";
 }
 
 export interface HarmonyMetrics {
@@ -61,8 +67,8 @@ export interface HarmonyAnalysis {
   interfaces: InterfaceMetric[];
   communications: CommunicationPattern[];
   issues: Array<{
-    type: 'cycle' | 'complexity' | 'inconsistency' | 'bottleneck';
-    severity: 'low' | 'medium' | 'high' | 'critical';
+    type: "cycle" | "complexity" | "inconsistency" | "bottleneck";
+    severity: "low" | "medium" | "high" | "critical";
     component: string;
     description: string;
     recommendation: string;
@@ -81,7 +87,11 @@ export interface HarmonyAnalysis {
 export class ComponentHarmonyAnalyzer extends EventEmitter {
   private projectRoot = process.cwd();
   private analysisHistory: HarmonyAnalysis[] = [];
-  private analysisPath = join(this.projectRoot, 'reports', 'harmony-analysis.json');
+  private analysisPath = join(
+    this.projectRoot,
+    "reports",
+    "harmony-analysis.json",
+  );
 
   constructor() {
     super();
@@ -93,13 +103,17 @@ export class ComponentHarmonyAnalyzer extends EventEmitter {
    * Perform comprehensive harmony analysis
    */
   async analyzeHarmony(): Promise<HarmonyAnalysis> {
-    console.log('🎵 Analyzing component harmony...');
+    console.log("🎵 Analyzing component harmony...");
 
     const graph = await this.buildDependencyGraph();
     const interfaces = await this.analyzeInterfaces();
     const communications = await this.analyzeCommunications();
 
-    const metrics = this.calculateHarmonyMetrics(graph, interfaces, communications);
+    const metrics = this.calculateHarmonyMetrics(
+      graph,
+      interfaces,
+      communications,
+    );
     const issues = this.identifyIssues(graph, interfaces, communications);
     const trends = this.calculateTrends(metrics);
 
@@ -110,7 +124,7 @@ export class ComponentHarmonyAnalyzer extends EventEmitter {
       interfaces,
       communications,
       issues,
-      trends
+      trends,
     };
 
     this.analysisHistory.push(analysis);
@@ -125,14 +139,20 @@ export class ComponentHarmonyAnalyzer extends EventEmitter {
     console.log(`   Overall Harmony: ${metrics.overall.toFixed(2)}`);
     console.log(`   Component Harmony: ${metrics.componentHarmony.toFixed(2)}`);
     console.log(`   Dependency Health: ${metrics.dependencyHealth.toFixed(2)}`);
-    console.log(`   Interface Consistency: ${metrics.interfaceConsistency.toFixed(2)}`);
-    console.log(`   Communication Efficiency: ${metrics.communicationEfficiency.toFixed(2)}`);
+    console.log(
+      `   Interface Consistency: ${metrics.interfaceConsistency.toFixed(2)}`,
+    );
+    console.log(
+      `   Communication Efficiency: ${metrics.communicationEfficiency.toFixed(2)}`,
+    );
 
     if (issues.length > 0) {
-      console.log(`   Issues Found: ${issues.length} (${issues.filter(i => i.severity === 'high' || i.severity === 'critical').length} critical)`);
+      console.log(
+        `   Issues Found: ${issues.length} (${issues.filter((i) => i.severity === "high" || i.severity === "critical").length} critical)`,
+      );
     }
 
-    this.emit('harmony:analyzed', analysis);
+    this.emit("harmony:analyzed", analysis);
     return analysis;
   }
 
@@ -155,16 +175,16 @@ export class ComponentHarmonyAnalyzer extends EventEmitter {
     interfaceConsistency: number;
     communicationEfficiency: number;
   }> {
-    const cutoff = new Date(Date.now() - (days * 24 * 60 * 60 * 1000));
+    const cutoff = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
     return this.analysisHistory
-      .filter(a => a.timestamp >= cutoff)
-      .map(a => ({
+      .filter((a) => a.timestamp >= cutoff)
+      .map((a) => ({
         timestamp: a.timestamp,
         overall: a.metrics.overall,
         componentHarmony: a.metrics.componentHarmony,
         dependencyHealth: a.metrics.dependencyHealth,
         interfaceConsistency: a.metrics.interfaceConsistency,
-        communicationEfficiency: a.metrics.communicationEfficiency
+        communicationEfficiency: a.metrics.communicationEfficiency,
       }));
   }
 
@@ -179,14 +199,15 @@ export class ComponentHarmonyAnalyzer extends EventEmitter {
   }> {
     if (this.analysisHistory.length === 0) return [];
 
-    const latestAnalysis = this.analysisHistory[this.analysisHistory.length - 1];
+    const latestAnalysis =
+      this.analysisHistory[this.analysisHistory.length - 1];
     return latestAnalysis.issues
-      .filter(i => i.severity === 'high' || i.severity === 'critical')
-      .map(i => ({
+      .filter((i) => i.severity === "high" || i.severity === "critical")
+      .map((i) => ({
         type: i.type,
         component: i.component,
         description: i.description,
-        recommendation: i.recommendation
+        recommendation: i.recommendation,
       }));
   }
 
@@ -199,7 +220,7 @@ export class ComponentHarmonyAnalyzer extends EventEmitter {
 
     for (const filePath of files) {
       try {
-        const content = readFileSync(filePath, 'utf8');
+        const content = readFileSync(filePath, "utf8");
         const relativePath = relative(this.projectRoot, filePath);
 
         const dependencies = this.extractDependencies(content, filePath);
@@ -212,20 +233,19 @@ export class ComponentHarmonyAnalyzer extends EventEmitter {
           dependents: [],
           type: this.classifyFileType(filePath, content),
           complexity: this.calculateFileComplexity(content),
-          size: stats.size
+          size: stats.size,
         };
 
         nodes.set(relativePath, node);
 
         // Add edges for dependencies
-        dependencies.forEach(dep => {
+        dependencies.forEach((dep) => {
           edges.push({
             from: relativePath,
             to: dep,
-            weight: 1
+            weight: 1,
           });
         });
-
       } catch (error) {
         console.warn(`⚠️ Could not analyze file: ${filePath}`, error);
       }
@@ -234,8 +254,8 @@ export class ComponentHarmonyAnalyzer extends EventEmitter {
     // Build reverse dependencies (dependents)
     for (const [nodeName, node] of nodes) {
       node.dependents = edges
-        .filter(e => e.to === nodeName)
-        .map(e => e.from);
+        .filter((e) => e.to === nodeName)
+        .map((e) => e.from);
     }
 
     const cycles = this.findDependencyCycles(nodes, edges);
@@ -247,7 +267,7 @@ export class ComponentHarmonyAnalyzer extends EventEmitter {
       edges,
       cycles,
       depth,
-      entropy
+      entropy,
     };
   }
 
@@ -257,11 +277,13 @@ export class ComponentHarmonyAnalyzer extends EventEmitter {
 
     for (const filePath of files) {
       try {
-        const content = readFileSync(filePath, 'utf8');
+        const content = readFileSync(filePath, "utf8");
         const relativePath = relative(this.projectRoot, filePath);
 
         // Extract interface information (simplified analysis)
-        const publicMethods = (content.match(/export\s+(function|class|interface|type)/g) || []).length;
+        const publicMethods = (
+          content.match(/export\s+(function|class|interface|type)/g) || []
+        ).length;
         const parameters = (content.match(/\([^)]*\)/g) || []).length;
         const returnComplexity = this.calculateReturnComplexity(content);
         const consistency = this.calculateInterfaceConsistency(content);
@@ -272,10 +294,9 @@ export class ComponentHarmonyAnalyzer extends EventEmitter {
             publicMethods,
             parameters,
             returnComplexity,
-            consistency
+            consistency,
           });
         }
-
       } catch (error) {
         console.warn(`⚠️ Could not analyze interface: ${filePath}`, error);
       }
@@ -290,7 +311,7 @@ export class ComponentHarmonyAnalyzer extends EventEmitter {
 
     for (const filePath of files) {
       try {
-        const content = readFileSync(filePath, 'utf8');
+        const content = readFileSync(filePath, "utf8");
         const relativePath = relative(this.projectRoot, filePath);
 
         // Analyze communication patterns (simplified)
@@ -299,16 +320,16 @@ export class ComponentHarmonyAnalyzer extends EventEmitter {
         const functionCalls = content.match(/\w+\.\w+\(/g) || [];
 
         // Direct imports
-        imports.forEach(imp => {
+        imports.forEach((imp) => {
           const match = imp.match(/from\s+['"](.*)['"]/);
-          if (match && match[1].startsWith('.')) {
+          if (match && match[1].startsWith(".")) {
             communications.push({
               source: relativePath,
               target: match[1],
               frequency: 1,
               latency: 0,
               errorRate: 0,
-              protocol: 'direct'
+              protocol: "direct",
             });
           }
         });
@@ -317,14 +338,13 @@ export class ComponentHarmonyAnalyzer extends EventEmitter {
         eventEmits.forEach(() => {
           communications.push({
             source: relativePath,
-            target: 'event-system',
+            target: "event-system",
             frequency: 1,
             latency: 5,
             errorRate: 0.01,
-            protocol: 'event'
+            protocol: "event",
           });
         });
-
       } catch (error) {
         console.warn(`⚠️ Could not analyze communication: ${filePath}`, error);
       }
@@ -336,48 +356,51 @@ export class ComponentHarmonyAnalyzer extends EventEmitter {
   private calculateHarmonyMetrics(
     graph: DependencyGraph,
     interfaces: InterfaceMetric[],
-    communications: CommunicationPattern[]
+    communications: CommunicationPattern[],
   ): HarmonyMetrics {
     // Component harmony based on dependency graph entropy
-    const componentHarmony = Math.max(0, Math.min(1, 1 - (graph.entropy / 10)));
+    const componentHarmony = Math.max(0, Math.min(1, 1 - graph.entropy / 10));
 
     // Dependency health based on cycles and complexity
     const dependencyHealth = this.calculateDependencyHealth(graph);
 
     // Interface consistency based on parameter patterns
-    const interfaceConsistency = interfaces.length > 0
-      ? interfaces.reduce((sum, i) => sum + i.consistency, 0) / interfaces.length
-      : 0.5;
+    const interfaceConsistency =
+      interfaces.length > 0
+        ? interfaces.reduce((sum, i) => sum + i.consistency, 0) /
+          interfaces.length
+        : 0.5;
 
     // Communication efficiency based on patterns and error rates
-    const communicationEfficiency = communications.length > 0
-      ? communications.reduce((sum, c) => sum + (1 - c.errorRate), 0) / communications.length
-      : 0.5;
+    const communicationEfficiency =
+      communications.length > 0
+        ? communications.reduce((sum, c) => sum + (1 - c.errorRate), 0) /
+          communications.length
+        : 0.5;
 
     // Weighted overall score
-    const overall = (
+    const overall =
       componentHarmony * 0.4 +
       dependencyHealth * 0.3 +
       interfaceConsistency * 0.2 +
-      communicationEfficiency * 0.1
-    );
+      communicationEfficiency * 0.1;
 
     return {
       componentHarmony,
       dependencyHealth,
       interfaceConsistency,
       communicationEfficiency,
-      overall
+      overall,
     };
   }
 
   private identifyIssues(
     graph: DependencyGraph,
     interfaces: InterfaceMetric[],
-    communications: CommunicationPattern[]
+    communications: CommunicationPattern[],
   ): Array<{
-    type: 'cycle' | 'complexity' | 'inconsistency' | 'bottleneck';
-    severity: 'low' | 'medium' | 'high' | 'critical';
+    type: "cycle" | "complexity" | "inconsistency" | "bottleneck";
+    severity: "low" | "medium" | "high" | "critical";
     component: string;
     description: string;
     recommendation: string;
@@ -385,13 +408,14 @@ export class ComponentHarmonyAnalyzer extends EventEmitter {
     const issues: Array<any> = [];
 
     // Dependency cycles
-    graph.cycles.forEach(cycle => {
+    graph.cycles.forEach((cycle) => {
       issues.push({
-        type: 'cycle',
-        severity: cycle.length > 3 ? 'critical' : 'high',
+        type: "cycle",
+        severity: cycle.length > 3 ? "critical" : "high",
         component: cycle[0],
-        description: `Circular dependency: ${cycle.join(' → ')}`,
-        recommendation: 'Break the cycle by introducing abstraction layers or dependency injection'
+        description: `Circular dependency: ${cycle.join(" → ")}`,
+        recommendation:
+          "Break the cycle by introducing abstraction layers or dependency injection",
       });
     });
 
@@ -399,53 +423,56 @@ export class ComponentHarmonyAnalyzer extends EventEmitter {
     for (const [name, node] of graph.nodes) {
       if (node.complexity > 20) {
         issues.push({
-          type: 'complexity',
-          severity: node.complexity > 50 ? 'critical' : 'high',
+          type: "complexity",
+          severity: node.complexity > 50 ? "critical" : "high",
           component: name,
           description: `High complexity score: ${node.complexity}`,
-          recommendation: 'Consider refactoring into smaller, more focused modules'
+          recommendation:
+            "Consider refactoring into smaller, more focused modules",
         });
       }
 
       // Components with too many dependencies
       if (node.dependencies.length > 10) {
         issues.push({
-          type: 'complexity',
-          severity: node.dependencies.length > 20 ? 'critical' : 'medium',
+          type: "complexity",
+          severity: node.dependencies.length > 20 ? "critical" : "medium",
           component: name,
           description: `Too many dependencies: ${node.dependencies.length}`,
-          recommendation: 'Reduce coupling by using dependency injection or facade patterns'
+          recommendation:
+            "Reduce coupling by using dependency injection or facade patterns",
         });
       }
     }
 
     // Interface inconsistencies
-    interfaces.forEach(iface => {
+    interfaces.forEach((iface) => {
       if (iface.consistency < 0.5) {
         issues.push({
-          type: 'inconsistency',
-          severity: iface.consistency < 0.3 ? 'high' : 'medium',
+          type: "inconsistency",
+          severity: iface.consistency < 0.3 ? "high" : "medium",
           component: iface.component,
           description: `Low interface consistency: ${(iface.consistency * 100).toFixed(0)}%`,
-          recommendation: 'Standardize parameter patterns and naming conventions'
+          recommendation:
+            "Standardize parameter patterns and naming conventions",
         });
       }
     });
 
     // Communication bottlenecks
     const targetCounts = new Map<string, number>();
-    communications.forEach(comm => {
+    communications.forEach((comm) => {
       targetCounts.set(comm.target, (targetCounts.get(comm.target) || 0) + 1);
     });
 
     for (const [target, count] of targetCounts) {
       if (count > 15) {
         issues.push({
-          type: 'bottleneck',
-          severity: count > 30 ? 'critical' : 'high',
+          type: "bottleneck",
+          severity: count > 30 ? "critical" : "high",
           component: target,
           description: `Communication bottleneck: ${count} incoming connections`,
-          recommendation: 'Consider load balancing or caching strategies'
+          recommendation: "Consider load balancing or caching strategies",
         });
       }
     }
@@ -462,7 +489,8 @@ export class ComponentHarmonyAnalyzer extends EventEmitter {
     const trends: Array<any> = [];
 
     if (this.analysisHistory.length > 1) {
-      const previous = this.analysisHistory[this.analysisHistory.length - 2].metrics;
+      const previous =
+        this.analysisHistory[this.analysisHistory.length - 2].metrics;
       const current = currentMetrics;
 
       Object.entries(current).forEach(([metric, value]) => {
@@ -473,7 +501,7 @@ export class ComponentHarmonyAnalyzer extends EventEmitter {
           timestamp: new Date(),
           metric,
           value,
-          change
+          change,
         });
       });
     }
@@ -482,8 +510,8 @@ export class ComponentHarmonyAnalyzer extends EventEmitter {
   }
 
   private findSourceFiles(): string[] {
-    const extensions = ['.ts', '.js', '.tsx', '.jsx'];
-    const excludeDirs = ['node_modules', 'dist', 'build', '.git'];
+    const extensions = [".ts", ".js", ".tsx", ".jsx"];
+    const excludeDirs = ["node_modules", "dist", "build", ".git"];
     const files: string[] = [];
 
     const scanDir = (dir: string) => {
@@ -514,11 +542,11 @@ export class ComponentHarmonyAnalyzer extends EventEmitter {
     const imports = content.match(/import.*from\s+['"](.*)['"]/g) || [];
     const requires = content.match(/require\(['"](.*)['"]\)/g) || [];
 
-    [...imports, ...requires].forEach(imp => {
+    [...imports, ...requires].forEach((imp) => {
       const match = imp.match(/['"](.*)['"]/);
       if (match && match[1]) {
         // Only track relative imports (internal dependencies)
-        if (match[1].startsWith('.')) {
+        if (match[1].startsWith(".")) {
           dependencies.push(match[1]);
         }
       }
@@ -527,29 +555,44 @@ export class ComponentHarmonyAnalyzer extends EventEmitter {
     return dependencies;
   }
 
-  private classifyFileType(filePath: string, content: string): 'script' | 'component' | 'utility' | 'config' {
+  private classifyFileType(
+    filePath: string,
+    content: string,
+  ): "script" | "component" | "utility" | "config" {
     const name = filePath.toLowerCase();
 
-    if (name.includes('config') || name.endsWith('.json') || name.endsWith('.yaml')) {
-      return 'config';
+    if (
+      name.includes("config") ||
+      name.endsWith(".json") ||
+      name.endsWith(".yaml")
+    ) {
+      return "config";
     }
 
-    if (content.includes('export class') || content.includes('export interface')) {
-      return 'component';
+    if (
+      content.includes("export class") ||
+      content.includes("export interface")
+    ) {
+      return "component";
     }
 
-    if (content.includes('export function') || content.includes('export const')) {
-      return 'utility';
+    if (
+      content.includes("export function") ||
+      content.includes("export const")
+    ) {
+      return "utility";
     }
 
-    return 'script';
+    return "script";
   }
 
   private calculateFileComplexity(content: string): number {
     let complexity = 1; // Base complexity
 
     // Cyclomatic complexity indicators
-    const conditions = (content.match(/if\s*\(|else\s*if|switch|case|while|for|\?/g) || []).length;
+    const conditions = (
+      content.match(/if\s*\(|else\s*if|switch|case|while|for|\?/g) || []
+    ).length;
     const functions = (content.match(/function|=>/g) || []).length;
     const classes = (content.match(/class\s+\w+/g) || []).length;
 
@@ -574,12 +617,17 @@ export class ComponentHarmonyAnalyzer extends EventEmitter {
     if (functions.length < 2) return 1.0;
 
     // Check naming consistency (camelCase, etc.)
-    const namingConsistency = functions.filter(f => /^[a-z][a-zA-Z0-9]*/.test(f)).length / functions.length;
+    const namingConsistency =
+      functions.filter((f) => /^[a-z][a-zA-Z0-9]*/.test(f)).length /
+      functions.length;
 
     return namingConsistency;
   }
 
-  private findDependencyCycles(nodes: Map<string, DependencyNode>, edges: Array<{ from: string; to: string }>): string[][] {
+  private findDependencyCycles(
+    nodes: Map<string, DependencyNode>,
+    edges: Array<{ from: string; to: string }>,
+  ): string[][] {
     const cycles: string[][] = [];
     const visited = new Set<string>();
     const path: string[] = [];
@@ -596,7 +644,7 @@ export class ComponentHarmonyAnalyzer extends EventEmitter {
       visited.add(node);
       path.push(node);
 
-      const outgoing = edges.filter(e => e.from === node);
+      const outgoing = edges.filter((e) => e.from === node);
       for (const edge of outgoing) {
         dfs(edge.to);
       }
@@ -613,7 +661,10 @@ export class ComponentHarmonyAnalyzer extends EventEmitter {
     return cycles;
   }
 
-  private calculateGraphDepth(nodes: Map<string, DependencyNode>, edges: Array<{ from: string; to: string }>): number {
+  private calculateGraphDepth(
+    nodes: Map<string, DependencyNode>,
+    edges: Array<{ from: string; to: string }>,
+  ): number {
     // Simple approximation: maximum dependency chain length
     let maxDepth = 0;
 
@@ -625,23 +676,36 @@ export class ComponentHarmonyAnalyzer extends EventEmitter {
     return maxDepth;
   }
 
-  private calculateNodeDepth(node: string, nodes: Map<string, DependencyNode>, edges: Array<{ from: string; to: string }>, visited: Set<string>): number {
+  private calculateNodeDepth(
+    node: string,
+    nodes: Map<string, DependencyNode>,
+    edges: Array<{ from: string; to: string }>,
+    visited: Set<string>,
+  ): number {
     if (visited.has(node)) return 0; // Cycle detection
     visited.add(node);
 
-    const outgoing = edges.filter(e => e.from === node);
+    const outgoing = edges.filter((e) => e.from === node);
     if (outgoing.length === 0) return 1;
 
     let maxDepth = 0;
     for (const edge of outgoing) {
-      const depth = this.calculateNodeDepth(edge.to, nodes, edges, new Set(visited));
+      const depth = this.calculateNodeDepth(
+        edge.to,
+        nodes,
+        edges,
+        new Set(visited),
+      );
       maxDepth = Math.max(maxDepth, depth);
     }
 
     return maxDepth + 1;
   }
 
-  private calculateGraphEntropy(nodes: Map<string, DependencyNode>, edges: Array<{ from: string; to: string }>): number {
+  private calculateGraphEntropy(
+    nodes: Map<string, DependencyNode>,
+    edges: Array<{ from: string; to: string }>,
+  ): number {
     if (nodes.size === 0) return 0;
 
     // Calculate degree distribution entropy
@@ -688,26 +752,31 @@ export class ComponentHarmonyAnalyzer extends EventEmitter {
   private loadHistoricalAnalysis(): void {
     try {
       if (existsSync(this.analysisPath)) {
-        const data = readFileSync(this.analysisPath, 'utf8');
+        const data = readFileSync(this.analysisPath, "utf8");
         const analyses = JSON.parse(data);
 
         this.analysisHistory = analyses.map((a: any) => ({
           ...a,
-          timestamp: new Date(a.timestamp)
+          timestamp: new Date(a.timestamp),
         }));
 
-        console.log(`📊 Loaded ${this.analysisHistory.length} historical harmony analyses`);
+        console.log(
+          `📊 Loaded ${this.analysisHistory.length} historical harmony analyses`,
+        );
       }
     } catch (error) {
-      console.warn('⚠️ Could not load historical harmony data:', error);
+      console.warn("⚠️ Could not load historical harmony data:", error);
     }
   }
 
   private async persistAnalysis(): Promise<void> {
     try {
-      writeFileSync(this.analysisPath, JSON.stringify(this.analysisHistory, null, 2));
+      writeFileSync(
+        this.analysisPath,
+        JSON.stringify(this.analysisHistory, null, 2),
+      );
     } catch (error) {
-      console.error('❌ Failed to persist harmony analysis:', error);
+      console.error("❌ Failed to persist harmony analysis:", error);
     }
   }
 }

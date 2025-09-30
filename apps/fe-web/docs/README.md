@@ -9,7 +9,6 @@
 - [Decisions (INDEX)](DECISIONS/INDEX.md)
 - [Experiments (INDEX)](EXPERIMENTS/INDEX.md)
 
-
 _Last updated: 2025-09-30_
 
 ## 📊 System Status

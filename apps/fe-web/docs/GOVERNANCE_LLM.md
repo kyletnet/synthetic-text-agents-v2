@@ -11,11 +11,13 @@ This document establishes the governance framework for LLM integration and preve
 ## Core Components
 
 ### 1. ExecutionVerifier System
+
 - **Purpose**: Real-time detection and prevention of mock data usage
 - **Implementation**: `lib/execution-verifier.ts`
 - **Key Method**: `ExecutionVerifier.assertRealLLMCall(response, context)`
 
 ### 2. LLMCallManager
+
 - **Purpose**: Centralized LLM call management with proper error handling
 - **Implementation**: `lib/llm-call-manager.ts`
 - **Features**:
@@ -25,10 +27,12 @@ This document establishes the governance framework for LLM integration and preve
   - SSR-safe global state management
 
 ### 3. Source Tracking System
+
 All responses must include proper source identification:
+
 ```typescript
 interface Response {
-  source: 'llm' | 'fallback' | 'mock' | 'error';
+  source: "llm" | "fallback" | "mock" | "error";
   metadata: {
     llmUsed: boolean;
     apiTrace?: string;
@@ -40,17 +44,20 @@ interface Response {
 ## Mandatory Development Practices
 
 ### 1. LLM Call Requirements
+
 - **MUST** use `LLMCallManager.callWithRetry()` for all LLM API calls
 - **MUST** include session ID for tracking
 - **MUST** handle all error types with appropriate fallbacks
 - **NEVER** hardcode responses without proper source labeling
 
 ### 2. Verification Requirements
+
 - **MUST** call `ExecutionVerifier.assertRealLLMCall()` on critical paths
 - **MUST** implement mock pattern detection
 - **MUST** validate LLM response signatures
 
 ### 3. Error Handling Standards
+
 ```typescript
 // Error types with specific handling:
 - 'auth': Critical - immediate alert, no retry
@@ -64,12 +71,14 @@ interface Response {
 ## Environment Policies
 
 ### Production Requirements
+
 - **Strict Mode REQUIRED**: `process.env.NODE_ENV === 'production'`
 - **Valid API Key REQUIRED**: `process.env.ANTHROPIC_API_KEY` configured
 - **Mock Contamination Risk**: MUST be "none"
 - **Fallback Rate**: MUST be < 30%
 
 ### Development Guidelines
+
 - Mock data allowed only in development with clear labeling
 - Fallback templates must include mock detection patterns
 - All responses must maintain source field integrity
@@ -77,17 +86,20 @@ interface Response {
 ## Monitoring & Alerting
 
 ### Health Endpoints
+
 - **`GET /api/maintain`**: Comprehensive system diagnostics
 - **`GET /api/health`**: Basic health with mock contamination checks
 - **`GET /api/status`**: System status with LLM configuration
 
 ### Alert Triggers
+
 - **CRITICAL**: Mock contamination in production
 - **HIGH**: Fallback rate > 30%
 - **MEDIUM**: Authentication failures
 - **LOW**: Network timeouts
 
 ### Metrics Tracking
+
 ```typescript
 interface LLMCallStats {
   totalCalls: number;
@@ -104,36 +116,43 @@ interface LLMCallStats {
 ## Implementation Guidelines
 
 ### 1. Mock Pattern Detection
+
 Automatic detection of hardcoded patterns:
+
 ```typescript
 const mockIndicators = [
-  '패러프레이즈하여 의미는 유지하되 표현을 다양화한 결과입니다',
-  'Math.random() * 0.3 + 0.7', // Mock scoring
-  'generateMockResults',
-  'mock-001', 'mock-002' // Mock IDs
+  "패러프레이즈하여 의미는 유지하되 표현을 다양화한 결과입니다",
+  "Math.random() * 0.3 + 0.7", // Mock scoring
+  "generateMockResults",
+  "mock-001",
+  "mock-002", // Mock IDs
 ];
 ```
 
 ### 2. LLM Response Signatures
+
 Validation of authentic LLM responses:
+
 - Variable response lengths (not template-fixed)
 - Processing time > 100ms
 - Quality scores with natural variation
 - Proper metadata structure
 
 ### 3. Session Tracking
+
 ```typescript
 // All LLM calls must include session tracking:
 const result = await LLMCallManager.callWithRetry(
   sessionId,
   async () => anthropicClient.generateText(prompt),
-  'contextual_description'
+  "contextual_description",
 );
 ```
 
 ## Code Review Checklist
 
 ### Before Merging
+
 - [ ] All LLM calls use LLMCallManager
 - [ ] Source tracking implemented properly
 - [ ] Error handling covers all categories
@@ -142,6 +161,7 @@ const result = await LLMCallManager.callWithRetry(
 - [ ] Health endpoints return valid responses
 
 ### Testing Requirements
+
 - [ ] Mock contamination tests pass
 - [ ] Error scenarios covered
 - [ ] Fallback mechanisms validated
@@ -151,12 +171,14 @@ const result = await LLMCallManager.callWithRetry(
 ## Emergency Procedures
 
 ### Mock Contamination Detection
+
 1. **Immediate**: Check `/api/maintain` for contamination risk
 2. **Investigate**: Review recent deployments and API configurations
 3. **Mitigate**: Enable strict mode and verify API keys
 4. **Monitor**: Watch fallback rates and error patterns
 
 ### API Failure Response
+
 1. **Categorize**: Determine error type (auth/network/rate_limit)
 2. **Alert**: Send appropriate notifications based on severity
 3. **Fallback**: Engage appropriate fallback mechanisms
@@ -165,12 +187,14 @@ const result = await LLMCallManager.callWithRetry(
 ## Future Enhancements
 
 ### Planned Features
+
 - Automated mock contamination scanning
 - Enhanced LLM response quality scoring
 - Cross-session call correlation
 - Performance optimization recommendations
 
 ### Integration Points
+
 - CI/CD pipeline integration for contamination checks
 - Real-time dashboard for LLM health monitoring
 - Alert system integration (Slack/Discord/Email)

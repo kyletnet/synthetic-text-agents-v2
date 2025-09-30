@@ -362,31 +362,34 @@ async function checkMockDataContamination() {
     const envPolicy = ExecutionVerifier.checkEnvironmentPolicy();
 
     // 환경 정책 검사
-    if (!envPolicy.strictMode && process.env.NODE_ENV === 'production') {
+    if (!envPolicy.strictMode && process.env.NODE_ENV === "production") {
       return {
         status: "fail" as const,
         responseTime: Date.now() - checkStart,
-        details: "CRITICAL: Production detected but system not in strict mode - Mock data contamination risk",
+        details:
+          "CRITICAL: Production detected but system not in strict mode - Mock data contamination risk",
         lastChecked: new Date().toISOString(),
       };
     }
 
     // API 키 누락으로 인한 Fallback 사용 경고
     if (envPolicy.warnings.length > 0) {
-      const hasCriticalWarning = envPolicy.warnings.some(warning => warning.includes('CRITICAL'));
+      const hasCriticalWarning = envPolicy.warnings.some((warning) =>
+        warning.includes("CRITICAL"),
+      );
 
       if (hasCriticalWarning) {
         return {
           status: "fail" as const,
           responseTime: Date.now() - checkStart,
-          details: `Mock contamination risk: ${envPolicy.warnings.join(', ')}`,
+          details: `Mock contamination risk: ${envPolicy.warnings.join(", ")}`,
           lastChecked: new Date().toISOString(),
         };
       } else {
         return {
           status: "warn" as const,
           responseTime: Date.now() - checkStart,
-          details: `Fallback mode: ${envPolicy.warnings.join(', ')}`,
+          details: `Fallback mode: ${envPolicy.warnings.join(", ")}`,
           lastChecked: new Date().toISOString(),
         };
       }
@@ -398,7 +401,6 @@ async function checkMockDataContamination() {
       details: "No Mock data contamination detected",
       lastChecked: new Date().toISOString(),
     };
-
   } catch (error) {
     return {
       status: "fail" as const,

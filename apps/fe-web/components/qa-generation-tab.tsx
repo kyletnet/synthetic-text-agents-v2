@@ -1,7 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { Play, Lightbulb, AlertCircle, FileText, ArrowRight } from "lucide-react";
+import {
+  Play,
+  Lightbulb,
+  AlertCircle,
+  FileText,
+  ArrowRight,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -56,7 +62,11 @@ interface QAGenerationTabProps {
   setError: (error: string) => void;
 }
 
-export default function QAGenerationTab({ stats, error, setError }: QAGenerationTabProps) {
+export default function QAGenerationTab({
+  stats,
+  error,
+  setError,
+}: QAGenerationTabProps) {
   const [topic, setTopic] = useState("");
   const [count, setCount] = useState(3);
   const [domainContext, setDomainContext] = useState("general");
@@ -93,7 +103,9 @@ export default function QAGenerationTab({ stats, error, setError }: QAGeneration
         setError(errorData.error || "QA generation failed");
       }
     } catch (error) {
-      setError(`Generation error: ${error instanceof Error ? error.message : "Unknown error"}`);
+      setError(
+        `Generation error: ${error instanceof Error ? error.message : "Unknown error"}`,
+      );
     } finally {
       setLoading(false);
     }
@@ -144,7 +156,11 @@ export default function QAGenerationTab({ stats, error, setError }: QAGeneration
                   min="1"
                   max="10"
                   value={count}
-                  onChange={(e) => setCount(Math.max(1, Math.min(10, parseInt(e.target.value) || 1)))}
+                  onChange={(e) =>
+                    setCount(
+                      Math.max(1, Math.min(10, parseInt(e.target.value) || 1)),
+                    )
+                  }
                   disabled={loading}
                 />
               </div>
@@ -171,7 +187,10 @@ export default function QAGenerationTab({ stats, error, setError }: QAGeneration
                 <Label htmlFor="compare">
                   Compare Before/After
                   {!stats.enabled && (
-                    <span className="text-gray-400 text-sm"> (RAG disabled)</span>
+                    <span className="text-gray-400 text-sm">
+                      {" "}
+                      (RAG disabled)
+                    </span>
                   )}
                 </Label>
               </div>
@@ -199,8 +218,9 @@ export default function QAGenerationTab({ stats, error, setError }: QAGeneration
               <Alert>
                 <AlertCircle className="h-4 w-4" />
                 <AlertDescription>
-                  RAG system is disabled. QA generation will use baseline mode only.
-                  Enable RAG with FEATURE_RAG_CONTEXT=true for enhanced context.
+                  RAG system is disabled. QA generation will use baseline mode
+                  only. Enable RAG with FEATURE_RAG_CONTEXT=true for enhanced
+                  context.
                 </AlertDescription>
               </Alert>
             )}
@@ -216,7 +236,8 @@ export default function QAGenerationTab({ stats, error, setError }: QAGeneration
               Generated QA Results ({results.results.length})
             </CardTitle>
             <div className="text-sm text-gray-600">
-              Session: {results.sessionId} • Generated: {new Date(results.metadata.generatedAt).toLocaleString()}
+              Session: {results.sessionId} • Generated:{" "}
+              {new Date(results.metadata.generatedAt).toLocaleString()}
               {results.metadata.compareMode && " • Comparison Mode"}
             </div>
           </CardHeader>
@@ -225,7 +246,9 @@ export default function QAGenerationTab({ stats, error, setError }: QAGeneration
               {results.results.map((qa, index) => (
                 <div key={qa.qaId} className="border rounded-lg p-4 space-y-4">
                   <div className="flex items-start justify-between">
-                    <h3 className="font-medium text-lg">Q{index + 1}: {qa.question}</h3>
+                    <h3 className="font-medium text-lg">
+                      Q{index + 1}: {qa.question}
+                    </h3>
                     <div className="flex items-center gap-2">
                       <Badge variant="outline">
                         Confidence: {(qa.metadata.confidence * 100).toFixed(0)}%
@@ -242,8 +265,12 @@ export default function QAGenerationTab({ stats, error, setError }: QAGeneration
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <div className="flex items-center gap-2">
-                          <h4 className="font-medium text-gray-700">Baseline Answer</h4>
-                          <Badge variant="secondary" className="text-xs">Without RAG</Badge>
+                          <h4 className="font-medium text-gray-700">
+                            Baseline Answer
+                          </h4>
+                          <Badge variant="secondary" className="text-xs">
+                            Without RAG
+                          </Badge>
                         </div>
                         <div className="bg-gray-50 p-3 rounded text-sm">
                           {qa.baselineAnswer}
@@ -253,8 +280,12 @@ export default function QAGenerationTab({ stats, error, setError }: QAGeneration
                       <div className="space-y-2">
                         <div className="flex items-center gap-2">
                           <ArrowRight className="w-4 h-4 text-blue-500" />
-                          <h4 className="font-medium text-gray-700">Enhanced Answer</h4>
-                          <Badge variant="default" className="text-xs">With RAG Context</Badge>
+                          <h4 className="font-medium text-gray-700">
+                            Enhanced Answer
+                          </h4>
+                          <Badge variant="default" className="text-xs">
+                            With RAG Context
+                          </Badge>
                         </div>
                         <div className="bg-blue-50 p-3 rounded text-sm">
                           {qa.ragAnswer}
@@ -270,33 +301,47 @@ export default function QAGenerationTab({ stats, error, setError }: QAGeneration
                     </div>
                   )}
 
-                  {qa.comparison.ragEnabled && qa.comparison.qualityDelta !== 0 && (
-                    <div className="border-t pt-3">
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="font-medium">Quality Impact:</span>
-                        <span className={getDeltaColor(qa.comparison.qualityDelta)}>
-                          {getDeltaText(qa.comparison.qualityDelta)} ({qa.comparison.qualityDelta > 0 ? '+' : ''}{(qa.comparison.qualityDelta * 100).toFixed(1)}%)
-                        </span>
-                      </div>
-                      {qa.comparison.improvementAreas.length > 0 && (
-                        <div className="mt-2">
-                          <span className="text-sm font-medium">Improvements:</span>
-                          <div className="flex flex-wrap gap-1 mt-1">
-                            {qa.comparison.improvementAreas.map((area, i) => (
-                              <Badge key={i} variant="outline" className="text-xs">
-                                {area}
-                              </Badge>
-                            ))}
-                          </div>
+                  {qa.comparison.ragEnabled &&
+                    qa.comparison.qualityDelta !== 0 && (
+                      <div className="border-t pt-3">
+                        <div className="flex items-center justify-between text-sm">
+                          <span className="font-medium">Quality Impact:</span>
+                          <span
+                            className={getDeltaColor(
+                              qa.comparison.qualityDelta,
+                            )}
+                          >
+                            {getDeltaText(qa.comparison.qualityDelta)} (
+                            {qa.comparison.qualityDelta > 0 ? "+" : ""}
+                            {(qa.comparison.qualityDelta * 100).toFixed(1)}%)
+                          </span>
                         </div>
-                      )}
-                    </div>
-                  )}
+                        {qa.comparison.improvementAreas.length > 0 && (
+                          <div className="mt-2">
+                            <span className="text-sm font-medium">
+                              Improvements:
+                            </span>
+                            <div className="flex flex-wrap gap-1 mt-1">
+                              {qa.comparison.improvementAreas.map((area, i) => (
+                                <Badge
+                                  key={i}
+                                  variant="outline"
+                                  className="text-xs"
+                                >
+                                  {area}
+                                </Badge>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
 
                   <div className="text-xs text-gray-500 border-t pt-2">
-                    Domain: {qa.metadata.domain} •
-                    Generated: {new Date(qa.metadata.timestamp).toLocaleString()}
-                    {qa.comparison.contextLength > 0 && ` • Context: ${qa.comparison.contextLength} chars`}
+                    Domain: {qa.metadata.domain} • Generated:{" "}
+                    {new Date(qa.metadata.timestamp).toLocaleString()}
+                    {qa.comparison.contextLength > 0 &&
+                      ` • Context: ${qa.comparison.contextLength} chars`}
                   </div>
                 </div>
               ))}

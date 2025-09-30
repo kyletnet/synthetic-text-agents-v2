@@ -1,5 +1,5 @@
 import { BaseAgent } from "../core/baseAgent.js";
-import { RAGService, type RAGConfig, type RAGContext } from "../rag/service.js";
+import { RAGService, type RAGContext } from "../rag/service.js";
 import { Logger } from "../shared/logger.js";
 import { AgentContext } from "../shared/types.js";
 
@@ -61,7 +61,8 @@ export class ContextInjector extends BaseAgent {
 
     this.ragService = ragService;
     this.config = config;
-    this.isEnabled = process.env.FEATURE_RAG_CONTEXT === "true" && config.enabled;
+    this.isEnabled =
+      process.env.FEATURE_RAG_CONTEXT === "true" && config.enabled;
 
     // Log initialization status for system monitoring
     this.logger.trace({
@@ -96,7 +97,8 @@ export class ContextInjector extends BaseAgent {
       });
 
       // Build enhanced prompt with context and get token budget info
-      const { enhancedPrompt, tokenBudgetInfo } = this.buildEnhancedPromptWithBudget(request, ragContext);
+      const { enhancedPrompt, tokenBudgetInfo } =
+        this.buildEnhancedPromptWithBudget(request, ragContext);
 
       const result: ContextInjectionResult = {
         enhancedPrompt,
@@ -105,7 +107,8 @@ export class ContextInjector extends BaseAgent {
           chunksUsed: tokenBudgetInfo.selectedChunks,
           contextLength: this.calculateContextLength(ragContext),
           searchDuration: ragContext.searchDuration,
-          truncated: tokenBudgetInfo.originalChunks > tokenBudgetInfo.selectedChunks,
+          truncated:
+            tokenBudgetInfo.originalChunks > tokenBudgetInfo.selectedChunks,
           tokenBudget: tokenBudgetInfo,
         },
       };
@@ -124,7 +127,6 @@ export class ContextInjector extends BaseAgent {
       });
 
       return result;
-
     } catch (error) {
       await this.logger.trace({
         level: "error",
@@ -148,7 +150,10 @@ export class ContextInjector extends BaseAgent {
 
     // Confidence based on number of relevant chunks found
     const baseConfidence = 0.7;
-    const chunkBonus = Math.min(injectionResult.ragContext.retrievedChunks.length * 0.1, 0.3);
+    const chunkBonus = Math.min(
+      injectionResult.ragContext.retrievedChunks.length * 0.1,
+      0.3,
+    );
 
     return Math.min(baseConfidence + chunkBonus, 1.0);
   }
@@ -187,15 +192,22 @@ export class ContextInjector extends BaseAgent {
 
     const req = content as Record<string, unknown>;
 
-    if (typeof req.query !== "string" || typeof req.originalPrompt !== "string") {
+    if (
+      typeof req.query !== "string" ||
+      typeof req.originalPrompt !== "string"
+    ) {
       throw new Error("Invalid request: missing query or originalPrompt");
     }
 
     return {
       query: req.query,
       originalPrompt: req.originalPrompt,
-      domainHint: typeof req.domainHint === "string" ? req.domainHint : undefined,
-      maxContextLength: typeof req.maxContextLength === "number" ? req.maxContextLength : this.config.maxContextTokens,
+      domainHint:
+        typeof req.domainHint === "string" ? req.domainHint : undefined,
+      maxContextLength:
+        typeof req.maxContextLength === "number"
+          ? req.maxContextLength
+          : this.config.maxContextTokens,
     };
   }
 
@@ -211,7 +223,8 @@ export class ContextInjector extends BaseAgent {
     });
 
     const estimatedTokens = Math.ceil(request.originalPrompt.length / 3);
-    const budgetLimit = request.maxContextLength || this.config.maxContextTokens;
+    const budgetLimit =
+      request.maxContextLength || this.config.maxContextTokens;
 
     return {
       enhancedPrompt: request.originalPrompt, // Return original prompt unchanged
@@ -240,7 +253,10 @@ export class ContextInjector extends BaseAgent {
   private buildEnhancedPromptWithBudget(
     request: ContextInjectionRequest,
     ragContext: RAGContext,
-  ): { enhancedPrompt: string; tokenBudgetInfo: ContextInjectionResult['injectionStats']['tokenBudget'] } {
+  ): {
+    enhancedPrompt: string;
+    tokenBudgetInfo: ContextInjectionResult["injectionStats"]["tokenBudget"];
+  } {
     if (ragContext.retrievedChunks.length === 0) {
       return {
         enhancedPrompt: request.originalPrompt,
@@ -255,9 +271,12 @@ export class ContextInjector extends BaseAgent {
     }
 
     // Token budget management: prevent LLM API failures
-    const maxContextTokens = request.maxContextLength || this.config.maxContextTokens;
+    const maxContextTokens =
+      request.maxContextLength || this.config.maxContextTokens;
     const budgetSafetyMargin = 0.7; // Use 70% of budget for context, leave 30% for prompt/response
-    const effectiveTokenBudget = Math.floor(maxContextTokens * budgetSafetyMargin);
+    const effectiveTokenBudget = Math.floor(
+      maxContextTokens * budgetSafetyMargin,
+    );
 
     // Estimate tokens (rough: 1 token ≈ 4 characters for English, 2 chars for mixed)
     const estimateTokens = (text: string): number => Math.ceil(text.length / 3);
@@ -269,7 +288,8 @@ export class ContextInjector extends BaseAgent {
     // Reduce chunks if budget exceeded
     while (selectedChunks.length > 0) {
       const currentContextLength = selectedChunks.reduce(
-        (total, item) => total + item.chunk.content.length, 0
+        (total, item) => total + item.chunk.content.length,
+        0,
       );
       const contextTokens = estimateTokens(currentContextLength.toString());
 
@@ -312,12 +332,16 @@ export class ContextInjector extends BaseAgent {
     }
 
     // Build context section from selected chunks
-    const contextSections = selectedChunks.map((chunk, index) => {
-      return `[Context ${index + 1}]\n${chunk.chunk.content}\n`;
-    }).join("\n");
+    const contextSections = selectedChunks
+      .map((chunk, index) => {
+        return `[Context ${index + 1}]\n${chunk.chunk.content}\n`;
+      })
+      .join("\n");
 
     // Apply template or use default format
-    const template = this.config.contextTemplate || `
+    const template =
+      this.config.contextTemplate ||
+      `
 {context}
 
 ---
@@ -353,7 +377,9 @@ Based on the above context, please answer the following:
         selectedChunks: selectedChunks.length,
         estimatedTokens: finalTokenEstimate,
         budgetLimit: effectiveTokenBudget,
-        utilizationRate: parseFloat((finalTokenEstimate / effectiveTokenBudget).toFixed(2)),
+        utilizationRate: parseFloat(
+          (finalTokenEstimate / effectiveTokenBudget).toFixed(2),
+        ),
       },
     };
   }

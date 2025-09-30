@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Button } from '@/components/ui/button';
-import { RefreshCw, AlertTriangle } from 'lucide-react';
+import React from "react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import { RefreshCw, AlertTriangle } from "lucide-react";
 
 interface ErrorBoundaryState {
   hasError: boolean;
@@ -24,7 +24,7 @@ class ErrorBoundary extends React.Component<
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.error('ErrorBoundary caught an error:', error, errorInfo);
+    console.error("ErrorBoundary caught an error:", error, errorInfo);
   }
 
   handleRetry = () => {
@@ -40,7 +40,8 @@ class ErrorBoundary extends React.Component<
               <AlertTriangle className="h-4 w-4" />
               <AlertTitle>페이지 오류 발생</AlertTitle>
               <AlertDescription className="mt-2">
-                페이지를 불러오는 중 문제가 발생했습니다. 페이지를 새로고침하거나 다시 시도해주세요.
+                페이지를 불러오는 중 문제가 발생했습니다. 페이지를
+                새로고침하거나 다시 시도해주세요.
               </AlertDescription>
             </Alert>
 
@@ -58,7 +59,7 @@ class ErrorBoundary extends React.Component<
               </Button>
             </div>
 
-            {process.env.NODE_ENV === 'development' && this.state.error && (
+            {process.env.NODE_ENV === "development" && this.state.error && (
               <Alert>
                 <AlertTitle>개발자 정보</AlertTitle>
                 <AlertDescription className="mt-2 text-xs font-mono">

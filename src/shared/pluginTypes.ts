@@ -66,9 +66,9 @@ export interface DocPluginResult {
 
 export interface DocPlugin {
   meta: DocPluginMeta;
-  initialize(context: DocSyncContext): Promise<void>;
-  execute(context: DocSyncContext): Promise<DocPluginResult>;
-  cleanup?(context: DocSyncContext): Promise<void>;
+  initialize(_context: DocSyncContext): Promise<void>;
+  execute(_context: DocSyncContext): Promise<DocPluginResult>;
+  cleanup?(_context: DocSyncContext): Promise<void>;
   healthCheck?(): Promise<boolean>;
 }
 

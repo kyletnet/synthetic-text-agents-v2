@@ -4,7 +4,6 @@
 - 최소 필드: Problem, Goals, Experts(role/persona/weight/injection), Knob changes(path before→after, rationale), Expected effects, Links(run log)
 - 작성 시점: 실행 후 피드백 반영 시 자동 초안 → 사람이 한 줄 보완
 
-
 _Last updated: 2025-09-30_
 
 ## 📊 System Status

@@ -9,16 +9,16 @@
  * - 시스템 무결성 지속 모니터링
  */
 
-import { LLMExecutionAuthority } from './llm-execution-authority';
-import { apiKeyManager } from './api-key-manager';
-import { APIGuard } from './api-guard';
-import { ExecutionVerifier } from './execution-verifier';
-import { backgroundTaskManager } from './background-task-manager';
+import { LLMExecutionAuthority } from "./llm-execution-authority";
+import { apiKeyManager } from "./api-key-manager";
+import { APIGuard } from "./api-guard";
+import { ExecutionVerifier } from "./execution-verifier";
+import { backgroundTaskManager } from "./background-task-manager";
 
 // 🔍 Detection Result Types
 export interface DetectionResult {
   passed: boolean;
-  severity: 'info' | 'warning' | 'critical' | 'emergency';
+  severity: "info" | "warning" | "critical" | "emergency";
   category: string;
   message: string;
   details?: any;
@@ -28,7 +28,7 @@ export interface DetectionResult {
 }
 
 export interface SystemHealth {
-  overall: 'healthy' | 'degraded' | 'critical' | 'emergency';
+  overall: "healthy" | "degraded" | "critical" | "emergency";
   detections: DetectionResult[];
   summary: {
     criticalIssues: number;
@@ -58,7 +58,7 @@ export class AutoDetectionEngine {
 
   constructor() {
     this.startContinuousMonitoring();
-    console.log('🔍 [AutoDetection] Auto-Detection Engine initialized');
+    console.log("🔍 [AutoDetection] Auto-Detection Engine initialized");
   }
 
   static getInstance(): AutoDetectionEngine {
@@ -72,34 +72,36 @@ export class AutoDetectionEngine {
    * 🚨 컴플리트 시스템 건강 체크 실행
    */
   async performFullHealthCheck(): Promise<SystemHealth> {
-    console.log('🔍 [AutoDetection] Starting full system health check...');
+    console.log("🔍 [AutoDetection] Starting full system health check...");
     const startTime = Date.now();
     const detections: DetectionResult[] = [];
 
     // 1. 🎯 Silent Mock Contamination 감지
-    detections.push(...await this.detectSilentMockContamination());
+    detections.push(...(await this.detectSilentMockContamination()));
 
     // 2. 🔑 API Key 건강 상태 감지
-    detections.push(...await this.detectAPIKeyHealth());
+    detections.push(...(await this.detectAPIKeyHealth()));
 
     // 3. 🛡️ LLM Execution Authority 상태 감지
-    detections.push(...await this.detectExecutionAuthorityHealth());
+    detections.push(...(await this.detectExecutionAuthorityHealth()));
 
     // 4. 🌐 포트 및 프로세스 상태 감지
-    detections.push(...await this.detectPortAndProcessHealth());
+    detections.push(...(await this.detectPortAndProcessHealth()));
 
     // 5. 🚨 우회 시도 감지
-    detections.push(...await this.detectBypassAttempts());
+    detections.push(...(await this.detectBypassAttempts()));
 
     // 6. 📊 시스템 무결성 감지
-    detections.push(...await this.detectSystemIntegrityIssues());
+    detections.push(...(await this.detectSystemIntegrityIssues()));
 
     // Store detection history
     this.detectionHistory.push(...detections);
     this.trimDetectionHistory();
 
-    const criticalIssues = detections.filter(d => d.severity === 'critical' || d.severity === 'emergency');
-    const warnings = detections.filter(d => d.severity === 'warning');
+    const criticalIssues = detections.filter(
+      (d) => d.severity === "critical" || d.severity === "emergency",
+    );
+    const warnings = detections.filter((d) => d.severity === "warning");
 
     const overall = this.calculateOverallHealth(detections);
     const recommendations = this.generateRecommendations(detections);
@@ -111,15 +113,17 @@ export class AutoDetectionEngine {
         criticalIssues: criticalIssues.length,
         warnings: warnings.length,
         lastCheck: new Date(),
-        uptime: Date.now() - startTime
+        uptime: Date.now() - startTime,
       },
-      recommendations
+      recommendations,
     };
 
-    console.log(`🔍 [AutoDetection] Health check completed: ${overall} (${detections.length} detections)`);
+    console.log(
+      `🔍 [AutoDetection] Health check completed: ${overall} (${detections.length} detections)`,
+    );
 
     // Trigger alerts for critical issues
-    criticalIssues.forEach(issue => this.triggerAlert(issue));
+    criticalIssues.forEach((issue) => this.triggerAlert(issue));
 
     return health;
   }
@@ -138,56 +142,60 @@ export class AutoDetectionEngine {
       let mockContamination = 0;
       let totalExecutions = recentExecutions.length;
 
-      recentExecutions.forEach(execution => {
-        if (execution.source === 'fallback' || execution.source === 'denied') {
+      recentExecutions.forEach((execution) => {
+        if (execution.source === "fallback" || execution.source === "denied") {
           mockContamination++;
         }
       });
 
-      const mockRate = totalExecutions > 0 ? (mockContamination / totalExecutions) : 0;
+      const mockRate =
+        totalExecutions > 0 ? mockContamination / totalExecutions : 0;
 
-      if (mockRate > 0.1) { // 10% 이상 mock/fallback
+      if (mockRate > 0.1) {
+        // 10% 이상 mock/fallback
         detections.push({
           passed: false,
-          severity: 'critical',
-          category: 'Mock Contamination',
+          severity: "critical",
+          category: "Mock Contamination",
           message: `Silent Mock Contamination detected: ${Math.round(mockRate * 100)}% of executions using mock/fallback`,
           details: { mockRate, mockContamination, totalExecutions },
           timestamp: new Date(),
-          actionRequired: 'Check API keys and LLM connectivity immediately',
-          autoFixable: false
+          actionRequired: "Check API keys and LLM connectivity immediately",
+          autoFixable: false,
         });
       } else if (mockRate > 0) {
         detections.push({
           passed: false,
-          severity: 'warning',
-          category: 'Mock Contamination',
+          severity: "warning",
+          category: "Mock Contamination",
           message: `Low-level mock usage detected: ${Math.round(mockRate * 100)}%`,
           details: { mockRate, mockContamination, totalExecutions },
           timestamp: new Date(),
-          actionRequired: 'Monitor API key health',
-          autoFixable: true
+          actionRequired: "Monitor API key health",
+          autoFixable: true,
         });
       } else {
         detections.push({
           passed: true,
-          severity: 'info',
-          category: 'Mock Contamination',
-          message: 'No mock contamination detected - all executions using real LLM',
-          timestamp: new Date()
+          severity: "info",
+          category: "Mock Contamination",
+          message:
+            "No mock contamination detected - all executions using real LLM",
+          timestamp: new Date(),
         });
       }
-
     } catch (error) {
       detections.push({
         passed: false,
-        severity: 'warning',
-        category: 'Mock Contamination',
-        message: 'Failed to analyze mock contamination',
-        details: { error: error instanceof Error ? error.message : 'Unknown error' },
+        severity: "warning",
+        category: "Mock Contamination",
+        message: "Failed to analyze mock contamination",
+        details: {
+          error: error instanceof Error ? error.message : "Unknown error",
+        },
         timestamp: new Date(),
-        actionRequired: 'Check execution tracking system',
-        autoFixable: false
+        actionRequired: "Check execution tracking system",
+        autoFixable: false,
       });
     }
 
@@ -208,33 +216,34 @@ export class AutoDetectionEngine {
       if (stats.activeKeys === 0) {
         detections.push({
           passed: false,
-          severity: 'emergency',
-          category: 'API Key Health',
-          message: 'No active API keys available - system will use fallback mode',
+          severity: "emergency",
+          category: "API Key Health",
+          message:
+            "No active API keys available - system will use fallback mode",
           details: stats,
           timestamp: new Date(),
-          actionRequired: 'Add valid API keys immediately',
-          autoFixable: false
+          actionRequired: "Add valid API keys immediately",
+          autoFixable: false,
         });
       } else if (stats.activeKeys === 1) {
         detections.push({
           passed: false,
-          severity: 'warning',
-          category: 'API Key Health',
-          message: 'Only 1 active API key - no redundancy available',
+          severity: "warning",
+          category: "API Key Health",
+          message: "Only 1 active API key - no redundancy available",
           details: stats,
           timestamp: new Date(),
-          actionRequired: 'Add backup API keys for redundancy',
-          autoFixable: false
+          actionRequired: "Add backup API keys for redundancy",
+          autoFixable: false,
         });
       } else {
         detections.push({
           passed: true,
-          severity: 'info',
-          category: 'API Key Health',
+          severity: "info",
+          category: "API Key Health",
           message: `API keys healthy: ${stats.activeKeys} active keys available`,
           details: stats,
-          timestamp: new Date()
+          timestamp: new Date(),
         });
       }
 
@@ -242,25 +251,26 @@ export class AutoDetectionEngine {
       if (!currentKey) {
         detections.push({
           passed: false,
-          severity: 'critical',
-          category: 'API Key Health',
-          message: 'No current API key selected',
+          severity: "critical",
+          category: "API Key Health",
+          message: "No current API key selected",
           timestamp: new Date(),
-          actionRequired: 'Refresh API key manager',
-          autoFixable: true
+          actionRequired: "Refresh API key manager",
+          autoFixable: true,
         });
       }
-
     } catch (error) {
       detections.push({
         passed: false,
-        severity: 'critical',
-        category: 'API Key Health',
-        message: 'Failed to check API key health',
-        details: { error: error instanceof Error ? error.message : 'Unknown error' },
+        severity: "critical",
+        category: "API Key Health",
+        message: "Failed to check API key health",
+        details: {
+          error: error instanceof Error ? error.message : "Unknown error",
+        },
         timestamp: new Date(),
-        actionRequired: 'Check API key manager system',
-        autoFixable: false
+        actionRequired: "Check API key manager system",
+        autoFixable: false,
       });
     }
 
@@ -276,49 +286,50 @@ export class AutoDetectionEngine {
     try {
       const integrityReport = LLMExecutionAuthority.validateSystemIntegrity();
 
-      if (integrityReport.status === 'critical') {
+      if (integrityReport.status === "critical") {
         detections.push({
           passed: false,
-          severity: 'emergency',
-          category: 'Execution Authority',
-          message: 'LLM Execution Authority in critical state',
+          severity: "emergency",
+          category: "Execution Authority",
+          message: "LLM Execution Authority in critical state",
           details: integrityReport,
           timestamp: new Date(),
-          actionRequired: 'Restart LLM Execution Authority system',
-          autoFixable: false
+          actionRequired: "Restart LLM Execution Authority system",
+          autoFixable: false,
         });
-      } else if (integrityReport.status === 'degraded') {
+      } else if (integrityReport.status === "degraded") {
         detections.push({
           passed: false,
-          severity: 'warning',
-          category: 'Execution Authority',
-          message: 'LLM Execution Authority degraded',
+          severity: "warning",
+          category: "Execution Authority",
+          message: "LLM Execution Authority degraded",
           details: integrityReport,
           timestamp: new Date(),
-          actionRequired: 'Check system components',
-          autoFixable: true
+          actionRequired: "Check system components",
+          autoFixable: true,
         });
       } else {
         detections.push({
           passed: true,
-          severity: 'info',
-          category: 'Execution Authority',
-          message: 'LLM Execution Authority healthy',
+          severity: "info",
+          category: "Execution Authority",
+          message: "LLM Execution Authority healthy",
           details: integrityReport,
-          timestamp: new Date()
+          timestamp: new Date(),
         });
       }
-
     } catch (error) {
       detections.push({
         passed: false,
-        severity: 'critical',
-        category: 'Execution Authority',
-        message: 'Failed to check Execution Authority health',
-        details: { error: error instanceof Error ? error.message : 'Unknown error' },
+        severity: "critical",
+        category: "Execution Authority",
+        message: "Failed to check Execution Authority health",
+        details: {
+          error: error instanceof Error ? error.message : "Unknown error",
+        },
         timestamp: new Date(),
-        actionRequired: 'Check LLM Execution Authority system',
-        autoFixable: false
+        actionRequired: "Check LLM Execution Authority system",
+        autoFixable: false,
       });
     }
 
@@ -340,22 +351,23 @@ export class AutoDetectionEngine {
 
       detections.push({
         passed: true,
-        severity: 'info',
-        category: 'Port & Process Health',
-        message: 'Development environment managed successfully',
-        timestamp: new Date()
+        severity: "info",
+        category: "Port & Process Health",
+        message: "Development environment managed successfully",
+        timestamp: new Date(),
       });
-
     } catch (error) {
       detections.push({
         passed: false,
-        severity: 'warning',
-        category: 'Port & Process Health',
-        message: 'Could not verify port and process health',
-        details: { error: error instanceof Error ? error.message : 'Unknown error' },
+        severity: "warning",
+        category: "Port & Process Health",
+        message: "Could not verify port and process health",
+        details: {
+          error: error instanceof Error ? error.message : "Unknown error",
+        },
         timestamp: new Date(),
-        actionRequired: 'Check development environment manager',
-        autoFixable: true
+        actionRequired: "Check development environment manager",
+        autoFixable: true,
       });
     }
 
@@ -375,34 +387,35 @@ export class AutoDetectionEngine {
       if (bypassAttempts > 0) {
         detections.push({
           passed: false,
-          severity: 'critical',
-          category: 'Security',
+          severity: "critical",
+          category: "Security",
           message: `${bypassAttempts} bypass attempts detected`,
           details: { bypassAttempts },
           timestamp: new Date(),
-          actionRequired: 'Review security logs and validate system integrity',
-          autoFixable: false
+          actionRequired: "Review security logs and validate system integrity",
+          autoFixable: false,
         });
       } else {
         detections.push({
           passed: true,
-          severity: 'info',
-          category: 'Security',
-          message: 'No bypass attempts detected',
-          timestamp: new Date()
+          severity: "info",
+          category: "Security",
+          message: "No bypass attempts detected",
+          timestamp: new Date(),
         });
       }
-
     } catch (error) {
       detections.push({
         passed: false,
-        severity: 'warning',
-        category: 'Security',
-        message: 'Failed to check bypass attempts',
-        details: { error: error instanceof Error ? error.message : 'Unknown error' },
+        severity: "warning",
+        category: "Security",
+        message: "Failed to check bypass attempts",
+        details: {
+          error: error instanceof Error ? error.message : "Unknown error",
+        },
         timestamp: new Date(),
-        actionRequired: 'Check security monitoring system',
-        autoFixable: false
+        actionRequired: "Check security monitoring system",
+        autoFixable: false,
       });
     }
 
@@ -418,10 +431,10 @@ export class AutoDetectionEngine {
     try {
       // Check if all core systems are properly loaded
       const coreSystemsCheck = {
-        apiKeyManager: typeof apiKeyManager !== 'undefined',
-        apiGuard: typeof APIGuard !== 'undefined',
-        executionAuthority: typeof LLMExecutionAuthority !== 'undefined',
-        executionVerifier: typeof ExecutionVerifier !== 'undefined'
+        apiKeyManager: typeof apiKeyManager !== "undefined",
+        apiGuard: typeof APIGuard !== "undefined",
+        executionAuthority: typeof LLMExecutionAuthority !== "undefined",
+        executionVerifier: typeof ExecutionVerifier !== "undefined",
       };
 
       const failedSystems = Object.entries(coreSystemsCheck)
@@ -431,35 +444,36 @@ export class AutoDetectionEngine {
       if (failedSystems.length > 0) {
         detections.push({
           passed: false,
-          severity: 'emergency',
-          category: 'System Integrity',
-          message: `Core systems not loaded: ${failedSystems.join(', ')}`,
+          severity: "emergency",
+          category: "System Integrity",
+          message: `Core systems not loaded: ${failedSystems.join(", ")}`,
           details: coreSystemsCheck,
           timestamp: new Date(),
-          actionRequired: 'Restart application and check system initialization',
-          autoFixable: false
+          actionRequired: "Restart application and check system initialization",
+          autoFixable: false,
         });
       } else {
         detections.push({
           passed: true,
-          severity: 'info',
-          category: 'System Integrity',
-          message: 'All core systems loaded successfully',
+          severity: "info",
+          category: "System Integrity",
+          message: "All core systems loaded successfully",
           details: coreSystemsCheck,
-          timestamp: new Date()
+          timestamp: new Date(),
         });
       }
-
     } catch (error) {
       detections.push({
         passed: false,
-        severity: 'critical',
-        category: 'System Integrity',
-        message: 'Failed to check system integrity',
-        details: { error: error instanceof Error ? error.message : 'Unknown error' },
+        severity: "critical",
+        category: "System Integrity",
+        message: "Failed to check system integrity",
+        details: {
+          error: error instanceof Error ? error.message : "Unknown error",
+        },
         timestamp: new Date(),
-        actionRequired: 'Check system initialization process',
-        autoFixable: false
+        actionRequired: "Check system initialization process",
+        autoFixable: false,
       });
     }
 
@@ -471,48 +485,63 @@ export class AutoDetectionEngine {
    */
   private startContinuousMonitoring(): void {
     // Feature Flag 체크
-    const monitoringEnabled = process.env.FEATURE_AUTO_DETECTION_MONITORING !== 'false';
+    const monitoringEnabled =
+      process.env.FEATURE_AUTO_DETECTION_MONITORING !== "false";
 
     if (!monitoringEnabled) {
-      console.log('⏸️ [AutoDetection] Auto-detection monitoring disabled by feature flag');
+      console.log(
+        "⏸️ [AutoDetection] Auto-detection monitoring disabled by feature flag",
+      );
       return;
     }
 
     // BackgroundTaskManager를 통해 interval 등록 (30초 → 5분으로 완화)
     backgroundTaskManager.registerInterval(
-      'auto-detection-monitoring',
+      "auto-detection-monitoring",
       async () => {
         try {
           const health = await this.performFullHealthCheck();
 
           // Log critical issues
-          if (health.overall === 'critical' || health.overall === 'emergency') {
-            console.error('🚨 [AutoDetection] CRITICAL SYSTEM HEALTH ISSUE DETECTED');
-            console.error(`Issues: ${health.summary.criticalIssues}, Warnings: ${health.summary.warnings}`);
+          if (health.overall === "critical" || health.overall === "emergency") {
+            console.error(
+              "🚨 [AutoDetection] CRITICAL SYSTEM HEALTH ISSUE DETECTED",
+            );
+            console.error(
+              `Issues: ${health.summary.criticalIssues}, Warnings: ${health.summary.warnings}`,
+            );
           }
         } catch (error) {
-          console.error('🚨 [AutoDetection] Health check failed:', error);
+          console.error("🚨 [AutoDetection] Health check failed:", error);
         }
       },
       300000, // 5분으로 완화 (30초는 너무 짧음)
-      { enabled: true, replace: true }
+      { enabled: true, replace: true },
     );
 
-    console.log('🔍 [AutoDetection] Continuous monitoring started (5min interval)');
+    console.log(
+      "🔍 [AutoDetection] Continuous monitoring started (5min interval)",
+    );
   }
 
   /**
    * 📊 전체 건강 상태 계산
    */
-  private calculateOverallHealth(detections: DetectionResult[]): SystemHealth['overall'] {
-    const emergencyIssues = detections.filter(d => d.severity === 'emergency').length;
-    const criticalIssues = detections.filter(d => d.severity === 'critical').length;
-    const warnings = detections.filter(d => d.severity === 'warning').length;
+  private calculateOverallHealth(
+    detections: DetectionResult[],
+  ): SystemHealth["overall"] {
+    const emergencyIssues = detections.filter(
+      (d) => d.severity === "emergency",
+    ).length;
+    const criticalIssues = detections.filter(
+      (d) => d.severity === "critical",
+    ).length;
+    const warnings = detections.filter((d) => d.severity === "warning").length;
 
-    if (emergencyIssues > 0) return 'emergency';
-    if (criticalIssues > 0) return 'critical';
-    if (warnings > 2) return 'degraded';
-    return 'healthy';
+    if (emergencyIssues > 0) return "emergency";
+    if (criticalIssues > 0) return "critical";
+    if (warnings > 2) return "degraded";
+    return "healthy";
   }
 
   /**
@@ -520,26 +549,34 @@ export class AutoDetectionEngine {
    */
   private generateRecommendations(detections: DetectionResult[]): string[] {
     const recommendations: string[] = [];
-    const issues = detections.filter(d => !d.passed);
+    const issues = detections.filter((d) => !d.passed);
 
-    if (issues.some(i => i.category === 'Mock Contamination')) {
-      recommendations.push('Check API key validity and LLM service connectivity');
+    if (issues.some((i) => i.category === "Mock Contamination")) {
+      recommendations.push(
+        "Check API key validity and LLM service connectivity",
+      );
     }
 
-    if (issues.some(i => i.category === 'API Key Health')) {
-      recommendations.push('Add redundant API keys to prevent service interruption');
+    if (issues.some((i) => i.category === "API Key Health")) {
+      recommendations.push(
+        "Add redundant API keys to prevent service interruption",
+      );
     }
 
-    if (issues.some(i => i.category === 'Security')) {
-      recommendations.push('Review security logs and validate system access controls');
+    if (issues.some((i) => i.category === "Security")) {
+      recommendations.push(
+        "Review security logs and validate system access controls",
+      );
     }
 
-    if (issues.some(i => i.category === 'System Integrity')) {
-      recommendations.push('Restart application and verify all core systems are initialized');
+    if (issues.some((i) => i.category === "System Integrity")) {
+      recommendations.push(
+        "Restart application and verify all core systems are initialized",
+      );
     }
 
     if (recommendations.length === 0) {
-      recommendations.push('System health looks good - continue monitoring');
+      recommendations.push("System health looks good - continue monitoring");
     }
 
     return recommendations;
@@ -549,13 +586,15 @@ export class AutoDetectionEngine {
    * 🚨 알림 트리거
    */
   private triggerAlert(result: DetectionResult): void {
-    console.error(`🚨 [AutoDetection] ALERT - ${result.category}: ${result.message}`);
+    console.error(
+      `🚨 [AutoDetection] ALERT - ${result.category}: ${result.message}`,
+    );
 
-    this.alertCallbacks.forEach(callback => {
+    this.alertCallbacks.forEach((callback) => {
       try {
         callback(result);
       } catch (error) {
-        console.error('Alert callback failed:', error);
+        console.error("Alert callback failed:", error);
       }
     });
   }
@@ -589,8 +628,8 @@ export class AutoDetectionEngine {
    * 모니터링 중지 (BackgroundTaskManager 사용)
    */
   stopMonitoring(): void {
-    backgroundTaskManager.unregister('auto-detection-monitoring');
-    console.log('🔍 [AutoDetection] Continuous monitoring stopped');
+    backgroundTaskManager.unregister("auto-detection-monitoring");
+    console.log("🔍 [AutoDetection] Continuous monitoring stopped");
   }
 
   /**
@@ -598,17 +637,17 @@ export class AutoDetectionEngine {
    */
   async checkCategory(category: string): Promise<DetectionResult[]> {
     switch (category) {
-      case 'Mock Contamination':
+      case "Mock Contamination":
         return this.detectSilentMockContamination();
-      case 'API Key Health':
+      case "API Key Health":
         return this.detectAPIKeyHealth();
-      case 'Execution Authority':
+      case "Execution Authority":
         return this.detectExecutionAuthorityHealth();
-      case 'Port & Process Health':
+      case "Port & Process Health":
         return this.detectPortAndProcessHealth();
-      case 'Security':
+      case "Security":
         return this.detectBypassAttempts();
-      case 'System Integrity':
+      case "System Integrity":
         return this.detectSystemIntegrityIssues();
       default:
         return [];
@@ -619,4 +658,4 @@ export class AutoDetectionEngine {
 // 싱글톤 인스턴스 export
 export const autoDetectionEngine = AutoDetectionEngine.getInstance();
 
-console.log('🔍 [AutoDetection] Auto-Detection Engine system loaded');
+console.log("🔍 [AutoDetection] Auto-Detection Engine system loaded");

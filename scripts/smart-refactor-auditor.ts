@@ -272,7 +272,9 @@ class SmartRefactorAuditor {
         console.log(`\n❌ Failed to apply fix for ${item.title}: ${error}`);
 
         // 실패 로그 저장 (if method exists)
-        if (typeof (this.stateManager as any).addAutoFixFailure === 'function') {
+        if (
+          typeof (this.stateManager as any).addAutoFixFailure === "function"
+        ) {
           (this.stateManager as any).addAutoFixFailure({
             id: item.id,
             title: item.title,
@@ -281,7 +283,7 @@ class SmartRefactorAuditor {
             reason: this.determineFailureReason(error),
             files: item.files,
             failedAt: new Date(),
-            canRetry: this.canRetryFix(item, error)
+            canRetry: this.canRetryFix(item, error),
           });
         }
       }
@@ -306,26 +308,30 @@ class SmartRefactorAuditor {
   private determineFailureReason(error: any): string {
     const errorMsg = String(error).toLowerCase();
 
-    if (errorMsg.includes('enoent') || errorMsg.includes('no such file')) {
-      return 'FILE_NOT_FOUND';
+    if (errorMsg.includes("enoent") || errorMsg.includes("no such file")) {
+      return "FILE_NOT_FOUND";
     }
-    if (errorMsg.includes('eacces') || errorMsg.includes('permission')) {
-      return 'PERMISSION_DENIED';
+    if (errorMsg.includes("eacces") || errorMsg.includes("permission")) {
+      return "PERMISSION_DENIED";
     }
-    if (errorMsg.includes('typescript') || errorMsg.includes('compilation')) {
-      return 'COMPILATION_ERROR';
+    if (errorMsg.includes("typescript") || errorMsg.includes("compilation")) {
+      return "COMPILATION_ERROR";
     }
-    if (errorMsg.includes('syntax') || errorMsg.includes('parse')) {
-      return 'SYNTAX_ERROR';
+    if (errorMsg.includes("syntax") || errorMsg.includes("parse")) {
+      return "SYNTAX_ERROR";
     }
-    if (errorMsg.includes('not implemented') || errorMsg.includes('todo')) {
-      return 'NOT_IMPLEMENTED';
+    if (errorMsg.includes("not implemented") || errorMsg.includes("todo")) {
+      return "NOT_IMPLEMENTED";
     }
-    if (errorMsg.includes('import') || errorMsg.includes('export') || errorMsg.includes('module')) {
-      return 'MODULE_RESOLUTION';
+    if (
+      errorMsg.includes("import") ||
+      errorMsg.includes("export") ||
+      errorMsg.includes("module")
+    ) {
+      return "MODULE_RESOLUTION";
     }
 
-    return 'UNKNOWN_ERROR';
+    return "UNKNOWN_ERROR";
   }
 
   /**
@@ -336,9 +342,9 @@ class SmartRefactorAuditor {
 
     // 재시도 불가능한 이유들
     const nonRetryableReasons = [
-      'PERMISSION_DENIED',
-      'NOT_IMPLEMENTED',
-      'SYNTAX_ERROR'
+      "PERMISSION_DENIED",
+      "NOT_IMPLEMENTED",
+      "SYNTAX_ERROR",
     ];
 
     return !nonRetryableReasons.includes(reason);
@@ -348,9 +354,10 @@ class SmartRefactorAuditor {
    * 자동 수정 실패 요약 출력
    */
   private displayAutoFixFailureSummary(): void {
-    const failures = (typeof (this.stateManager as any).getAutoFixFailures === 'function')
-      ? (this.stateManager as any).getAutoFixFailures()
-      : [];
+    const failures =
+      typeof (this.stateManager as any).getAutoFixFailures === "function"
+        ? (this.stateManager as any).getAutoFixFailures()
+        : [];
 
     if (failures.length === 0) {
       return;
@@ -362,7 +369,7 @@ class SmartRefactorAuditor {
     // 실패 원인별 그룹화
     const failuresByReason: Record<string, any[]> = {};
     failures.forEach((failure: any) => {
-      const reason = failure.reason || 'UNKNOWN';
+      const reason = failure.reason || "UNKNOWN";
       if (!failuresByReason[reason]) failuresByReason[reason] = [];
       failuresByReason[reason].push(failure);
     });
@@ -372,7 +379,9 @@ class SmartRefactorAuditor {
       const reasonLabel = this.getReasonLabel(reason);
 
       console.log(`\n❌ ${reasonLabel}: ${items.length}개`);
-      console.log(`   📁 Affected: ${items.map((i: any) => i.category).join(', ')}`);
+      console.log(
+        `   📁 Affected: ${items.map((i: any) => i.category).join(", ")}`,
+      );
       console.log(`   🔄 Can retry: ${retryCount}/${items.length}`);
 
       if (items.length <= 3) {
@@ -384,7 +393,9 @@ class SmartRefactorAuditor {
 
     const retryableCount = failures.filter((f: any) => f.canRetry).length;
     if (retryableCount > 0) {
-      console.log(`\n💡 Suggestion: ${retryableCount} failures can be retried after addressing root causes`);
+      console.log(
+        `\n💡 Suggestion: ${retryableCount} failures can be retried after addressing root causes`,
+      );
     }
   }
 
@@ -393,13 +404,13 @@ class SmartRefactorAuditor {
    */
   private getReasonLabel(reason: string): string {
     const labels: Record<string, string> = {
-      'FILE_NOT_FOUND': 'File Not Found',
-      'PERMISSION_DENIED': 'Permission Denied',
-      'COMPILATION_ERROR': 'TypeScript Compilation',
-      'SYNTAX_ERROR': 'Syntax Error',
-      'NOT_IMPLEMENTED': 'Feature Not Implemented',
-      'MODULE_RESOLUTION': 'Module Resolution',
-      'UNKNOWN_ERROR': 'Unknown Error'
+      FILE_NOT_FOUND: "File Not Found",
+      PERMISSION_DENIED: "Permission Denied",
+      COMPILATION_ERROR: "TypeScript Compilation",
+      SYNTAX_ERROR: "Syntax Error",
+      NOT_IMPLEMENTED: "Feature Not Implemented",
+      MODULE_RESOLUTION: "Module Resolution",
+      UNKNOWN_ERROR: "Unknown Error",
     };
 
     return labels[reason] || reason;

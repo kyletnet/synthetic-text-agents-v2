@@ -19,7 +19,9 @@ async function main() {
   if (ragComponents) {
     console.log("✅ RAG system initialized with document context capabilities");
   } else {
-    console.log("ℹ️  RAG system disabled (use FEATURE_RAG_CONTEXT=true to enable)");
+    console.log(
+      "ℹ️  RAG system disabled (use FEATURE_RAG_CONTEXT=true to enable)",
+    );
   }
 
   const orchestrator = new Orchestrator();

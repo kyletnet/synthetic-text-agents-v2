@@ -1,7 +1,7 @@
 #!/usr/bin/env tsx
 
-import { readFileSync, writeFileSync } from 'fs';
-import { execSync } from 'child_process';
+import { readFileSync, writeFileSync } from "fs";
+import { execSync } from "child_process";
 
 /**
  * ESLint 미사용 변수 일괄 수정 스크립트
@@ -17,16 +17,18 @@ interface UnusedVar {
 }
 
 function fixUnusedVars(): number {
-  console.log('🔧 미사용 변수 일괄 수정 시작...');
+  console.log("🔧 미사용 변수 일괄 수정 시작...");
 
   // ESLint 결과 파싱
-  const result = execSync('npm run lint:fix 2>&1 || true', { encoding: 'utf8' });
-  console.log('📊 ESLint 결과 분석 중...');
+  const result = execSync("npm run lint:fix 2>&1 || true", {
+    encoding: "utf8",
+  });
+  console.log("📊 ESLint 결과 분석 중...");
 
   const unusedVars: UnusedVar[] = [];
-  const lines = result.split('\n');
+  const lines = result.split("\n");
 
-  let currentFile = '';
+  let currentFile = "";
   for (const line of lines) {
     // 파일 경로 감지
     const fileMatch = line.match(/^\/Users\/.*\.ts$/);
@@ -36,14 +38,16 @@ function fixUnusedVars(): number {
     }
 
     // 미사용 변수 경고 감지
-    const unusedMatch = line.match(/\s*(\d+):(\d+)\s+warning\s+'(.+?)' is (defined but never used|assigned a value but never used)/);
+    const unusedMatch = line.match(
+      /\s*(\d+):(\d+)\s+warning\s+'(.+?)' is (defined but never used|assigned a value but never used)/,
+    );
     if (unusedMatch && currentFile) {
       unusedVars.push({
         file: currentFile,
         line: parseInt(unusedMatch[1]),
         column: parseInt(unusedMatch[2]),
         variable: unusedMatch[3],
-        ruleType: unusedMatch[4]
+        ruleType: unusedMatch[4],
       });
     }
   }
@@ -63,8 +67,8 @@ function fixUnusedVars(): number {
 
   for (const [filePath, vars] of fileGroups) {
     try {
-      const content = readFileSync(filePath, 'utf8');
-      const lines = content.split('\n');
+      const content = readFileSync(filePath, "utf8");
+      const lines = content.split("\n");
 
       // 라인 번호로 역순 정렬 (뒤에서부터 수정해야 라인 번호가 안 깨짐)
       vars.sort((a, b) => b.line - a.line);
@@ -77,34 +81,38 @@ function fixUnusedVars(): number {
         let newLine = originalLine;
 
         // catch (error) -> catch (_error)
-        if (unused.variable === 'error' && originalLine.includes('catch')) {
-          newLine = originalLine.replace(/catch\s*\(\s*error\s*\)/, 'catch (_error)');
+        if (unused.variable === "error" && originalLine.includes("catch")) {
+          newLine = originalLine.replace(
+            /catch\s*\(\s*error\s*\)/,
+            "catch (_error)",
+          );
         }
         // } catch (e) -> } catch (_e)
-        else if (unused.variable === 'e' && originalLine.includes('catch')) {
-          newLine = originalLine.replace(/catch\s*\(\s*e\s*\)/, 'catch (_e)');
+        else if (unused.variable === "e" && originalLine.includes("catch")) {
+          newLine = originalLine.replace(/catch\s*\(\s*e\s*\)/, "catch (_e)");
         }
         // 함수 매개변수나 일반 변수의 경우
         else {
           // const variable = -> const _variable =
           newLine = newLine.replace(
-            new RegExp(`\\b${unused.variable}\\b(?=\\s*[=:,)])`, 'g'),
-            `_${unused.variable}`
+            new RegExp(`\\b${unused.variable}\\b(?=\\s*[=:,)])`, "g"),
+            `_${unused.variable}`,
           );
         }
 
         if (newLine !== originalLine) {
           lines[lineIndex] = newLine;
           fixedCount++;
-          console.log(`  ✓ ${filePath.split('/').pop()}:${unused.line} - ${unused.variable} -> _${unused.variable}`);
+          console.log(
+            `  ✓ ${filePath.split("/").pop()}:${unused.line} - ${unused.variable} -> _${unused.variable}`,
+          );
         }
       }
 
       // 파일 저장
       if (vars.length > 0) {
-        writeFileSync(filePath, lines.join('\n'));
+        writeFileSync(filePath, lines.join("\n"));
       }
-
     } catch (error) {
       console.log(`  ❌ ${filePath} 수정 실패: ${error}`);
     }

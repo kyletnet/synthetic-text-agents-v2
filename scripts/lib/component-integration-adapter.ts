@@ -6,8 +6,14 @@
  * without requiring complete rewrites
  */
 
-import { coreSystemHub, ComponentId, UnifiedMessage, ComponentStatus, Operation } from './core-system-hub.js';
-import { performance } from 'perf_hooks';
+import {
+  coreSystemHub,
+  ComponentId,
+  UnifiedMessage,
+  ComponentStatus,
+  Operation,
+} from "./core-system-hub.js";
+import { performance } from "perf_hooks";
 
 export interface LegacyComponent {
   name: string;
@@ -46,34 +52,42 @@ export abstract class ComponentAdapter {
     // Register with the hub
     const status: ComponentStatus = {
       id: this.componentId,
-      status: 'healthy',
+      status: "healthy",
       lastHeartbeat: new Date(),
       version: this.config.version,
       capabilities: this.config.capabilities,
-      dependencies: this.config.dependencies
+      dependencies: this.config.dependencies,
     };
 
     coreSystemHub.registerComponent(status);
 
     // Set up message listeners
-    coreSystemHub.on(`message:${this.componentId}`, this.handleMessage.bind(this));
-    coreSystemHub.on(`operation:execute:${this.componentId}`, this.handleOperation.bind(this));
-    coreSystemHub.on('message:broadcast', this.handleBroadcast.bind(this));
+    coreSystemHub.on(
+      `message:${this.componentId}`,
+      this.handleMessage.bind(this),
+    );
+    coreSystemHub.on(
+      `operation:execute:${this.componentId}`,
+      this.handleOperation.bind(this),
+    );
+    coreSystemHub.on("message:broadcast", this.handleBroadcast.bind(this));
 
     // Start health monitoring
     this.startHealthCheck();
 
-    console.log(`🔌 Component ${this.componentId} integrated with Core System Hub`);
+    console.log(
+      `🔌 Component ${this.componentId} integrated with Core System Hub`,
+    );
   }
 
   /**
    * Send message to other components or broadcast
    */
   protected async sendMessage(
-    target: ComponentId | 'broadcast',
-    type: 'request' | 'response' | 'event' | 'metric',
+    target: ComponentId | "broadcast",
+    type: "request" | "response" | "event" | "metric",
     payload: unknown,
-    priority: 'P0' | 'P1' | 'P2' = 'P1'
+    priority: "P0" | "P1" | "P2" = "P1",
   ): Promise<void> {
     const message: UnifiedMessage = {
       source: this.componentId,
@@ -82,7 +96,7 @@ export abstract class ComponentAdapter {
       priority,
       payload,
       correlation: this.generateCorrelationId(),
-      timestamp: new Date()
+      timestamp: new Date(),
     };
 
     await coreSystemHub.sendMessage(message);
@@ -92,21 +106,21 @@ export abstract class ComponentAdapter {
    * Request operation from the hub
    */
   protected async requestOperation(
-    type: 'maintenance' | 'analysis' | 'optimization' | 'evolution',
+    type: "maintenance" | "analysis" | "optimization" | "evolution",
     participants: ComponentId[],
-    metadata: Record<string, unknown> = {}
+    metadata: Record<string, unknown> = {},
   ): Promise<string> {
     const operation: Operation = {
       id: this.generateOperationId(),
       type,
       initiator: this.componentId,
       participants,
-      status: 'pending',
+      status: "pending",
       startTime: new Date(),
       metadata: {
         ...metadata,
-        requestedBy: this.componentId
-      }
+        requestedBy: this.componentId,
+      },
     };
 
     return await coreSystemHub.startOperation(operation);
@@ -118,18 +132,25 @@ export abstract class ComponentAdapter {
   protected reportMetrics(metrics: Record<string, number>): void {
     if (!this.config.enableMetrics) return;
 
-    this.sendMessage('broadcast', 'metric', {
-      component: this.componentId,
-      timestamp: new Date(),
-      metrics
-    }, 'P2');
+    this.sendMessage(
+      "broadcast",
+      "metric",
+      {
+        component: this.componentId,
+        timestamp: new Date(),
+        metrics,
+      },
+      "P2",
+    );
   }
 
   /**
    * Handle incoming messages - override in subclasses
    */
   protected async handleMessage(message: UnifiedMessage): Promise<void> {
-    console.log(`📨 ${this.componentId} received message from ${message.source}`);
+    console.log(
+      `📨 ${this.componentId} received message from ${message.source}`,
+    );
     // Default implementation - override in subclasses
   }
 
@@ -140,7 +161,9 @@ export abstract class ComponentAdapter {
     const startTime = performance.now();
 
     try {
-      console.log(`⚙️ ${this.componentId} executing operation: ${operation.type}`);
+      console.log(
+        `⚙️ ${this.componentId} executing operation: ${operation.type}`,
+      );
 
       // Execute the operation - subclasses should override this
       await this.executeOperation(operation);
@@ -148,24 +171,33 @@ export abstract class ComponentAdapter {
       this.operationCount++;
 
       // Report success
-      await this.sendMessage(operation.initiator, 'response', {
-        operationId: operation.id,
-        status: 'completed',
-        duration: performance.now() - startTime,
-        executor: this.componentId
-      }, operation.metadata.priority as 'P0' | 'P1' | 'P2');
-
+      await this.sendMessage(
+        operation.initiator,
+        "response",
+        {
+          operationId: operation.id,
+          status: "completed",
+          duration: performance.now() - startTime,
+          executor: this.componentId,
+        },
+        operation.metadata.priority as "P0" | "P1" | "P2",
+      );
     } catch (error) {
       this.errorCount++;
 
       // Report failure
-      await this.sendMessage(operation.initiator, 'response', {
-        operationId: operation.id,
-        status: 'failed',
-        error: error instanceof Error ? error.message : String(error),
-        duration: performance.now() - startTime,
-        executor: this.componentId
-      }, 'P0'); // Failures are always high priority
+      await this.sendMessage(
+        operation.initiator,
+        "response",
+        {
+          operationId: operation.id,
+          status: "failed",
+          error: error instanceof Error ? error.message : String(error),
+          duration: performance.now() - startTime,
+          executor: this.componentId,
+        },
+        "P0",
+      ); // Failures are always high priority
     }
   }
 
@@ -174,8 +206,10 @@ export abstract class ComponentAdapter {
    */
   protected async handleBroadcast(message: UnifiedMessage): Promise<void> {
     // Default implementation - can be overridden
-    if (message.type === 'event' && message.payload) {
-      console.log(`📢 ${this.componentId} received broadcast from ${message.source}`);
+    if (message.type === "event" && message.payload) {
+      console.log(
+        `📢 ${this.componentId} received broadcast from ${message.source}`,
+      );
     }
   }
 
@@ -194,8 +228,9 @@ export abstract class ComponentAdapter {
       this.reportMetrics({
         operationCount: this.operationCount,
         errorCount: this.errorCount,
-        errorRate: this.operationCount > 0 ? this.errorCount / this.operationCount : 0,
-        uptime: process.uptime()
+        errorRate:
+          this.operationCount > 0 ? this.errorCount / this.operationCount : 0,
+        uptime: process.uptime(),
       });
     }, interval);
   }
@@ -225,14 +260,18 @@ export abstract class ComponentAdapter {
 export class LegacyComponentWrapper extends ComponentAdapter {
   private legacyComponent: LegacyComponent;
 
-  constructor(legacyComponent: LegacyComponent, config: Partial<IntegrationConfig>) {
+  constructor(
+    legacyComponent: LegacyComponent,
+    config: Partial<IntegrationConfig>,
+  ) {
     const fullConfig: IntegrationConfig = {
-      componentId: config.componentId || legacyComponent.name as ComponentId,
-      version: config.version || '1.0.0',
-      capabilities: config.capabilities || legacyComponent.capabilities || ['general'],
+      componentId: config.componentId || (legacyComponent.name as ComponentId),
+      version: config.version || "1.0.0",
+      capabilities: config.capabilities ||
+        legacyComponent.capabilities || ["general"],
       dependencies: config.dependencies || [],
       healthCheckInterval: config.healthCheckInterval || 30000,
-      enableMetrics: config.enableMetrics ?? true
+      enableMetrics: config.enableMetrics ?? true,
     };
 
     super(fullConfig);
@@ -258,18 +297,18 @@ export class LegacyComponentWrapper extends ComponentAdapter {
 export class ComponentIntegrationFactory {
   static wrapLegacyComponent(
     component: LegacyComponent,
-    config: Partial<IntegrationConfig>
+    config: Partial<IntegrationConfig>,
   ): LegacyComponentWrapper {
     return new LegacyComponentWrapper(component, config);
   }
 
   static createAdapter(config: IntegrationConfig): ComponentAdapter {
-    return new class extends ComponentAdapter {
+    return new (class extends ComponentAdapter {
       protected async executeOperation(operation: Operation): Promise<void> {
         // Basic implementation - can be customized
         console.log(`Executing ${operation.type} operation`);
       }
-    }(config);
+    })(config);
   }
 
   /**
@@ -279,7 +318,7 @@ export class ComponentIntegrationFactory {
     components: Array<{
       component: LegacyComponent;
       config: Partial<IntegrationConfig>;
-    }>
+    }>,
   ): Promise<LegacyComponentWrapper[]> {
     const wrappers: LegacyComponentWrapper[] = [];
 
@@ -288,7 +327,7 @@ export class ComponentIntegrationFactory {
       wrappers.push(wrapper);
 
       // Small delay to avoid overwhelming the system
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 100));
     }
 
     console.log(`🔄 Integrated ${wrappers.length} legacy components`);

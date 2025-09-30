@@ -7,17 +7,17 @@
  * - 자동 감지 결과 및 권장사항
  */
 
-import { NextRequest, NextResponse } from 'next/server';
-import { autoDetectionEngine } from '../../../../lib/auto-detection-engine';
+import { NextRequest, NextResponse } from "next/server";
+import { autoDetectionEngine } from "../../../../lib/auto-detection-engine";
 
 // 🛡️ API Guard 적용
-import { withAPIGuard } from '../../../../lib/api-guard';
+import { withAPIGuard } from "../../../../lib/api-guard";
 
 async function healthHandler(request: NextRequest) {
   try {
     const url = new URL(request.url);
-    const category = url.searchParams.get('category');
-    const history = url.searchParams.get('history') === 'true';
+    const category = url.searchParams.get("category");
+    const history = url.searchParams.get("history") === "true";
 
     // 특정 카테고리만 검사하는 경우
     if (category) {
@@ -26,7 +26,7 @@ async function healthHandler(request: NextRequest) {
         success: true,
         category,
         results: categoryResults,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     }
 
@@ -36,7 +36,7 @@ async function healthHandler(request: NextRequest) {
       return NextResponse.json({
         success: true,
         history: detectionHistory.slice(-50), // 최근 50개만
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     }
 
@@ -46,20 +46,19 @@ async function healthHandler(request: NextRequest) {
     return NextResponse.json({
       success: true,
       health: systemHealth,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
-
   } catch (error) {
-    console.error('🚨 [Health API] Error performing health check:', error);
+    console.error("🚨 [Health API] Error performing health check:", error);
 
     return NextResponse.json(
       {
         success: false,
-        error: 'Health check failed',
-        details: error instanceof Error ? error.message : 'Unknown error',
-        timestamp: new Date().toISOString()
+        error: "Health check failed",
+        details: error instanceof Error ? error.message : "Unknown error",
+        timestamp: new Date().toISOString(),
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

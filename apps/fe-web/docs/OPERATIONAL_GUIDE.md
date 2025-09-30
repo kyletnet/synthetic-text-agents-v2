@@ -76,14 +76,10 @@ curl http://localhost:3001/api/status | jq '{issues, recommendations}'
 {
   "status": "warning",
   "selfHealing": {
-    "consecutiveFailures": 5  // ⚠️ 10에 가까워짐
+    "consecutiveFailures": 5 // ⚠️ 10에 가까워짐
   },
-  "issues": [
-    "WARNING: Self-Healing has 5 consecutive failures"
-  ],
-  "recommendations": [
-    "System approaching Dormant Mode threshold (10 failures)"
-  ]
+  "issues": ["WARNING: Self-Healing has 5 consecutive failures"],
+  "recommendations": ["System approaching Dormant Mode threshold (10 failures)"]
 }
 ```
 
@@ -93,22 +89,18 @@ curl http://localhost:3001/api/status | jq '{issues, recommendations}'
 {
   "status": "critical",
   "selfHealing": {
-    "isDormant": true,  // 🚨 Dormant Mode
+    "isDormant": true, // 🚨 Dormant Mode
     "dormantReason": "Exceeded maximum consecutive failures (10)"
   },
   "circuitBreakers": [
     {
       "name": "self-healing-main",
-      "state": "PERMANENT_OPEN",  // 🚨 영구 차단
+      "state": "PERMANENT_OPEN", // 🚨 영구 차단
       "permanentOpenReason": "Exceeded permanent failure threshold"
     }
   ],
-  "issues": [
-    "CRITICAL: Self-Healing Engine in DORMANT mode"
-  ],
-  "recommendations": [
-    "Call POST /api/system/heal/resume with valid reason"
-  ]
+  "issues": ["CRITICAL: Self-Healing Engine in DORMANT mode"],
+  "recommendations": ["Call POST /api/system/heal/resume with valid reason"]
 }
 ```
 
@@ -155,6 +147,7 @@ curl http://localhost:3001/api/status | jq '.llm.keyManagement'
 ```
 
 **해결책**:
+
 ```bash
 # 환경변수에 API key 추가
 export ANTHROPIC_API_KEY="sk-ant-api03-..."
@@ -192,9 +185,9 @@ curl -X POST http://localhost:3001/api/system/heal/resume \
 
 ```typescript
 // Node.js REPL 또는 서버 코드에서
-import { selfHealingEngine } from './lib/self-healing-engine';
+import { selfHealingEngine } from "./lib/self-healing-engine";
 
-selfHealingEngine.resumeFromDormant('Valid API keys restored');
+selfHealingEngine.resumeFromDormant("Valid API keys restored");
 // ✅ Returns: true
 ```
 
@@ -241,11 +234,13 @@ watch -n 60 'curl -s http://localhost:3001/api/status | jq "{status, selfHealing
 ```
 
 **정상 시나리오**:
+
 ```
 consecutiveFailures: 0 → 0 → 0 (유지)
 ```
 
 **비정상 시나리오**:
+
 ```
 consecutiveFailures: 0 → 1 → 2 → 3  (증가 중)
 → Step 2로 돌아가서 근본 원인 재확인 필요
@@ -264,25 +259,25 @@ curl http://localhost:3001/api/status | jq '.circuitBreakers'
 
 ### 상태별 의미
 
-| 상태 | 의미 | 조치 |
-|------|------|------|
-| `CLOSED` | 정상 | 없음 |
-| `OPEN` | 임시 차단 (1분) | 1분 후 자동 복구 시도 |
-| `HALF_OPEN` | 복구 시도 중 | 모니터링만 |
-| `PERMANENT_OPEN` | 영구 차단 | **수동 리셋 필수** |
+| 상태             | 의미            | 조치                  |
+| ---------------- | --------------- | --------------------- |
+| `CLOSED`         | 정상            | 없음                  |
+| `OPEN`           | 임시 차단 (1분) | 1분 후 자동 복구 시도 |
+| `HALF_OPEN`      | 복구 시도 중    | 모니터링만            |
+| `PERMANENT_OPEN` | 영구 차단       | **수동 리셋 필수**    |
 
 ### PERMANENT_OPEN 수동 리셋
 
 ```typescript
-import { circuitBreakerRegistry } from './lib/circuit-breaker';
+import { circuitBreakerRegistry } from "./lib/circuit-breaker";
 
 // Circuit Breaker 찾기
-const breaker = circuitBreakerRegistry.get('self-healing-main');
+const breaker = circuitBreakerRegistry.get("self-healing-main");
 
 // 강제 리셋 (force=true 필수)
 breaker.reset(true);
 
-console.log('Circuit Breaker reset:', breaker.getState());
+console.log("Circuit Breaker reset:", breaker.getState());
 ```
 
 ### ⚠️ 주의사항
@@ -309,10 +304,10 @@ curl http://localhost:3001/api/status | jq '.backgroundTasks.tasks'
 ### Task 정리 방법
 
 ```typescript
-import { backgroundTaskManager } from './lib/background-task-manager';
+import { backgroundTaskManager } from "./lib/background-task-manager";
 
 // 특정 task 해제
-backgroundTaskManager.unregister('task-id');
+backgroundTaskManager.unregister("task-id");
 
 // 모든 task 정리 (비상 시)
 backgroundTaskManager.cleanup();
@@ -390,6 +385,7 @@ echo "FEATURE_AUTO_HEALING_ENABLED=true" >> .env.local
 ### 문제 1: "Self-Healing이 멈췄어요"
 
 **증상**:
+
 ```bash
 curl http://localhost:3001/api/status | jq '.selfHealing.isDormant'
 # true
@@ -402,6 +398,7 @@ curl http://localhost:3001/api/status | jq '.selfHealing.isDormant'
 ### 문제 2: "API 키가 있는데도 실패해요"
 
 **진단**:
+
 ```bash
 # 1. API 키 상태 확인
 curl http://localhost:3001/api/status | jq '.llm.keyManagement'
@@ -414,6 +411,7 @@ curl http://localhost:3001/api/status | jq '.issues'
 ```
 
 **가능한 원인**:
+
 - API 키가 유효하지 않음 (Anthropic 콘솔에서 확인)
 - Rate limit 초과
 - Circuit Breaker가 OPEN 상태
@@ -423,6 +421,7 @@ curl http://localhost:3001/api/status | jq '.issues'
 ### 문제 3: "Background task가 20개 이상이에요"
 
 **긴급 조치**:
+
 ```bash
 # 서버 재시작 (HMR cleanup 실행됨)
 # Ctrl+C 후 npm run dev
@@ -437,6 +436,7 @@ curl http://localhost:3001/api/status | jq '.issues'
 ### 문제 4: "consecutiveFailures가 계속 증가해요"
 
 **진단**:
+
 ```bash
 # Backoff delay 확인
 curl http://localhost:3001/api/status | jq '.selfHealing.backoffDelay'
@@ -447,6 +447,7 @@ curl http://localhost:3001/api/status | jq '.circuitBreakers[] | select(.name ==
 ```
 
 **조치**:
+
 1. API 키 유효성 재확인
 2. Anthropic API 서비스 상태 확인 (status.anthropic.com)
 3. 네트워크 연결 확인
@@ -458,6 +459,7 @@ curl http://localhost:3001/api/status | jq '.circuitBreakers[] | select(.name ==
 ### 🔥 레벨 1: Dormant Mode 진입 (CRITICAL)
 
 **1분 안에 해야 할 것**:
+
 ```bash
 # 1. 상태 확인
 curl http://localhost:3001/api/status | jq '{status, selfHealing: .selfHealing.isDormant, issues}'
@@ -470,6 +472,7 @@ echo "FEATURE_AUTO_HEALING_ENABLED=false" >> .env.local
 ```
 
 **5분 안에 해야 할 것**:
+
 ```bash
 # 1. 근본 원인 파악
 curl http://localhost:3001/api/status | jq '{issues, recommendations}'

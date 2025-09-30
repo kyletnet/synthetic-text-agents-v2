@@ -49,6 +49,7 @@ Profile: stage
 **지연시간**: P50 202ms, P95 241ms
 
 **주요 지표 현황**:
+
 - 🔥 **P2 이슈**: 엔티티 커버리지 33.6% (목표 50.0%)
 - ✅ PII/라이선스 위반: 0건
 - ✅ 환각률: 0.00%
@@ -68,16 +69,19 @@ Profile: stage
 ### P2 급함 이슈 해결
 
 **1. 엔티티 커버리지 개선 (33.6% → 50%+)**
+
 - 문제: 중요 엔티티 커버리지가 목표치 미달
 - 해결: Diversity Planner 에이전트 개선으로 엔티티 추출 범위 확대
 - 우선순위: HIGH (P2)
 
 **2. 질문 유형 다양성 확보**
+
 - 문제: comparison(10%), inference(2%)만 활용, factual/analytical/procedural/comparative 누락
 - 해결: Question Type Distribution 패턴 매핑 재조정
 - 우선순위: MEDIUM (P2)
 
 **3. Evidence Quality 개선**
+
 - 문제: Snippet Alignment 17.9% (목표 60%+)
 - 해결: Evidence-Answer 정렬 알고리즘 개선
 - 우선순위: HIGH (P2)
@@ -106,12 +110,14 @@ Profile: stage
 ### 🛠️ 우선 해야 할 일
 
 **Phase 3.1: 기본 웹 인터페이스**
+
 - Next.js 기반 웹 콘솔 구축
   - 베이스라인 리포트 실시간 조회
   - 품질 지표 트렌드 시각화 (엔티티 커버리지, 질문 유형 분포)
   - P2 이슈 알림 및 해결 진행 상황 추적
 
 **Phase 3.2: 문서 업로드 & 전문가 피드백**
+
 - 드래그앤드롭 문서 업로드 인터페이스
 - 전문가 피드백 수집 시스템
 - QA 데이터셋 증강 워크플로우

@@ -8,9 +8,9 @@ interface Recommendation {
   title: string;
   description: string;
   command?: string;
-  riskLevel: 'low' | 'medium' | 'high';
+  riskLevel: "low" | "medium" | "high";
   autoExecutable: boolean;
-  category: 'fix' | 'improve' | 'optimize' | 'security';
+  category: "fix" | "improve" | "optimize" | "security";
 }
 
 interface RecommendationSession {
@@ -29,7 +29,7 @@ export class InteractiveRecommendationHandler {
   constructor() {
     this.rl = readline.createInterface({
       input: process.stdin,
-      output: process.stdout
+      output: process.stdout,
     });
   }
 
@@ -42,38 +42,40 @@ export class InteractiveRecommendationHandler {
     failed: Recommendation[];
   }> {
     console.log(`\\n🎯 ${session.source} - Interactive Recommendations`);
-    console.log('════════════════════════════════════════════════════════════');
+    console.log("════════════════════════════════════════════════════════════");
 
     if (session.recommendations.length === 0) {
-      console.log('✅ No recommendations needed!');
+      console.log("✅ No recommendations needed!");
       this.rl.close();
       return { executed: [], skipped: [], failed: [] };
     }
 
     // Auto-execute low risk recommendations first
-    const autoExecutable = session.recommendations.filter(r =>
-      r.autoExecutable && r.riskLevel === 'low' && r.command
+    const autoExecutable = session.recommendations.filter(
+      (r) => r.autoExecutable && r.riskLevel === "low" && r.command,
     );
 
-    const manualReview = session.recommendations.filter(r =>
-      !r.autoExecutable || r.riskLevel !== 'low' || !r.command
+    const manualReview = session.recommendations.filter(
+      (r) => !r.autoExecutable || r.riskLevel !== "low" || !r.command,
     );
 
     const result = {
       executed: [] as Recommendation[],
       skipped: [] as Recommendation[],
-      failed: [] as Recommendation[]
+      failed: [] as Recommendation[],
     };
 
     // Phase 1: Auto-execute safe recommendations
     if (autoExecutable.length > 0) {
-      console.log(`\\n🤖 Auto-executing ${autoExecutable.length} safe recommendations...`);
+      console.log(
+        `\\n🤖 Auto-executing ${autoExecutable.length} safe recommendations...`,
+      );
 
       for (const rec of autoExecutable) {
         try {
           console.log(`   ⚡ ${rec.title}`);
           if (rec.command) {
-            execSync(rec.command, { stdio: 'pipe' });
+            execSync(rec.command, { stdio: "pipe" });
             result.executed.push(rec);
           }
         } catch (error) {
@@ -85,7 +87,9 @@ export class InteractiveRecommendationHandler {
 
     // Phase 2: Interactive review for everything else
     if (manualReview.length > 0) {
-      console.log(`\\n👤 ${manualReview.length} recommendations need your review:`);
+      console.log(
+        `\\n👤 ${manualReview.length} recommendations need your review:`,
+      );
 
       if (session.showInstructions !== false) {
         console.log(`\\n💡 Options for each recommendation:`);
@@ -98,14 +102,18 @@ export class InteractiveRecommendationHandler {
 
       for (let i = 0; i < manualReview.length; i++) {
         const rec = manualReview[i];
-        const choice = await this.promptForRecommendation(rec, i + 1, manualReview.length);
+        const choice = await this.promptForRecommendation(
+          rec,
+          i + 1,
+          manualReview.length,
+        );
 
         switch (choice) {
-          case 'execute':
+          case "execute":
             if (rec.command) {
               try {
                 console.log(`   ⚡ Executing: ${rec.title}`);
-                execSync(rec.command, { stdio: 'inherit' });
+                execSync(rec.command, { stdio: "inherit" });
                 result.executed.push(rec);
               } catch (error) {
                 console.log(`   ❌ Execution failed: ${rec.title}`);
@@ -116,16 +124,16 @@ export class InteractiveRecommendationHandler {
               result.skipped.push(rec);
             }
             break;
-          case 'skip':
+          case "skip":
             result.skipped.push(rec);
             break;
-          case 'executeAll':
+          case "executeAll":
             // Execute current and all remaining
             for (const remainingRec of manualReview.slice(i)) {
               if (remainingRec.command) {
                 try {
                   console.log(`   ⚡ Executing: ${remainingRec.title}`);
-                  execSync(remainingRec.command, { stdio: 'inherit' });
+                  execSync(remainingRec.command, { stdio: "inherit" });
                   result.executed.push(remainingRec);
                 } catch (error) {
                   console.log(`   ❌ Failed: ${remainingRec.title}`);
@@ -136,12 +144,12 @@ export class InteractiveRecommendationHandler {
               }
             }
             break;
-          case 'skipAll':
+          case "skipAll":
             result.skipped.push(...manualReview.slice(i));
             break;
         }
 
-        if (choice === 'executeAll' || choice === 'skipAll') break;
+        if (choice === "executeAll" || choice === "skipAll") break;
       }
     }
 
@@ -153,13 +161,22 @@ export class InteractiveRecommendationHandler {
   private async promptForRecommendation(
     rec: Recommendation,
     current: number,
-    total: number
-  ): Promise<'execute' | 'skip' | 'executeAll' | 'skipAll' | 'details'> {
-    const riskIcon = { low: '💡', medium: '⚠️', high: '🚨' }[rec.riskLevel];
-    const categoryIcon = { fix: '🔧', improve: '⚡', optimize: '🚀', security: '🛡️' }[rec.category];
+    total: number,
+  ): Promise<"execute" | "skip" | "executeAll" | "skipAll" | "details"> {
+    const riskIcon = { low: "💡", medium: "⚠️", high: "🚨" }[rec.riskLevel];
+    const categoryIcon = {
+      fix: "🔧",
+      improve: "⚡",
+      optimize: "🚀",
+      security: "🛡️",
+    }[rec.category];
 
-    console.log(`\\n─────────────────────────────────────────────────────────────`);
-    console.log(`📋 Recommendation ${current}/${total}: ${categoryIcon} ${riskIcon} ${rec.title}`);
+    console.log(
+      `\\n─────────────────────────────────────────────────────────────`,
+    );
+    console.log(
+      `📋 Recommendation ${current}/${total}: ${categoryIcon} ${riskIcon} ${rec.title}`,
+    );
     console.log(`📝 ${rec.description}`);
 
     if (rec.command) {
@@ -171,35 +188,37 @@ export class InteractiveRecommendationHandler {
     console.log(`🔍 Risk: ${rec.riskLevel.toUpperCase()}`);
 
     return new Promise((resolve) => {
-      this.rl.question('\\nChoice (y/n/A/S/?): ', (answer) => {
+      this.rl.question("\\nChoice (y/n/A/S/?): ", (answer) => {
         switch (answer.toLowerCase()) {
-          case 'y':
-          case 'yes':
-            resolve('execute');
+          case "y":
+          case "yes":
+            resolve("execute");
             break;
-          case 'n':
-          case 'no':
-            resolve('skip');
+          case "n":
+          case "no":
+            resolve("skip");
             break;
-          case 'a':
-          case 'all':
-            resolve('executeAll');
+          case "a":
+          case "all":
+            resolve("executeAll");
             break;
-          case 's':
-          case 'skipall':
-            resolve('skipAll');
+          case "s":
+          case "skipall":
+            resolve("skipAll");
             break;
-          case '?':
-          case 'help':
+          case "?":
+          case "help":
             console.log(`\\n📖 Detailed Information:`);
             console.log(`   ID: ${rec.id}`);
             console.log(`   Category: ${rec.category}`);
-            console.log(`   Auto-executable: ${rec.autoExecutable ? 'Yes' : 'No'}`);
+            console.log(
+              `   Auto-executable: ${rec.autoExecutable ? "Yes" : "No"}`,
+            );
             console.log(`   Risk Level: ${rec.riskLevel}`);
             resolve(this.promptForRecommendation(rec, current, total));
             break;
           default:
-            console.log('Please enter y, n, A, S, or ?');
+            console.log("Please enter y, n, A, S, or ?");
             resolve(this.promptForRecommendation(rec, current, total));
         }
       });
@@ -207,25 +226,31 @@ export class InteractiveRecommendationHandler {
   }
 
   private printSummary(
-    result: { executed: Recommendation[]; skipped: Recommendation[]; failed: Recommendation[] },
-    source: string
+    result: {
+      executed: Recommendation[];
+      skipped: Recommendation[];
+      failed: Recommendation[];
+    },
+    source: string,
   ): void {
     console.log(`\\n🎯 ${source} - Session Summary`);
-    console.log('════════════════════════════════════════════════════════════');
+    console.log("════════════════════════════════════════════════════════════");
     console.log(`✅ Executed: ${result.executed.length}`);
     console.log(`⏸️ Skipped: ${result.skipped.length}`);
     console.log(`❌ Failed: ${result.failed.length}`);
 
-    const total = result.executed.length + result.skipped.length + result.failed.length;
-    const successRate = total > 0 ? Math.round((result.executed.length / total) * 100) : 100;
+    const total =
+      result.executed.length + result.skipped.length + result.failed.length;
+    const successRate =
+      total > 0 ? Math.round((result.executed.length / total) * 100) : 100;
     console.log(`\\n📈 Success Rate: ${successRate}%`);
 
     if (result.failed.length > 0) {
       console.log(`\\n❌ Failed recommendations:`);
-      result.failed.forEach(rec => console.log(`   - ${rec.title}`));
+      result.failed.forEach((rec) => console.log(`   - ${rec.title}`));
     }
 
-    console.log('\\n🚀 Interactive recommendation session complete!');
+    console.log("\\n🚀 Interactive recommendation session complete!");
   }
 
   /**
@@ -233,12 +258,12 @@ export class InteractiveRecommendationHandler {
    */
   static async handleQuickRecommendations(
     source: string,
-    recommendations: Recommendation[]
+    recommendations: Recommendation[],
   ) {
     const handler = new InteractiveRecommendationHandler();
     return await handler.handleRecommendations({
       source,
-      recommendations
+      recommendations,
     });
   }
 
@@ -251,19 +276,21 @@ export class InteractiveRecommendationHandler {
     description: string,
     options: {
       command?: string;
-      riskLevel?: 'low' | 'medium' | 'high';
-      category?: 'fix' | 'improve' | 'optimize' | 'security';
+      riskLevel?: "low" | "medium" | "high";
+      category?: "fix" | "improve" | "optimize" | "security";
       autoExecutable?: boolean;
-    } = {}
+    } = {},
   ): Recommendation {
     return {
       id,
       title,
       description,
       command: options.command,
-      riskLevel: options.riskLevel || 'medium',
-      category: options.category || 'improve',
-      autoExecutable: options.autoExecutable ?? (options.riskLevel === 'low' && !!options.command)
+      riskLevel: options.riskLevel || "medium",
+      category: options.category || "improve",
+      autoExecutable:
+        options.autoExecutable ??
+        (options.riskLevel === "low" && !!options.command),
     };
   }
 }
@@ -276,38 +303,40 @@ if (isMainModule) {
   // Demo recommendations
   const demoRecommendations = [
     InteractiveRecommendationHandler.createRecommendation(
-      'demo-1',
-      'Fix ESLint Issues',
-      'Auto-fix common code style issues',
+      "demo-1",
+      "Fix ESLint Issues",
+      "Auto-fix common code style issues",
       {
-        command: 'npm run lint:fix',
-        riskLevel: 'low',
-        category: 'fix'
-      }
+        command: "npm run lint:fix",
+        riskLevel: "low",
+        category: "fix",
+      },
     ),
     InteractiveRecommendationHandler.createRecommendation(
-      'demo-2',
-      'Update Documentation',
-      'Refresh documentation indexes',
+      "demo-2",
+      "Update Documentation",
+      "Refresh documentation indexes",
       {
-        command: 'npm run docs:refresh',
-        riskLevel: 'low',
-        category: 'improve'
-      }
+        command: "npm run docs:refresh",
+        riskLevel: "low",
+        category: "improve",
+      },
     ),
     InteractiveRecommendationHandler.createRecommendation(
-      'demo-3',
-      'Review Security Audit',
-      'Check security-audit.json for high-priority findings',
+      "demo-3",
+      "Review Security Audit",
+      "Check security-audit.json for high-priority findings",
       {
-        riskLevel: 'medium',
-        category: 'security'
-      }
-    )
+        riskLevel: "medium",
+        category: "security",
+      },
+    ),
   ];
 
-  handler.handleRecommendations({
-    source: 'Interactive Recommendation Handler Demo',
-    recommendations: demoRecommendations
-  }).catch(console.error);
+  handler
+    .handleRecommendations({
+      source: "Interactive Recommendation Handler Demo",
+      recommendations: demoRecommendations,
+    })
+    .catch(console.error);
 }

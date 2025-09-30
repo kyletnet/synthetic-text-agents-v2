@@ -271,7 +271,7 @@ npm run generate:agent -- --name=MyAgent
 
 ```typescript
 // BAD: 증상만 막는 임시방편
-if (taskName === 'typescript-validation') {
+if (taskName === "typescript-validation") {
   forceExecute = true; // 강제 실행 하드코딩
 }
 
@@ -281,7 +281,7 @@ if (approvalTimeout) {
 }
 
 // BAD: 출력 숨기기
-execSync(command, { stdio: 'pipe' }); // 문제 안보이게 숨김
+execSync(command, { stdio: "pipe" }); // 문제 안보이게 숨김
 ```
 
 #### ✅ 올바른 접근법 (근본 원인 해결)
@@ -368,14 +368,16 @@ private async checkTaskSchedulingLogic(): Promise<void> {
 **증상**: Critical 작업들(typescript-validation, lint-validation, test-execution)이 /maintain 실행 시 건너뛰어짐
 
 **잘못된 해결**:
+
 ```typescript
 // 각 작업마다 강제 실행 플래그 추가 (하드코딩)
-if (task.name === 'typescript-validation' || task.name === 'lint-validation') {
+if (task.name === "typescript-validation" || task.name === "lint-validation") {
   forceRun = true;
 }
 ```
 
 **올바른 해결**:
+
 ```typescript
 // Priority 기반 스케줄링 설계 개선
 private getTasksDue(tasks: MaintenanceTask[], mode: string): MaintenanceTask[] {
@@ -397,20 +399,22 @@ private getTasksDue(tasks: MaintenanceTask[], mode: string): MaintenanceTask[] {
 **증상**: 승인 요청이 사용자에게 표시되지 않고 타임아웃
 
 **잘못된 해결**:
+
 ```typescript
 // 타임아웃 시 자동 승인 (보안 위험)
 if (timeoutElapsed) {
-  return { approved: true, reason: 'timeout' };
+  return { approved: true, reason: "timeout" };
 }
 ```
 
 **올바른 해결**:
+
 ```typescript
 // TTY 환경 감지 후 적절한 처리
 if (!process.stdin.isTTY) {
   // 비대화형: 큐에 저장하여 나중에 처리
   approvalQueue.addToQueue(request);
-  return { approved: false, reason: '비대화형 환경 - 큐에 저장' };
+  return { approved: false, reason: "비대화형 환경 - 큐에 저장" };
 } else {
   // 대화형: 실시간 사용자 입력 대기
   return await getUserDecision(request);
@@ -424,18 +428,20 @@ if (!process.stdin.isTTY) {
 **증상**: 명령어 실행 중 아무 출력도 안보여서 멈춘 것처럼 보임
 
 **잘못된 해결**:
+
 ```typescript
 // setInterval로 "작업중..." 메시지만 표시 (실제 진행상황 숨김)
-setInterval(() => console.log('작업중...'), 1000);
-execSync(command, { stdio: 'pipe' });
+setInterval(() => console.log("작업중..."), 1000);
+execSync(command, { stdio: "pipe" });
 ```
 
 **올바른 해결**:
+
 ```typescript
 // 실제 명령어 출력을 사용자에게 투명하게 전달
 execSync(command, {
-  stdio: 'inherit',  // stdout/stderr를 부모 프로세스에 직접 전달
-  encoding: 'utf8'
+  stdio: "inherit", // stdout/stderr를 부모 프로세스에 직접 전달
+  encoding: "utf8",
 });
 ```
 
@@ -446,6 +452,7 @@ execSync(command, {
 **증상**: Self-Healing 엔진이 5초마다 healing 시도하지만 0/3 성공률로 무한 반복
 
 **잘못된 해결**:
+
 ```typescript
 // 매번 재시도하면서 로그만 쌓임 (리소스 낭비)
 setInterval(() => {
@@ -454,6 +461,7 @@ setInterval(() => {
 ```
 
 **올바른 해결**:
+
 ```typescript
 // 1. 연속 실패 카운터 추가
 if (successCount > 0) {
@@ -465,7 +473,7 @@ if (successCount > 0) {
   if (this.consecutiveFailures >= this.maxConsecutiveFailures) {
     this.enterDormantMode(
       `Maximum consecutive failures (${this.maxConsecutiveFailures}) reached`,
-      'max_failures'
+      "max_failures",
     );
   }
 }
@@ -473,15 +481,15 @@ if (successCount > 0) {
 // 2. 복구 불가능한 이슈는 즉시 dormant mode
 if (stats.activeKeys === 0) {
   this.enterDormantMode(
-    'No API keys found - requires manual configuration',
-    'api_key_rotation'
+    "No API keys found - requires manual configuration",
+    "api_key_rotation",
   );
   return { success: false, dormantModeTriggered: true };
 }
 
 // 3. Dormant mode 체크 후 healing 시작
 if (this.dormantMode) {
-  console.log('🛌 [SelfHealing] In dormant mode - skipping healing');
+  console.log("🛌 [SelfHealing] In dormant mode - skipping healing");
   return [];
 }
 ```
@@ -489,6 +497,7 @@ if (this.dormantMode) {
 **자동 감지 추가**: scripts/refactor-auditor.ts:1458-1531
 
 **추가 개선 (Dormant Mode 체크 & 백그라운드 태스크 취소)**:
+
 ```typescript
 // 문제 5: Dormant mode에 진입해도 healing이 계속 실행됨
 async performAutomaticHealing(): Promise<HealingResult[]> {
@@ -524,6 +533,7 @@ private enterDormantMode(reason: string, triggeredBy: string): void {
 ```
 
 **자동 감지 추가**:
+
 - scripts/refactor-auditor.ts:1501-1514 (Dormant mode 체크)
 - scripts/refactor-auditor.ts:1517-1530 (백그라운드 태스크 취소)
 

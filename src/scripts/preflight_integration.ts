@@ -6,7 +6,6 @@
  * Integrates all the new systems: thresholds, DLQ, budget, manifest, etc.
  */
 
-import { execSync } from "child_process";
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from "fs";
 import { join } from "path";
 
@@ -271,7 +270,7 @@ export class PreflightRunner {
       } else {
         console.log("⚠️  Dry-run smoke issues detected, proceeding anyway\n");
       }
-    } catch (_____error) {
+    } catch {
       console.log(
         "⚠️  Dry-run smoke failed, proceeding to paid smoke anyway\n",
       );
@@ -310,7 +309,7 @@ export class PreflightRunner {
       },
     };
 
-    const _____budgetState = this.budgetGuardian.initializeRun(
+    this.budgetGuardian.initializeRun(
       `smoke_${this.timestamp}`,
       `session_${this.timestamp}`,
       this.config.profile,

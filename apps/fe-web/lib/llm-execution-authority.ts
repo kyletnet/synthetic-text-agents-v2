@@ -7,9 +7,9 @@
  * 🔄 Self-diagnostic capabilities
  */
 
-import { apiKeyManager } from './api-key-manager';
-import { APIGuard } from './api-guard';
-import { ExecutionVerifier } from './execution-verifier';
+import { apiKeyManager } from "./api-key-manager";
+import { APIGuard } from "./api-guard";
+import { ExecutionVerifier } from "./execution-verifier";
 // ExecutionTracer는 API 경로에서만 사용 (edge runtime 호환성)
 // import { executionTracer, ExecutionTrace } from './execution-tracer';
 
@@ -33,7 +33,7 @@ export interface AuthorizedExecution {
   traceId: string;
   context: ExecutionContext;
   apiKey: string | null;
-  source: 'llm' | 'fallback' | 'denied';
+  source: "llm" | "fallback" | "denied";
   reason?: string;
   metadata: {
     guardValidated: boolean;
@@ -45,7 +45,7 @@ export interface AuthorizedExecution {
 
 // 📊 System Integrity Report
 export interface SystemIntegrityReport {
-  status: 'healthy' | 'degraded' | 'critical';
+  status: "healthy" | "degraded" | "critical";
   checks: {
     apiKeyManager: boolean;
     apiGuard: boolean;
@@ -75,7 +75,7 @@ export interface DiagnosticResult {
 export class ExecutionDeniedError extends Error {
   constructor(reason: string, context?: ExecutionContext) {
     super(`LLM execution denied: ${reason}`);
-    this.name = 'ExecutionDeniedError';
+    this.name = "ExecutionDeniedError";
     this.context = context;
   }
   context?: ExecutionContext;
@@ -93,7 +93,9 @@ export class LLMExecutionAuthority {
   /**
    * 🎯 Central Execution Gate - NO BYPASS ALLOWED
    */
-  static async authorizeExecution(context: ExecutionContext): Promise<AuthorizedExecution> {
+  static async authorizeExecution(
+    context: ExecutionContext,
+  ): Promise<AuthorizedExecution> {
     const executionId = `exec_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
     const startTime = Date.now();
 
@@ -103,14 +105,18 @@ export class LLMExecutionAuthority {
 
     // 🚨 Feature Flag Check
     if (!this.isExecutionAuthorityEnabled()) {
-      console.warn('🚨 [LEA] Execution Authority disabled - allowing legacy behavior');
+      console.warn(
+        "🚨 [LEA] Execution Authority disabled - allowing legacy behavior",
+      );
       const legacyAuth = this.createLegacyAuthorization(executionId, context);
       legacyAuth.traceId = traceId;
       console.log(`🚨 [LEA] Legacy authorization granted: ${traceId}`);
       return legacyAuth;
     }
 
-    console.log(`🛡️ [LEA] Authorizing execution: ${context.method} (${executionId}, trace: ${traceId})`);
+    console.log(
+      `🛡️ [LEA] Authorizing execution: ${context.method} (${executionId}, trace: ${traceId})`,
+    );
 
     try {
       // 📋 Step 1: Basic Context Validation
@@ -118,9 +124,15 @@ export class LLMExecutionAuthority {
 
       // 🔒 Step 2: API Guard Validation
       const guardValidation = this.validateAPIGuard();
-      console.log(`🛡️ [LEA] Guard validation: ${guardValidation.valid} (${traceId})`);
+      console.log(
+        `🛡️ [LEA] Guard validation: ${guardValidation.valid} (${traceId})`,
+      );
       if (!guardValidation.valid) {
-        const denial = this.denyExecution(executionId, context, guardValidation.reason);
+        const denial = this.denyExecution(
+          executionId,
+          context,
+          guardValidation.reason,
+        );
         denial.traceId = traceId;
         console.log(`🚫 [LEA] Execution denied - guard failed: ${traceId}`);
         return denial;
@@ -129,7 +141,11 @@ export class LLMExecutionAuthority {
       // 🔑 Step 3: API Key Manager Check
       const apiKey = apiKeyManager.getCurrentKey();
       if (!apiKey) {
-        const denial = this.denyExecution(executionId, context, 'No valid API key available');
+        const denial = this.denyExecution(
+          executionId,
+          context,
+          "No valid API key available",
+        );
         denial.traceId = traceId;
         console.log(`🚫 [LEA] Execution denied - no API key: ${traceId}`);
         return denial;
@@ -137,10 +153,16 @@ export class LLMExecutionAuthority {
 
       // 🔍 Step 4: Execution Verifier Check
       const envPolicy = ExecutionVerifier.checkEnvironmentPolicy();
-      if (envPolicy.warnings.some(w => w.includes('CRITICAL'))) {
-        const denial = this.denyExecution(executionId, context, 'Critical environment policy violation');
+      if (envPolicy.warnings.some((w) => w.includes("CRITICAL"))) {
+        const denial = this.denyExecution(
+          executionId,
+          context,
+          "Critical environment policy violation",
+        );
         denial.traceId = traceId;
-        console.log(`🚫 [LEA] Execution denied - environment policy: ${traceId}`);
+        console.log(
+          `🚫 [LEA] Execution denied - environment policy: ${traceId}`,
+        );
         return denial;
       }
 
@@ -152,12 +174,17 @@ export class LLMExecutionAuthority {
       // 📊 Step 6: Record Metrics
       this.recordExecution(authorization);
 
-      console.log(`✅ [LEA] Execution authorized: ${executionId} (${Date.now() - startTime}ms)`);
+      console.log(
+        `✅ [LEA] Execution authorized: ${executionId} (${Date.now() - startTime}ms)`,
+      );
       return authorization;
-
     } catch (error) {
       console.error(`❌ [LEA] Authorization failed: ${executionId}`, error);
-      return this.denyExecution(executionId, context, error instanceof Error ? error.message : 'Unknown error');
+      return this.denyExecution(
+        executionId,
+        context,
+        error instanceof Error ? error.message : "Unknown error",
+      );
     }
   }
 
@@ -169,12 +196,15 @@ export class LLMExecutionAuthority {
       apiKeyManager: this.checkAPIKeyManager(),
       apiGuard: this.checkAPIGuard(),
       executionVerifier: this.checkExecutionVerifier(),
-      featureFlags: this.checkFeatureFlags()
+      featureFlags: this.checkFeatureFlags(),
     };
 
-    const allChecksPass = Object.values(checks).every(check => check);
-    const status = allChecksPass ? 'healthy' :
-                  Object.values(checks).filter(check => check).length >= 3 ? 'degraded' : 'critical';
+    const allChecksPass = Object.values(checks).every((check) => check);
+    const status = allChecksPass
+      ? "healthy"
+      : Object.values(checks).filter((check) => check).length >= 3
+        ? "degraded"
+        : "critical";
 
     return {
       status,
@@ -183,9 +213,9 @@ export class LLMExecutionAuthority {
         totalExecutions: this.executionCount,
         authorizedExecutions: this.executionCount - this.deniedCount,
         deniedExecutions: this.deniedCount,
-        bypassAttempts: this.bypassAttempts
+        bypassAttempts: this.bypassAttempts,
       },
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
   }
 
@@ -199,18 +229,21 @@ export class LLMExecutionAuthority {
 
     try {
       const testContext: ExecutionContext = {
-        method: 'diagnostic',
-        args: ['test execution'],
-        caller: 'LLMExecutionAuthority.performDiagnosticExecution',
+        method: "diagnostic",
+        args: ["test execution"],
+        caller: "LLMExecutionAuthority.performDiagnosticExecution",
         timestamp: Date.now(),
-        sessionId: 'diagnostic'
+        sessionId: "diagnostic",
       };
 
       const authorization = await this.authorizeExecution(testContext);
 
-      if (authorization.metadata.guardValidated) guardsTriggered.push('API Guard');
-      if (authorization.metadata.apiKeyManagerActive) guardsTriggered.push('API Key Manager');
-      if (authorization.metadata.strictMode) guardsTriggered.push('Strict Mode');
+      if (authorization.metadata.guardValidated)
+        guardsTriggered.push("API Guard");
+      if (authorization.metadata.apiKeyManagerActive)
+        guardsTriggered.push("API Key Manager");
+      if (authorization.metadata.strictMode)
+        guardsTriggered.push("Strict Mode");
 
       return {
         success: authorization.authorized,
@@ -218,18 +251,19 @@ export class LLMExecutionAuthority {
         guardsTriggered,
         timeElapsed: Date.now() - startTime,
         apiKeyUsed: !!authorization.apiKey,
-        warnings
+        warnings,
       };
-
     } catch (error) {
-      warnings.push(error instanceof Error ? error.message : 'Unknown diagnostic error');
+      warnings.push(
+        error instanceof Error ? error.message : "Unknown diagnostic error",
+      );
       return {
         success: false,
-        executionPath: 'error',
+        executionPath: "error",
         guardsTriggered,
         timeElapsed: Date.now() - startTime,
         apiKeyUsed: false,
-        warnings
+        warnings,
       };
     }
   }
@@ -237,13 +271,13 @@ export class LLMExecutionAuthority {
   // 🛠️ Private Helper Methods
 
   private static isExecutionAuthorityEnabled(): boolean {
-    return process.env.FEATURE_LLM_EXECUTION_AUTHORITY === 'true';
+    return process.env.FEATURE_LLM_EXECUTION_AUTHORITY === "true";
   }
 
   private static validateExecutionContext(context: ExecutionContext): void {
-    if (!context.method) throw new Error('Missing execution method');
-    if (!context.caller) throw new Error('Missing execution caller');
-    if (!context.timestamp) throw new Error('Missing execution timestamp');
+    if (!context.method) throw new Error("Missing execution method");
+    if (!context.caller) throw new Error("Missing execution caller");
+    if (!context.timestamp) throw new Error("Missing execution timestamp");
   }
 
   private static validateAPIGuard(): { valid: boolean; reason?: string } {
@@ -254,11 +288,15 @@ export class LLMExecutionAuthority {
       }
       return { valid: true };
     } catch (error) {
-      return { valid: false, reason: 'API Guard validation failed' };
+      return { valid: false, reason: "API Guard validation failed" };
     }
   }
 
-  private static grantExecution(executionId: string, context: ExecutionContext, apiKey: string): AuthorizedExecution {
+  private static grantExecution(
+    executionId: string,
+    context: ExecutionContext,
+    apiKey: string,
+  ): AuthorizedExecution {
     this.executionCount++;
 
     return {
@@ -266,23 +304,29 @@ export class LLMExecutionAuthority {
       executionId,
       context,
       apiKey,
-      source: 'llm',
+      source: "llm",
       metadata: {
         guardValidated: true,
         apiKeyManagerActive: true,
         strictMode: this.isStrictModeEnabled(),
-        timestamp: new Date().toISOString()
-      }
+        timestamp: new Date().toISOString(),
+      },
     };
   }
 
-  private static denyExecution(executionId: string, context: ExecutionContext, reason: string): AuthorizedExecution {
+  private static denyExecution(
+    executionId: string,
+    context: ExecutionContext,
+    reason: string,
+  ): AuthorizedExecution {
     this.deniedCount++;
 
     const shouldAllowFallback = this.shouldAllowFallback();
-    const source = shouldAllowFallback ? 'fallback' : 'denied';
+    const source = shouldAllowFallback ? "fallback" : "denied";
 
-    console.warn(`🚫 [LEA] Execution denied: ${reason} (fallback: ${shouldAllowFallback})`);
+    console.warn(
+      `🚫 [LEA] Execution denied: ${reason} (fallback: ${shouldAllowFallback})`,
+    );
 
     return {
       authorized: shouldAllowFallback,
@@ -295,25 +339,28 @@ export class LLMExecutionAuthority {
         guardValidated: false,
         apiKeyManagerActive: false,
         strictMode: this.isStrictModeEnabled(),
-        timestamp: new Date().toISOString()
-      }
+        timestamp: new Date().toISOString(),
+      },
     };
   }
 
-  private static createLegacyAuthorization(executionId: string, context: ExecutionContext): AuthorizedExecution {
+  private static createLegacyAuthorization(
+    executionId: string,
+    context: ExecutionContext,
+  ): AuthorizedExecution {
     // Legacy mode - allow execution without full guard validation
     return {
       authorized: true,
       executionId,
       context,
       apiKey: process.env.ANTHROPIC_API_KEY || null,
-      source: 'llm',
+      source: "llm",
       metadata: {
         guardValidated: false,
         apiKeyManagerActive: false,
         strictMode: false,
-        timestamp: new Date().toISOString()
-      }
+        timestamp: new Date().toISOString(),
+      },
     };
   }
 
@@ -327,12 +374,13 @@ export class LLMExecutionAuthority {
   }
 
   private static shouldAllowFallback(): boolean {
-    return !this.isStrictModeEnabled() &&
-           process.env.NODE_ENV === 'development';
+    return (
+      !this.isStrictModeEnabled() && process.env.NODE_ENV === "development"
+    );
   }
 
   private static isStrictModeEnabled(): boolean {
-    return process.env.LLM_STRICT_MODE === 'true';
+    return process.env.LLM_STRICT_MODE === "true";
   }
 
   // Component Health Checks
@@ -374,7 +422,7 @@ export class LLMExecutionAuthority {
       authorizedExecutions: this.executionCount - this.deniedCount,
       deniedExecutions: this.deniedCount,
       bypassAttempts: this.bypassAttempts,
-      recentExecutions: this.executionHistory.slice(-10)
+      recentExecutions: this.executionHistory.slice(-10),
     };
   }
 
@@ -388,16 +436,16 @@ export class LLMExecutionAuthority {
 // 🎯 Caller Detection Utility
 export function getCaller(): string {
   const stack = new Error().stack;
-  if (!stack) return 'unknown';
+  if (!stack) return "unknown";
 
-  const lines = stack.split('\n');
+  const lines = stack.split("\n");
   // Skip first 3 lines (Error, getCaller, actual caller)
   for (let i = 3; i < lines.length; i++) {
     const line = lines[i];
-    if (line.includes('at ')) {
+    if (line.includes("at ")) {
       const match = line.match(/at (.+?) \(/);
       if (match) return match[1];
     }
   }
-  return 'unknown';
+  return "unknown";
 }

@@ -7,20 +7,25 @@
  * 📊 Complete execution tracking
  */
 
-import { LLMExecutionAuthority, ExecutionContext, getCaller, ExecutionDeniedError } from './llm-execution-authority';
-import { executionTracer } from './execution-tracer';
+import {
+  LLMExecutionAuthority,
+  ExecutionContext,
+  getCaller,
+  ExecutionDeniedError,
+} from "./llm-execution-authority";
+import { executionTracer } from "./execution-tracer";
 
 // 🎯 Known LLM methods that require guarding
 const LLM_METHODS = [
-  'generateText',
-  'generateAugmentation',
-  'evaluateQuality',
-  'complete',
-  'chat',
-  'embed',
-  'analyze',
-  'process',
-  'invoke'
+  "generateText",
+  "generateAugmentation",
+  "evaluateQuality",
+  "complete",
+  "chat",
+  "embed",
+  "analyze",
+  "process",
+  "invoke",
 ];
 
 // 🏗️ Guarded LLM Client Interface
@@ -46,7 +51,7 @@ export class UniversalLLMGuard {
     clientsGuarded: 0,
     methodsWrapped: 0,
     executionsBlocked: 0,
-    bypassAttempts: 0
+    bypassAttempts: 0,
   };
 
   private static guardedClients = new WeakSet();
@@ -55,7 +60,10 @@ export class UniversalLLMGuard {
    * 🎯 Main Guard Injection Function
    * Wraps any LLM client with execution authority validation
    */
-  static injectGuards<T extends object>(client: T, clientName: string = 'unknown'): GuardedLLMClient {
+  static injectGuards<T extends object>(
+    client: T,
+    clientName: string = "unknown",
+  ): GuardedLLMClient {
     // 🔍 Check if already guarded
     if (this.guardedClients.has(client)) {
       console.log(`🛡️ [Guard] Client already guarded: ${clientName}`);
@@ -64,7 +72,9 @@ export class UniversalLLMGuard {
 
     // 🚨 Feature flag check
     if (!this.isGuardInjectionEnabled()) {
-      console.warn(`🚨 [Guard] Guard injection disabled - returning original client: ${clientName}`);
+      console.warn(
+        `🚨 [Guard] Guard injection disabled - returning original client: ${clientName}`,
+      );
       return client as GuardedLLMClient;
     }
 
@@ -80,14 +90,17 @@ export class UniversalLLMGuard {
   /**
    * 🔄 Create Proxy-Based Guarded Client
    */
-  private static createGuardedProxy<T extends object>(client: T, clientName: string): GuardedLLMClient {
+  private static createGuardedProxy<T extends object>(
+    client: T,
+    clientName: string,
+  ): GuardedLLMClient {
     return new Proxy(client, {
       get: (target: any, prop: string | symbol) => {
         const propName = prop.toString();
 
         // 🏷️ Special guard metadata
-        if (propName === '_isGuarded') return true;
-        if (propName === '_originalClient') return target;
+        if (propName === "_isGuarded") return true;
+        if (propName === "_originalClient") return target;
 
         // 🎯 Check if this is an LLM method that needs guarding
         if (LLM_METHODS.includes(propName) || this.isLLMMethod(propName)) {
@@ -96,8 +109,12 @@ export class UniversalLLMGuard {
 
         // 🔍 Non-LLM method - return as-is but log potential bypass attempts
         const originalMethod = target[prop];
-        if (typeof originalMethod === 'function') {
-          return this.createMonitoredMethod(originalMethod, propName, clientName);
+        if (typeof originalMethod === "function") {
+          return this.createMonitoredMethod(
+            originalMethod,
+            propName,
+            clientName,
+          );
         }
 
         return originalMethod;
@@ -106,14 +123,18 @@ export class UniversalLLMGuard {
       set: (target: any, prop: string | symbol, value: any) => {
         target[prop] = value;
         return true;
-      }
+      },
     }) as GuardedLLMClient;
   }
 
   /**
    * 🛡️ Create Guarded LLM Method
    */
-  private static createGuardedMethod(target: any, methodName: string, clientName: string) {
+  private static createGuardedMethod(
+    target: any,
+    methodName: string,
+    clientName: string,
+  ) {
     this.stats.methodsWrapped++;
 
     return async (...args: any[]) => {
@@ -126,47 +147,51 @@ export class UniversalLLMGuard {
         args: this.sanitizeArgs(args),
         caller,
         timestamp: Date.now(),
-        sessionId
+        sessionId,
       };
 
       try {
         console.log(`🛡️ [Guard] Requesting authorization: ${context.method}`);
 
         // 🔒 Request execution authorization
-        const authorization = await LLMExecutionAuthority.authorizeExecution(context);
+        const authorization =
+          await LLMExecutionAuthority.authorizeExecution(context);
 
         if (!authorization.authorized) {
           this.stats.executionsBlocked++;
 
-          if (authorization.source === 'denied') {
+          if (authorization.source === "denied") {
             throw new ExecutionDeniedError(
-              authorization.reason || 'Execution denied by LLM Authority',
-              context
+              authorization.reason || "Execution denied by LLM Authority",
+              context,
             );
           }
 
           // 🔄 Fallback mode
-          console.warn(`⚠️ [Guard] Fallback execution: ${context.method} - ${authorization.reason}`);
+          console.warn(
+            `⚠️ [Guard] Fallback execution: ${context.method} - ${authorization.reason}`,
+          );
           return this.handleFallbackExecution(methodName, args, authorization);
         }
 
         // ✅ Execute with authorization
-        console.log(`✅ [Guard] Executing authorized: ${context.method} (${authorization.executionId})`);
+        console.log(
+          `✅ [Guard] Executing authorized: ${context.method} (${authorization.executionId})`,
+        );
 
         const result = await target[methodName](...args);
 
         // 📊 Add execution metadata to result
-        if (typeof result === 'object' && result !== null) {
+        if (typeof result === "object" && result !== null) {
           result._execution = {
             source: authorization.source,
             executionId: authorization.executionId,
             authorized: true,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
           };
         }
 
         return result;
-
       } catch (error) {
         console.error(`❌ [Guard] Execution failed: ${context.method}`, error);
 
@@ -183,12 +208,19 @@ export class UniversalLLMGuard {
   /**
    * 👀 Create Monitored Non-LLM Method
    */
-  private static createMonitoredMethod(originalMethod: Function, methodName: string, clientName: string) {
+  private static createMonitoredMethod(
+    originalMethod: Function,
+    methodName: string,
+    clientName: string,
+  ) {
     return (...args: any[]) => {
       // 🚨 Detect potential bypass attempts
       if (this.isPotentialBypass(methodName, args)) {
         this.stats.bypassAttempts++;
-        LLMExecutionAuthority.recordBypassAttempt(getCaller(), `${clientName}.${methodName}`);
+        LLMExecutionAuthority.recordBypassAttempt(
+          getCaller(),
+          `${clientName}.${methodName}`,
+        );
       }
 
       return originalMethod.apply(this, args);
@@ -198,16 +230,20 @@ export class UniversalLLMGuard {
   /**
    * 🔄 Handle Fallback Execution
    */
-  private static handleFallbackExecution(methodName: string, args: any[], authorization: any): any {
+  private static handleFallbackExecution(
+    methodName: string,
+    args: any[],
+    authorization: any,
+  ): any {
     console.warn(`🔄 [Guard] Executing fallback for: ${methodName}`);
 
     // 🎯 Method-specific fallback strategies
     switch (methodName) {
-      case 'generateText':
+      case "generateText":
         return this.generateFallbackText(args);
-      case 'generateAugmentation':
+      case "generateAugmentation":
         return this.generateFallbackAugmentation(args);
-      case 'evaluateQuality':
+      case "evaluateQuality":
         return this.generateFallbackEvaluation(args);
       default:
         return this.generateGenericFallback(methodName, args);
@@ -217,48 +253,63 @@ export class UniversalLLMGuard {
   /**
    * 🚨 Handle Error Fallback
    */
-  private static handleErrorFallback(methodName: string, args: any[], error: any): any {
+  private static handleErrorFallback(
+    methodName: string,
+    args: any[],
+    error: any,
+  ): any {
     console.warn(`🚨 [Guard] Error fallback for: ${methodName}`, error);
 
     return {
       _execution: {
-        source: 'error_fallback',
+        source: "error_fallback",
         authorized: false,
         error: error.message,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       },
-      result: `Error fallback result for ${methodName}`
+      result: `Error fallback result for ${methodName}`,
     };
   }
 
   // 🛠️ Helper Methods
 
   private static isGuardInjectionEnabled(): boolean {
-    return process.env.FEATURE_UNIVERSAL_GUARD_INJECTION !== 'false';
+    return process.env.FEATURE_UNIVERSAL_GUARD_INJECTION !== "false";
   }
 
   private static isLLMMethod(methodName: string): boolean {
     // 🎯 Heuristic detection of LLM methods
-    const llmKeywords = ['generate', 'complete', 'chat', 'embed', 'analyze', 'process', 'llm', 'ai'];
-    return llmKeywords.some(keyword => methodName.toLowerCase().includes(keyword));
+    const llmKeywords = [
+      "generate",
+      "complete",
+      "chat",
+      "embed",
+      "analyze",
+      "process",
+      "llm",
+      "ai",
+    ];
+    return llmKeywords.some((keyword) =>
+      methodName.toLowerCase().includes(keyword),
+    );
   }
 
   private static extractSessionId(args: any[]): string | undefined {
     // 🔍 Try to find sessionId in arguments
     for (const arg of args) {
-      if (typeof arg === 'string' && arg.includes('session')) return arg;
-      if (typeof arg === 'object' && arg?.sessionId) return arg.sessionId;
+      if (typeof arg === "string" && arg.includes("session")) return arg;
+      if (typeof arg === "object" && arg?.sessionId) return arg.sessionId;
     }
     return undefined;
   }
 
   private static sanitizeArgs(args: any[]): any[] {
     // 🧹 Remove sensitive data from args for logging
-    return args.map(arg => {
-      if (typeof arg === 'string' && arg.length > 100) {
-        return arg.substring(0, 100) + '...[truncated]';
+    return args.map((arg) => {
+      if (typeof arg === "string" && arg.length > 100) {
+        return arg.substring(0, 100) + "...[truncated]";
       }
-      if (typeof arg === 'object' && arg !== null) {
+      if (typeof arg === "object" && arg !== null) {
         return { ...arg, _truncated: true };
       }
       return arg;
@@ -268,17 +319,21 @@ export class UniversalLLMGuard {
   private static isPotentialBypass(methodName: string, args: any[]): boolean {
     // 🚨 Detect patterns that might indicate bypass attempts
     const suspiciousPatterns = [
-      'direct',
-      'bypass',
-      'skip',
-      'raw',
-      'unguarded',
-      'force'
+      "direct",
+      "bypass",
+      "skip",
+      "raw",
+      "unguarded",
+      "force",
     ];
 
-    return suspiciousPatterns.some(pattern =>
-      methodName.toLowerCase().includes(pattern) ||
-      args.some(arg => typeof arg === 'string' && arg.toLowerCase().includes(pattern))
+    return suspiciousPatterns.some(
+      (pattern) =>
+        methodName.toLowerCase().includes(pattern) ||
+        args.some(
+          (arg) =>
+            typeof arg === "string" && arg.toLowerCase().includes(pattern),
+        ),
     );
   }
 
@@ -286,16 +341,16 @@ export class UniversalLLMGuard {
     // 🔄 Determine if error should trigger fallback
     if (error instanceof ExecutionDeniedError) return false;
 
-    const fallbackErrors = ['timeout', 'network', 'api_error', 'rate_limit'];
-    const errorMessage = error?.message?.toLowerCase() || '';
+    const fallbackErrors = ["timeout", "network", "api_error", "rate_limit"];
+    const errorMessage = error?.message?.toLowerCase() || "";
 
-    return fallbackErrors.some(errorType => errorMessage.includes(errorType));
+    return fallbackErrors.some((errorType) => errorMessage.includes(errorType));
   }
 
   // 🎯 Fallback Generators
 
   private static generateFallbackText(args: any[]): string {
-    const prompt = args[0] || 'default prompt';
+    const prompt = args[0] || "default prompt";
     return `[FALLBACK] Generated response for: "${prompt.substring(0, 50)}..." - This is a template response generated when LLM execution is not available.`;
   }
 
@@ -311,24 +366,24 @@ export class UniversalLLMGuard {
         semantic_similarity: 0.7,
         fluency: 0.7,
         coherence: 0.7,
-        usefulness: 0.7
+        usefulness: 0.7,
       },
       _execution: {
-        source: 'fallback',
-        note: 'Template evaluation when LLM not available'
-      }
+        source: "fallback",
+        note: "Template evaluation when LLM not available",
+      },
     };
   }
 
   private static generateGenericFallback(methodName: string, args: any[]): any {
     return {
       _execution: {
-        source: 'fallback',
+        source: "fallback",
         method: methodName,
         authorized: false,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       },
-      result: `Fallback result for ${methodName}`
+      result: `Fallback result for ${methodName}`,
     };
   }
 
@@ -343,7 +398,7 @@ export class UniversalLLMGuard {
       clientsGuarded: 0,
       methodsWrapped: 0,
       executionsBlocked: 0,
-      bypassAttempts: 0
+      bypassAttempts: 0,
     };
   }
 
@@ -366,8 +421,11 @@ export class UniversalLLMGuard {
 /**
  * 🎯 Convenience function for quick guard injection
  */
-export function guardLLMClient<T extends object>(client: T, clientName?: string): GuardedLLMClient {
-  return UniversalLLMGuard.injectGuards(client, clientName || 'anonymous');
+export function guardLLMClient<T extends object>(
+  client: T,
+  clientName?: string,
+): GuardedLLMClient {
+  return UniversalLLMGuard.injectGuards(client, clientName || "anonymous");
 }
 
 /**

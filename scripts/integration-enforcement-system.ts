@@ -620,7 +620,9 @@ Component Types:
       console.log(`✅ Component ${spec.name} created successfully`);
     } catch (error) {
       console.error(`❌ Component creation failed: ${error}`);
-      console.log(`\n💡 Try using type 'internal' or 'dev' for less strict validation`);
+      console.log(
+        `\n💡 Try using type 'internal' or 'dev' for less strict validation`,
+      );
       process.exit(1);
     }
   } else {

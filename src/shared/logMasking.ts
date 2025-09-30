@@ -304,7 +304,7 @@ export const secureconsole = {
         ? maskSensitiveData(arg)
         : maskSensitiveObject(arg),
     );
-    console.debug(...maskedArgs);
+    console.log(...maskedArgs);
   },
 };
 

@@ -64,7 +64,6 @@ graph TD
 - **Clients → Shared**: Uses env, logger
 - **Utils → Shared**: Uses types, logger
 
-
 _Last updated: 2025-09-30_
 
 ## 📊 System Status

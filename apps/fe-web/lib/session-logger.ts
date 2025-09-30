@@ -2,7 +2,7 @@
 export interface AugmentationSession {
   sessionId: string;
   timestamp: string;
-  inputMode: 'manual' | 'document' | 'both';
+  inputMode: "manual" | "document" | "both";
   inputText: string;
   inputLength: number;
   detectedType: string;
@@ -22,7 +22,7 @@ export interface AugmentationSession {
 
 // 세션을 localStorage에 저장 (향후 서버 저장으로 확장 가능)
 export class SessionLogger {
-  private static readonly STORAGE_KEY = 'smart-augment-sessions';
+  private static readonly STORAGE_KEY = "smart-augment-sessions";
   private static readonly MAX_SESSIONS = 50; // 최대 50개 세션 유지
 
   static logSession(session: AugmentationSession): void {
@@ -38,7 +38,7 @@ export class SessionLogger {
       localStorage.setItem(this.STORAGE_KEY, JSON.stringify(sessions));
       console.log(`📝 Session logged: ${session.sessionId}`);
     } catch (error) {
-      console.error('Failed to log session:', error);
+      console.error("Failed to log session:", error);
     }
   }
 
@@ -47,7 +47,7 @@ export class SessionLogger {
       const stored = localStorage.getItem(this.STORAGE_KEY);
       return stored ? JSON.parse(stored) : [];
     } catch (error) {
-      console.error('Failed to retrieve sessions:', error);
+      console.error("Failed to retrieve sessions:", error);
       return [];
     }
   }
@@ -56,9 +56,12 @@ export class SessionLogger {
     return this.getSessions().slice(0, count);
   }
 
-  static getSessionsByDateRange(startDate: Date, endDate: Date): AugmentationSession[] {
+  static getSessionsByDateRange(
+    startDate: Date,
+    endDate: Date,
+  ): AugmentationSession[] {
     const sessions = this.getSessions();
-    return sessions.filter(session => {
+    return sessions.filter((session) => {
       const sessionDate = new Date(session.timestamp);
       return sessionDate >= startDate && sessionDate <= endDate;
     });
@@ -68,23 +71,24 @@ export class SessionLogger {
     averageScore: number;
     totalSessions: number;
     topPerformingType: string;
-    recentTrend: 'improving' | 'declining' | 'stable';
+    recentTrend: "improving" | "declining" | "stable";
   } {
     const sessions = this.getSessions();
     if (sessions.length === 0) {
       return {
         averageScore: 0,
         totalSessions: 0,
-        topPerformingType: 'unknown',
-        recentTrend: 'stable'
+        topPerformingType: "unknown",
+        recentTrend: "stable",
       };
     }
 
-    const averageScore = sessions.reduce((sum, s) => sum + s.overallScore, 0) / sessions.length;
+    const averageScore =
+      sessions.reduce((sum, s) => sum + s.overallScore, 0) / sessions.length;
 
     // 가장 성능이 좋은 타입 찾기
     const typeScores: Record<string, number[]> = {};
-    sessions.forEach(session => {
+    sessions.forEach((session) => {
       if (!typeScores[session.detectedType]) {
         typeScores[session.detectedType] = [];
       }
@@ -93,35 +97,38 @@ export class SessionLogger {
 
     const typeAverages = Object.entries(typeScores).map(([type, scores]) => ({
       type,
-      average: scores.reduce((sum, score) => sum + score, 0) / scores.length
+      average: scores.reduce((sum, score) => sum + score, 0) / scores.length,
     }));
 
-    const topPerformingType = typeAverages.length > 0
-      ? typeAverages.sort((a, b) => b.average - a.average)[0].type
-      : 'unknown';
+    const topPerformingType =
+      typeAverages.length > 0
+        ? typeAverages.sort((a, b) => b.average - a.average)[0].type
+        : "unknown";
 
     // 최근 트렌드 계산 (최근 5개 vs 이전 5개)
-    let recentTrend: 'improving' | 'declining' | 'stable' = 'stable';
+    let recentTrend: "improving" | "declining" | "stable" = "stable";
     if (sessions.length >= 10) {
-      const recent5 = sessions.slice(0, 5).reduce((sum, s) => sum + s.overallScore, 0) / 5;
-      const previous5 = sessions.slice(5, 10).reduce((sum, s) => sum + s.overallScore, 0) / 5;
+      const recent5 =
+        sessions.slice(0, 5).reduce((sum, s) => sum + s.overallScore, 0) / 5;
+      const previous5 =
+        sessions.slice(5, 10).reduce((sum, s) => sum + s.overallScore, 0) / 5;
       const diff = recent5 - previous5;
 
-      if (diff > 0.05) recentTrend = 'improving';
-      else if (diff < -0.05) recentTrend = 'declining';
-      else recentTrend = 'stable';
+      if (diff > 0.05) recentTrend = "improving";
+      else if (diff < -0.05) recentTrend = "declining";
+      else recentTrend = "stable";
     }
 
     return {
       averageScore: Math.round(averageScore * 100) / 100,
       totalSessions: sessions.length,
       topPerformingType,
-      recentTrend
+      recentTrend,
     };
   }
 
   static clearSessions(): void {
     localStorage.removeItem(this.STORAGE_KEY);
-    console.log('📝 All sessions cleared');
+    console.log("📝 All sessions cleared");
   }
 }

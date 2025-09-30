@@ -8,44 +8,46 @@
  * - 시스템 상태
  */
 
-import { NextRequest, NextResponse } from 'next/server';
-import { withAPIGuard } from '@/lib/api-guard';
-import { executionTracer } from '@/lib/execution-tracer';
-import { LLMExecutionAuthority } from '@/lib/llm-execution-authority';
+import { NextRequest, NextResponse } from "next/server";
+import { withAPIGuard } from "@/lib/api-guard";
+import { executionTracer } from "@/lib/execution-tracer";
+import { LLMExecutionAuthority } from "@/lib/llm-execution-authority";
 
 async function getTransparencyHandler(request: NextRequest) {
   try {
     const url = new URL(request.url);
-    const action = url.searchParams.get('action') || 'summary';
+    const action = url.searchParams.get("action") || "summary";
 
     switch (action) {
-      case 'summary':
+      case "summary":
         return await getExecutionSummary();
 
-      case 'metrics':
+      case "metrics":
         return await getRealTimeMetrics();
 
-      case 'traces':
+      case "traces":
         return await getRecentTraces(request);
 
-      case 'system-status':
+      case "system-status":
         return await getSystemStatus();
 
-      case 'cost-analysis':
+      case "cost-analysis":
         return await getCostAnalysis(request);
 
       default:
         return NextResponse.json(
-          { error: 'Invalid action. Available: summary, metrics, traces, system-status, cost-analysis' },
-          { status: 400 }
+          {
+            error:
+              "Invalid action. Available: summary, metrics, traces, system-status, cost-analysis",
+          },
+          { status: 400 },
         );
     }
-
   } catch (error) {
-    console.error('🚨 [ExecutionTransparency] Error:', error);
+    console.error("🚨 [ExecutionTransparency] Error:", error);
     return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
+      { error: "Internal server error" },
+      { status: 500 },
     );
   }
 }
@@ -81,12 +83,19 @@ async function getRealTimeMetrics() {
       systemIntegrity: {
         status: systemIntegrity.status,
         checks: systemIntegrity.checks,
-        score: Object.values(systemIntegrity.checks).filter(Boolean).length / Object.keys(systemIntegrity.checks).length,
+        score:
+          Object.values(systemIntegrity.checks).filter(Boolean).length /
+          Object.keys(systemIntegrity.checks).length,
       },
       performance: {
-        apiResponseTime: metrics.averageCost > 0 ? 'normal' : 'degraded',
+        apiResponseTime: metrics.averageCost > 0 ? "normal" : "degraded",
         guardEffectiveness: metrics.successRate,
-        systemLoad: metrics.activeTraces > 100 ? 'high' : metrics.activeTraces > 50 ? 'medium' : 'low',
+        systemLoad:
+          metrics.activeTraces > 100
+            ? "high"
+            : metrics.activeTraces > 50
+              ? "medium"
+              : "low",
       },
       timestamp: new Date().toISOString(),
     },
@@ -98,17 +107,14 @@ async function getRealTimeMetrics() {
  */
 async function getRecentTraces(request: NextRequest) {
   const url = new URL(request.url);
-  const limit = parseInt(url.searchParams.get('limit') || '20');
-  const traceId = url.searchParams.get('traceId');
+  const limit = parseInt(url.searchParams.get("limit") || "20");
+  const traceId = url.searchParams.get("traceId");
 
   if (traceId) {
     // 특정 추적 조회
     const trace = executionTracer.getTrace(traceId);
     if (!trace) {
-      return NextResponse.json(
-        { error: 'Trace not found' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Trace not found" }, { status: 404 });
     }
 
     return NextResponse.json({
@@ -135,7 +141,8 @@ async function getRecentTraces(request: NextRequest) {
  */
 async function getSystemStatus() {
   const systemIntegrity = LLMExecutionAuthority.validateSystemIntegrity();
-  const diagnosticExecution = await LLMExecutionAuthority.performDiagnosticExecution();
+  const diagnosticExecution =
+    await LLMExecutionAuthority.performDiagnosticExecution();
 
   return NextResponse.json({
     success: true,
@@ -145,21 +152,21 @@ async function getSystemStatus() {
         llmExecutionAuthority: {
           status: systemIntegrity.status,
           checks: systemIntegrity.checks,
-          enabled: process.env.FEATURE_LLM_EXECUTION_AUTHORITY === 'true',
+          enabled: process.env.FEATURE_LLM_EXECUTION_AUTHORITY === "true",
         },
         universalGuard: {
-          status: systemIntegrity.checks.apiGuard ? 'healthy' : 'degraded',
-          enabled: process.env.FEATURE_UNIVERSAL_GUARD_INJECTION === 'true',
+          status: systemIntegrity.checks.apiGuard ? "healthy" : "degraded",
+          enabled: process.env.FEATURE_UNIVERSAL_GUARD_INJECTION === "true",
         },
         executionTracer: {
-          status: 'healthy',
-          enabled: process.env.FEATURE_EXECUTION_TRANSPARENCY === 'true',
+          status: "healthy",
+          enabled: process.env.FEATURE_EXECUTION_TRANSPARENCY === "true",
           activeTraces: executionTracer.getRealTimeMetrics().activeTraces,
         },
         middleware: {
-          status: 'healthy',
-          enabled: process.env.FEATURE_LLM_EXECUTION_AUTHORITY === 'true',
-          strictMode: process.env.LLM_STRICT_MODE === 'true',
+          status: "healthy",
+          enabled: process.env.FEATURE_LLM_EXECUTION_AUTHORITY === "true",
+          strictMode: process.env.LLM_STRICT_MODE === "true",
         },
       },
       diagnostics: {
@@ -168,8 +175,8 @@ async function getSystemStatus() {
       },
       environment: {
         nodeEnv: process.env.NODE_ENV,
-        strictMode: process.env.LLM_STRICT_MODE === 'true',
-        llmRequired: process.env.LLM_REQUIRED === 'true',
+        strictMode: process.env.LLM_STRICT_MODE === "true",
+        llmRequired: process.env.LLM_REQUIRED === "true",
       },
     },
   });
@@ -180,7 +187,7 @@ async function getSystemStatus() {
  */
 async function getCostAnalysis(request: NextRequest) {
   const url = new URL(request.url);
-  const period = url.searchParams.get('period') || '24h';
+  const period = url.searchParams.get("period") || "24h";
 
   // 시간 범위 계산
   const now = new Date();
@@ -190,16 +197,16 @@ async function getCostAnalysis(request: NextRequest) {
   };
 
   switch (period) {
-    case '1h':
+    case "1h":
       timeRange.start = new Date(now.getTime() - 60 * 60 * 1000);
       break;
-    case '24h':
+    case "24h":
       timeRange.start = new Date(now.getTime() - 24 * 60 * 60 * 1000);
       break;
-    case '7d':
+    case "7d":
       timeRange.start = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
       break;
-    case '30d':
+    case "30d":
       timeRange.start = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
       break;
     default:
@@ -217,8 +224,10 @@ async function getCostAnalysis(request: NextRequest) {
         totalCost: summary.totalCost,
         totalCalls: summary.totalCalls,
         totalTokens: summary.totalTokens,
-        averageCostPerCall: summary.totalCalls > 0 ? summary.totalCost / summary.totalCalls : 0,
-        averageTokensPerCall: summary.totalCalls > 0 ? summary.totalTokens / summary.totalCalls : 0,
+        averageCostPerCall:
+          summary.totalCalls > 0 ? summary.totalCost / summary.totalCalls : 0,
+        averageTokensPerCall:
+          summary.totalCalls > 0 ? summary.totalTokens / summary.totalCalls : 0,
       },
       breakdown: {
         byProvider: summary.providerBreakdown,
@@ -257,11 +266,16 @@ function calculateMonthlyProjection(summary: any, period: string): number {
  */
 function getHoursInPeriod(period: string): number {
   switch (period) {
-    case '1h': return 1;
-    case '24h': return 24;
-    case '7d': return 24 * 7;
-    case '30d': return 24 * 30;
-    default: return 24;
+    case "1h":
+      return 1;
+    case "24h":
+      return 24;
+    case "7d":
+      return 24 * 7;
+    case "30d":
+      return 24 * 30;
+    default:
+      return 24;
   }
 }
 
@@ -274,30 +288,26 @@ async function postTransparencyHandler(request: NextRequest) {
     const action = body.action;
 
     switch (action) {
-      case 'subscribe':
+      case "subscribe":
         // WebSocket 구독 로직 (향후 구현)
         return NextResponse.json({
           success: true,
-          message: 'Real-time subscription created',
+          message: "Real-time subscription created",
           subscriptionId: `sub_${Date.now()}`,
         });
 
-      case 'refresh':
+      case "refresh":
         // 강제 메트릭 새로고침
         return await getRealTimeMetrics();
 
       default:
-        return NextResponse.json(
-          { error: 'Invalid action' },
-          { status: 400 }
-        );
+        return NextResponse.json({ error: "Invalid action" }, { status: 400 });
     }
-
   } catch (error) {
-    console.error('🚨 [ExecutionTransparency] POST Error:', error);
+    console.error("🚨 [ExecutionTransparency] POST Error:", error);
     return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
+      { error: "Internal server error" },
+      { status: 500 },
     );
   }
 }
@@ -306,4 +316,4 @@ async function postTransparencyHandler(request: NextRequest) {
 export const GET = withAPIGuard(getTransparencyHandler);
 export const POST = withAPIGuard(postTransparencyHandler);
 
-console.log('🔍 [ExecutionTransparency] API endpoint loaded');
+console.log("🔍 [ExecutionTransparency] API endpoint loaded");

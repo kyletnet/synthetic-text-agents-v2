@@ -9,7 +9,7 @@
 
 interface TaskConfig {
   id: string;
-  type: 'interval' | 'timeout';
+  type: "interval" | "timeout";
   handler: () => Promise<void> | void;
   delay: number;
   startTime: Date;
@@ -38,34 +38,37 @@ export class BackgroundTaskManager {
 
   private constructor() {
     // HMR cleanup 설정
-    if (typeof window === 'undefined' && process.env.NODE_ENV === 'development') {
+    if (
+      typeof window === "undefined" &&
+      process.env.NODE_ENV === "development"
+    ) {
       // @ts-ignore - Next.js HMR API
       if (module.hot) {
         // @ts-ignore
         module.hot.dispose(() => {
-          console.log('🔄 [BackgroundTaskManager] HMR cleanup triggered');
+          console.log("🔄 [BackgroundTaskManager] HMR cleanup triggered");
           this.cleanup();
         });
       }
     }
 
     // 프로세스 종료 시 cleanup
-    if (typeof process !== 'undefined') {
+    if (typeof process !== "undefined") {
       const cleanupHandler = () => {
-        console.log('🔄 [BackgroundTaskManager] Process exit cleanup');
+        console.log("🔄 [BackgroundTaskManager] Process exit cleanup");
         this.cleanup();
       };
 
-      process.on('exit', cleanupHandler);
-      process.on('SIGINT', cleanupHandler);
-      process.on('SIGTERM', cleanupHandler);
-      process.on('uncaughtException', (error) => {
-        console.error('🚨 [BackgroundTaskManager] Uncaught exception:', error);
+      process.on("exit", cleanupHandler);
+      process.on("SIGINT", cleanupHandler);
+      process.on("SIGTERM", cleanupHandler);
+      process.on("uncaughtException", (error) => {
+        console.error("🚨 [BackgroundTaskManager] Uncaught exception:", error);
         this.cleanup();
       });
     }
 
-    console.log('🔄 [BackgroundTaskManager] Initialized');
+    console.log("🔄 [BackgroundTaskManager] Initialized");
   }
 
   static getInstance(): BackgroundTaskManager {
@@ -82,12 +85,14 @@ export class BackgroundTaskManager {
     id: string,
     handler: () => Promise<void> | void,
     intervalMs: number,
-    options?: { enabled?: boolean; replace?: boolean }
+    options?: { enabled?: boolean; replace?: boolean },
   ): boolean {
     // 중복 방지
     if (this.tasks.has(id)) {
       if (options?.replace) {
-        console.log(`🔄 [BackgroundTaskManager] Replacing existing task: ${id}`);
+        console.log(
+          `🔄 [BackgroundTaskManager] Replacing existing task: ${id}`,
+        );
         this.unregister(id);
       } else {
         console.warn(`⚠️ [BackgroundTaskManager] Task already exists: ${id}`);
@@ -97,13 +102,17 @@ export class BackgroundTaskManager {
 
     // 최대 작업 수 체크
     if (this.tasks.size >= this.maxConcurrentTasks) {
-      console.error(`🚨 [BackgroundTaskManager] Max concurrent tasks reached (${this.maxConcurrentTasks})`);
+      console.error(
+        `🚨 [BackgroundTaskManager] Max concurrent tasks reached (${this.maxConcurrentTasks})`,
+      );
       return false;
     }
 
     // 글로벌 비활성화 체크
     if (!this.globalEnabled) {
-      console.log(`⏸️ [BackgroundTaskManager] Global disabled - task ${id} not started`);
+      console.log(
+        `⏸️ [BackgroundTaskManager] Global disabled - task ${id} not started`,
+      );
       return false;
     }
 
@@ -112,18 +121,20 @@ export class BackgroundTaskManager {
     // Task config 저장
     const config: TaskConfig = {
       id,
-      type: 'interval',
+      type: "interval",
       handler,
       delay: intervalMs,
       startTime: new Date(),
       executionCount: 0,
-      enabled
+      enabled,
     };
 
     this.taskConfigs.set(id, config);
 
     if (!enabled) {
-      console.log(`⏸️ [BackgroundTaskManager] Task ${id} registered but disabled`);
+      console.log(
+        `⏸️ [BackgroundTaskManager] Task ${id} registered but disabled`,
+      );
       return true;
     }
 
@@ -137,7 +148,8 @@ export class BackgroundTaskManager {
         config.executionCount++;
         await handler();
       } catch (error) {
-        config.lastError = error instanceof Error ? error.message : 'Unknown error';
+        config.lastError =
+          error instanceof Error ? error.message : "Unknown error";
         console.error(`🚨 [BackgroundTaskManager] Task ${id} failed:`, error);
       }
     };
@@ -146,7 +158,9 @@ export class BackgroundTaskManager {
     const handle = setInterval(wrappedHandler, intervalMs);
     this.tasks.set(id, handle);
 
-    console.log(`✅ [BackgroundTaskManager] Interval registered: ${id} (${intervalMs}ms)`);
+    console.log(
+      `✅ [BackgroundTaskManager] Interval registered: ${id} (${intervalMs}ms)`,
+    );
     return true;
   }
 
@@ -156,7 +170,7 @@ export class BackgroundTaskManager {
   registerTimeout(
     id: string,
     handler: () => Promise<void> | void,
-    delayMs: number
+    delayMs: number,
   ): boolean {
     if (this.tasks.has(id)) {
       console.warn(`⚠️ [BackgroundTaskManager] Task already exists: ${id}`);
@@ -164,18 +178,20 @@ export class BackgroundTaskManager {
     }
 
     if (!this.globalEnabled) {
-      console.log(`⏸️ [BackgroundTaskManager] Global disabled - task ${id} not started`);
+      console.log(
+        `⏸️ [BackgroundTaskManager] Global disabled - task ${id} not started`,
+      );
       return false;
     }
 
     const config: TaskConfig = {
       id,
-      type: 'timeout',
+      type: "timeout",
       handler,
       delay: delayMs,
       startTime: new Date(),
       executionCount: 0,
-      enabled: true
+      enabled: true,
     };
 
     this.taskConfigs.set(id, config);
@@ -185,7 +201,8 @@ export class BackgroundTaskManager {
         config.executionCount++;
         await handler();
       } catch (error) {
-        config.lastError = error instanceof Error ? error.message : 'Unknown error';
+        config.lastError =
+          error instanceof Error ? error.message : "Unknown error";
         console.error(`🚨 [BackgroundTaskManager] Task ${id} failed:`, error);
       } finally {
         // Timeout은 한 번 실행 후 자동 정리
@@ -197,7 +214,9 @@ export class BackgroundTaskManager {
     const handle = setTimeout(wrappedHandler, delayMs);
     this.tasks.set(id, handle);
 
-    console.log(`✅ [BackgroundTaskManager] Timeout registered: ${id} (${delayMs}ms)`);
+    console.log(
+      `✅ [BackgroundTaskManager] Timeout registered: ${id} (${delayMs}ms)`,
+    );
     return true;
   }
 
@@ -212,7 +231,7 @@ export class BackgroundTaskManager {
       return false;
     }
 
-    if (config.type === 'interval') {
+    if (config.type === "interval") {
       clearInterval(handle);
     } else {
       clearTimeout(handle);
@@ -229,13 +248,15 @@ export class BackgroundTaskManager {
    * 🧹 모든 작업 정리
    */
   cleanup(): void {
-    console.log(`🧹 [BackgroundTaskManager] Cleaning up ${this.tasks.size} tasks...`);
+    console.log(
+      `🧹 [BackgroundTaskManager] Cleaning up ${this.tasks.size} tasks...`,
+    );
 
     const taskEntries = Array.from(this.tasks.entries());
     for (const [id, handle] of taskEntries) {
       const config = this.taskConfigs.get(id);
 
-      if (config?.type === 'interval') {
+      if (config?.type === "interval") {
         clearInterval(handle);
       } else {
         clearTimeout(handle);
@@ -245,7 +266,7 @@ export class BackgroundTaskManager {
     this.tasks.clear();
     this.taskConfigs.clear();
 
-    console.log('✅ [BackgroundTaskManager] Cleanup completed');
+    console.log("✅ [BackgroundTaskManager] Cleanup completed");
   }
 
   /**
@@ -253,7 +274,7 @@ export class BackgroundTaskManager {
    */
   pauseAll(): void {
     this.globalEnabled = false;
-    console.log('⏸️ [BackgroundTaskManager] All tasks paused');
+    console.log("⏸️ [BackgroundTaskManager] All tasks paused");
   }
 
   /**
@@ -261,7 +282,7 @@ export class BackgroundTaskManager {
    */
   resumeAll(): void {
     this.globalEnabled = true;
-    console.log('▶️ [BackgroundTaskManager] All tasks resumed');
+    console.log("▶️ [BackgroundTaskManager] All tasks resumed");
   }
 
   /**
@@ -297,7 +318,7 @@ export class BackgroundTaskManager {
    */
   cancelTasksByPattern(pattern: string): number {
     let canceledCount = 0;
-    const regex = new RegExp(pattern.replace('*', '.*'));
+    const regex = new RegExp(pattern.replace("*", ".*"));
 
     // Convert to array to avoid iterator issues
     const taskEntries = Array.from(this.tasks.entries());
@@ -312,7 +333,9 @@ export class BackgroundTaskManager {
     }
 
     if (canceledCount > 0) {
-      console.log(`🗑️ [BackgroundTaskManager] Canceled ${canceledCount} tasks matching pattern: ${pattern}`);
+      console.log(
+        `🗑️ [BackgroundTaskManager] Canceled ${canceledCount} tasks matching pattern: ${pattern}`,
+      );
     }
 
     return canceledCount;
@@ -326,10 +349,10 @@ export class BackgroundTaskManager {
 
     return {
       totalTasks: this.tasks.size,
-      activeTasks: configs.filter(c => c.enabled).length,
-      disabledTasks: configs.filter(c => !c.enabled).length,
+      activeTasks: configs.filter((c) => c.enabled).length,
+      disabledTasks: configs.filter((c) => !c.enabled).length,
       totalExecutions: configs.reduce((sum, c) => sum + c.executionCount, 0),
-      failedExecutions: configs.filter(c => c.lastError).length
+      failedExecutions: configs.filter((c) => c.lastError).length,
     };
   }
 
@@ -345,14 +368,14 @@ export class BackgroundTaskManager {
     uptime: number;
     lastError?: string;
   }> {
-    return Array.from(this.taskConfigs.values()).map(config => ({
+    return Array.from(this.taskConfigs.values()).map((config) => ({
       id: config.id,
       type: config.type,
       delay: config.delay,
       executionCount: config.executionCount,
       enabled: config.enabled,
       uptime: Date.now() - config.startTime.getTime(),
-      lastError: config.lastError
+      lastError: config.lastError,
     }));
   }
 
@@ -360,7 +383,7 @@ export class BackgroundTaskManager {
    * 🚨 비상 정지 (모든 작업 강제 중단)
    */
   emergencyShutdown(): void {
-    console.error('🚨 [BackgroundTaskManager] EMERGENCY SHUTDOWN');
+    console.error("🚨 [BackgroundTaskManager] EMERGENCY SHUTDOWN");
     this.pauseAll();
     this.cleanup();
   }
@@ -369,4 +392,4 @@ export class BackgroundTaskManager {
 // 싱글톤 인스턴스 export
 export const backgroundTaskManager = BackgroundTaskManager.getInstance();
 
-console.log('🔄 [BackgroundTaskManager] Module loaded');
+console.log("🔄 [BackgroundTaskManager] Module loaded");

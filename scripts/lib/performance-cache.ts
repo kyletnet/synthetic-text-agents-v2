@@ -5,7 +5,15 @@
  * 전역 결과 캐싱으로 중복 분석 방지
  */
 
-import { existsSync, readFileSync, writeFileSync, statSync, mkdirSync, unlinkSync, readdirSync } from "fs";
+import {
+  existsSync,
+  readFileSync,
+  writeFileSync,
+  statSync,
+  mkdirSync,
+  unlinkSync,
+  readdirSync,
+} from "fs";
 import { join } from "path";
 
 interface CacheEntry<T> {
@@ -50,7 +58,7 @@ class PerformanceCache {
         combined += `${filePath}:missing`;
       }
     }
-    return Buffer.from(combined).toString('base64').substring(0, 32);
+    return Buffer.from(combined).toString("base64").substring(0, 32);
   }
 
   async get<T>(key: string, config?: CacheConfig): Promise<T | null> {
@@ -61,7 +69,7 @@ class PerformanceCache {
     }
 
     try {
-      const entry: CacheEntry<T> = JSON.parse(readFileSync(cachePath, 'utf8'));
+      const entry: CacheEntry<T> = JSON.parse(readFileSync(cachePath, "utf8"));
       const now = Date.now();
       const age = now - new Date(entry.timestamp).getTime();
       const ttl = config?.ttl || entry.ttl || this.defaultTtl;
@@ -79,7 +87,7 @@ class PerformanceCache {
         }
       }
 
-      console.log(`   💾 Cache hit: ${key} (age: ${Math.round(age/1000)}s)`);
+      console.log(`   💾 Cache hit: ${key} (age: ${Math.round(age / 1000)}s)`);
       return entry.data;
     } catch (e) {
       return null;
@@ -115,7 +123,7 @@ class PerformanceCache {
     if (existsSync(this.cacheDir)) {
       const files = readdirSync(this.cacheDir);
       for (const file of files) {
-        if (file.endsWith('.json')) {
+        if (file.endsWith(".json")) {
           unlinkSync(join(this.cacheDir, file));
         }
       }
@@ -127,7 +135,7 @@ class PerformanceCache {
   async getCachedOrCompute<T>(
     key: string,
     computeFn: () => Promise<T>,
-    config?: CacheConfig
+    config?: CacheConfig,
   ): Promise<T> {
     const cached = await this.get<T>(key, config);
     if (cached !== null) {

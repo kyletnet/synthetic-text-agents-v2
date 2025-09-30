@@ -84,5 +84,4 @@ npm run maintain:quick
 
 모든 시스템 관리가 **완전 자동화**되었습니다.
 
-
 _Last updated: 2025-09-30_

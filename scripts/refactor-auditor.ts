@@ -1118,26 +1118,29 @@ class RefactorAuditor {
 
     try {
       // TypeScript 컴파일 실행
-      const { execSync } = await import('child_process');
-      const result = execSync('npx tsc --noEmit --pretty false', {
-        encoding: 'utf8',
-        stdio: 'pipe'
+      const { execSync } = await import("child_process");
+      const result = execSync("npx tsc --noEmit --pretty false", {
+        encoding: "utf8",
+        stdio: "pipe",
       });
 
       console.log("✅ TypeScript 컴파일 성공 - 오류 없음");
     } catch (error: any) {
-      const output = error.stdout || error.stderr || '';
-      const errorLines = output.split('\n').filter((line: string) =>
-        line.includes('error TS') && line.trim().length > 0
-      );
+      const output = error.stdout || error.stderr || "";
+      const errorLines = output
+        .split("\n")
+        .filter(
+          (line: string) => line.includes("error TS") && line.trim().length > 0,
+        );
 
       if (errorLines.length > 0) {
-        const criticalErrors = errorLines.filter((line: string) =>
-          line.includes('TS2304') || // Cannot find name
-          line.includes('TS2339') || // Property does not exist
-          line.includes('TS2345') || // Argument not assignable
-          line.includes('TS2322') || // Type not assignable
-          line.includes('TS2393')    // Duplicate function implementation
+        const criticalErrors = errorLines.filter(
+          (line: string) =>
+            line.includes("TS2304") || // Cannot find name
+            line.includes("TS2339") || // Property does not exist
+            line.includes("TS2345") || // Argument not assignable
+            line.includes("TS2322") || // Type not assignable
+            line.includes("TS2393"), // Duplicate function implementation
         );
 
         // 파일별로 그룹화
@@ -1159,10 +1162,13 @@ class RefactorAuditor {
           description: `${errorLines.length}개의 컴파일 오류 발견 (Critical: ${criticalErrors.length}개)`,
           files: Object.keys(errorsByFile),
           impact: "시스템이 컴파일되지 않아 실행 불가능",
-          recommendation: "모든 TypeScript 오류를 수정하여 컴파일을 성공시켜야 함"
+          recommendation:
+            "모든 TypeScript 오류를 수정하여 컴파일을 성공시켜야 함",
         });
 
-        console.log(`❌ TypeScript 오류 ${errorLines.length}개 발견 (Critical: ${criticalErrors.length}개)`);
+        console.log(
+          `❌ TypeScript 오류 ${errorLines.length}개 발견 (Critical: ${criticalErrors.length}개)`,
+        );
       }
     }
   }
@@ -1181,17 +1187,23 @@ class RefactorAuditor {
       if (!content) continue;
 
       // requestApproval 메서드 호출 패턴 검사
-      const requestApprovalCalls = content.match(/requestApproval\s*\([^)]+\)/g) || [];
-      requestApprovalCalls.forEach(call => {
+      const requestApprovalCalls =
+        content.match(/requestApproval\s*\([^)]+\)/g) || [];
+      requestApprovalCalls.forEach((call) => {
         // 2개 파라미터 패턴 (구식)
-        if (call.includes(',') && !call.includes('{')) {
+        if (call.includes(",") && !call.includes("{")) {
           methodIssues.push(`${file}: 구식 requestApproval 시그니처 사용`);
         }
       });
 
       // listSnapshots vs getSnapshots
-      if (content.includes('listSnapshots(') && !content.includes('getSnapshots(')) {
-        methodIssues.push(`${file}: listSnapshots() 메서드가 존재하지 않음 (getSnapshots() 사용 필요)`);
+      if (
+        content.includes("listSnapshots(") &&
+        !content.includes("getSnapshots(")
+      ) {
+        methodIssues.push(
+          `${file}: listSnapshots() 메서드가 존재하지 않음 (getSnapshots() 사용 필요)`,
+        );
       }
     }
 
@@ -1202,9 +1214,9 @@ class RefactorAuditor {
         severity: "P1",
         title: "Method Signature Mismatches",
         description: `${methodIssues.length}개의 메서드 시그니처 불일치`,
-        files: methodIssues.map(issue => issue.split(':')[0]),
+        files: methodIssues.map((issue) => issue.split(":")[0]),
         impact: "런타임 오류 및 메서드 호출 실패",
-        recommendation: "모든 메서드 시그니처를 최신 인터페이스에 맞춰 수정"
+        recommendation: "모든 메서드 시그니처를 최신 인터페이스에 맞춰 수정",
       });
 
       console.log(`❌ 메서드 시그니처 문제 ${methodIssues.length}개 발견`);
@@ -1225,7 +1237,9 @@ class RefactorAuditor {
       if (!content) continue;
 
       // ESM/CommonJS 혼재 사용
-      const hasESMImports = /^import\s+.*from\s+['"].+['"];?\s*$/m.test(content);
+      const hasESMImports = /^import\s+.*from\s+['"].+['"];?\s*$/m.test(
+        content,
+      );
       const hasCommonJSRequire = /require\s*\(\s*['"].+['"]\s*\)/.test(content);
 
       if (hasESMImports && hasCommonJSRequire) {
@@ -1233,7 +1247,7 @@ class RefactorAuditor {
       }
 
       // 파일 감시 glob 패턴 잘못된 사용
-      if (content.includes('fs.watch(') && content.includes('**/*.ts')) {
+      if (content.includes("fs.watch(") && content.includes("**/*.ts")) {
         compatibilityIssues.push(`${file}: 파일 감시에서 glob 패턴 잘못 사용`);
       }
     }
@@ -1245,12 +1259,14 @@ class RefactorAuditor {
         severity: "P2",
         title: "Node.js Compatibility Issues",
         description: `${compatibilityIssues.length}개의 Node.js 호환성 문제`,
-        files: compatibilityIssues.map(issue => issue.split(':')[0]),
+        files: compatibilityIssues.map((issue) => issue.split(":")[0]),
         impact: "런타임 오류 및 불안정한 동작",
-        recommendation: "Node.js 호환성 문제 수정 및 표준 패턴 사용"
+        recommendation: "Node.js 호환성 문제 수정 및 표준 패턴 사용",
       });
 
-      console.log(`⚠️ Node.js 호환성 문제 ${compatibilityIssues.length}개 발견`);
+      console.log(
+        `⚠️ Node.js 호환성 문제 ${compatibilityIssues.length}개 발견`,
+      );
     }
   }
 
@@ -1296,8 +1312,12 @@ class RefactorAuditor {
     console.log("\\n" + "=".repeat(80));
 
     // 설계 원칙 위반 요약 출력
-    const enhancedFindings = this.designPrincipleMapper.enhanceIssuesWithDesignPrinciples(this.findings);
-    const violationSummary = this.designPrincipleMapper.generateViolationSummary(enhancedFindings);
+    const enhancedFindings =
+      this.designPrincipleMapper.enhanceIssuesWithDesignPrinciples(
+        this.findings,
+      );
+    const violationSummary =
+      this.designPrincipleMapper.generateViolationSummary(enhancedFindings);
     console.log(violationSummary);
 
     // Auto-trigger conditions
@@ -1315,39 +1335,54 @@ class RefactorAuditor {
    * Phase 6 후속조치 - getTasksDue() 로직 문제 방지
    */
   private async checkTaskSchedulingLogic(): Promise<void> {
-    const maintenanceFiles = glob.sync("scripts/*maintenance*.ts", { cwd: this.rootDir });
+    const maintenanceFiles = glob.sync("scripts/*maintenance*.ts", {
+      cwd: this.rootDir,
+    });
 
     for (const file of maintenanceFiles) {
       const content = this.safeReadFile(join(this.rootDir, file));
       if (!content) continue;
 
       // 문제 1: before-commit frequency가 항상 false 리턴
-      if (content.includes('case "before-commit":') && content.includes('return false')) {
+      if (
+        content.includes('case "before-commit":') &&
+        content.includes("return false")
+      ) {
         this.addFinding({
           category: "Task Scheduling Logic",
           priority: "HIGH",
           severity: "P0",
           title: `before-commit tasks always skipped in ${file}`,
-          description: "before-commit frequency returns false, preventing critical tasks from running",
+          description:
+            "before-commit frequency returns false, preventing critical tasks from running",
           files: [file],
-          impact: "Critical validation tasks (typecheck, lint, test) never execute",
-          recommendation: "Implement mode-based execution (SMART/FORCE) or remove before-commit frequency"
+          impact:
+            "Critical validation tasks (typecheck, lint, test) never execute",
+          recommendation:
+            "Implement mode-based execution (SMART/FORCE) or remove before-commit frequency",
         });
       }
 
       // 문제 2: Critical tasks 시간 필터링으로 스킵
-      if (content.includes('getTasksDue') && !content.includes('task.priority === "critical"')) {
-        const hasTimeFilter = content.includes('timeSinceLastRun') && content.includes('oneDayMs');
+      if (
+        content.includes("getTasksDue") &&
+        !content.includes('task.priority === "critical"')
+      ) {
+        const hasTimeFilter =
+          content.includes("timeSinceLastRun") && content.includes("oneDayMs");
         if (hasTimeFilter) {
           this.addFinding({
             category: "Task Scheduling Logic",
             priority: "HIGH",
             severity: "P1",
             title: `Critical tasks can be skipped by time filter in ${file}`,
-            description: "Critical priority tasks filtered by lastRun time, may not execute when needed",
+            description:
+              "Critical priority tasks filtered by lastRun time, may not execute when needed",
             files: [file],
-            impact: "Critical tasks (Self-Healing check, TypeScript validation) may be skipped",
-            recommendation: "Always execute critical priority tasks regardless of lastRun time"
+            impact:
+              "Critical tasks (Self-Healing check, TypeScript validation) may be skipped",
+            recommendation:
+              "Always execute critical priority tasks regardless of lastRun time",
           });
         }
       }
@@ -1359,28 +1394,40 @@ class RefactorAuditor {
    * Phase 6 후속조치 - process.stdin 사용 문제 방지
    */
   private async checkInteractiveApprovalSystem(): Promise<void> {
-    const approvalFiles = glob.sync("scripts/**/*approval*.ts", { cwd: this.rootDir });
+    const approvalFiles = glob.sync("scripts/**/*approval*.ts", {
+      cwd: this.rootDir,
+    });
 
     for (const file of approvalFiles) {
       const content = this.safeReadFile(join(this.rootDir, file));
       if (!content) continue;
 
       // 문제: process.stdin 사용하지만 isTTY 체크 없음
-      if (content.includes('process.stdin') && !content.includes('process.stdin.isTTY')) {
+      if (
+        content.includes("process.stdin") &&
+        !content.includes("process.stdin.isTTY")
+      ) {
         this.addFinding({
           category: "Interactive Approval System",
           priority: "HIGH",
           severity: "P0",
           title: `Non-interactive execution not handled in ${file}`,
-          description: "Uses process.stdin without checking isTTY, fails in background/CI environments",
+          description:
+            "Uses process.stdin without checking isTTY, fails in background/CI environments",
           files: [file],
-          impact: "Approval requests block or timeout in non-interactive environments",
-          recommendation: "Check process.stdin.isTTY and queue approvals in non-interactive mode"
+          impact:
+            "Approval requests block or timeout in non-interactive environments",
+          recommendation:
+            "Check process.stdin.isTTY and queue approvals in non-interactive mode",
         });
       }
 
       // 문제: readline timeout 후 자동 건너뛰기
-      if (content.includes('setTimeout') && content.includes('readline') && !content.includes('queue')) {
+      if (
+        content.includes("setTimeout") &&
+        content.includes("readline") &&
+        !content.includes("queue")
+      ) {
         this.addFinding({
           category: "Interactive Approval System",
           priority: "MEDIUM",
@@ -1389,7 +1436,7 @@ class RefactorAuditor {
           description: "Approval timeout skips items without saving to queue",
           files: [file],
           impact: "User unaware of skipped approval items",
-          recommendation: "Always queue timed-out approvals for later review"
+          recommendation: "Always queue timed-out approvals for later review",
         });
       }
     }
@@ -1400,41 +1447,45 @@ class RefactorAuditor {
    * Phase 6 후속조치 - stdio: pipe 문제 방지
    */
   private async checkOutputVisibility(): Promise<void> {
-    const orchestratorFiles = glob.sync("scripts/**/*orchestrator*.ts", { cwd: this.rootDir });
+    const orchestratorFiles = glob.sync("scripts/**/*orchestrator*.ts", {
+      cwd: this.rootDir,
+    });
 
     for (const file of orchestratorFiles) {
       const content = this.safeReadFile(join(this.rootDir, file));
       if (!content) continue;
 
       // 문제: stdio: pipe로 출력 숨김
-      if (content.includes('execSync') && content.includes('stdio: "pipe"')) {
+      if (content.includes("execSync") && content.includes('stdio: "pipe"')) {
         this.addFinding({
           category: "Output Visibility",
           priority: "MEDIUM",
           severity: "P2",
           title: `Command output hidden with stdio:pipe in ${file}`,
-          description: "execSync with stdio:pipe hides command output from user",
+          description:
+            "execSync with stdio:pipe hides command output from user",
           files: [file],
           impact: "User cannot see progress or errors during maintenance tasks",
-          recommendation: "Use stdio:inherit for user-facing commands, or log output explicitly"
+          recommendation:
+            "Use stdio:inherit for user-facing commands, or log output explicitly",
         });
       }
 
       // 문제: 에러 출력 캡처 안됨
-      if (content.includes('execSync') && !content.includes('catch')) {
-        const lines = content.split('\n');
+      if (content.includes("execSync") && !content.includes("catch")) {
+        const lines = content.split("\n");
         let inExecSync = false;
         let hasCatch = false;
 
         for (let i = 0; i < lines.length; i++) {
-          if (lines[i].includes('execSync')) {
+          if (lines[i].includes("execSync")) {
             inExecSync = true;
           }
-          if (inExecSync && lines[i].includes('catch')) {
+          if (inExecSync && lines[i].includes("catch")) {
             hasCatch = true;
             break;
           }
-          if (inExecSync && lines[i].includes('}')) {
+          if (inExecSync && lines[i].includes("}")) {
             break;
           }
         }
@@ -1445,10 +1496,11 @@ class RefactorAuditor {
             priority: "MEDIUM",
             severity: "P2",
             title: `execSync without error handling in ${file}`,
-            description: "execSync without try-catch may crash without showing error details",
+            description:
+              "execSync without try-catch may crash without showing error details",
             files: [file],
             impact: "Maintenance fails without clear error messages",
-            recommendation: "Wrap execSync in try-catch and log error details"
+            recommendation: "Wrap execSync in try-catch and log error details",
           });
         }
       }
@@ -1459,73 +1511,94 @@ class RefactorAuditor {
    * 🔄 Self-Healing 무한 루프 감지 (NEW - Phase 6 후속조치)
    */
   private async checkSelfHealingInfiniteLoop(): Promise<void> {
-    const healingFiles = glob.sync("apps/**/lib/*healing*.ts", { cwd: this.rootDir });
+    const healingFiles = glob.sync("apps/**/lib/*healing*.ts", {
+      cwd: this.rootDir,
+    });
 
     for (const file of healingFiles) {
       const content = this.safeReadFile(join(this.rootDir, file));
       if (!content) continue;
 
       // 문제 1: Healing 실패 시 연속 실패 카운터 증가 없음
-      if (content.includes('performAutomaticHealingInternal') &&
-          content.includes('filter(r => r.success)') &&
-          !content.includes('consecutiveFailures++')) {
+      if (
+        content.includes("performAutomaticHealingInternal") &&
+        content.includes("filter(r => r.success)") &&
+        !content.includes("consecutiveFailures++")
+      ) {
         this.addFinding({
           category: "Self-Healing Infinite Loop",
           priority: "HIGH",
           severity: "P0",
           title: `Self-Healing lacks failure tracking in ${file}`,
-          description: "Healing cycle doesn't increment consecutive failures when all actions fail",
+          description:
+            "Healing cycle doesn't increment consecutive failures when all actions fail",
           files: [file],
-          impact: "System will retry healing indefinitely without dormant mode activation",
-          recommendation: "Increment consecutiveFailures counter when successCount === 0"
+          impact:
+            "System will retry healing indefinitely without dormant mode activation",
+          recommendation:
+            "Increment consecutiveFailures counter when successCount === 0",
         });
       }
 
       // 문제 2: 복구 불가능한 에러(API Key 없음 등)에 대한 즉시 dormant mode 진입 없음
-      if (content.includes('performAPIKeyRotation') &&
-          content.includes('No API keys found') &&
-          !content.includes('enterDormantMode')) {
+      if (
+        content.includes("performAPIKeyRotation") &&
+        content.includes("No API keys found") &&
+        !content.includes("enterDormantMode")
+      ) {
         this.addFinding({
           category: "Self-Healing Infinite Loop",
           priority: "HIGH",
           severity: "P1",
           title: `Unrecoverable failures not handled in ${file}`,
-          description: "API key absence should trigger immediate dormant mode, not retry",
+          description:
+            "API key absence should trigger immediate dormant mode, not retry",
           files: [file],
           impact: "System wastes resources retrying unrecoverable issues",
-          recommendation: "Call enterDormantMode() immediately for external configuration errors"
+          recommendation:
+            "Call enterDormantMode() immediately for external configuration errors",
         });
       }
 
       // 문제 3: Dormant mode 체크 없이 healing 재시도
-      if (content.includes('performAutomaticHealing') &&
-          content.includes('async performAutomaticHealing') &&
-          !content.includes('if (this.dormantMode)')) {
+      if (
+        content.includes("performAutomaticHealing") &&
+        content.includes("async performAutomaticHealing") &&
+        !content.includes("if (this.dormantMode)")
+      ) {
         this.addFinding({
           category: "Self-Healing Infinite Loop",
           priority: "HIGH",
           severity: "P0",
           title: `Missing dormant mode check at entry point in ${file}`,
-          description: "performAutomaticHealing() doesn't check dormant mode, allowing healing to continue",
+          description:
+            "performAutomaticHealing() doesn't check dormant mode, allowing healing to continue",
           files: [file],
-          impact: "System wastes resources on healing attempts while in dormant state",
-          recommendation: "Add 'if (this.dormantMode) return []' check at start of performAutomaticHealing()"
+          impact:
+            "System wastes resources on healing attempts while in dormant state",
+          recommendation:
+            "Add 'if (this.dormantMode) return []' check at start of performAutomaticHealing()",
         });
       }
 
       // 문제 4: enterDormantMode()에서 백그라운드 태스크 취소 누락
-      if (content.includes('enterDormantMode') &&
-          content.includes('backgroundTaskManager') &&
-          !content.includes('cancelTasksByPattern')) {
+      if (
+        content.includes("enterDormantMode") &&
+        content.includes("backgroundTaskManager") &&
+        !content.includes("cancelTasksByPattern")
+      ) {
         this.addFinding({
           category: "Self-Healing Infinite Loop",
           priority: "HIGH",
           severity: "P1",
           title: `Dormant mode doesn't cancel pending tasks in ${file}`,
-          description: "enterDormantMode() only pauses tasks but doesn't cancel pending timeouts",
+          description:
+            "enterDormantMode() only pauses tasks but doesn't cancel pending timeouts",
           files: [file],
-          impact: "Scheduled healing-alert timeouts continue to fire after dormant mode activation",
-          recommendation: "Call cancelTasksByPattern('healing-alert-*') in enterDormantMode()"
+          impact:
+            "Scheduled healing-alert timeouts continue to fire after dormant mode activation",
+          recommendation:
+            "Call cancelTasksByPattern('healing-alert-*') in enterDormantMode()",
         });
       }
     }

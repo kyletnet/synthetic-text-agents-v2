@@ -14,8 +14,8 @@ export interface PendingApprovalItem {
   description: string;
   command?: string;
   impact: string;
-  riskLevel: 'low' | 'medium' | 'high' | 'critical';
-  priority: 'low' | 'medium' | 'high' | 'critical';
+  riskLevel: "low" | "medium" | "high" | "critical";
+  priority: "low" | "medium" | "high" | "critical";
   createdAt: Date;
   timeoutAt: Date;
   attempts: number;
@@ -26,32 +26,36 @@ export class ApprovalQueue {
   private queueFile: string;
 
   constructor(projectRoot: string = process.cwd()) {
-    this.queueFile = join(projectRoot, 'reports', 'approval-queue.json');
+    this.queueFile = join(projectRoot, "reports", "approval-queue.json");
   }
 
   /**
    * 대기 큐에 항목 추가
    */
-  addToQueue(item: Omit<PendingApprovalItem, 'id' | 'createdAt' | 'attempts'>): void {
+  addToQueue(
+    item: Omit<PendingApprovalItem, "id" | "createdAt" | "attempts">,
+  ): void {
     const queue = this.loadQueue();
 
     const newItem: PendingApprovalItem = {
       ...item,
       id: this.generateId(),
       createdAt: new Date(),
-      attempts: 1
+      attempts: 1,
     };
 
     // 중복 체크 (같은 title + command)
-    const existingIndex = queue.findIndex(q =>
-      q.title === item.title && q.command === item.command
+    const existingIndex = queue.findIndex(
+      (q) => q.title === item.title && q.command === item.command,
     );
 
     if (existingIndex >= 0) {
       // 기존 항목이 있으면 시도 횟수만 증가
       queue[existingIndex].attempts += 1;
       queue[existingIndex].timeoutAt = item.timeoutAt;
-      console.log(`📋 기존 승인 요청 업데이트: ${item.title} (${queue[existingIndex].attempts}회 시도)`);
+      console.log(
+        `📋 기존 승인 요청 업데이트: ${item.title} (${queue[existingIndex].attempts}회 시도)`,
+      );
     } else {
       // 새 항목 추가
       queue.push(newItem);
@@ -78,7 +82,8 @@ export class ApprovalQueue {
 
     return queue.sort((a, b) => {
       // 1차: 우선순위로 정렬
-      const priorityDiff = priorityOrder[a.priority] - priorityOrder[b.priority];
+      const priorityDiff =
+        priorityOrder[a.priority] - priorityOrder[b.priority];
       if (priorityDiff !== 0) return priorityDiff;
 
       // 2차: 시도 횟수로 정렬 (많이 시도된 것 우선)
@@ -97,7 +102,7 @@ export class ApprovalQueue {
     const queue = this.loadQueue();
     const initialLength = queue.length;
 
-    const filteredQueue = queue.filter(item => item.id !== id);
+    const filteredQueue = queue.filter((item) => item.id !== id);
 
     if (filteredQueue.length < initialLength) {
       this.saveQueue(filteredQueue);
@@ -112,7 +117,7 @@ export class ApprovalQueue {
    */
   clearQueue(): void {
     this.saveQueue([]);
-    console.log('📋 승인 대기 큐를 초기화했습니다.');
+    console.log("📋 승인 대기 큐를 초기화했습니다.");
   }
 
   /**
@@ -131,11 +136,17 @@ export class ApprovalQueue {
       total: queue.length,
       byPriority: { critical: 0, high: 0, medium: 0, low: 0 },
       byRisk: { critical: 0, high: 0, medium: 0, low: 0 },
-      oldestItem: queue.length > 0 ? new Date(Math.min(...queue.map(q => new Date(q.createdAt).getTime()))) : undefined,
-      mostAttempted: queue.length > 0 ? Math.max(...queue.map(q => q.attempts)) : 0
+      oldestItem:
+        queue.length > 0
+          ? new Date(
+              Math.min(...queue.map((q) => new Date(q.createdAt).getTime())),
+            )
+          : undefined,
+      mostAttempted:
+        queue.length > 0 ? Math.max(...queue.map((q) => q.attempts)) : 0,
     };
 
-    queue.forEach(item => {
+    queue.forEach((item) => {
       stats.byPriority[item.priority]++;
       stats.byRisk[item.riskLevel]++;
     });
@@ -152,7 +163,7 @@ export class ApprovalQueue {
     }
 
     try {
-      const content = readFileSync(this.queueFile, 'utf8');
+      const content = readFileSync(this.queueFile, "utf8");
       return JSON.parse(content);
     } catch (error) {
       console.log(`⚠️ 승인 큐 파일 읽기 실패: ${error}`);

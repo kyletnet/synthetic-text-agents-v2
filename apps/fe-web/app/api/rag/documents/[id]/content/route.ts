@@ -1,28 +1,28 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { RAGSystem } from '@/lib/rag-utils';
+import { NextRequest, NextResponse } from "next/server";
+import { RAGSystem } from "@/lib/rag-utils";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: { id: string } },
 ) {
   try {
     const { id } = params;
 
     if (!id) {
       return NextResponse.json(
-        { error: 'Document ID is required' },
-        { status: 400 }
+        { error: "Document ID is required" },
+        { status: 400 },
       );
     }
 
     // 문서 찾기
     const documents = RAGSystem.getDocuments();
-    const document = documents.find(doc => doc.id === id);
+    const document = documents.find((doc) => doc.id === id);
 
     if (!document) {
       return NextResponse.json(
-        { error: 'Document not found' },
-        { status: 404 }
+        { error: "Document not found" },
+        { status: 404 },
       );
     }
 
@@ -36,12 +36,11 @@ export async function GET(
         uploadedAt: document.uploadedAt,
       },
     });
-
   } catch (error) {
-    console.error('Failed to get document content:', error);
+    console.error("Failed to get document content:", error);
     return NextResponse.json(
-      { error: 'Failed to retrieve document content' },
-      { status: 500 }
+      { error: "Failed to retrieve document content" },
+      { status: 500 },
     );
   }
 }

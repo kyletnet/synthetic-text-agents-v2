@@ -4,7 +4,6 @@ import {
   EnhancedExporter,
   parseExportArgs,
   validateExportOptions,
-  ExportOptions,
 } from "./export_enhanced.js";
 
 async function main() {

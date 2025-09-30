@@ -6,12 +6,15 @@
  * Demonstrates unified component architecture in practice
  */
 
-import { ComponentAdapter, IntegrationConfig } from './component-integration-adapter.js';
-import { UnifiedMessage, Operation, ComponentId } from './core-system-hub.js';
-import { safeGuard } from './safe-automation-guard.js';
-import { approvalSystem } from './interactive-approval-system.js';
-import { execSync } from 'child_process';
-import { performance } from 'perf_hooks';
+import {
+  ComponentAdapter,
+  IntegrationConfig,
+} from "./component-integration-adapter.js";
+import { UnifiedMessage, Operation, ComponentId } from "./core-system-hub.js";
+import { safeGuard } from "./safe-automation-guard.js";
+import { approvalSystem } from "./interactive-approval-system.js";
+import { execSync } from "child_process";
+import { performance } from "perf_hooks";
 
 interface MaintenanceTask {
   name: string;
@@ -25,9 +28,9 @@ interface MaintenanceTask {
 
 interface MaintenanceRequest {
   tasks: MaintenanceTask[];
-  mode: 'quick' | 'full' | 'targeted';
+  mode: "quick" | "full" | "targeted";
   requestedBy: ComponentId;
-  priority: 'P0' | 'P1' | 'P2';
+  priority: "P0" | "P1" | "P2";
 }
 
 export class IntegratedMaintenanceOrchestrator extends ComponentAdapter {
@@ -39,7 +42,7 @@ export class IntegratedMaintenanceOrchestrator extends ComponentAdapter {
       priority: "high",
       autoRun: false,
       description: "Check TypeScript compilation and type safety",
-      dependencies: []
+      dependencies: [],
     },
     {
       name: "Lint and Format",
@@ -48,7 +51,7 @@ export class IntegratedMaintenanceOrchestrator extends ComponentAdapter {
       priority: "medium",
       autoRun: true,
       description: "Code style and quality checks",
-      dependencies: []
+      dependencies: [],
     },
     {
       name: "Security Audit",
@@ -57,7 +60,7 @@ export class IntegratedMaintenanceOrchestrator extends ComponentAdapter {
       priority: "high",
       autoRun: false,
       description: "Security vulnerability scanning",
-      dependencies: []
+      dependencies: [],
     },
     {
       name: "System Health Analysis",
@@ -66,18 +69,27 @@ export class IntegratedMaintenanceOrchestrator extends ComponentAdapter {
       priority: "medium",
       autoRun: true,
       description: "Overall system health and metrics",
-      dependencies: ['unified-dashboard']
-    }
+      dependencies: ["unified-dashboard"],
+    },
   ];
 
   constructor() {
     const config: IntegrationConfig = {
-      componentId: 'maintenance-orchestrator',
-      version: '2.0.0',
-      capabilities: ['maintenance', 'quality-control', 'automation', 'health-monitoring'],
-      dependencies: ['unified-dashboard', 'approval-system', 'safe-automation-guard'],
+      componentId: "maintenance-orchestrator",
+      version: "2.0.0",
+      capabilities: [
+        "maintenance",
+        "quality-control",
+        "automation",
+        "health-monitoring",
+      ],
+      dependencies: [
+        "unified-dashboard",
+        "approval-system",
+        "safe-automation-guard",
+      ],
       healthCheckInterval: 60000, // 1 minute
-      enableMetrics: true
+      enableMetrics: true,
     };
 
     super(config);
@@ -91,34 +103,36 @@ export class IntegratedMaintenanceOrchestrator extends ComponentAdapter {
 
   protected async handleMessage(message: UnifiedMessage): Promise<void> {
     switch (message.type) {
-      case 'request':
+      case "request":
         await this.handleMaintenanceRequest(message);
         break;
 
-      case 'event':
+      case "event":
         await this.handleSystemEvent(message);
         break;
 
-      case 'metric':
+      case "metric":
         await this.handleMetricUpdate(message);
         break;
 
       default:
-        console.log(`🔧 Maintenance orchestrator received: ${message.type} from ${message.source}`);
+        console.log(
+          `🔧 Maintenance orchestrator received: ${message.type} from ${message.source}`,
+        );
     }
   }
 
   protected async executeOperation(operation: Operation): Promise<void> {
     switch (operation.type) {
-      case 'maintenance':
+      case "maintenance":
         await this.performMaintenance(operation);
         break;
 
-      case 'analysis':
+      case "analysis":
         await this.performAnalysis(operation);
         break;
 
-      case 'optimization':
+      case "optimization":
         await this.performOptimization(operation);
         break;
 
@@ -127,57 +141,73 @@ export class IntegratedMaintenanceOrchestrator extends ComponentAdapter {
     }
   }
 
-  private async handleMaintenanceRequest(message: UnifiedMessage): Promise<void> {
+  private async handleMaintenanceRequest(
+    message: UnifiedMessage,
+  ): Promise<void> {
     const request = message.payload as MaintenanceRequest;
 
-    console.log(`🔧 Received maintenance request: ${request.mode} mode from ${message.source}`);
+    console.log(
+      `🔧 Received maintenance request: ${request.mode} mode from ${message.source}`,
+    );
 
     // Start coordinated maintenance operation
-    const operationId = await this.requestOperation('maintenance',
-      request.tasks.flatMap(t => t.dependencies || []).concat(['unified-dashboard']),
+    const operationId = await this.requestOperation(
+      "maintenance",
+      request.tasks
+        .flatMap((t) => t.dependencies || [])
+        .concat(["unified-dashboard"]),
       {
         mode: request.mode,
         tasks: request.tasks,
         requestedBy: request.requestedBy,
-        priority: request.priority
-      }
+        priority: request.priority,
+      },
     );
 
     // Respond with operation ID for tracking
-    await this.sendMessage(message.source, 'response', {
-      operationId,
-      status: 'started',
-      estimatedDuration: this.estimateMaintenanceDuration(request.tasks)
-    }, message.priority);
+    await this.sendMessage(
+      message.source,
+      "response",
+      {
+        operationId,
+        status: "started",
+        estimatedDuration: this.estimateMaintenanceDuration(request.tasks),
+      },
+      message.priority,
+    );
   }
 
   private async handleSystemEvent(message: UnifiedMessage): Promise<void> {
     const event = message.payload as { type: string; data: unknown };
 
     switch (event.type) {
-      case 'health:degraded':
+      case "health:degraded":
         await this.onHealthDegradation(event.data);
         break;
 
-      case 'component:failed':
+      case "component:failed":
         await this.onComponentFailure(event.data);
         break;
 
-      case 'error:critical':
+      case "error:critical":
         await this.onCriticalError(event.data);
         break;
     }
   }
 
   private async handleMetricUpdate(message: UnifiedMessage): Promise<void> {
-    const metrics = message.payload as { component: ComponentId; metrics: Record<string, number> };
+    const metrics = message.payload as {
+      component: ComponentId;
+      metrics: Record<string, number>;
+    };
 
     // Check if intervention is needed based on metrics
-    if (metrics.metrics.errorRate > 0.1) { // 10% error rate threshold
-      await this.requestOperation('maintenance', [metrics.component], {
-        reason: 'High error rate detected',
-        priority: 'P1',
-        autoApprove: false
+    if (metrics.metrics.errorRate > 0.1) {
+      // 10% error rate threshold
+      await this.requestOperation("maintenance", [metrics.component], {
+        reason: "High error rate detected",
+        priority: "P1",
+        autoApprove: false,
       });
     }
   }
@@ -185,7 +215,9 @@ export class IntegratedMaintenanceOrchestrator extends ComponentAdapter {
   private async performMaintenance(operation: Operation): Promise<void> {
     const { mode, tasks } = operation.metadata;
 
-    console.log(`🔧 Performing ${mode} maintenance with ${Array.isArray(tasks) ? tasks.length : 0} tasks`);
+    console.log(
+      `🔧 Performing ${mode} maintenance with ${Array.isArray(tasks) ? tasks.length : 0} tasks`,
+    );
 
     const results = [];
     const startTime = performance.now();
@@ -196,36 +228,46 @@ export class IntegratedMaintenanceOrchestrator extends ComponentAdapter {
       results.push(taskResult);
 
       // Report progress to interested components
-      await this.sendMessage('broadcast', 'event', {
-        type: 'maintenance:progress',
-        taskCompleted: task.name,
-        overallProgress: results.length / taskArray.length,
-        currentResult: taskResult
-      }, 'P2');
+      await this.sendMessage(
+        "broadcast",
+        "event",
+        {
+          type: "maintenance:progress",
+          taskCompleted: task.name,
+          overallProgress: results.length / taskArray.length,
+          currentResult: taskResult,
+        },
+        "P2",
+      );
     }
 
     const duration = performance.now() - startTime;
-    const successCount = results.filter(r => r.status === 'success').length;
+    const successCount = results.filter((r) => r.status === "success").length;
 
     // Report final results
-    await this.sendMessage(operation.initiator, 'response', {
-      operationId: operation.id,
-      status: 'completed',
-      duration,
-      results: {
-        totalTasks: taskArray.length,
-        successful: successCount,
-        failed: taskArray.length - successCount,
-        details: results
-      }
-    }, operation.metadata.priority as 'P0' | 'P1' | 'P2');
+    await this.sendMessage(
+      operation.initiator,
+      "response",
+      {
+        operationId: operation.id,
+        status: "completed",
+        duration,
+        results: {
+          totalTasks: taskArray.length,
+          successful: successCount,
+          failed: taskArray.length - successCount,
+          details: results,
+        },
+      },
+      operation.metadata.priority as "P0" | "P1" | "P2",
+    );
 
     // Update our metrics
     this.reportMetrics({
       maintenanceOperations: 1,
       tasksExecuted: taskArray.length,
       successRate: successCount / taskArray.length,
-      maintenanceDuration: duration
+      maintenanceDuration: duration,
     });
   }
 
@@ -233,13 +275,18 @@ export class IntegratedMaintenanceOrchestrator extends ComponentAdapter {
     console.log(`📊 Performing system analysis`);
 
     // Request data from other components
-    await this.sendMessage('unified-dashboard', 'request', {
-      type: 'status-report',
-      detailed: true
-    }, 'P1');
+    await this.sendMessage(
+      "unified-dashboard",
+      "request",
+      {
+        type: "status-report",
+        detailed: true,
+      },
+      "P1",
+    );
 
     // Simulate analysis work
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise((resolve) => setTimeout(resolve, 2000));
 
     console.log(`📊 Analysis completed`);
   }
@@ -248,13 +295,22 @@ export class IntegratedMaintenanceOrchestrator extends ComponentAdapter {
     console.log(`⚡ Performing system optimization`);
 
     // Request optimization from performance-sensitive components
-    const optimizationTargets = ['component-registry', 'performance-cache', 'unified-dashboard'];
+    const optimizationTargets = [
+      "component-registry",
+      "performance-cache",
+      "unified-dashboard",
+    ];
 
     for (const target of optimizationTargets) {
-      await this.sendMessage(target as ComponentId, 'request', {
-        type: 'optimize',
-        priority: operation.metadata.priority
-      }, 'P1');
+      await this.sendMessage(
+        target as ComponentId,
+        "request",
+        {
+          type: "optimize",
+          priority: operation.metadata.priority,
+        },
+        "P1",
+      );
     }
 
     console.log(`⚡ Optimization requests sent`);
@@ -262,7 +318,7 @@ export class IntegratedMaintenanceOrchestrator extends ComponentAdapter {
 
   private async executeMaintenanceTask(task: MaintenanceTask): Promise<{
     name: string;
-    status: 'success' | 'failed' | 'skipped';
+    status: "success" | "failed" | "skipped";
     duration: number;
     output?: string;
     error?: string;
@@ -275,22 +331,22 @@ export class IntegratedMaintenanceOrchestrator extends ComponentAdapter {
       if (!safetyCheck.allowed) {
         return {
           name: task.name,
-          status: 'skipped',
+          status: "skipped",
           duration: performance.now() - startTime,
-          error: safetyCheck.reason
+          error: safetyCheck.reason,
         };
       }
 
       // Get approval for high-risk tasks
       const riskLevel = this.assessTaskRisk(task);
-      if (!task.autoRun || riskLevel === 'high') {
+      if (!task.autoRun || riskLevel === "high") {
         const approved = await this.requestApproval(task, riskLevel);
         if (!approved) {
           return {
             name: task.name,
-            status: 'skipped',
+            status: "skipped",
             duration: performance.now() - startTime,
-            error: 'User approval denied'
+            error: "User approval denied",
           };
         }
       }
@@ -298,53 +354,71 @@ export class IntegratedMaintenanceOrchestrator extends ComponentAdapter {
       // Execute the task
       console.log(`  ⚙️ Executing: ${task.name}`);
       const output = execSync(task.command, {
-        encoding: 'utf8',
+        encoding: "utf8",
         timeout: 300000, // 5 minutes max
-        stdio: 'pipe'
+        stdio: "pipe",
       });
 
-      await safeGuard.recordAttempt(task.command, true, performance.now() - startTime);
+      await safeGuard.recordAttempt(
+        task.command,
+        true,
+        performance.now() - startTime,
+      );
 
       return {
         name: task.name,
-        status: 'success',
+        status: "success",
         duration: performance.now() - startTime,
-        output: output.trim()
+        output: output.trim(),
       };
-
     } catch (error) {
       const duration = performance.now() - startTime;
-      await safeGuard.recordAttempt(task.command, false, duration,
-        error instanceof Error ? error.message : String(error));
+      await safeGuard.recordAttempt(
+        task.command,
+        false,
+        duration,
+        error instanceof Error ? error.message : String(error),
+      );
 
       return {
         name: task.name,
-        status: 'failed',
+        status: "failed",
         duration,
-        error: error instanceof Error ? error.message : String(error)
+        error: error instanceof Error ? error.message : String(error),
       };
     }
   }
 
-  private assessTaskRisk(task: MaintenanceTask): 'low' | 'medium' | 'high' {
-    if (task.command.includes('lint:fix') || task.command.includes('system:evolve')) {
-      return 'high';
+  private assessTaskRisk(task: MaintenanceTask): "low" | "medium" | "high" {
+    if (
+      task.command.includes("lint:fix") ||
+      task.command.includes("system:evolve")
+    ) {
+      return "high";
     }
-    if (task.command.includes('audit') || task.command.includes('typecheck')) {
-      return 'medium';
+    if (task.command.includes("audit") || task.command.includes("typecheck")) {
+      return "medium";
     }
-    return 'low';
+    return "low";
   }
 
-  private async requestApproval(task: MaintenanceTask, riskLevel: string): Promise<boolean> {
+  private async requestApproval(
+    task: MaintenanceTask,
+    riskLevel: string,
+  ): Promise<boolean> {
     // In integrated mode, broadcast approval request so UI components can handle it
-    await this.sendMessage('broadcast', 'event', {
-      type: 'approval:request',
-      task: task.name,
-      command: task.command,
-      riskLevel,
-      component: 'maintenance-orchestrator'
-    }, 'P1');
+    await this.sendMessage(
+      "broadcast",
+      "event",
+      {
+        type: "approval:request",
+        task: task.name,
+        command: task.command,
+        riskLevel,
+        component: "maintenance-orchestrator",
+      },
+      "P1",
+    );
 
     // For now, use the existing approval system
     // In future, this could be handled by a dedicated approval UI component
@@ -352,8 +426,8 @@ export class IntegratedMaintenanceOrchestrator extends ComponentAdapter {
       title: task.name,
       description: task.description,
       command: task.command,
-      riskLevel: riskLevel as 'low' | 'medium' | 'high',
-      impact: this.getTaskImpact(task)
+      riskLevel: riskLevel as "low" | "medium" | "high",
+      impact: this.getTaskImpact(task),
     });
 
     return result.approved;
@@ -361,79 +435,101 @@ export class IntegratedMaintenanceOrchestrator extends ComponentAdapter {
 
   private getTaskImpact(task: MaintenanceTask): string {
     switch (task.priority) {
-      case 'critical': return 'System-wide impact, may affect stability';
-      case 'high': return 'Significant impact on code quality or security';
-      case 'medium': return 'Moderate impact on development workflow';
-      case 'low': return 'Minor cleanup or optimization';
-      default: return 'Impact assessment needed';
+      case "critical":
+        return "System-wide impact, may affect stability";
+      case "high":
+        return "Significant impact on code quality or security";
+      case "medium":
+        return "Moderate impact on development workflow";
+      case "low":
+        return "Minor cleanup or optimization";
+      default:
+        return "Impact assessment needed";
     }
   }
 
   private estimateMaintenanceDuration(tasks: MaintenanceTask[]): number {
     // Simple estimation based on task complexity
     return tasks.reduce((total, task) => {
-      const baseTime = task.command.includes('typecheck') ? 30 :
-                      task.command.includes('audit') ? 45 :
-                      task.command.includes('lint') ? 15 : 10;
+      const baseTime = task.command.includes("typecheck")
+        ? 30
+        : task.command.includes("audit")
+          ? 45
+          : task.command.includes("lint")
+            ? 15
+            : 10;
       return total + baseTime;
     }, 0);
   }
 
   private async onHealthDegradation(data: unknown): Promise<void> {
-    console.log('🚨 System health degradation detected - initiating maintenance');
+    console.log(
+      "🚨 System health degradation detected - initiating maintenance",
+    );
 
-    await this.requestOperation('maintenance', ['unified-dashboard'], {
-      reason: 'Health degradation detected',
-      priority: 'P1',
+    await this.requestOperation("maintenance", ["unified-dashboard"], {
+      reason: "Health degradation detected",
+      priority: "P1",
       autoApprove: true,
-      tasks: this.availableTasks.filter(t => t.priority === 'high')
+      tasks: this.availableTasks.filter((t) => t.priority === "high"),
     });
   }
 
   private async onComponentFailure(data: unknown): Promise<void> {
-    console.log('🆘 Component failure detected - emergency maintenance');
+    console.log("🆘 Component failure detected - emergency maintenance");
 
-    await this.requestOperation('maintenance', [], {
-      reason: 'Component failure recovery',
-      priority: 'P0',
+    await this.requestOperation("maintenance", [], {
+      reason: "Component failure recovery",
+      priority: "P0",
       autoApprove: true,
-      tasks: this.availableTasks.filter(t => t.priority === 'critical')
+      tasks: this.availableTasks.filter((t) => t.priority === "critical"),
     });
   }
 
   private async onCriticalError(data: unknown): Promise<void> {
-    console.log('💥 Critical error detected - full system maintenance');
+    console.log("💥 Critical error detected - full system maintenance");
 
-    await this.requestOperation('maintenance', ['unified-dashboard', 'component-registry'], {
-      reason: 'Critical error recovery',
-      priority: 'P0',
-      autoApprove: false, // Critical errors need human oversight
-      tasks: this.availableTasks
-    });
+    await this.requestOperation(
+      "maintenance",
+      ["unified-dashboard", "component-registry"],
+      {
+        reason: "Critical error recovery",
+        priority: "P0",
+        autoApprove: false, // Critical errors need human oversight
+        tasks: this.availableTasks,
+      },
+    );
   }
 
   /**
    * Public API for external maintenance requests
    */
   async performQuickMaintenance(): Promise<string> {
-    return await this.requestOperation('maintenance', [], {
-      mode: 'quick',
-      tasks: this.availableTasks.filter(t => t.autoRun && t.priority !== 'critical'),
-      requestedBy: 'maintenance-orchestrator',
-      priority: 'P2'
+    return await this.requestOperation("maintenance", [], {
+      mode: "quick",
+      tasks: this.availableTasks.filter(
+        (t) => t.autoRun && t.priority !== "critical",
+      ),
+      requestedBy: "maintenance-orchestrator",
+      priority: "P2",
     });
   }
 
   async performFullMaintenance(): Promise<string> {
-    return await this.requestOperation('maintenance', ['unified-dashboard', 'component-registry'], {
-      mode: 'full',
-      tasks: this.availableTasks,
-      requestedBy: 'maintenance-orchestrator',
-      priority: 'P1'
-    });
+    return await this.requestOperation(
+      "maintenance",
+      ["unified-dashboard", "component-registry"],
+      {
+        mode: "full",
+        tasks: this.availableTasks,
+        requestedBy: "maintenance-orchestrator",
+        priority: "P1",
+      },
+    );
   }
 }
 
 // Create and export the integrated instance
-export const integratedMaintenanceOrchestrator = new IntegratedMaintenanceOrchestrator();
+export const integratedMaintenanceOrchestrator =
+  new IntegratedMaintenanceOrchestrator();
 export default IntegratedMaintenanceOrchestrator;

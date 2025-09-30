@@ -7,39 +7,39 @@
  * - 자동 치유 상태 관리
  */
 
-import { NextRequest, NextResponse } from 'next/server';
-import { selfHealingEngine } from '../../../../lib/self-healing-engine';
+import { NextRequest, NextResponse } from "next/server";
+import { selfHealingEngine } from "../../../../lib/self-healing-engine";
 
 // 🛡️ API Guard 적용
-import { withAPIGuard } from '../../../../lib/api-guard';
+import { withAPIGuard } from "../../../../lib/api-guard";
 
 async function healHandler(request: NextRequest) {
   try {
     const url = new URL(request.url);
     const method = request.method;
 
-    if (method === 'GET') {
+    if (method === "GET") {
       // 치유 상태 및 통계 조회
-      const action = url.searchParams.get('action');
-      const type = url.searchParams.get('type');
+      const action = url.searchParams.get("action");
+      const type = url.searchParams.get("type");
 
       switch (action) {
-        case 'stats':
+        case "stats":
           const stats = selfHealingEngine.getHealingStats();
           return NextResponse.json({
             success: true,
             stats,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
           });
 
-        case 'history':
+        case "history":
           const history = selfHealingEngine.getHealingHistory();
-          const limit = parseInt(url.searchParams.get('limit') || '20');
+          const limit = parseInt(url.searchParams.get("limit") || "20");
           return NextResponse.json({
             success: true,
             history: history.slice(-limit),
             total: history.length,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
           });
 
         default:
@@ -48,22 +48,23 @@ async function healHandler(request: NextRequest) {
           return NextResponse.json({
             success: true,
             stats: healingStats,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
           });
       }
-
-    } else if (method === 'POST') {
+    } else if (method === "POST") {
       // 수동 치유 실행
       const body = await request.json().catch(() => ({}));
       const { action, actionType } = body;
 
       switch (action) {
-        case 'heal':
-          console.log(`🔄 [Heal API] Manual healing requested${actionType ? ` for: ${actionType}` : ''}`);
+        case "heal":
+          console.log(
+            `🔄 [Heal API] Manual healing requested${actionType ? ` for: ${actionType}` : ""}`,
+          );
 
           const healingResults = await selfHealingEngine.manualHeal(actionType);
 
-          const successCount = healingResults.filter(r => r.success).length;
+          const successCount = healingResults.filter((r) => r.success).length;
           const totalCount = healingResults.length;
 
           return NextResponse.json({
@@ -73,17 +74,17 @@ async function healHandler(request: NextRequest) {
               total: totalCount,
               successful: successCount,
               failed: totalCount - successCount,
-              overallSuccess: successCount > 0
+              overallSuccess: successCount > 0,
             },
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
           });
 
-        case 'stop':
+        case "stop":
           selfHealingEngine.stopAutomaticHealing();
           return NextResponse.json({
             success: true,
-            message: 'Automatic healing stopped',
-            timestamp: new Date().toISOString()
+            message: "Automatic healing stopped",
+            timestamp: new Date().toISOString(),
           });
 
         default:
@@ -91,36 +92,34 @@ async function healHandler(request: NextRequest) {
             {
               success: false,
               error: 'Invalid action. Use "heal" or "stop"',
-              availableActions: ['heal', 'stop'],
-              timestamp: new Date().toISOString()
+              availableActions: ["heal", "stop"],
+              timestamp: new Date().toISOString(),
             },
-            { status: 400 }
+            { status: 400 },
           );
       }
-
     } else {
       return NextResponse.json(
         {
           success: false,
-          error: 'Method not allowed',
-          allowedMethods: ['GET', 'POST'],
-          timestamp: new Date().toISOString()
+          error: "Method not allowed",
+          allowedMethods: ["GET", "POST"],
+          timestamp: new Date().toISOString(),
         },
-        { status: 405 }
+        { status: 405 },
       );
     }
-
   } catch (error) {
-    console.error('🚨 [Heal API] Error in healing API:', error);
+    console.error("🚨 [Heal API] Error in healing API:", error);
 
     return NextResponse.json(
       {
         success: false,
-        error: 'Healing API failed',
-        details: error instanceof Error ? error.message : 'Unknown error',
-        timestamp: new Date().toISOString()
+        error: "Healing API failed",
+        details: error instanceof Error ? error.message : "Unknown error",
+        timestamp: new Date().toISOString(),
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

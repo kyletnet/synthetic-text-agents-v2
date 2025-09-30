@@ -5,7 +5,10 @@ import { Logger } from "../shared/logger.js";
 import { flag } from "../shared/env.js";
 import { RAGService, type RAGConfig } from "./service.js";
 import { EmbeddingManager, type EmbeddingConfig } from "./embeddings.js";
-import { ContextInjector, type ContextInjectorConfig } from "../components/context-injector.js";
+import {
+  ContextInjector,
+  type ContextInjectorConfig,
+} from "../components/context-injector.js";
 import { RAGPerformanceMonitor } from "./performance-monitor.js";
 
 export interface RAGFactoryConfig {
@@ -75,7 +78,10 @@ export class RAGFactory {
       // Initialize embedding manager if enabled
       let embeddingManager: EmbeddingManager | null = null;
       if (this.config.enableEmbeddings) {
-        embeddingManager = new EmbeddingManager(this.config.embeddingConfig, this.logger);
+        embeddingManager = new EmbeddingManager(
+          this.config.embeddingConfig,
+          this.logger,
+        );
         await embeddingManager.initialize();
       }
 
@@ -91,7 +97,9 @@ export class RAGFactory {
 
       this.components = {
         ragService,
-        embeddingManager: embeddingManager!,
+        embeddingManager:
+          embeddingManager ||
+          new EmbeddingManager(this.config.embeddingConfig, this.logger),
         contextInjector,
         performanceMonitor,
       };
@@ -109,7 +117,6 @@ export class RAGFactory {
       });
 
       return this.components;
-
     } catch (error) {
       this.logger.trace({
         level: "error",
@@ -167,8 +174,8 @@ export class RAGFactory {
 
   getStats(): {
     enabled: boolean;
-    ragStats?: ReturnType<RAGService['getStats']>;
-    embeddingStats?: ReturnType<EmbeddingManager['getStats']>;
+    ragStats?: ReturnType<RAGService["getStats"]>;
+    embeddingStats?: ReturnType<EmbeddingManager["getStats"]>;
   } {
     return {
       enabled: this.config.enableRAG,
@@ -223,16 +230,12 @@ export class RAGFactory {
 
   private getIndexPaths(): string[] {
     // Default paths to index for RAG
-    const defaultPaths = [
-      "./docs",
-      "./README.md",
-      "./CLAUDE.md",
-    ];
+    const defaultPaths = ["./docs", "./README.md", "./CLAUDE.md"];
 
     // Allow override via environment variable
     const customPaths = process.env.RAG_INDEX_PATHS;
     if (customPaths) {
-      return customPaths.split(",").map(p => p.trim());
+      return customPaths.split(",").map((p) => p.trim());
     }
 
     return defaultPaths;

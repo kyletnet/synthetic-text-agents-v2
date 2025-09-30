@@ -5,7 +5,7 @@ import {
   mkdirSync,
   statSync,
 } from "fs";
-import { join, dirname } from "path";
+import { join } from "path";
 import { createHash } from "crypto";
 import { glob } from "glob";
 
@@ -553,7 +553,7 @@ export class ManifestManager {
       }
 
       return null;
-    } catch (_____error) {
+    } catch {
       return null;
     }
   }

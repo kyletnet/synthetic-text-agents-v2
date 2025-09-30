@@ -140,12 +140,12 @@ export class SessionReportManager {
           try {
             const lastEntry = JSON.parse(lines[lines.length - 1]);
             lastRunId = lastEntry.run_id;
-          } catch (______e) {
+          } catch {
             // Ignore parse errors
           }
         }
       }
-    } catch (_____e) {
+    } catch {
       // Ignore file system errors
     }
 
@@ -205,7 +205,7 @@ export class SessionReportManager {
       // Clean up tmp file on error
       try {
         fs.unlinkSync(tmpPath);
-      } catch (______e) {
+      } catch {
         // Ignore cleanup errors
       }
       throw error;
@@ -292,7 +292,7 @@ ${this.getDLQStatus(fields.DLQ_COUNT || 0)}
         .split("\n")
         .filter((line) => line.trim())
         .length.toString();
-    } catch (_____e) {
+    } catch {
       return "unknown";
     }
   }
@@ -315,7 +315,7 @@ ${this.getDLQStatus(fields.DLQ_COUNT || 0)}
           .length.toString();
       }
       return "unknown";
-    } catch (_____e) {
+    } catch {
       return "unknown";
     }
   }
@@ -343,7 +343,7 @@ ${this.getDLQStatus(fields.DLQ_COUNT || 0)}
               const statA = fs.statSync(path.join(dlqDir, a));
               const statB = fs.statSync(path.join(dlqDir, b));
               return statB.mtime.getTime() - statA.mtime.getTime();
-            } catch (______e) {
+            } catch {
               return 0;
             }
           })
@@ -353,7 +353,7 @@ ${this.getDLQStatus(fields.DLQ_COUNT || 0)}
 Latest DLQ entries:
 ${entries.map((entry) => `- ${entry}`).join("\n")}`;
       }
-    } catch (_____e) {
+    } catch {
       // Ignore errors
     }
 

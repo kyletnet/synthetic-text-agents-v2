@@ -84,13 +84,13 @@ jobs:
         run: npm run design:validate
 
       - name: Run ESLint
-        run: npm run dev:lint || true
+        run: npm run dev:lint
 
       - name: Check TypeScript compilation
         run: npm run dev:typecheck
 
       - name: Check code formatting
-        run: npx prettier --check . || true
+        run: npx prettier --check .
 
   test:
     name: Tests
@@ -109,10 +109,10 @@ jobs:
         run: npm ci
 
       - name: Run tests
-        run: npm test || echo "Tests failed but continuing for CI/CD consistency"
+        run: npm test
 
       - name: Run tests with coverage
-        run: npm run test:coverage || echo "Coverage tests failed but continuing"
+        run: npm run test:coverage
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3

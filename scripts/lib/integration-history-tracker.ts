@@ -6,27 +6,33 @@
  * Implements GPT recommendation for integration history tracking and operational visibility
  */
 
-import { EventEmitter } from 'events';
-import { writeFileSync, readFileSync, existsSync, mkdirSync } from 'fs';
-import { join } from 'path';
+import { EventEmitter } from "events";
+import { writeFileSync, readFileSync, existsSync, mkdirSync } from "fs";
+import { join } from "path";
 
 export interface IntegrationEvent {
   id: string;
   timestamp: Date;
-  type: 'integration_started' | 'integration_completed' | 'integration_failed' | 'rollback' | 'approval_granted' | 'approval_rejected';
+  type:
+    | "integration_started"
+    | "integration_completed"
+    | "integration_failed"
+    | "rollback"
+    | "approval_granted"
+    | "approval_rejected";
   component: {
     name: string;
     version: string;
     type: string;
   };
-  strategy: 'full_integration' | 'partial_integration' | 'reject_integration';
+  strategy: "full_integration" | "partial_integration" | "reject_integration";
   phase: string;
   actor: string; // who initiated the action
   context: {
     reason: string;
     prerequisites: string[];
     risks: string[];
-    impact: 'low' | 'medium' | 'high' | 'critical';
+    impact: "low" | "medium" | "high" | "critical";
   };
   metrics: {
     duration?: number; // in milliseconds
@@ -83,7 +89,7 @@ export interface VisualizationData {
     edges: Array<{
       from: string;
       to: string;
-      type: 'dependency' | 'conflict' | 'enables';
+      type: "dependency" | "conflict" | "enables";
       weight: number;
     }>;
   };
@@ -99,11 +105,14 @@ export interface VisualizationData {
  */
 export class IntegrationHistoryTracker extends EventEmitter {
   private projectRoot = process.cwd();
-  private reportsDir = join(this.projectRoot, 'reports');
+  private reportsDir = join(this.projectRoot, "reports");
   private events: IntegrationEvent[] = [];
-  private eventsPath = join(this.reportsDir, 'integration-history.json');
-  private timelinePath = join(this.reportsDir, 'integration-timeline.md');
-  private visualDataPath = join(this.reportsDir, 'integration-visualization.json');
+  private eventsPath = join(this.reportsDir, "integration-history.json");
+  private timelinePath = join(this.reportsDir, "integration-timeline.md");
+  private visualDataPath = join(
+    this.reportsDir,
+    "integration-visualization.json",
+  );
 
   constructor() {
     super();
@@ -116,22 +125,24 @@ export class IntegrationHistoryTracker extends EventEmitter {
   /**
    * Record integration event
    */
-  recordEvent(event: Omit<IntegrationEvent, 'id' | 'timestamp'>): void {
+  recordEvent(event: Omit<IntegrationEvent, "id" | "timestamp">): void {
     const fullEvent: IntegrationEvent = {
       id: this.generateEventId(),
       timestamp: new Date(),
-      ...event
+      ...event,
     };
 
     this.events.push(fullEvent);
 
-    console.log(`📝 Recorded integration event: ${event.type} for ${event.component.name}`);
+    console.log(
+      `📝 Recorded integration event: ${event.type} for ${event.component.name}`,
+    );
 
     // Auto-persist after each event
     this.persistEvents();
 
     // Emit for real-time listeners
-    this.emit('event:recorded', fullEvent);
+    this.emit("event:recorded", fullEvent);
 
     // Check if timeline needs updating
     if (this.shouldUpdateTimeline(event.type)) {
@@ -143,17 +154,21 @@ export class IntegrationHistoryTracker extends EventEmitter {
    * Generate comprehensive timeline report
    */
   async generateTimelineReport(): Promise<IntegrationTimeline> {
-    console.log('📊 Generating integration timeline report...');
+    console.log("📊 Generating integration timeline report...");
 
     const timeline = this.analyzeTimeline();
     await this.generateMarkdownReport(timeline);
     await this.generateVisualizationData();
 
     console.log(`   Total integrations: ${timeline.totalIntegrations}`);
-    console.log(`   Success rate: ${(timeline.successfulIntegrations / timeline.totalIntegrations * 100).toFixed(1)}%`);
-    console.log(`   Average duration: ${(timeline.averageDuration / 1000 / 60).toFixed(1)} minutes`);
+    console.log(
+      `   Success rate: ${((timeline.successfulIntegrations / timeline.totalIntegrations) * 100).toFixed(1)}%`,
+    );
+    console.log(
+      `   Average duration: ${(timeline.averageDuration / 1000 / 60).toFixed(1)} minutes`,
+    );
 
-    this.emit('timeline:generated', timeline);
+    this.emit("timeline:generated", timeline);
     return timeline;
   }
 
@@ -162,7 +177,7 @@ export class IntegrationHistoryTracker extends EventEmitter {
    */
   getComponentEvolution(componentName: string): IntegrationEvent[] {
     return this.events
-      .filter(e => e.component.name === componentName)
+      .filter((e) => e.component.name === componentName)
       .sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
   }
 
@@ -177,16 +192,22 @@ export class IntegrationHistoryTracker extends EventEmitter {
     topComponents: Array<{ name: string; events: number }>;
     timeline: Array<{ date: string; events: number }>;
   } {
-    const cutoff = new Date(Date.now() - (days * 24 * 60 * 60 * 1000));
-    const recentEvents = this.events.filter(e => e.timestamp >= cutoff);
+    const cutoff = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
+    const recentEvents = this.events.filter((e) => e.timestamp >= cutoff);
 
-    const integrations = recentEvents.filter(e => e.type === 'integration_started').length;
-    const successes = recentEvents.filter(e => e.type === 'integration_completed').length;
-    const failures = recentEvents.filter(e => e.type === 'integration_failed').length;
+    const integrations = recentEvents.filter(
+      (e) => e.type === "integration_started",
+    ).length;
+    const successes = recentEvents.filter(
+      (e) => e.type === "integration_completed",
+    ).length;
+    const failures = recentEvents.filter(
+      (e) => e.type === "integration_failed",
+    ).length;
 
     // Component frequency
     const componentCounts = new Map<string, number>();
-    recentEvents.forEach(e => {
+    recentEvents.forEach((e) => {
       const count = componentCounts.get(e.component.name) || 0;
       componentCounts.set(e.component.name, count + 1);
     });
@@ -198,8 +219,8 @@ export class IntegrationHistoryTracker extends EventEmitter {
 
     // Daily timeline
     const dailyCounts = new Map<string, number>();
-    recentEvents.forEach(e => {
-      const date = e.timestamp.toISOString().split('T')[0];
+    recentEvents.forEach((e) => {
+      const date = e.timestamp.toISOString().split("T")[0];
       dailyCounts.set(date, (dailyCounts.get(date) || 0) + 1);
     });
 
@@ -213,7 +234,7 @@ export class IntegrationHistoryTracker extends EventEmitter {
       successes,
       failures,
       topComponents,
-      timeline
+      timeline,
     };
   }
 
@@ -225,45 +246,49 @@ export class IntegrationHistoryTracker extends EventEmitter {
     dependencies: Array<{ source: string; target: string; type: string }>;
   } {
     const components = new Set<string>();
-    const dependencies: Array<{ source: string; target: string; type: string }> = [];
+    const dependencies: Array<{
+      source: string;
+      target: string;
+      type: string;
+    }> = [];
 
-    this.events.forEach(event => {
+    this.events.forEach((event) => {
       components.add(event.component.name);
 
       // Add dependency relationships
-      event.relationships.dependencies.forEach(dep => {
+      event.relationships.dependencies.forEach((dep) => {
         components.add(dep);
         dependencies.push({
           source: event.component.name,
           target: dep,
-          type: 'dependency'
+          type: "dependency",
         });
       });
 
       // Add conflict relationships
-      event.relationships.conflicts.forEach(conflict => {
+      event.relationships.conflicts.forEach((conflict) => {
         components.add(conflict);
         dependencies.push({
           source: event.component.name,
           target: conflict,
-          type: 'conflict'
+          type: "conflict",
         });
       });
 
       // Add enablement relationships
-      event.relationships.enables.forEach(enabled => {
+      event.relationships.enables.forEach((enabled) => {
         components.add(enabled);
         dependencies.push({
           source: event.component.name,
           target: enabled,
-          type: 'enables'
+          type: "enables",
         });
       });
     });
 
     return {
       components: Array.from(components).sort(),
-      dependencies
+      dependencies,
     };
   }
 
@@ -278,12 +303,18 @@ export class IntegrationHistoryTracker extends EventEmitter {
     dateFrom?: Date;
     dateTo?: Date;
   }): IntegrationEvent[] {
-    return this.events.filter(event => {
-      if (criteria.component && !event.component.name.includes(criteria.component)) return false;
+    return this.events.filter((event) => {
+      if (
+        criteria.component &&
+        !event.component.name.includes(criteria.component)
+      )
+        return false;
       if (criteria.type && event.type !== criteria.type) return false;
-      if (criteria.strategy && event.strategy !== criteria.strategy) return false;
+      if (criteria.strategy && event.strategy !== criteria.strategy)
+        return false;
       if (criteria.actor && event.actor !== criteria.actor) return false;
-      if (criteria.dateFrom && event.timestamp < criteria.dateFrom) return false;
+      if (criteria.dateFrom && event.timestamp < criteria.dateFrom)
+        return false;
       if (criteria.dateTo && event.timestamp > criteria.dateTo) return false;
       return true;
     });
@@ -292,42 +323,50 @@ export class IntegrationHistoryTracker extends EventEmitter {
   /**
    * Export timeline data for external tools
    */
-  exportTimelineData(format: 'json' | 'csv' = 'json'): string {
-    if (format === 'csv') {
-      const headers = 'timestamp,type,component,strategy,phase,actor,duration,impact';
-      const rows = this.events.map(e => [
-        e.timestamp.toISOString(),
-        e.type,
-        e.component.name,
-        e.strategy,
-        e.phase,
-        e.actor,
-        e.metrics.duration || 0,
-        e.context.impact
-      ].join(','));
+  exportTimelineData(format: "json" | "csv" = "json"): string {
+    if (format === "csv") {
+      const headers =
+        "timestamp,type,component,strategy,phase,actor,duration,impact";
+      const rows = this.events.map((e) =>
+        [
+          e.timestamp.toISOString(),
+          e.type,
+          e.component.name,
+          e.strategy,
+          e.phase,
+          e.actor,
+          e.metrics.duration || 0,
+          e.context.impact,
+        ].join(","),
+      );
 
-      return [headers, ...rows].join('\n');
+      return [headers, ...rows].join("\n");
     }
 
     return JSON.stringify(this.events, null, 2);
   }
 
   private analyzeTimeline(): IntegrationTimeline {
-    const completedEvents = this.events.filter(e => e.type === 'integration_completed');
-    const failedEvents = this.events.filter(e => e.type === 'integration_failed');
+    const completedEvents = this.events.filter(
+      (e) => e.type === "integration_completed",
+    );
+    const failedEvents = this.events.filter(
+      (e) => e.type === "integration_failed",
+    );
     const totalIntegrations = completedEvents.length + failedEvents.length;
 
     const durations = completedEvents
-      .filter(e => e.metrics.duration)
-      .map(e => e.metrics.duration!);
+      .filter((e) => e.metrics.duration)
+      .map((e) => e.metrics.duration!);
 
-    const averageDuration = durations.length > 0
-      ? durations.reduce((sum, d) => sum + d, 0) / durations.length
-      : 0;
+    const averageDuration =
+      durations.length > 0
+        ? durations.reduce((sum, d) => sum + d, 0) / durations.length
+        : 0;
 
     // Group events by component
     const componentEvolution = new Map<string, IntegrationEvent[]>();
-    this.events.forEach(event => {
+    this.events.forEach((event) => {
       const componentName = event.component.name;
       if (!componentEvolution.has(componentName)) {
         componentEvolution.set(componentName, []);
@@ -343,13 +382,17 @@ export class IntegrationHistoryTracker extends EventEmitter {
       successfulIntegrations: completedEvents.length,
       failedIntegrations: failedEvents.length,
       averageDuration,
-      events: this.events.slice().sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime()),
+      events: this.events
+        .slice()
+        .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime()),
       componentEvolution,
-      monthlyStats
+      monthlyStats,
     };
   }
 
-  private async generateMarkdownReport(timeline: IntegrationTimeline): Promise<void> {
+  private async generateMarkdownReport(
+    timeline: IntegrationTimeline,
+  ): Promise<void> {
     let report = `# 🚀 Integration Timeline Report\n\n`;
     report += `Generated: ${new Date().toISOString()}\n`;
     report += `Total Events: ${this.events.length}\n\n`;
@@ -357,29 +400,29 @@ export class IntegrationHistoryTracker extends EventEmitter {
     // Summary statistics
     report += `## 📊 Summary Statistics\n\n`;
     report += `- **Total Integrations**: ${timeline.totalIntegrations}\n`;
-    report += `- **Successful**: ${timeline.successfulIntegrations} (${(timeline.successfulIntegrations / timeline.totalIntegrations * 100).toFixed(1)}%)\n`;
-    report += `- **Failed**: ${timeline.failedIntegrations} (${(timeline.failedIntegrations / timeline.totalIntegrations * 100).toFixed(1)}%)\n`;
+    report += `- **Successful**: ${timeline.successfulIntegrations} (${((timeline.successfulIntegrations / timeline.totalIntegrations) * 100).toFixed(1)}%)\n`;
+    report += `- **Failed**: ${timeline.failedIntegrations} (${((timeline.failedIntegrations / timeline.totalIntegrations) * 100).toFixed(1)}%)\n`;
     report += `- **Average Duration**: ${(timeline.averageDuration / 1000 / 60).toFixed(1)} minutes\n\n`;
 
     // Recent activity
     report += `## 🕒 Recent Activity (Last 10 Events)\n\n`;
-    timeline.events.slice(0, 10).forEach(event => {
-      const date = event.timestamp.toISOString().split('T')[0];
-      const time = event.timestamp.toISOString().split('T')[1].split('.')[0];
-      report += `- **${date} ${time}** - ${event.type.replace('_', ' ')} for \`${event.component.name}\` by ${event.actor}\n`;
+    timeline.events.slice(0, 10).forEach((event) => {
+      const date = event.timestamp.toISOString().split("T")[0];
+      const time = event.timestamp.toISOString().split("T")[1].split(".")[0];
+      report += `- **${date} ${time}** - ${event.type.replace("_", " ")} for \`${event.component.name}\` by ${event.actor}\n`;
     });
-    report += '\n';
+    report += "\n";
 
     // Component evolution
     report += `## 🧩 Component Evolution\n\n`;
     for (const [componentName, events] of timeline.componentEvolution) {
       if (events.length > 1) {
         report += `### ${componentName}\n`;
-        events.slice(0, 5).forEach(event => {
-          const date = event.timestamp.toISOString().split('T')[0];
-          report += `- **${date}**: ${event.type.replace('_', ' ')} (${event.strategy})\n`;
+        events.slice(0, 5).forEach((event) => {
+          const date = event.timestamp.toISOString().split("T")[0];
+          report += `- **${date}**: ${event.type.replace("_", " ")} (${event.strategy})\n`;
         });
-        report += '\n';
+        report += "\n";
       }
     }
 
@@ -387,20 +430,22 @@ export class IntegrationHistoryTracker extends EventEmitter {
     report += `## 📈 Monthly Trends\n\n`;
     report += `| Month | Integrations | Successes | Failures | Avg Duration |\n`;
     report += `|-------|--------------|-----------|----------|--------------|\n`;
-    timeline.monthlyStats.forEach(month => {
+    timeline.monthlyStats.forEach((month) => {
       report += `| ${month.month} | ${month.integrations} | ${month.successes} | ${month.failures} | ${month.avgDuration.toFixed(1)}min |\n`;
     });
-    report += '\n';
+    report += "\n";
 
     // Risk analysis
-    const criticalEvents = this.events.filter(e => e.context.impact === 'critical');
+    const criticalEvents = this.events.filter(
+      (e) => e.context.impact === "critical",
+    );
     if (criticalEvents.length > 0) {
       report += `## ⚠️ Critical Impact Events\n\n`;
-      criticalEvents.forEach(event => {
-        const date = event.timestamp.toISOString().split('T')[0];
+      criticalEvents.forEach((event) => {
+        const date = event.timestamp.toISOString().split("T")[0];
         report += `- **${date}**: ${event.component.name} - ${event.context.reason}\n`;
       });
-      report += '\n';
+      report += "\n";
     }
 
     // Commands
@@ -426,24 +471,24 @@ export class IntegrationHistoryTracker extends EventEmitter {
 
     const visualData: VisualizationData = {
       timeline: {
-        labels: monthlyData.map(m => m.month),
+        labels: monthlyData.map((m) => m.month),
         datasets: [
           {
-            label: 'Successful Integrations',
-            data: monthlyData.map(m => m.successes),
-            backgroundColor: '#4CAF50',
-            borderColor: '#388E3C'
+            label: "Successful Integrations",
+            data: monthlyData.map((m) => m.successes),
+            backgroundColor: "#4CAF50",
+            borderColor: "#388E3C",
           },
           {
-            label: 'Failed Integrations',
-            data: monthlyData.map(m => m.failures),
-            backgroundColor: '#F44336',
-            borderColor: '#D32F2F'
-          }
-        ]
+            label: "Failed Integrations",
+            data: monthlyData.map((m) => m.failures),
+            backgroundColor: "#F44336",
+            borderColor: "#D32F2F",
+          },
+        ],
       },
       componentMap: this.generateComponentMapData(),
-      heatmap: this.generateHeatmapData()
+      heatmap: this.generateHeatmapData(),
     };
 
     writeFileSync(this.visualDataPath, JSON.stringify(visualData, null, 2));
@@ -457,30 +502,38 @@ export class IntegrationHistoryTracker extends EventEmitter {
     failures: number;
     avgDuration: number;
   }> {
-    const monthlyMap = new Map<string, {
-      integrations: number;
-      successes: number;
-      failures: number;
-      durations: number[];
-    }>();
+    const monthlyMap = new Map<
+      string,
+      {
+        integrations: number;
+        successes: number;
+        failures: number;
+        durations: number[];
+      }
+    >();
 
-    this.events.forEach(event => {
+    this.events.forEach((event) => {
       const month = event.timestamp.toISOString().substring(0, 7); // YYYY-MM
 
       if (!monthlyMap.has(month)) {
-        monthlyMap.set(month, { integrations: 0, successes: 0, failures: 0, durations: [] });
+        monthlyMap.set(month, {
+          integrations: 0,
+          successes: 0,
+          failures: 0,
+          durations: [],
+        });
       }
 
       const stats = monthlyMap.get(month)!;
 
-      if (event.type === 'integration_started') {
+      if (event.type === "integration_started") {
         stats.integrations++;
-      } else if (event.type === 'integration_completed') {
+      } else if (event.type === "integration_completed") {
         stats.successes++;
         if (event.metrics.duration) {
           stats.durations.push(event.metrics.duration);
         }
-      } else if (event.type === 'integration_failed') {
+      } else if (event.type === "integration_failed") {
         stats.failures++;
       }
     });
@@ -491,61 +544,68 @@ export class IntegrationHistoryTracker extends EventEmitter {
         integrations: stats.integrations,
         successes: stats.successes,
         failures: stats.failures,
-        avgDuration: stats.durations.length > 0
-          ? stats.durations.reduce((sum, d) => sum + d, 0) / stats.durations.length / 1000 / 60
-          : 0
+        avgDuration:
+          stats.durations.length > 0
+            ? stats.durations.reduce((sum, d) => sum + d, 0) /
+              stats.durations.length /
+              1000 /
+              60
+            : 0,
       }))
       .sort((a, b) => a.month.localeCompare(b.month));
   }
 
-  private generateComponentMapData(): VisualizationData['componentMap'] {
-    const components = new Map<string, {
-      type: string;
-      status: string;
-      integrationDate: string;
-      dependencies: Set<string>;
-    }>();
+  private generateComponentMapData(): VisualizationData["componentMap"] {
+    const components = new Map<
+      string,
+      {
+        type: string;
+        status: string;
+        integrationDate: string;
+        dependencies: Set<string>;
+      }
+    >();
 
     const edges: Array<{
       from: string;
       to: string;
-      type: 'dependency' | 'conflict' | 'enables';
+      type: "dependency" | "conflict" | "enables";
       weight: number;
     }> = [];
 
-    this.events.forEach(event => {
+    this.events.forEach((event) => {
       const name = event.component.name;
 
       if (!components.has(name)) {
         components.set(name, {
           type: event.component.type,
-          status: 'unknown',
-          integrationDate: event.timestamp.toISOString().split('T')[0],
-          dependencies: new Set()
+          status: "unknown",
+          integrationDate: event.timestamp.toISOString().split("T")[0],
+          dependencies: new Set(),
         });
       }
 
       const component = components.get(name)!;
 
       // Update status based on latest event
-      if (event.type === 'integration_completed') {
-        component.status = 'integrated';
-      } else if (event.type === 'integration_failed') {
-        component.status = 'failed';
+      if (event.type === "integration_completed") {
+        component.status = "integrated";
+      } else if (event.type === "integration_failed") {
+        component.status = "failed";
       }
 
       // Add relationships
-      event.relationships.dependencies.forEach(dep => {
+      event.relationships.dependencies.forEach((dep) => {
         component.dependencies.add(dep);
-        edges.push({ from: name, to: dep, type: 'dependency', weight: 1 });
+        edges.push({ from: name, to: dep, type: "dependency", weight: 1 });
       });
 
-      event.relationships.conflicts.forEach(conflict => {
-        edges.push({ from: name, to: conflict, type: 'conflict', weight: 1 });
+      event.relationships.conflicts.forEach((conflict) => {
+        edges.push({ from: name, to: conflict, type: "conflict", weight: 1 });
       });
 
-      event.relationships.enables.forEach(enabled => {
-        edges.push({ from: name, to: enabled, type: 'enables', weight: 1 });
+      event.relationships.enables.forEach((enabled) => {
+        edges.push({ from: name, to: enabled, type: "enables", weight: 1 });
       });
     });
 
@@ -556,18 +616,18 @@ export class IntegrationHistoryTracker extends EventEmitter {
         type: data.type,
         status: data.status,
         integrationDate: data.integrationDate,
-        dependencies: data.dependencies.size
+        dependencies: data.dependencies.size,
       })),
-      edges
+      edges,
     };
   }
 
-  private generateHeatmapData(): VisualizationData['heatmap'] {
+  private generateHeatmapData(): VisualizationData["heatmap"] {
     const dailyCounts = new Map<string, number>();
     let maxCount = 0;
 
-    this.events.forEach(event => {
-      const date = event.timestamp.toISOString().split('T')[0];
+    this.events.forEach((event) => {
+      const date = event.timestamp.toISOString().split("T")[0];
       const count = (dailyCounts.get(date) || 0) + 1;
       dailyCounts.set(date, count);
       maxCount = Math.max(maxCount, count);
@@ -576,7 +636,7 @@ export class IntegrationHistoryTracker extends EventEmitter {
     return {
       dates: Array.from(dailyCounts.keys()).sort(),
       values: Array.from(dailyCounts.values()),
-      max: maxCount
+      max: maxCount,
     };
   }
 
@@ -585,7 +645,9 @@ export class IntegrationHistoryTracker extends EventEmitter {
   }
 
   private shouldUpdateTimeline(eventType: string): boolean {
-    return ['integration_completed', 'integration_failed', 'rollback'].includes(eventType);
+    return ["integration_completed", "integration_failed", "rollback"].includes(
+      eventType,
+    );
   }
 
   private ensureReportsDirectory(): void {
@@ -597,16 +659,18 @@ export class IntegrationHistoryTracker extends EventEmitter {
   private loadHistoricalEvents(): void {
     try {
       if (existsSync(this.eventsPath)) {
-        const data = readFileSync(this.eventsPath, 'utf8');
+        const data = readFileSync(this.eventsPath, "utf8");
         this.events = JSON.parse(data).map((e: any) => ({
           ...e,
-          timestamp: new Date(e.timestamp)
+          timestamp: new Date(e.timestamp),
         }));
 
-        console.log(`📊 Loaded ${this.events.length} integration events from history`);
+        console.log(
+          `📊 Loaded ${this.events.length} integration events from history`,
+        );
       }
     } catch (error) {
-      console.warn('⚠️ Could not load integration history:', error);
+      console.warn("⚠️ Could not load integration history:", error);
     }
   }
 
@@ -614,18 +678,21 @@ export class IntegrationHistoryTracker extends EventEmitter {
     try {
       writeFileSync(this.eventsPath, JSON.stringify(this.events, null, 2));
     } catch (error) {
-      console.error('❌ Failed to persist integration events:', error);
+      console.error("❌ Failed to persist integration events:", error);
     }
   }
 
   private startAutoReporting(): void {
     // Generate daily reports
-    setInterval(() => {
-      if (this.events.length > 0) {
-        console.log('📊 Daily integration report generation...');
-        this.generateTimelineReport().catch(console.error);
-      }
-    }, 24 * 60 * 60 * 1000); // Daily
+    setInterval(
+      () => {
+        if (this.events.length > 0) {
+          console.log("📊 Daily integration report generation...");
+          this.generateTimelineReport().catch(console.error);
+        }
+      },
+      24 * 60 * 60 * 1000,
+    ); // Daily
   }
 }
 

@@ -6,10 +6,10 @@
  * Implements GPT recommendations for flexibility and maintainability
  */
 
-import * as yaml from 'js-yaml';
-import { readFileSync, existsSync } from 'fs';
-import { join } from 'path';
-import { EventEmitter } from 'events';
+import * as yaml from "js-yaml";
+import { readFileSync, existsSync } from "fs";
+import { join } from "path";
+import { EventEmitter } from "events";
 
 export interface StrategyConfig {
   performance: {
@@ -64,18 +64,18 @@ export interface StrategyMatrixConfig {
 }
 
 export interface DecisionContext {
-  priority: 'P0' | 'P1' | 'P2';
+  priority: "P0" | "P1" | "P2";
   operationType: string;
   systemState: {
     operationsPerHour: number;
     healthyComponents: number;
     systemLoad: number;
   };
-  environment: 'development' | 'staging' | 'production';
+  environment: "development" | "staging" | "production";
 }
 
 export interface IntegrationDecision {
-  strategy: 'full_integration' | 'partial_integration' | 'reject_integration';
+  strategy: "full_integration" | "partial_integration" | "reject_integration";
   reasoning: string;
   conditions_met: string[];
   conditions_failed: string[];
@@ -113,7 +113,8 @@ export class ExternalizedDecisionMatrix extends EventEmitter {
     super();
     this.setMaxListeners(50);
 
-    this.configPath = configPath || join(process.cwd(), '.strategy-matrix.yaml');
+    this.configPath =
+      configPath || join(process.cwd(), ".strategy-matrix.yaml");
     this.loadConfiguration();
 
     // Watch for config changes
@@ -126,16 +127,20 @@ export class ExternalizedDecisionMatrix extends EventEmitter {
   private loadConfiguration(): void {
     try {
       if (!existsSync(this.configPath)) {
-        throw new Error(`Strategy matrix configuration not found: ${this.configPath}`);
+        throw new Error(
+          `Strategy matrix configuration not found: ${this.configPath}`,
+        );
       }
 
-      const yamlContent = readFileSync(this.configPath, 'utf8');
+      const yamlContent = readFileSync(this.configPath, "utf8");
       this.config = yaml.load(yamlContent) as StrategyMatrixConfig;
 
-      console.log(`📊 Loaded strategy matrix v${this.config.version} (${this.config.updated})`);
-      this.emit('config:loaded', this.config);
+      console.log(
+        `📊 Loaded strategy matrix v${this.config.version} (${this.config.updated})`,
+      );
+      this.emit("config:loaded", this.config);
     } catch (error) {
-      console.error('❌ Failed to load strategy matrix configuration:', error);
+      console.error("❌ Failed to load strategy matrix configuration:", error);
       throw error;
     }
   }
@@ -147,16 +152,16 @@ export class ExternalizedDecisionMatrix extends EventEmitter {
     // Simple file watching - could be enhanced with fs.watch
     setInterval(() => {
       try {
-        const yamlContent = readFileSync(this.configPath, 'utf8');
+        const yamlContent = readFileSync(this.configPath, "utf8");
         const newConfig = yaml.load(yamlContent) as StrategyMatrixConfig;
 
         if (newConfig.updated !== this.config.updated) {
-          console.log('🔄 Strategy matrix configuration updated, reloading...');
+          console.log("🔄 Strategy matrix configuration updated, reloading...");
           this.config = newConfig;
-          this.emit('config:updated', this.config);
+          this.emit("config:updated", this.config);
         }
       } catch (error) {
-        console.warn('⚠️ Failed to check config updates:', error);
+        console.warn("⚠️ Failed to check config updates:", error);
       }
     }, 30000); // Check every 30 seconds
   }
@@ -172,26 +177,40 @@ export class ExternalizedDecisionMatrix extends EventEmitter {
   }> {
     const operationStrategy = this.config.strategies[context.operationType];
     if (!operationStrategy) {
-      throw new Error(`No strategy defined for operation type: ${context.operationType}`);
+      throw new Error(
+        `No strategy defined for operation type: ${context.operationType}`,
+      );
     }
 
     // Calculate weighted scores
-    const weights = this.config.context_weights[context.priority] || this.config.context_weights.P2;
+    const weights =
+      this.config.context_weights[context.priority] ||
+      this.config.context_weights.P2;
     const score = this.calculateWeightedScore(operationStrategy, weights);
 
     // Find best execution strategy
     const bestStrategy = this.selectExecutionStrategy(context);
     const configuration = this.config.execution_strategies[bestStrategy];
 
-    const reasoning = this.generateReasoning(context, operationStrategy, bestStrategy, score);
+    const reasoning = this.generateReasoning(
+      context,
+      operationStrategy,
+      bestStrategy,
+      score,
+    );
 
-    this.emit('decision:made', { context, strategy: bestStrategy, score, reasoning });
+    this.emit("decision:made", {
+      context,
+      strategy: bestStrategy,
+      score,
+      reasoning,
+    });
 
     return {
       strategy: bestStrategy,
       configuration,
       score,
-      reasoning
+      reasoning,
     };
   }
 
@@ -202,7 +221,7 @@ export class ExternalizedDecisionMatrix extends EventEmitter {
     componentName: string,
     compatibilityScore: number,
     performanceImpact: number,
-    architectureAlignment: number
+    architectureAlignment: number,
   ): Promise<IntegrationDecision> {
     console.log(`🔍 Evaluating integration for: ${componentName}`);
     console.log(`   Compatibility: ${compatibilityScore}`);
@@ -211,15 +230,17 @@ export class ExternalizedDecisionMatrix extends EventEmitter {
 
     const conditionsMet: string[] = [];
     const conditionsFailed: string[] = [];
-    let selectedStrategy = 'reject_integration';
+    let selectedStrategy = "reject_integration";
 
     // Check each integration rule
-    for (const [ruleName, rule] of Object.entries(this.config.integration_rules)) {
+    for (const [ruleName, rule] of Object.entries(
+      this.config.integration_rules,
+    )) {
       const ruleResult = this.evaluateIntegrationRule(
         rule,
         compatibilityScore,
         performanceImpact,
-        architectureAlignment
+        architectureAlignment,
       );
 
       if (ruleResult.success) {
@@ -235,21 +256,24 @@ export class ExternalizedDecisionMatrix extends EventEmitter {
       selectedStrategy,
       compatibilityScore,
       performanceImpact,
-      architectureAlignment
+      architectureAlignment,
     );
 
     const decision: IntegrationDecision = {
-      strategy: selectedStrategy as 'full_integration' | 'partial_integration' | 'reject_integration',
+      strategy: selectedStrategy as
+        | "full_integration"
+        | "partial_integration"
+        | "reject_integration",
       reasoning: this.config.integration_rules[selectedStrategy].description,
       conditions_met: conditionsMet,
       conditions_failed: conditionsFailed,
-      recommendations
+      recommendations,
     };
 
     console.log(`📋 Integration decision: ${selectedStrategy}`);
     console.log(`   Reasoning: ${decision.reasoning}`);
 
-    this.emit('integration:evaluated', { componentName, decision });
+    this.emit("integration:evaluated", { componentName, decision });
     return decision;
   }
 
@@ -262,23 +286,29 @@ export class ExternalizedDecisionMatrix extends EventEmitter {
     runtimeVarianceAnalysis: number;
   }): Promise<SystemHarmonyScore> {
     const breakdown = {
-      componentHarmony: this.calculateComponentHarmony(systemMetrics.dependencyGraphEntropy),
+      componentHarmony: this.calculateComponentHarmony(
+        systemMetrics.dependencyGraphEntropy,
+      ),
       architectureAlignment: systemMetrics.designPrincipleConformity,
-      performanceCoherence: this.calculatePerformanceCoherence(systemMetrics.runtimeVarianceAnalysis)
+      performanceCoherence: this.calculatePerformanceCoherence(
+        systemMetrics.runtimeVarianceAnalysis,
+      ),
     };
 
     // Calculate weighted overall score
     const harmonyMetrics = this.config.harmony_metrics;
     const overall =
-      (breakdown.componentHarmony * harmonyMetrics.component_harmony.weight) +
-      (breakdown.architectureAlignment * harmonyMetrics.architecture_alignment.weight) +
-      (breakdown.performanceCoherence * harmonyMetrics.performance_coherence.weight);
+      breakdown.componentHarmony * harmonyMetrics.component_harmony.weight +
+      breakdown.architectureAlignment *
+        harmonyMetrics.architecture_alignment.weight +
+      breakdown.performanceCoherence *
+        harmonyMetrics.performance_coherence.weight;
 
     // Add to history
     const scoreRecord = {
       timestamp: new Date(),
       score: overall,
-      factors: breakdown
+      factors: breakdown,
     };
     this.harmonyHistory.push(scoreRecord);
 
@@ -293,15 +323,17 @@ export class ExternalizedDecisionMatrix extends EventEmitter {
       overall: Math.round(overall * 100) / 100,
       breakdown,
       trends: this.harmonyHistory.slice(-10), // Last 10 records
-      recommendations
+      recommendations,
     };
 
     console.log(`🎯 System Harmony Score: ${harmonyScore.overall}`);
     console.log(`   Component Harmony: ${breakdown.componentHarmony}`);
-    console.log(`   Architecture Alignment: ${breakdown.architectureAlignment}`);
+    console.log(
+      `   Architecture Alignment: ${breakdown.architectureAlignment}`,
+    );
     console.log(`   Performance Coherence: ${breakdown.performanceCoherence}`);
 
-    this.emit('harmony:calculated', harmonyScore);
+    this.emit("harmony:calculated", harmonyScore);
     return harmonyScore;
   }
 
@@ -318,50 +350,64 @@ export class ExternalizedDecisionMatrix extends EventEmitter {
   updateFeatureFlag(flag: string, enabled: boolean): void {
     this.config.feature_flags[flag] = enabled;
     console.log(`🚩 Feature flag updated: ${flag} = ${enabled}`);
-    this.emit('feature:toggled', { flag, enabled });
+    this.emit("feature:toggled", { flag, enabled });
   }
 
   private calculateWeightedScore(
     strategy: StrategyConfig,
-    weights: Record<string, number>
+    weights: Record<string, number>,
   ): number {
-    const perfScore = (strategy.performance.speed + strategy.performance.resources + strategy.performance.scalability) / 15;
-    const safetyScore = (strategy.safety.reliability + strategy.safety.reversible + strategy.safety.riskLevel) / 15;
-    const usabilityScore = (strategy.usability.clarity + strategy.usability.automation + strategy.usability.feedback) / 15;
+    const perfScore =
+      (strategy.performance.speed +
+        strategy.performance.resources +
+        strategy.performance.scalability) /
+      15;
+    const safetyScore =
+      (strategy.safety.reliability +
+        strategy.safety.reversible +
+        strategy.safety.riskLevel) /
+      15;
+    const usabilityScore =
+      (strategy.usability.clarity +
+        strategy.usability.automation +
+        strategy.usability.feedback) /
+      15;
 
-    return (perfScore * weights.performance) +
-           (safetyScore * weights.safety) +
-           (usabilityScore * weights.usability);
+    return (
+      perfScore * weights.performance +
+      safetyScore * weights.safety +
+      usabilityScore * weights.usability
+    );
   }
 
   private selectExecutionStrategy(context: DecisionContext): string {
     const { priority, systemState } = context;
 
     // Check immediate conditions first
-    if (priority === 'P0' && systemState.operationsPerHour < 20) {
-      return 'immediate';
+    if (priority === "P0" && systemState.operationsPerHour < 20) {
+      return "immediate";
     }
 
-    if (priority === 'P1' && systemState.operationsPerHour < 40) {
-      return 'optimized';
+    if (priority === "P1" && systemState.operationsPerHour < 40) {
+      return "optimized";
     }
 
     if (systemState.operationsPerHour >= 40) {
-      return 'coordinated';
+      return "coordinated";
     }
 
     if (systemState.healthyComponents >= 3 && systemState.systemLoad < 0.7) {
-      return 'distributed';
+      return "distributed";
     }
 
-    return 'optimized'; // Default fallback
+    return "optimized"; // Default fallback
   }
 
   private generateReasoning(
     context: DecisionContext,
     strategy: StrategyConfig,
     selectedStrategy: string,
-    score: number
+    score: number,
   ): string {
     const config = this.config.execution_strategies[selectedStrategy];
     return `Selected ${selectedStrategy} strategy (score: ${score.toFixed(2)}) for ${context.priority} priority operation. ${config.description}`;
@@ -371,51 +417,81 @@ export class ExternalizedDecisionMatrix extends EventEmitter {
     rule: IntegrationRule,
     compatibilityScore: number,
     performanceImpact: number,
-    architectureAlignment: number
+    architectureAlignment: number,
   ): { success: boolean; conditions: string[] } {
     const conditions: string[] = [];
     let success = true;
 
     for (const condition of rule.conditions) {
-      if (condition.includes('compatibility_score')) {
-        const threshold = parseFloat(condition.split('>=')[1]?.trim() || condition.split('<')[1]?.trim() || '0');
-        const operator = condition.includes('>=') ? '>=' : '<';
+      if (condition.includes("compatibility_score")) {
+        const threshold = parseFloat(
+          condition.split(">=")[1]?.trim() ||
+            condition.split("<")[1]?.trim() ||
+            "0",
+        );
+        const operator = condition.includes(">=") ? ">=" : "<";
 
-        if (operator === '>=' && compatibilityScore >= threshold) {
-          conditions.push(`Compatibility score ${compatibilityScore} meets threshold ${threshold}`);
-        } else if (operator === '<' && compatibilityScore < threshold) {
-          conditions.push(`Compatibility score ${compatibilityScore} below threshold ${threshold}`);
+        if (operator === ">=" && compatibilityScore >= threshold) {
+          conditions.push(
+            `Compatibility score ${compatibilityScore} meets threshold ${threshold}`,
+          );
+        } else if (operator === "<" && compatibilityScore < threshold) {
+          conditions.push(
+            `Compatibility score ${compatibilityScore} below threshold ${threshold}`,
+          );
         } else {
           success = false;
-          conditions.push(`Compatibility score ${compatibilityScore} fails condition: ${condition}`);
+          conditions.push(
+            `Compatibility score ${compatibilityScore} fails condition: ${condition}`,
+          );
         }
       }
 
-      if (condition.includes('performance_impact')) {
-        const threshold = parseFloat(condition.split('<')[1]?.trim() || condition.split('>=')[1]?.trim() || '0');
-        const operator = condition.includes('<') ? '<' : '>=';
+      if (condition.includes("performance_impact")) {
+        const threshold = parseFloat(
+          condition.split("<")[1]?.trim() ||
+            condition.split(">=")[1]?.trim() ||
+            "0",
+        );
+        const operator = condition.includes("<") ? "<" : ">=";
 
-        if (operator === '<' && performanceImpact < threshold) {
-          conditions.push(`Performance impact ${performanceImpact} within acceptable range ${threshold}`);
-        } else if (operator === '>=' && performanceImpact >= threshold) {
-          conditions.push(`Performance impact ${performanceImpact} exceeds threshold ${threshold}`);
+        if (operator === "<" && performanceImpact < threshold) {
+          conditions.push(
+            `Performance impact ${performanceImpact} within acceptable range ${threshold}`,
+          );
+        } else if (operator === ">=" && performanceImpact >= threshold) {
+          conditions.push(
+            `Performance impact ${performanceImpact} exceeds threshold ${threshold}`,
+          );
         } else {
           success = false;
-          conditions.push(`Performance impact ${performanceImpact} fails condition: ${condition}`);
+          conditions.push(
+            `Performance impact ${performanceImpact} fails condition: ${condition}`,
+          );
         }
       }
 
-      if (condition.includes('architecture_alignment')) {
-        const threshold = parseFloat(condition.split('>=')[1]?.trim() || condition.split('<')[1]?.trim() || '0');
-        const operator = condition.includes('>=') ? '>=' : '<';
+      if (condition.includes("architecture_alignment")) {
+        const threshold = parseFloat(
+          condition.split(">=")[1]?.trim() ||
+            condition.split("<")[1]?.trim() ||
+            "0",
+        );
+        const operator = condition.includes(">=") ? ">=" : "<";
 
-        if (operator === '>=' && architectureAlignment >= threshold) {
-          conditions.push(`Architecture alignment ${architectureAlignment} meets standard ${threshold}`);
-        } else if (operator === '<' && architectureAlignment < threshold) {
-          conditions.push(`Architecture alignment ${architectureAlignment} below standard ${threshold}`);
+        if (operator === ">=" && architectureAlignment >= threshold) {
+          conditions.push(
+            `Architecture alignment ${architectureAlignment} meets standard ${threshold}`,
+          );
+        } else if (operator === "<" && architectureAlignment < threshold) {
+          conditions.push(
+            `Architecture alignment ${architectureAlignment} below standard ${threshold}`,
+          );
         } else {
           success = false;
-          conditions.push(`Architecture alignment ${architectureAlignment} fails condition: ${condition}`);
+          conditions.push(
+            `Architecture alignment ${architectureAlignment} fails condition: ${condition}`,
+          );
         }
       }
     }
@@ -427,27 +503,39 @@ export class ExternalizedDecisionMatrix extends EventEmitter {
     strategy: string,
     compatibilityScore: number,
     performanceImpact: number,
-    architectureAlignment: number
+    architectureAlignment: number,
   ): string[] {
     const recommendations: string[] = [];
 
-    if (strategy === 'reject_integration') {
+    if (strategy === "reject_integration") {
       if (compatibilityScore < 0.6) {
-        recommendations.push('Improve component compatibility by addressing interface mismatches');
+        recommendations.push(
+          "Improve component compatibility by addressing interface mismatches",
+        );
       }
       if (performanceImpact >= 0.2) {
-        recommendations.push('Optimize component performance to reduce system impact');
+        recommendations.push(
+          "Optimize component performance to reduce system impact",
+        );
       }
       if (architectureAlignment < 0.5) {
-        recommendations.push('Redesign component to better align with system architecture');
+        recommendations.push(
+          "Redesign component to better align with system architecture",
+        );
       }
-    } else if (strategy === 'partial_integration') {
-      recommendations.push('Enable integration with feature flags to limit exposure');
-      recommendations.push('Monitor performance metrics closely during rollout');
-      recommendations.push('Plan for full integration after addressing compatibility gaps');
+    } else if (strategy === "partial_integration") {
+      recommendations.push(
+        "Enable integration with feature flags to limit exposure",
+      );
+      recommendations.push(
+        "Monitor performance metrics closely during rollout",
+      );
+      recommendations.push(
+        "Plan for full integration after addressing compatibility gaps",
+      );
     } else {
-      recommendations.push('Proceed with full integration');
-      recommendations.push('Monitor system harmony metrics post-integration');
+      recommendations.push("Proceed with full integration");
+      recommendations.push("Monitor system harmony metrics post-integration");
     }
 
     return recommendations;
@@ -455,12 +543,12 @@ export class ExternalizedDecisionMatrix extends EventEmitter {
 
   private calculateComponentHarmony(dependencyGraphEntropy: number): number {
     // Convert entropy to harmony score (lower entropy = higher harmony)
-    return Math.max(0, Math.min(1, 1 - (dependencyGraphEntropy / 10)));
+    return Math.max(0, Math.min(1, 1 - dependencyGraphEntropy / 10));
   }
 
   private calculatePerformanceCoherence(runtimeVariance: number): number {
     // Convert variance to coherence score (lower variance = higher coherence)
-    return Math.max(0, Math.min(1, 1 - (runtimeVariance / 2)));
+    return Math.max(0, Math.min(1, 1 - runtimeVariance / 2));
   }
 
   private generateHarmonyRecommendations(breakdown: {
@@ -472,19 +560,27 @@ export class ExternalizedDecisionMatrix extends EventEmitter {
     const targets = this.config.harmony_metrics;
 
     if (breakdown.componentHarmony < targets.component_harmony.target) {
-      recommendations.push('Reduce component coupling by simplifying dependency relationships');
+      recommendations.push(
+        "Reduce component coupling by simplifying dependency relationships",
+      );
     }
 
-    if (breakdown.architectureAlignment < targets.architecture_alignment.target) {
-      recommendations.push('Review and address design principle violations');
+    if (
+      breakdown.architectureAlignment < targets.architecture_alignment.target
+    ) {
+      recommendations.push("Review and address design principle violations");
     }
 
     if (breakdown.performanceCoherence < targets.performance_coherence.target) {
-      recommendations.push('Investigate performance variance and optimize inconsistent components');
+      recommendations.push(
+        "Investigate performance variance and optimize inconsistent components",
+      );
     }
 
     if (recommendations.length === 0) {
-      recommendations.push('System harmony is within target ranges - maintain current practices');
+      recommendations.push(
+        "System harmony is within target ranges - maintain current practices",
+      );
     }
 
     return recommendations;

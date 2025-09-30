@@ -193,8 +193,8 @@ class ArchitecturalEvolutionEngine {
     const registryData = await this.loadComponentRegistry();
 
     // 중복 1: build_docs_indexes.js vs build_docs_indexes.ts
-    const buildDocsComponents = registryData.components.filter((c: ComponentMetadata) =>
-      c.name.includes("build_docs_indexes"),
+    const buildDocsComponents = registryData.components.filter(
+      (c: ComponentMetadata) => c.name.includes("build_docs_indexes"),
     );
 
     if (buildDocsComponents.length > 1) {
@@ -235,7 +235,8 @@ class ArchitecturalEvolutionEngine {
 
     // 중복 2: 여러 refactor-* 컴포넌트들
     const refactorComponents = registryData.components.filter(
-      (c: ComponentMetadata) => c.name.includes("refactor") && !c.name.includes("smart-refactor"),
+      (c: ComponentMetadata) =>
+        c.name.includes("refactor") && !c.name.includes("smart-refactor"),
     );
 
     if (refactorComponents.length > 2) {
@@ -243,7 +244,9 @@ class ArchitecturalEvolutionEngine {
         type: "consolidation",
         priority: "high",
         description: "Consolidate multiple refactor-related components",
-        affectedComponents: refactorComponents.map((c: ComponentMetadata) => c.name),
+        affectedComponents: refactorComponents.map(
+          (c: ComponentMetadata) => c.name,
+        ),
         estimatedImpact: {
           complexity: -25,
           maintainability: 35,
@@ -335,7 +338,9 @@ class ArchitecturalEvolutionEngine {
         priority: "critical",
         description:
           "Integrate all security components into unified status system",
-        affectedComponents: securityComponents.map((c: ComponentMetadata) => c.name),
+        affectedComponents: securityComponents.map(
+          (c: ComponentMetadata) => c.name,
+        ),
         estimatedImpact: {
           complexity: 0,
           maintainability: 25,
@@ -495,7 +500,8 @@ class ArchitecturalEvolutionEngine {
 
           console.log(`   ✅ Applied successfully: ${improvement.description}`);
         } catch (error) {
-          const errorMessage = error instanceof Error ? error.message : String(error);
+          const errorMessage =
+            error instanceof Error ? error.message : String(error);
           console.log(
             `   ❌ Failed to apply: ${improvement.description} - ${errorMessage}`,
           );

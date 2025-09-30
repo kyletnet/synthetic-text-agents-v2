@@ -12,11 +12,13 @@
 Phase 6 구현 과정에서 발견된 **3가지 치명적 결함**에 대한 근본 해결책을 제시하고 구현한 RFC입니다.
 
 ### 문제점
+
 1. **Self-Healing Engine 무한 루프**: API key 부족 시 healing이 무한 반복
 2. **백그라운드 프로세스 과다**: 20+ 개의 프로세스가 orphan 상태로 실행
 3. **Circuit Breaker 부재**: 실패 상황에서 자동 중단 메커니즘 없음
 
 ### 해결책
+
 **6단계 Layered Protection + 중앙 집중식 관리 아키텍처**
 
 ---
@@ -24,14 +26,17 @@ Phase 6 구현 과정에서 발견된 **3가지 치명적 결함**에 대한 근
 ## 🎯 설계 목표
 
 ### 1. Fail-Safe 보장
+
 - 자동화 시스템이 "알고도 멈추지 못하는 상태" 방지
 - 모든 자동 작업에 명확한 종료 조건 설정
 
 ### 2. Observability 확보
+
 - 시스템 상태를 `/status` API로 완전 노출
 - Dormant Mode, Circuit Breaker, Background Tasks 실시간 추적
 
 ### 3. Manual Intervention 가능
+
 - Critical 상황에서 수동 개입으로 복구 가능
 - Feature Flag로 자동화 기능 즉시 OFF 가능
 
@@ -74,6 +79,7 @@ Phase 6 구현 과정에서 발견된 **3가지 치명적 결함**에 대한 근
 ## 🛡️ 6단계 Layered Protection
 
 ### Layer 1: Feature Flag (긴급 킬 스위치)
+
 ```bash
 FEATURE_AUTO_HEALING_ENABLED=false           # 자동 치유 OFF
 FEATURE_AUTO_DETECTION_MONITORING=false      # 자동 감지 OFF
@@ -89,17 +95,17 @@ FEATURE_PROCESS_MONITORING_ENABLED=false     # 프로세스 모니터링 OFF
 
 ```typescript
 // Base: 5초 → Max: 10분
-backoffDelay = baseDelay * 2^consecutiveFailures
+backoffDelay = (baseDelay * 2) ^ consecutiveFailures;
 ```
 
 | 실패 횟수 | Backoff 시간 |
-|----------|-------------|
-| 1        | 5초         |
-| 2        | 10초        |
-| 3        | 20초        |
-| 4        | 40초        |
-| 5        | 1분 20초    |
-| 10+      | 10분 (max)  |
+| --------- | ------------ |
+| 1         | 5초          |
+| 2         | 10초         |
+| 3         | 20초         |
+| 4         | 40초         |
+| 5         | 1분 20초     |
+| 10+       | 10분 (max)   |
 
 **효과**: 반복 실패 시 재시도 간격 지수 증가
 
@@ -109,7 +115,7 @@ backoffDelay = baseDelay * 2^consecutiveFailures
 
 ```typescript
 if (consecutiveFailures >= 10) {
-  enterDormantMode('Exceeded max failures');
+  enterDormantMode("Exceeded max failures");
 }
 ```
 
@@ -153,20 +159,22 @@ if (consecutiveFailures >= 10) {
 interface DormantModeConfig {
   reason: string;
   timestamp: Date;
-  triggeredBy: 'automatic' | 'circuit_breaker' | 'manual';
+  triggeredBy: "automatic" | "circuit_breaker" | "manual";
   resumeConditions: string[];
   manualResetRequired: true;
 }
 ```
 
 **진입 조건**:
+
 - 10번 연속 실패
 - Circuit Breaker PERMANENT_OPEN
 - 수동 요청
 
 **복구 방법**:
+
 ```typescript
-selfHealingEngine.resumeFromDormant('Valid API keys added');
+selfHealingEngine.resumeFromDormant("Valid API keys added");
 ```
 
 **효과**: 완전한 자동 치유 중단, 수동 복구만 가능
@@ -191,12 +199,12 @@ this.healingInterval = setInterval(async () => {
 ```typescript
 // ✅ 개선 방식
 backgroundTaskManager.registerInterval(
-  'self-healing-preventive',
+  "self-healing-preventive",
   async () => {
     await this.performHealing();
   },
   600000, // 10분
-  { enabled: true, replace: true }
+  { enabled: true, replace: true },
 );
 
 // HMR 재시작 시 자동 cleanup
@@ -327,11 +335,13 @@ ts-node scripts/test-self-healing-failure.ts
 ### Dormant Mode 복구 절차
 
 #### 1. 상태 확인
+
 ```bash
 curl http://localhost:3001/api/status | jq '.selfHealing'
 ```
 
 #### 2. 근본 원인 해결
+
 ```bash
 # API key 추가
 export ANTHROPIC_API_KEY="sk-ant-..."
@@ -341,17 +351,20 @@ echo "ANTHROPIC_API_KEY=sk-ant-..." >> .env.local
 ```
 
 #### 3. Circuit Breaker 리셋 (선택)
+
 ```bash
 # 코드에서 수동으로
 circuitBreakerRegistry.get('self-healing-main').reset(true);
 ```
 
 #### 4. Dormant Mode 해제
+
 ```typescript
-selfHealingEngine.resumeFromDormant('Valid API keys added');
+selfHealingEngine.resumeFromDormant("Valid API keys added");
 ```
 
 #### 5. 재확인
+
 ```bash
 curl http://localhost:3001/api/status | jq '.selfHealing.isDormant'
 # false 확인
@@ -401,8 +414,8 @@ npm run dev
 
 ## 📝 Changelog
 
-| Date       | Version | Changes |
-|------------|---------|---------|
+| Date       | Version | Changes                              |
+| ---------- | ------- | ------------------------------------ |
 | 2025-09-30 | 1.0.0   | Initial RFC - Phase 6 후속 조치 완료 |
 
 ---

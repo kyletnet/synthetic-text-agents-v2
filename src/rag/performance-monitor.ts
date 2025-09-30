@@ -24,8 +24,8 @@ export interface CostBreakdown {
 }
 
 export interface PerformanceAlert {
-  type: 'cost_threshold' | 'latency_threshold' | 'error_rate';
-  severity: 'low' | 'medium' | 'high' | 'critical';
+  type: "cost_threshold" | "latency_threshold" | "error_rate";
+  severity: "low" | "medium" | "high" | "critical";
   message: string;
   metrics: Record<string, number>;
   timestamp: Date;
@@ -59,7 +59,7 @@ export class RAGPerformanceMonitor {
   async recordSearchOperation(
     searchLatency: number,
     chunksRetrieved: number,
-    algorithm: 'bm25' | 'vector' = 'bm25'
+    algorithm: "bm25" | "vector" = "bm25",
   ): Promise<void> {
     const metrics: RAGPerformanceMetrics = {
       searchLatency,
@@ -93,7 +93,7 @@ export class RAGPerformanceMonitor {
   async recordChunkingOperation(
     chunkingTime: number,
     documentsProcessed: number,
-    chunksCreated: number
+    chunksCreated: number,
   ): Promise<void> {
     const metrics: RAGPerformanceMetrics = {
       searchLatency: 0,
@@ -127,7 +127,7 @@ export class RAGPerformanceMonitor {
     chunksProcessed: number,
     tokensUsed: number,
     provider: string,
-    model: string
+    model: string,
   ): Promise<void> {
     const apiCost = this.calculateEmbeddingCost(tokensUsed, provider, model);
 
@@ -169,27 +169,25 @@ export class RAGPerformanceMonitor {
     averageLatency: number;
     costBreakdown: CostBreakdown;
   } {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    const todayMetrics = this.metrics.filter(m => {
+    const todayMetrics = this.metrics.filter((_m) => {
       // Note: This is simplified - in production, you'd want proper timestamp tracking
       return true; // For now, return all metrics
     });
 
     const totalLatency = todayMetrics.reduce((sum, m) => sum + m.totalTime, 0);
-    const averageLatency = todayMetrics.length > 0 ? totalLatency / todayMetrics.length : 0;
+    const averageLatency =
+      todayMetrics.length > 0 ? totalLatency / todayMetrics.length : 0;
 
     const embeddingCosts = todayMetrics
-      .filter(m => m.embeddingTime && m.embeddingTime > 0)
+      .filter((m) => m.embeddingTime && m.embeddingTime > 0)
       .reduce((sum, m) => sum + m.estimatedCost, 0);
 
     const searchCosts = todayMetrics
-      .filter(m => m.searchLatency > 0)
+      .filter((m) => m.searchLatency > 0)
       .reduce((sum, m) => sum + m.estimatedCost, 0);
 
     const chunkingCosts = todayMetrics
-      .filter(m => m.chunkingTime > 0)
+      .filter((m) => m.chunkingTime > 0)
       .reduce((sum, m) => sum + m.estimatedCost, 0);
 
     return {
@@ -207,10 +205,10 @@ export class RAGPerformanceMonitor {
   }
 
   getPerformanceReport(): {
-    summary: ReturnType<RAGPerformanceMonitor['getDailyStats']>;
+    summary: ReturnType<RAGPerformanceMonitor["getDailyStats"]>;
     trends: {
-      latencyTrend: 'improving' | 'stable' | 'degrading';
-      costTrend: 'decreasing' | 'stable' | 'increasing';
+      latencyTrend: "improving" | "stable" | "degrading";
+      costTrend: "decreasing" | "stable" | "increasing";
     };
     recommendations: string[];
   } {
@@ -220,34 +218,58 @@ export class RAGPerformanceMonitor {
     const recentMetrics = this.metrics.slice(-10);
     const olderMetrics = this.metrics.slice(-20, -10);
 
-    const recentAvgLatency = recentMetrics.reduce((sum, m) => sum + m.totalTime, 0) / Math.max(recentMetrics.length, 1);
-    const olderAvgLatency = olderMetrics.reduce((sum, m) => sum + m.totalTime, 0) / Math.max(olderMetrics.length, 1);
+    const recentAvgLatency =
+      recentMetrics.reduce((sum, m) => sum + m.totalTime, 0) /
+      Math.max(recentMetrics.length, 1);
+    const olderAvgLatency =
+      olderMetrics.reduce((sum, m) => sum + m.totalTime, 0) /
+      Math.max(olderMetrics.length, 1);
 
-    const latencyTrend = recentAvgLatency < olderAvgLatency * 0.9 ? 'improving' :
-                        recentAvgLatency > olderAvgLatency * 1.1 ? 'degrading' : 'stable';
+    const latencyTrend =
+      recentAvgLatency < olderAvgLatency * 0.9
+        ? "improving"
+        : recentAvgLatency > olderAvgLatency * 1.1
+          ? "degrading"
+          : "stable";
 
-    const recentAvgCost = recentMetrics.reduce((sum, m) => sum + m.estimatedCost, 0) / Math.max(recentMetrics.length, 1);
-    const olderAvgCost = olderMetrics.reduce((sum, m) => sum + m.estimatedCost, 0) / Math.max(olderMetrics.length, 1);
+    const recentAvgCost =
+      recentMetrics.reduce((sum, m) => sum + m.estimatedCost, 0) /
+      Math.max(recentMetrics.length, 1);
+    const olderAvgCost =
+      olderMetrics.reduce((sum, m) => sum + m.estimatedCost, 0) /
+      Math.max(olderMetrics.length, 1);
 
-    const costTrend = recentAvgCost < olderAvgCost * 0.9 ? 'decreasing' :
-                     recentAvgCost > olderAvgCost * 1.1 ? 'increasing' : 'stable';
+    const costTrend =
+      recentAvgCost < olderAvgCost * 0.9
+        ? "decreasing"
+        : recentAvgCost > olderAvgCost * 1.1
+          ? "increasing"
+          : "stable";
 
     const recommendations: string[] = [];
 
-    if (latencyTrend === 'degrading') {
-      recommendations.push("Consider optimizing chunk sizes or implementing caching");
+    if (latencyTrend === "degrading") {
+      recommendations.push(
+        "Consider optimizing chunk sizes or implementing caching",
+      );
     }
 
-    if (costTrend === 'increasing') {
-      recommendations.push("Review embedding usage and consider local alternatives");
+    if (costTrend === "increasing") {
+      recommendations.push(
+        "Review embedding usage and consider local alternatives",
+      );
     }
 
     if (summary.averageLatency > this.alertThresholds.averageLatencyLimit) {
-      recommendations.push("Average latency exceeds threshold - investigate performance bottlenecks");
+      recommendations.push(
+        "Average latency exceeds threshold - investigate performance bottlenecks",
+      );
     }
 
     if (recommendations.length === 0) {
-      recommendations.push("RAG system is performing within expected parameters");
+      recommendations.push(
+        "RAG system is performing within expected parameters",
+      );
     }
 
     return {
@@ -263,10 +285,13 @@ export class RAGPerformanceMonitor {
     // Cost threshold alert
     if (this.totalCost > this.alertThresholds.dailyCostLimit) {
       alerts.push({
-        type: 'cost_threshold',
-        severity: 'high',
+        type: "cost_threshold",
+        severity: "high",
         message: `Daily cost limit exceeded: $${this.totalCost.toFixed(2)} > $${this.alertThresholds.dailyCostLimit}`,
-        metrics: { totalCost: this.totalCost, limit: this.alertThresholds.dailyCostLimit },
+        metrics: {
+          totalCost: this.totalCost,
+          limit: this.alertThresholds.dailyCostLimit,
+        },
         timestamp: new Date(),
       });
     }
@@ -274,10 +299,13 @@ export class RAGPerformanceMonitor {
     // Latency threshold alert
     if (metrics.totalTime > this.alertThresholds.averageLatencyLimit) {
       alerts.push({
-        type: 'latency_threshold',
-        severity: 'medium',
+        type: "latency_threshold",
+        severity: "medium",
         message: `Operation latency exceeded threshold: ${metrics.totalTime}ms > ${this.alertThresholds.averageLatencyLimit}ms`,
-        metrics: { latency: metrics.totalTime, limit: this.alertThresholds.averageLatencyLimit },
+        metrics: {
+          latency: metrics.totalTime,
+          limit: this.alertThresholds.averageLatencyLimit,
+        },
         timestamp: new Date(),
       });
     }
@@ -285,7 +313,7 @@ export class RAGPerformanceMonitor {
     // Log alerts
     for (const alert of alerts) {
       await this.logger.trace({
-        level: alert.severity === 'critical' ? 'error' : 'warn',
+        level: alert.severity === "critical" ? "error" : "warn",
         agentId: "rag-performance-monitor",
         action: "performance_alert",
         data: {
@@ -298,9 +326,12 @@ export class RAGPerformanceMonitor {
     }
   }
 
-  private calculateSearchCost(chunksRetrieved: number, algorithm: string): number {
+  private calculateSearchCost(
+    chunksRetrieved: number,
+    algorithm: string,
+  ): number {
     // BM25 search is essentially free (computation only)
-    if (algorithm === 'bm25') {
+    if (algorithm === "bm25") {
       return 0.0001 * chunksRetrieved; // Minimal compute cost
     }
 
@@ -313,10 +344,14 @@ export class RAGPerformanceMonitor {
     return 0.0001 * documentsProcessed;
   }
 
-  private calculateEmbeddingCost(tokensUsed: number, provider: string, model: string): number {
+  private calculateEmbeddingCost(
+    tokensUsed: number,
+    provider: string,
+    model: string,
+  ): number {
     // OpenAI embedding pricing (approximate)
-    if (provider === 'openai') {
-      if (model.includes('large')) {
+    if (provider === "openai") {
+      if (model.includes("large")) {
         return tokensUsed * (0.00013 / 1000); // $0.00013 per 1K tokens
       } else {
         return tokensUsed * (0.00002 / 1000); // $0.00002 per 1K tokens

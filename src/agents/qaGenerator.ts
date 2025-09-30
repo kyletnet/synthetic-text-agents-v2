@@ -74,7 +74,7 @@ export class QAGenerator extends BaseAgent {
               domainHint: req.domain,
             });
 
-            if (injectionResult && typeof injectionResult === 'object') {
+            if (injectionResult && typeof injectionResult === "object") {
               const result = injectionResult as any;
               basePrompt = result.enhancedPrompt;
 

@@ -67,13 +67,13 @@ export class RAGSystem {
   }
 
   static deleteDocument(docId: string): boolean {
-    const docIndex = documents.findIndex(d => d.id === docId);
+    const docIndex = documents.findIndex((d) => d.id === docId);
     if (docIndex === -1) return false;
 
     documents.splice(docIndex, 1);
     globalThis.__ragDocuments = documents;
 
-    const filteredChunks = chunks.filter(c => c.documentId !== docId);
+    const filteredChunks = chunks.filter((c) => c.documentId !== docId);
     chunks.length = 0;
     chunks.push(...filteredChunks);
     globalThis.__ragChunks = chunks;
@@ -86,12 +86,16 @@ export class RAGSystem {
     const chunks: Chunk[] = [];
 
     // Smart chunking by paragraphs and sentences
-    const paragraphs = content.split(/\n\s*\n/).filter(p => p.trim().length > 0);
+    const paragraphs = content
+      .split(/\n\s*\n/)
+      .filter((p) => p.trim().length > 0);
 
     let chunkIndex = 0;
     for (const paragraph of paragraphs) {
       // Split long paragraphs into smaller chunks
-      const sentences = paragraph.split(/[.!?]+/).filter(s => s.trim().length > 20);
+      const sentences = paragraph
+        .split(/[.!?]+/)
+        .filter((s) => s.trim().length > 20);
 
       if (sentences.length <= 3) {
         // Small paragraph - keep as one chunk
@@ -110,7 +114,7 @@ export class RAGSystem {
         // Large paragraph - split into smaller chunks
         for (let i = 0; i < sentences.length; i += 3) {
           const chunkSentences = sentences.slice(i, i + 3);
-          const chunkContent = chunkSentences.join('. ').trim() + '.';
+          const chunkContent = chunkSentences.join(". ").trim() + ".";
 
           chunks.push({
             id: `chunk_${doc.id}_${chunkIndex}`,
@@ -143,41 +147,48 @@ export class RAGSystem {
         results.push({
           chunk,
           score,
-          algorithm: 'bm25',
+          algorithm: "bm25",
         });
       }
     }
 
     // Sort by score and return top K
-    return results
-      .sort((a, b) => b.score - a.score)
-      .slice(0, topK);
+    return results.sort((a, b) => b.score - a.score).slice(0, topK);
   }
 
   // Simple BM25 implementation
-  private static calculateBM25Score(queryTerms: string[], chunk: Chunk): number {
+  private static calculateBM25Score(
+    queryTerms: string[],
+    chunk: Chunk,
+  ): number {
     const k1 = 1.2;
     const b = 0.75;
 
     const docTerms = this.tokenize(chunk.content.toLowerCase());
     const docLength = docTerms.length;
-    const avgDocLength = chunks.reduce((sum, c) =>
-      sum + this.tokenize(c.content.toLowerCase()).length, 0) / chunks.length;
+    const avgDocLength =
+      chunks.reduce(
+        (sum, c) => sum + this.tokenize(c.content.toLowerCase()).length,
+        0,
+      ) / chunks.length;
 
     let score = 0;
 
     for (const term of queryTerms) {
-      const termFreq = docTerms.filter(t => t === term).length;
+      const termFreq = docTerms.filter((t) => t === term).length;
       if (termFreq === 0) continue;
 
       // IDF calculation
-      const docsWithTerm = chunks.filter(c =>
-        this.tokenize(c.content.toLowerCase()).includes(term)
+      const docsWithTerm = chunks.filter((c) =>
+        this.tokenize(c.content.toLowerCase()).includes(term),
       ).length;
-      const idf = Math.log((chunks.length - docsWithTerm + 0.5) / (docsWithTerm + 0.5));
+      const idf = Math.log(
+        (chunks.length - docsWithTerm + 0.5) / (docsWithTerm + 0.5),
+      );
 
       // BM25 formula
-      const tf = (termFreq * (k1 + 1)) /
+      const tf =
+        (termFreq * (k1 + 1)) /
         (termFreq + k1 * (1 - b + b * (docLength / avgDocLength)));
 
       score += idf * tf;
@@ -190,9 +201,9 @@ export class RAGSystem {
   private static tokenize(text: string): string[] {
     return text
       .toLowerCase()
-      .replace(/[^\w\s]/g, ' ')
+      .replace(/[^\w\s]/g, " ")
       .split(/\s+/)
-      .filter(token => token.length > 2);
+      .filter((token) => token.length > 2);
   }
 
   // Statistics
@@ -219,11 +230,11 @@ export class RAGSystem {
     const results = this.search(query, maxChunks);
 
     if (results.length === 0) {
-      return '';
+      return "";
     }
 
     return results
       .map((result, index) => `[Context ${index + 1}]\n${result.chunk.content}`)
-      .join('\n\n');
+      .join("\n\n");
   }
 }

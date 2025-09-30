@@ -12,19 +12,23 @@
  *   npm run health:check -- --watch         # 지속 모니터링
  */
 
-import { autoDetectionEngine, SystemHealth, DetectionResult } from '../lib/auto-detection-engine';
+import {
+  autoDetectionEngine,
+  SystemHealth,
+  DetectionResult,
+} from "../lib/auto-detection-engine";
 
 // 🎨 Colors for console output
 const colors = {
-  reset: '\x1b[0m',
-  bright: '\x1b[1m',
-  red: '\x1b[31m',
-  green: '\x1b[32m',
-  yellow: '\x1b[33m',
-  blue: '\x1b[34m',
-  magenta: '\x1b[35m',
-  cyan: '\x1b[36m',
-  white: '\x1b[37m'
+  reset: "\x1b[0m",
+  bright: "\x1b[1m",
+  red: "\x1b[31m",
+  green: "\x1b[32m",
+  yellow: "\x1b[33m",
+  blue: "\x1b[34m",
+  magenta: "\x1b[35m",
+  cyan: "\x1b[36m",
+  white: "\x1b[37m",
 };
 
 class HealthCheckCLI {
@@ -35,23 +39,23 @@ class HealthCheckCLI {
     const args = process.argv.slice(2);
 
     try {
-      if (args.includes('--help') || args.includes('-h')) {
+      if (args.includes("--help") || args.includes("-h")) {
         this.showHelp();
         return;
       }
 
-      if (args.includes('--history')) {
+      if (args.includes("--history")) {
         await this.showHistory();
         return;
       }
 
-      if (args.includes('--watch')) {
+      if (args.includes("--watch")) {
         this.watchMode = true;
         await this.startWatchMode();
         return;
       }
 
-      const categoryIndex = args.indexOf('--category');
+      const categoryIndex = args.indexOf("--category");
       if (categoryIndex !== -1 && args[categoryIndex + 1]) {
         await this.checkCategory(args[categoryIndex + 1]);
         return;
@@ -59,9 +63,11 @@ class HealthCheckCLI {
 
       // 전체 시스템 건강 체크
       await this.performFullHealthCheck();
-
     } catch (error) {
-      console.error(`${colors.red}❌ Health check failed:${colors.reset}`, error);
+      console.error(
+        `${colors.red}❌ Health check failed:${colors.reset}`,
+        error,
+      );
       process.exit(1);
     }
   }
@@ -92,7 +98,9 @@ ${colors.bright}Examples:${colors.reset}
   }
 
   private async performFullHealthCheck(): Promise<void> {
-    console.log(`${colors.cyan}🔍 Starting full system health check...${colors.reset}\n`);
+    console.log(
+      `${colors.cyan}🔍 Starting full system health check...${colors.reset}\n`,
+    );
 
     const health = await autoDetectionEngine.performFullHealthCheck();
 
@@ -102,12 +110,16 @@ ${colors.bright}Examples:${colors.reset}
   }
 
   private async checkCategory(category: string): Promise<void> {
-    console.log(`${colors.cyan}🔍 Checking category: ${category}${colors.reset}\n`);
+    console.log(
+      `${colors.cyan}🔍 Checking category: ${category}${colors.reset}\n`,
+    );
 
     const results = await autoDetectionEngine.checkCategory(category);
 
     if (results.length === 0) {
-      console.log(`${colors.yellow}⚠️ Unknown category: ${category}${colors.reset}`);
+      console.log(
+        `${colors.yellow}⚠️ Unknown category: ${category}${colors.reset}`,
+      );
       return;
     }
 
@@ -115,7 +127,9 @@ ${colors.bright}Examples:${colors.reset}
   }
 
   private async showHistory(): Promise<void> {
-    console.log(`${colors.cyan}📋 Detection History (last 20 entries)${colors.reset}\n`);
+    console.log(
+      `${colors.cyan}📋 Detection History (last 20 entries)${colors.reset}\n`,
+    );
 
     const history = autoDetectionEngine.getDetectionHistory().slice(-20);
 
@@ -126,33 +140,41 @@ ${colors.bright}Examples:${colors.reset}
 
     history.forEach((result, index) => {
       const timeStr = result.timestamp.toLocaleString();
-      const statusIcon = result.passed ? '✅' : '❌';
+      const statusIcon = result.passed ? "✅" : "❌";
       const severityColor = this.getSeverityColor(result.severity);
 
-      console.log(`${index + 1}. ${statusIcon} [${severityColor}${result.severity.toUpperCase()}${colors.reset}] ${result.category}`);
+      console.log(
+        `${index + 1}. ${statusIcon} [${severityColor}${result.severity.toUpperCase()}${colors.reset}] ${result.category}`,
+      );
       console.log(`   ${result.message}`);
       console.log(`   ${colors.white}${timeStr}${colors.reset}\n`);
     });
   }
 
   private async startWatchMode(): Promise<void> {
-    console.log(`${colors.cyan}👁️ Starting watch mode (checks every 30 seconds)...${colors.reset}`);
+    console.log(
+      `${colors.cyan}👁️ Starting watch mode (checks every 30 seconds)...${colors.reset}`,
+    );
     console.log(`${colors.yellow}Press Ctrl+C to stop${colors.reset}\n`);
 
     // 초기 체크
     await this.performFullHealthCheck();
 
     this.watchInterval = setInterval(async () => {
-      console.log(`\n${colors.cyan}🔄 Refreshing health check...${colors.reset}`);
+      console.log(
+        `\n${colors.cyan}🔄 Refreshing health check...${colors.reset}`,
+      );
       await this.performFullHealthCheck();
     }, 30000);
 
     // Graceful shutdown
-    process.on('SIGINT', () => {
+    process.on("SIGINT", () => {
       if (this.watchInterval) {
         clearInterval(this.watchInterval);
       }
-      console.log(`\n${colors.yellow}👋 Health check monitoring stopped${colors.reset}`);
+      console.log(
+        `\n${colors.yellow}👋 Health check monitoring stopped${colors.reset}`,
+      );
       process.exit(0);
     });
   }
@@ -162,12 +184,14 @@ ${colors.bright}Examples:${colors.reset}
     const statusIcon = this.getHealthIcon(health.overall);
 
     console.log(`${colors.bright}=== SYSTEM HEALTH SUMMARY ===${colors.reset}`);
-    console.log(`${statusIcon} Overall Status: ${overallColor}${health.overall.toUpperCase()}${colors.reset}`);
+    console.log(
+      `${statusIcon} Overall Status: ${overallColor}${health.overall.toUpperCase()}${colors.reset}`,
+    );
     console.log(`🚨 Critical Issues: ${health.summary.criticalIssues}`);
     console.log(`⚠️  Warnings: ${health.summary.warnings}`);
     console.log(`⏱️  Check Duration: ${health.summary.uptime}ms`);
     console.log(`🕒 Last Check: ${health.summary.lastCheck.toLocaleString()}`);
-    console.log('');
+    console.log("");
   }
 
   private displayDetections(detections: DetectionResult[]): void {
@@ -180,37 +204,48 @@ ${colors.bright}Examples:${colors.reset}
 
     // 심각도별로 그룹화
     const grouped = {
-      emergency: detections.filter(d => d.severity === 'emergency'),
-      critical: detections.filter(d => d.severity === 'critical'),
-      warning: detections.filter(d => d.severity === 'warning'),
-      info: detections.filter(d => d.severity === 'info')
+      emergency: detections.filter((d) => d.severity === "emergency"),
+      critical: detections.filter((d) => d.severity === "critical"),
+      warning: detections.filter((d) => d.severity === "warning"),
+      info: detections.filter((d) => d.severity === "info"),
     };
 
     Object.entries(grouped).forEach(([severity, results]) => {
       if (results.length === 0) return;
 
       const severityColor = this.getSeverityColor(severity as any);
-      console.log(`\n${severityColor}${severity.toUpperCase()} (${results.length})${colors.reset}`);
-      console.log(`${severityColor}${'='.repeat(severity.length + 5)}${colors.reset}`);
+      console.log(
+        `\n${severityColor}${severity.toUpperCase()} (${results.length})${colors.reset}`,
+      );
+      console.log(
+        `${severityColor}${"=".repeat(severity.length + 5)}${colors.reset}`,
+      );
 
       results.forEach((result, index) => {
-        const icon = result.passed ? '✅' : '❌';
-        console.log(`\n${index + 1}. ${icon} [${result.category}] ${result.message}`);
+        const icon = result.passed ? "✅" : "❌";
+        console.log(
+          `\n${index + 1}. ${icon} [${result.category}] ${result.message}`,
+        );
 
         if (result.actionRequired) {
-          console.log(`   ${colors.yellow}Action: ${result.actionRequired}${colors.reset}`);
+          console.log(
+            `   ${colors.yellow}Action: ${result.actionRequired}${colors.reset}`,
+          );
         }
 
-        if (result.details && typeof result.details === 'object') {
-          console.log(`   ${colors.white}Details:${colors.reset}`, JSON.stringify(result.details, null, 2)
-            .split('\n')
-            .map(line => `   ${line}`)
-            .join('\n'));
+        if (result.details && typeof result.details === "object") {
+          console.log(
+            `   ${colors.white}Details:${colors.reset}`,
+            JSON.stringify(result.details, null, 2)
+              .split("\n")
+              .map((line) => `   ${line}`)
+              .join("\n"),
+          );
         }
       });
     });
 
-    console.log('');
+    console.log("");
   }
 
   private displayRecommendations(recommendations: string[]): void {
@@ -220,36 +255,51 @@ ${colors.bright}Examples:${colors.reset}
     recommendations.forEach((rec, index) => {
       console.log(`${index + 1}. ${colors.cyan}${rec}${colors.reset}`);
     });
-    console.log('');
+    console.log("");
   }
 
   private getSeverityColor(severity: string): string {
     switch (severity) {
-      case 'emergency': return colors.magenta;
-      case 'critical': return colors.red;
-      case 'warning': return colors.yellow;
-      case 'info': return colors.green;
-      default: return colors.white;
+      case "emergency":
+        return colors.magenta;
+      case "critical":
+        return colors.red;
+      case "warning":
+        return colors.yellow;
+      case "info":
+        return colors.green;
+      default:
+        return colors.white;
     }
   }
 
   private getOverallHealthColor(health: string): string {
     switch (health) {
-      case 'healthy': return colors.green;
-      case 'degraded': return colors.yellow;
-      case 'critical': return colors.red;
-      case 'emergency': return colors.magenta;
-      default: return colors.white;
+      case "healthy":
+        return colors.green;
+      case "degraded":
+        return colors.yellow;
+      case "critical":
+        return colors.red;
+      case "emergency":
+        return colors.magenta;
+      default:
+        return colors.white;
     }
   }
 
   private getHealthIcon(health: string): string {
     switch (health) {
-      case 'healthy': return '✅';
-      case 'degraded': return '⚠️';
-      case 'critical': return '🚨';
-      case 'emergency': return '🆘';
-      default: return '❓';
+      case "healthy":
+        return "✅";
+      case "degraded":
+        return "⚠️";
+      case "critical":
+        return "🚨";
+      case "emergency":
+        return "🆘";
+      default:
+        return "❓";
     }
   }
 }
@@ -257,7 +307,7 @@ ${colors.bright}Examples:${colors.reset}
 // CLI 실행
 if (require.main === module) {
   const cli = new HealthCheckCLI();
-  cli.run().catch(error => {
+  cli.run().catch((error) => {
     console.error(`${colors.red}Fatal error:${colors.reset}`, error);
     process.exit(1);
   });

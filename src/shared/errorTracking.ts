@@ -155,8 +155,8 @@ export class ErrorTracker {
   /**
    * Set user context for error tracking
    */
-  setUserContext(context: Pick<ErrorContext, "userId" | "sessionId">): void {
-    (globalThis as any).__errorTrackingUserContext = context;
+  setUserContext(_context: Pick<ErrorContext, "userId" | "sessionId">): void {
+    (globalThis as any).__errorTrackingUserContext = _context;
   }
 
   /**
@@ -260,12 +260,12 @@ export class ErrorTracker {
   /**
    * Generate error fingerprint for deduplication
    */
-  private generateFingerprint(error: Error, context: ErrorContext): string {
+  private generateFingerprint(error: Error, _context: ErrorContext): string {
     const hashInput = [
       error.name,
       error.message,
-      context.operation || "",
-      context.agentId || "",
+      _context.operation || "",
+      _context.agentId || "",
     ].join("|");
 
     // Simple hash function
@@ -324,17 +324,19 @@ export class ErrorTracker {
    * Log error to console
    */
   private logToConsole(report: ErrorReport): void {
-    const logLevel =
-      report.severity === "critical" || report.severity === "high"
-        ? "error"
-        : "warn";
-
-    console[logLevel](`[ErrorTracker] ${report.severity.toUpperCase()}:`, {
+    const message = `[ErrorTracker] ${report.severity.toUpperCase()}:`;
+    const details = {
       id: report.id,
       error: report.error.message,
       context: report.context,
       timestamp: report.timestamp.toISOString(),
-    });
+    };
+
+    if (report.severity === "critical" || report.severity === "high") {
+      console.error(message, details);
+    } else {
+      console.warn(message, details);
+    }
   }
 
   /**
@@ -369,7 +371,7 @@ export class ErrorTracker {
   private async sendToSentry(report: ErrorReport): Promise<void> {
     // Implementation would depend on Sentry SDK
     // For now, just log that we would send to Sentry
-    console.debug(`Would send error ${report.id} to Sentry`);
+    console.log(`Would send error ${report.id} to Sentry`);
   }
 
   /**
@@ -377,7 +379,7 @@ export class ErrorTracker {
    */
   private async sendToDatadog(report: ErrorReport): Promise<void> {
     // Implementation would depend on Datadog SDK
-    console.debug(`Would send error ${report.id} to Datadog`);
+    console.log(`Would send error ${report.id} to Datadog`);
   }
 
   /**
@@ -399,7 +401,7 @@ export class ErrorTracker {
         body: JSON.stringify(report),
       });
     } catch (error) {
-      console.debug("Failed to send error to webhook:", error);
+      console.log("Failed to send error to webhook:", error);
     }
   }
 

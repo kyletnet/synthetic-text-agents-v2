@@ -5,28 +5,34 @@
  * 상황별 자동화 트리거 시스템 - 적절한 시점에 적절한 시스템을 자동 실행
  */
 
-import { execSync } from 'child_process';
-import { watch } from 'fs';
-import { join } from 'path';
-import { readFileSync, existsSync, writeFileSync } from 'fs';
-import { EventEmitter } from 'events';
+import { execSync } from "child_process";
+import { watch } from "fs";
+import { join } from "path";
+import { readFileSync, existsSync, writeFileSync } from "fs";
+import { EventEmitter } from "events";
 
 export interface TriggerRule {
   id: string;
   name: string;
   trigger: {
-    type: 'file_change' | 'time_based' | 'metric_threshold' | 'system_event' | 'git_hook' | 'manual';
+    type:
+      | "file_change"
+      | "time_based"
+      | "metric_threshold"
+      | "system_event"
+      | "git_hook"
+      | "manual";
     pattern: string;
     condition?: string;
   };
   action: {
     command: string;
     requireApproval: boolean;
-    priority: 'low' | 'medium' | 'high' | 'critical';
+    priority: "low" | "medium" | "high" | "critical";
     delay?: number; // ms
   };
   context: {
-    frequency: 'once' | 'throttled' | 'always';
+    frequency: "once" | "throttled" | "always";
     throttleMs?: number;
     enabled: boolean;
   };
@@ -47,7 +53,8 @@ export class ContextualTriggerSystem extends EventEmitter {
 
   constructor(configPath?: string) {
     super();
-    this.configPath = configPath || join(process.cwd(), '.contextual-triggers.json');
+    this.configPath =
+      configPath || join(process.cwd(), ".contextual-triggers.json");
     this.loadTriggerRules();
     this.setupDefaultRules();
     this.startMonitoring();
@@ -60,128 +67,128 @@ export class ContextualTriggerSystem extends EventEmitter {
     const defaultRules: TriggerRule[] = [
       // 1. 코드 변경 시 자동 유지보수
       {
-        id: 'code-change-maintenance',
-        name: '코드 변경 후 자동 유지보수',
+        id: "code-change-maintenance",
+        name: "코드 변경 후 자동 유지보수",
         trigger: {
-          type: 'file_change',
-          pattern: 'src/**/*.ts|scripts/**/*.ts',
-          condition: 'file_count >= 3'
+          type: "file_change",
+          pattern: "src/**/*.ts|scripts/**/*.ts",
+          condition: "file_count >= 3",
         },
         action: {
           command: 'echo "🔧 Contextual maintenance completed"',
           requireApproval: false,
-          priority: 'medium',
-          delay: 5000 // 5초 디바운스
+          priority: "medium",
+          delay: 5000, // 5초 디바운스
         },
         context: {
-          frequency: 'throttled',
+          frequency: "throttled",
           throttleMs: 300000, // 5분 쓰로틀
-          enabled: true
-        }
+          enabled: true,
+        },
       },
 
       // 2. package.json 변경 시 의존성 체크
       {
-        id: 'package-change-audit',
-        name: 'package.json 변경 후 보안 감사',
+        id: "package-change-audit",
+        name: "package.json 변경 후 보안 감사",
         trigger: {
-          type: 'file_change',
-          pattern: 'package.json|package-lock.json',
+          type: "file_change",
+          pattern: "package.json|package-lock.json",
         },
         action: {
-          command: 'npm audit && npm run security:check',
+          command: "npm audit && npm run security:check",
           requireApproval: false,
-          priority: 'high',
-          delay: 2000
+          priority: "high",
+          delay: 2000,
         },
         context: {
-          frequency: 'throttled',
+          frequency: "throttled",
           throttleMs: 60000, // 1분 쓰로틀
-          enabled: true
-        }
+          enabled: true,
+        },
       },
 
       // 3. Critical 파일 변경 시 즉시 백업
       {
-        id: 'critical-file-backup',
-        name: 'Critical 파일 변경 시 자동 백업',
+        id: "critical-file-backup",
+        name: "Critical 파일 변경 시 자동 백업",
         trigger: {
-          type: 'file_change',
-          pattern: 'CLAUDE.md|.strategy-matrix.yaml|package.json|tsconfig.json',
+          type: "file_change",
+          pattern: "CLAUDE.md|.strategy-matrix.yaml|package.json|tsconfig.json",
         },
         action: {
-          command: 'internal:create-snapshot',
+          command: "internal:create-snapshot",
           requireApproval: false,
-          priority: 'critical',
-          delay: 1000
+          priority: "critical",
+          delay: 1000,
         },
         context: {
-          frequency: 'always',
-          enabled: true
-        }
+          frequency: "always",
+          enabled: true,
+        },
       },
 
       // 4. 매일 아침 시스템 상태 체크
       {
-        id: 'daily-health-check',
-        name: '매일 아침 시스템 건강도 체크',
+        id: "daily-health-check",
+        name: "매일 아침 시스템 건강도 체크",
         trigger: {
-          type: 'time_based',
-          pattern: '0 9 * * *', // 매일 오전 9시
+          type: "time_based",
+          pattern: "0 9 * * *", // 매일 오전 9시
         },
         action: {
-          command: 'npm run status && npm run health:comprehensive',
+          command: "npm run status && npm run health:comprehensive",
           requireApproval: false,
-          priority: 'medium'
+          priority: "medium",
         },
         context: {
-          frequency: 'once',
-          enabled: true
-        }
+          frequency: "once",
+          enabled: true,
+        },
       },
 
       // 5. 성능 메트릭 임계값 도달 시 최적화
       {
-        id: 'performance-threshold-optimize',
-        name: '성능 메트릭 임계값 도달 시 자동 최적화',
+        id: "performance-threshold-optimize",
+        name: "성능 메트릭 임계값 도달 시 자동 최적화",
         trigger: {
-          type: 'metric_threshold',
-          pattern: 'build_time > 30s || test_time > 60s',
+          type: "metric_threshold",
+          pattern: "build_time > 30s || test_time > 60s",
         },
         action: {
-          command: 'npm run optimize:performance',
+          command: "npm run optimize:performance",
           requireApproval: true,
-          priority: 'high'
+          priority: "high",
         },
         context: {
-          frequency: 'throttled',
+          frequency: "throttled",
           throttleMs: 3600000, // 1시간 쓰로틀
-          enabled: true
-        }
+          enabled: true,
+        },
       },
 
       // 6. Git 커밋 전 자동 품질 체크
       {
-        id: 'pre-commit-quality-gate',
-        name: 'Git 커밋 전 자동 품질 체크',
+        id: "pre-commit-quality-gate",
+        name: "Git 커밋 전 자동 품질 체크",
         trigger: {
-          type: 'git_hook',
-          pattern: 'pre-commit',
+          type: "git_hook",
+          pattern: "pre-commit",
         },
         action: {
-          command: 'npm run ci:quality',
+          command: "npm run ci:quality",
           requireApproval: false,
-          priority: 'critical'
+          priority: "critical",
         },
         context: {
-          frequency: 'always',
-          enabled: true
-        }
-      }
+          frequency: "always",
+          enabled: true,
+        },
+      },
     ];
 
     // 기본 규칙들을 추가 (기존 규칙과 충돌하지 않는 경우만)
-    defaultRules.forEach(rule => {
+    defaultRules.forEach((rule) => {
       if (!this.triggers.has(rule.id)) {
         this.triggers.set(rule.id, rule);
       }
@@ -194,7 +201,7 @@ export class ContextualTriggerSystem extends EventEmitter {
    * 파일 변경 모니터링 시작
    */
   private startMonitoring(): void {
-    console.log('🎯 Contextual Trigger System 모니터링 시작...');
+    console.log("🎯 Contextual Trigger System 모니터링 시작...");
 
     // 파일 변경 감지
     this.startFileWatching();
@@ -209,19 +216,24 @@ export class ContextualTriggerSystem extends EventEmitter {
   }
 
   private startFileWatching(): void {
-    const fileChangeRules = Array.from(this.triggers.values())
-      .filter(rule => rule.trigger.type === 'file_change' && rule.context.enabled);
+    const fileChangeRules = Array.from(this.triggers.values()).filter(
+      (rule) => rule.trigger.type === "file_change" && rule.context.enabled,
+    );
 
-    fileChangeRules.forEach(rule => {
-      const patterns = rule.trigger.pattern.split('|');
+    fileChangeRules.forEach((rule) => {
+      const patterns = rule.trigger.pattern.split("|");
 
-      patterns.forEach(pattern => {
+      patterns.forEach((pattern) => {
         try {
-          const watcher = watch(pattern, { recursive: true }, (eventType, filename) => {
-            if (filename) {
-              this.handleFileChange(rule, filename, eventType);
-            }
-          });
+          const watcher = watch(
+            pattern,
+            { recursive: true },
+            (eventType, filename) => {
+              if (filename) {
+                this.handleFileChange(rule, filename, eventType);
+              }
+            },
+          );
 
           this.watchers.set(`${rule.id}-${pattern}`, watcher);
         } catch (error) {
@@ -232,16 +244,17 @@ export class ContextualTriggerSystem extends EventEmitter {
   }
 
   private setupTimeBasedTriggers(): void {
-    const timeRules = Array.from(this.triggers.values())
-      .filter(rule => rule.trigger.type === 'time_based' && rule.context.enabled);
+    const timeRules = Array.from(this.triggers.values()).filter(
+      (rule) => rule.trigger.type === "time_based" && rule.context.enabled,
+    );
 
-    timeRules.forEach(rule => {
+    timeRules.forEach((rule) => {
       // Cron-like 패턴을 setTimeout으로 변환 (간단한 구현)
       const cronPattern = rule.trigger.pattern;
 
       // 매일 특정 시간 패턴 감지 (0 9 * * * = 매일 9시)
       if (cronPattern.match(/^\d+ \d+ \* \* \*$/)) {
-        const [minute, hour] = cronPattern.split(' ').map(Number);
+        const [minute, hour] = cronPattern.split(" ").map(Number);
         this.scheduleDaily(rule, hour, minute);
       }
     });
@@ -249,7 +262,14 @@ export class ContextualTriggerSystem extends EventEmitter {
 
   private scheduleDaily(rule: TriggerRule, hour: number, minute: number): void {
     const now = new Date();
-    const target = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hour, minute, 0);
+    const target = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate(),
+      hour,
+      minute,
+      0,
+    );
 
     // 오늘 시간이 이미 지났으면 내일로 설정
     if (target <= now) {
@@ -259,7 +279,10 @@ export class ContextualTriggerSystem extends EventEmitter {
     const timeUntilTrigger = target.getTime() - now.getTime();
 
     setTimeout(() => {
-      this.executeTrigger(rule, { source: 'time_based', time: target.toISOString() });
+      this.executeTrigger(rule, {
+        source: "time_based",
+        time: target.toISOString(),
+      });
 
       // 다음 날을 위해 재스케줄링
       this.scheduleDaily(rule, hour, minute);
@@ -276,14 +299,21 @@ export class ContextualTriggerSystem extends EventEmitter {
   }
 
   private async checkMetricThresholds(): Promise<void> {
-    const metricRules = Array.from(this.triggers.values())
-      .filter(rule => rule.trigger.type === 'metric_threshold' && rule.context.enabled);
+    const metricRules = Array.from(this.triggers.values()).filter(
+      (rule) =>
+        rule.trigger.type === "metric_threshold" && rule.context.enabled,
+    );
 
     for (const rule of metricRules) {
       try {
-        const shouldTrigger = await this.evaluateMetricCondition(rule.trigger.pattern);
+        const shouldTrigger = await this.evaluateMetricCondition(
+          rule.trigger.pattern,
+        );
         if (shouldTrigger) {
-          this.executeTrigger(rule, { source: 'metric_threshold', condition: rule.trigger.pattern });
+          this.executeTrigger(rule, {
+            source: "metric_threshold",
+            condition: rule.trigger.pattern,
+          });
         }
       } catch (error) {
         console.warn(`⚠️ 메트릭 체크 실패: ${rule.id}`, error);
@@ -293,15 +323,15 @@ export class ContextualTriggerSystem extends EventEmitter {
 
   private async evaluateMetricCondition(condition: string): Promise<boolean> {
     // 간단한 메트릭 조건 평가 (실제로는 더 정교한 시스템 필요)
-    if (condition.includes('build_time >')) {
+    if (condition.includes("build_time >")) {
       const buildTime = await this.getBuildTime();
-      const threshold = parseFloat(condition.match(/(\d+)s/)?.[1] || '30');
+      const threshold = parseFloat(condition.match(/(\d+)s/)?.[1] || "30");
       return buildTime > threshold;
     }
 
-    if (condition.includes('test_time >')) {
+    if (condition.includes("test_time >")) {
       const testTime = await this.getTestTime();
-      const threshold = parseFloat(condition.match(/(\d+)s/)?.[1] || '60');
+      const threshold = parseFloat(condition.match(/(\d+)s/)?.[1] || "60");
       return testTime > threshold;
     }
 
@@ -311,7 +341,7 @@ export class ContextualTriggerSystem extends EventEmitter {
   private async getBuildTime(): Promise<number> {
     // Build time 측정 로직 (이전 빌드 로그에서 추출)
     try {
-      const buildLog = readFileSync('.build-metrics.json', 'utf8');
+      const buildLog = readFileSync(".build-metrics.json", "utf8");
       const metrics = JSON.parse(buildLog);
       return metrics.lastBuildTime || 0;
     } catch {
@@ -322,7 +352,7 @@ export class ContextualTriggerSystem extends EventEmitter {
   private async getTestTime(): Promise<number> {
     // Test time 측정 로직
     try {
-      const testLog = readFileSync('.test-metrics.json', 'utf8');
+      const testLog = readFileSync(".test-metrics.json", "utf8");
       const metrics = JSON.parse(testLog);
       return metrics.lastTestTime || 0;
     } catch {
@@ -330,7 +360,11 @@ export class ContextualTriggerSystem extends EventEmitter {
     }
   }
 
-  private handleFileChange(rule: TriggerRule, filename: string, eventType: string): void {
+  private handleFileChange(
+    rule: TriggerRule,
+    filename: string,
+    eventType: string,
+  ): void {
     // 파일 변경 조건 체크
     if (rule.trigger.condition) {
       // 조건 평가 (예: file_count >= 3)
@@ -345,10 +379,10 @@ export class ContextualTriggerSystem extends EventEmitter {
     }
 
     const context = {
-      source: 'file_change',
+      source: "file_change",
       filename,
       eventType,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
 
     // 딜레이가 있다면 딜레이 후 실행 (디바운스)
@@ -363,7 +397,7 @@ export class ContextualTriggerSystem extends EventEmitter {
 
   private evaluateFileCondition(condition: string, filename: string): boolean {
     // 간단한 조건 평가 로직
-    if (condition.includes('file_count >=')) {
+    if (condition.includes("file_count >=")) {
       // 실제로는 Git status 등을 체크해서 변경된 파일 수를 확인
       return true; // 임시로 true
     }
@@ -375,14 +409,14 @@ export class ContextualTriggerSystem extends EventEmitter {
     const lastExecution = this.lastExecutions.get(rule.id) || 0;
 
     switch (rule.context.frequency) {
-      case 'once':
+      case "once":
         return lastExecution === 0;
 
-      case 'throttled':
+      case "throttled":
         const throttleMs = rule.context.throttleMs || 60000;
-        return (now - lastExecution) >= throttleMs;
+        return now - lastExecution >= throttleMs;
 
-      case 'always':
+      case "always":
         return true;
 
       default:
@@ -390,7 +424,10 @@ export class ContextualTriggerSystem extends EventEmitter {
     }
   }
 
-  private async executeTrigger(rule: TriggerRule, context: Record<string, unknown>): Promise<void> {
+  private async executeTrigger(
+    rule: TriggerRule,
+    context: Record<string, unknown>,
+  ): Promise<void> {
     console.log(`🎯 트리거 실행: ${rule.name}`);
     console.log(`📝 컨텍스트:`, context);
 
@@ -408,29 +445,31 @@ export class ContextualTriggerSystem extends EventEmitter {
       this.lastExecutions.set(rule.id, Date.now());
 
       // 명령어 실행
-      if (rule.action.command.startsWith('internal:')) {
+      if (rule.action.command.startsWith("internal:")) {
         await this.executeInternalCommand(rule.action.command, rule, context);
       } else {
-        execSync(rule.action.command, { stdio: 'inherit' });
+        execSync(rule.action.command, { stdio: "inherit" });
       }
 
       console.log(`✅ 트리거 실행 완료: ${rule.name}`);
 
       // 이벤트 발생
-      this.emit('trigger-executed', {
+      this.emit("trigger-executed", {
         triggerId: rule.id,
         timestamp: new Date(),
         context,
-        source: 'contextual-trigger-system'
+        source: "contextual-trigger-system",
       });
-
     } catch (error) {
       console.error(`❌ 트리거 실행 실패: ${rule.name}`, error);
-      this.emit('trigger-failed', { triggerId: rule.id, error, context });
+      this.emit("trigger-failed", { triggerId: rule.id, error, context });
     }
   }
 
-  private async requestTriggerApproval(rule: TriggerRule, context: Record<string, unknown>): Promise<boolean> {
+  private async requestTriggerApproval(
+    rule: TriggerRule,
+    context: Record<string, unknown>,
+  ): Promise<boolean> {
     // 실제로는 interactive-approval-system을 사용
     console.log(`🤔 승인 요청: ${rule.name}`);
     console.log(`📋 명령어: ${rule.action.command}`);
@@ -441,15 +480,19 @@ export class ContextualTriggerSystem extends EventEmitter {
     return true;
   }
 
-  private async executeInternalCommand(command: string, rule: TriggerRule, context: Record<string, unknown>): Promise<void> {
+  private async executeInternalCommand(
+    command: string,
+    rule: TriggerRule,
+    context: Record<string, unknown>,
+  ): Promise<void> {
     switch (command) {
-      case 'internal:create-snapshot':
-        console.log('📸 자동 스냅샷 생성...');
+      case "internal:create-snapshot":
+        console.log("📸 자동 스냅샷 생성...");
         // AutoFixManager를 통한 스냅샷 생성
         break;
 
-      case 'internal:workflow-gap-check':
-        console.log('🔍 워크플로우 갭 자동 탐지...');
+      case "internal:workflow-gap-check":
+        console.log("🔍 워크플로우 갭 자동 탐지...");
         // WorkflowGapDetector 실행
         break;
 
@@ -461,21 +504,21 @@ export class ContextualTriggerSystem extends EventEmitter {
   private loadTriggerRules(): void {
     if (existsSync(this.configPath)) {
       try {
-        const config = JSON.parse(readFileSync(this.configPath, 'utf8'));
+        const config = JSON.parse(readFileSync(this.configPath, "utf8"));
         config.triggers.forEach((rule: TriggerRule) => {
           this.triggers.set(rule.id, rule);
         });
         console.log(`📋 ${this.triggers.size}개 트리거 규칙 로드됨`);
       } catch (error) {
-        console.warn('⚠️ 트리거 설정 파일 로드 실패:', error);
+        console.warn("⚠️ 트리거 설정 파일 로드 실패:", error);
       }
     }
   }
 
   private saveTriggerRules(): void {
     const config = {
-      version: '1.0',
-      triggers: Array.from(this.triggers.values())
+      version: "1.0",
+      triggers: Array.from(this.triggers.values()),
     };
 
     writeFileSync(this.configPath, JSON.stringify(config, null, 2));
@@ -489,7 +532,7 @@ export class ContextualTriggerSystem extends EventEmitter {
     this.saveTriggerRules();
 
     // 파일 감시 규칙이면 즉시 감시 시작
-    if (rule.trigger.type === 'file_change' && rule.context.enabled) {
+    if (rule.trigger.type === "file_change" && rule.context.enabled) {
       // 재시작 로직
     }
 
@@ -517,7 +560,10 @@ export class ContextualTriggerSystem extends EventEmitter {
   /**
    * 수동 트리거 실행
    */
-  async manualTrigger(id: string, context: Record<string, unknown> = {}): Promise<void> {
+  async manualTrigger(
+    id: string,
+    context: Record<string, unknown> = {},
+  ): Promise<void> {
     const rule = this.triggers.get(id);
     if (!rule) {
       throw new Error(`트리거 규칙을 찾을 수 없음: ${id}`);
@@ -525,8 +571,8 @@ export class ContextualTriggerSystem extends EventEmitter {
 
     await this.executeTrigger(rule, {
       ...context,
-      source: 'manual',
-      triggeredAt: new Date().toISOString()
+      source: "manual",
+      triggeredAt: new Date().toISOString(),
     });
   }
 
@@ -540,7 +586,7 @@ export class ContextualTriggerSystem extends EventEmitter {
     }
     this.watchers.clear();
 
-    console.log('🧹 Contextual Trigger System 정리 완료');
+    console.log("🧹 Contextual Trigger System 정리 완료");
   }
 }
 
@@ -553,27 +599,29 @@ const isMainModule = import.meta.url === `file://${process.argv[1]}`;
 if (isMainModule) {
   const args = process.argv.slice(2);
 
-  if (args.includes('add')) {
-    console.log('🎯 트리거 규칙 추가 모드 (interactive)');
+  if (args.includes("add")) {
+    console.log("🎯 트리거 규칙 추가 모드 (interactive)");
     // 실제로는 대화형으로 트리거 규칙을 추가하는 로직
-    console.log('💡 현재는 기본 트리거 규칙이 자동으로 설정됩니다');
+    console.log("💡 현재는 기본 트리거 규칙이 자동으로 설정됩니다");
   } else {
     // 기본: 트리거 시스템 시작
-    console.log('🎯 Contextual Trigger System Starting...');
+    console.log("🎯 Contextual Trigger System Starting...");
     const triggerSystem = new ContextualTriggerSystem();
 
     // 프로그램이 종료되지 않도록 유지
-    process.on('SIGINT', () => {
-      console.log('\n🧹 시스템 정리 중...');
+    process.on("SIGINT", () => {
+      console.log("\n🧹 시스템 정리 중...");
       triggerSystem.cleanup();
       process.exit(0);
     });
 
     // 무한 대기 (트리거들이 계속 모니터링)
-    console.log('✅ 트리거 시스템이 활성화되었습니다. Ctrl+C로 종료하세요.');
+    console.log("✅ 트리거 시스템이 활성화되었습니다. Ctrl+C로 종료하세요.");
     setInterval(() => {
       // 5분마다 살아있음을 표시
-      console.log(`⏰ 트리거 시스템 활성 상태: ${new Date().toLocaleTimeString()}`);
+      console.log(
+        `⏰ 트리거 시스템 활성 상태: ${new Date().toLocaleTimeString()}`,
+      );
     }, 300000);
   }
 }

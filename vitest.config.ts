@@ -97,6 +97,9 @@ export default defineConfig({
   // Resolve configuration
   resolve: {
     alias: {
+      // Order matters: more specific paths must come first
+      "@/lib": path.resolve(__dirname, "./apps/fe-web/lib"),
+      "@/app": path.resolve(__dirname, "./apps/fe-web/app"),
       "@": path.resolve(__dirname, "./src"),
       "@tests": path.resolve(__dirname, "./tests"),
       "@shared": path.resolve(__dirname, "./src/shared"),

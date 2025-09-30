@@ -451,5 +451,4 @@ _마지막 업데이트: 2025. 9. 25. 오후 12:26:24_
    - 영향: Code style and potential issues
    - 인수인계: ✅ 필요
 
-
 _Last updated: 2025-09-30_

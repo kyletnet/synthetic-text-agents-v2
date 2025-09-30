@@ -85,8 +85,10 @@ class ComponentRegistrySystem {
     const existingComponents = new Map<string, ComponentMetadata>();
 
     if (existingRegistry) {
-      console.log(`   📊 Loading existing registry (${existingRegistry.components.length} components)`);
-      existingRegistry.components.forEach(comp => {
+      console.log(
+        `   📊 Loading existing registry (${existingRegistry.components.length} components)`,
+      );
+      existingRegistry.components.forEach((comp) => {
         existingComponents.set(comp.path, comp);
       });
     }
@@ -117,7 +119,9 @@ class ComponentRegistrySystem {
 
           // 진행률 표시 (매 10개마다)
           if ((processedCount + skippedCount) % 10 === 0) {
-            console.log(`   📈 Progress: ${processedCount + skippedCount}/${scripts.length} (${skippedCount} cached)`);
+            console.log(
+              `   📈 Progress: ${processedCount + skippedCount}/${scripts.length} (${skippedCount} cached)`,
+            );
           }
           continue;
         }
@@ -130,15 +134,18 @@ class ComponentRegistrySystem {
 
         // 진행률 표시 (매 10개마다)
         if ((processedCount + skippedCount) % 10 === 0) {
-          console.log(`   📈 Progress: ${processedCount + skippedCount}/${scripts.length} (${processedCount} analyzed, ${skippedCount} cached)`);
+          console.log(
+            `   📈 Progress: ${processedCount + skippedCount}/${scripts.length} (${processedCount} analyzed, ${skippedCount} cached)`,
+          );
         }
-
       } catch (error) {
         console.log(`   ⚠️ Failed to register ${scriptPath}: ${error}`);
       }
     }
 
-    console.log(`   ✅ Analysis complete: ${processedCount} analyzed, ${skippedCount} cached from previous run`);
+    console.log(
+      `   ✅ Analysis complete: ${processedCount} analyzed, ${skippedCount} cached from previous run`,
+    );
 
     // 레지스트리 생성
     const registry: ComponentRegistry = {
@@ -334,7 +341,9 @@ class ComponentRegistrySystem {
   private calculateComplianceStats(
     components: ComponentMetadata[],
   ): ComponentRegistry["complianceStats"] {
-    const compliant = components.filter((c) => c.compliance?.isCompliant === true).length;
+    const compliant = components.filter(
+      (c) => c.compliance?.isCompliant === true,
+    ).length;
     const violations = components.length - compliant;
 
     return {
@@ -489,7 +498,10 @@ class ComponentRegistrySystem {
 ${registry.components
   .filter((c) => c.compliance?.isCompliant !== true)
   .slice(0, 5)
-  .map((c) => `- **${c.name}**: ${c.compliance?.violations?.length || 0} violations`)
+  .map(
+    (c) =>
+      `- **${c.name}**: ${c.compliance?.violations?.length || 0} violations`,
+  )
   .join("\n")}
 
 ### 🎯 Quick Actions
@@ -543,7 +555,9 @@ ${registry.components
       }
       return JSON.parse(readFileSync(this.registryPath, "utf8"));
     } catch (error) {
-      console.log(`   ℹ️ Could not load existing registry for caching: ${error}`);
+      console.log(
+        `   ℹ️ Could not load existing registry for caching: ${error}`,
+      );
       return null;
     }
   }

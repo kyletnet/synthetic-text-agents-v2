@@ -99,13 +99,13 @@ class SecurityAuditChecker {
           try {
             result = execSync(
               `rg "${pattern}" src/ scripts/ --type ts --type js --type json || true`,
-              { encoding: "utf8", stdio: 'pipe' },
+              { encoding: "utf8", stdio: "pipe" },
             );
           } catch (e) {
             // Fallback to grep
             result = execSync(
               `grep -r "${pattern}" src/ scripts/ --include="*.ts" --include="*.js" --include="*.json" || true`,
-              { encoding: "utf8", stdio: 'pipe' },
+              { encoding: "utf8", stdio: "pipe" },
             );
           }
 
@@ -227,13 +227,13 @@ class SecurityAuditChecker {
       try {
         hardcodedEndpoints = execSync(
           `rg "https?://[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}" src/ --type ts --type js || true`,
-          { encoding: "utf8", stdio: 'pipe' },
+          { encoding: "utf8", stdio: "pipe" },
         );
       } catch (e) {
         // Fallback to grep
         hardcodedEndpoints = execSync(
           `grep -rE "https?://[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}" src/ --include="*.ts" --include="*.js" || true`,
-          { encoding: "utf8", stdio: 'pipe' },
+          { encoding: "utf8", stdio: "pipe" },
         );
       }
 

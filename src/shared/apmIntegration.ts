@@ -333,7 +333,7 @@ export class PrometheusProvider implements APMProvider {
 
   async recordError(
     error: Error,
-    context?: Record<string, unknown>,
+    _context?: Record<string, unknown>,
   ): Promise<void> {
     if (!this.prom) return;
 

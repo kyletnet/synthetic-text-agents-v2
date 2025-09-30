@@ -38,11 +38,15 @@ function executeEvaluation(
 
     console.log(`[Eval API] Executing: bash ${scriptPath} ${args.join(" ")}`);
 
-    const child = processLifecycleManager.spawnManaged("bash", [scriptPath, ...args], {
-      cwd: projectRoot,
-      stdio: ["pipe", "pipe", "pipe"],
-      env: { ...process.env, EVAL_ID: evalId },
-    });
+    const child = processLifecycleManager.spawnManaged(
+      "bash",
+      [scriptPath, ...args],
+      {
+        cwd: projectRoot,
+        stdio: ["pipe", "pipe", "pipe"],
+        env: { ...process.env, EVAL_ID: evalId },
+      },
+    );
 
     let stdout = "";
     let stderr = "";

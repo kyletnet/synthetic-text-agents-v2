@@ -483,20 +483,29 @@ class UnifiedSystemDashboard {
     actionSuggestions: string[];
   }> {
     // 병렬 실행으로 성능 최적화
-    const [typescriptResult, codeStyleResult, testsResult, securityResult, integrationResult] =
-      await Promise.allSettled([
-        this.checkTypeScript(),
-        this.checkCodeStyle(),
-        this.checkTests(),
-        this.checkSecurity(),
-        this.checkIntegration()
-      ]);
+    const [
+      typescriptResult,
+      codeStyleResult,
+      testsResult,
+      securityResult,
+      integrationResult,
+    ] = await Promise.allSettled([
+      this.checkTypeScript(),
+      this.checkCodeStyle(),
+      this.checkTests(),
+      this.checkSecurity(),
+      this.checkIntegration(),
+    ]);
 
-    const typescript = typescriptResult.status === 'fulfilled' && typescriptResult.value;
-    const codeStyle = codeStyleResult.status === 'fulfilled' && codeStyleResult.value;
-    const tests = testsResult.status === 'fulfilled' && testsResult.value;
-    const security = securityResult.status === 'fulfilled' ? securityResult.value : 'ERROR';
-    const integration = integrationResult.status === 'fulfilled' ? integrationResult.value : 50;
+    const typescript =
+      typescriptResult.status === "fulfilled" && typescriptResult.value;
+    const codeStyle =
+      codeStyleResult.status === "fulfilled" && codeStyleResult.value;
+    const tests = testsResult.status === "fulfilled" && testsResult.value;
+    const security =
+      securityResult.status === "fulfilled" ? securityResult.value : "ERROR";
+    const integration =
+      integrationResult.status === "fulfilled" ? integrationResult.value : 50;
 
     console.log("   🎯 Advanced refactor audit...");
     const auditDetails = await this.runAdvancedAudit();
@@ -538,16 +547,19 @@ class UnifiedSystemDashboard {
 
   private async checkTypeScript(): Promise<boolean> {
     return perfCache.getCachedOrCompute(
-      'typescript-check',
+      "typescript-check",
       async () => {
         try {
-          execSync("npm run dev:typecheck", { stdio: "ignore", timeout: 10000 });
+          execSync("npm run dev:typecheck", {
+            stdio: "ignore",
+            timeout: 10000,
+          });
           return true;
         } catch {
           return false;
         }
       },
-      { ttl: 2 * 60 * 1000 } // 2분 캐시
+      { ttl: 2 * 60 * 1000 }, // 2분 캐시
     );
   }
 

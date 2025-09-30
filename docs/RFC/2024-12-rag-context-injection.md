@@ -47,24 +47,28 @@ The current QA generation system relies solely on agent knowledge and prompt eng
 ### Core Components
 
 #### 1. RAG Service (`src/rag/service.ts`)
+
 - **Document Management**: Add, remove, and index documents
 - **Chunking Strategy**: Smart markdown-aware chunking with paragraph boundaries
 - **Search Interface**: BM25-based retrieval with configurable parameters
 - **Feature Flag Support**: `FEATURE_RAG_CONTEXT` for enable/disable
 
 #### 2. Context Injector (`src/components/context-injector.ts`)
+
 - **BaseAgent Integration**: Extends system's agent architecture
 - **Graceful Degradation**: Falls back to original prompts on failure
 - **Template System**: Configurable context insertion templates
 - **Performance Logging**: Structured trace logging for monitoring
 
 #### 3. Performance Monitor (`src/rag/performance-monitor.ts`)
+
 - **Cost Tracking**: API usage and estimated costs
 - **Latency Monitoring**: Search and processing time metrics
 - **Alert System**: Threshold-based alerts for cost and performance
 - **Trend Analysis**: Performance trend identification and recommendations
 
 #### 4. Web Interface (`apps/fe-web/app/rag/`)
+
 - **Document Upload**: Support for .md, .txt, .json, .ts, .js, .py files
 - **Search Interface**: Real-time document search with result highlighting
 - **Statistics Dashboard**: Performance metrics and cost breakdowns
@@ -96,6 +100,7 @@ RAG_DAILY_COST_LIMIT=10.0              // Cost monitoring threshold
 ### Integration Points
 
 #### QA Generator Integration
+
 ```typescript
 // Before (existing)
 const basePrompt = `Generate QA pairs for topic: ${topic}`;
@@ -104,12 +109,13 @@ const basePrompt = `Generate QA pairs for topic: ${topic}`;
 const contextInjector = getContextInjector();
 const enhanced = await contextInjector.handle({
   query: topic,
-  originalPrompt: basePrompt
+  originalPrompt: basePrompt,
 });
 const finalPrompt = enhanced.enhancedPrompt;
 ```
 
 #### Self-Designing System Integration
+
 - **Component Registration**: RAG components auto-register with system
 - **Health Monitoring**: `/maintain` command includes RAG status
 - **Evolution Tracking**: Performance trends inform system improvements
@@ -117,6 +123,7 @@ const finalPrompt = enhanced.enhancedPrompt;
 ## Implementation Plan
 
 ### Phase 1: Core RAG Infrastructure ✅
+
 - [x] Document chunking with markdown support
 - [x] BM25 search implementation
 - [x] Context injection component
@@ -124,23 +131,27 @@ const finalPrompt = enhanced.enhancedPrompt;
 - [x] QA Generator workflow integration
 
 ### Phase 2: Web Interface ✅
+
 - [x] Document upload page
 - [x] Search interface
 - [x] Statistics dashboard
 - [x] API endpoints for web integration
 
 ### Phase 3: Monitoring & Optimization ✅
+
 - [x] Performance monitoring system
 - [x] Cost tracking and alerts
 - [x] Trend analysis and recommendations
 
 ### Phase 4: Documentation & Testing (Current)
+
 - [x] RFC documentation
 - [ ] Integration testing
 - [ ] Performance benchmarks
 - [ ] User documentation
 
 ### Future Phases
+
 - **Vector Embeddings**: Semantic search capabilities
 - **Real-time Sync**: Document change detection
 - **Advanced Analytics**: ML-based performance optimization
@@ -149,35 +160,38 @@ const finalPrompt = enhanced.enhancedPrompt;
 
 ### Technical Risks
 
-| Risk | Impact | Mitigation |
-|------|--------|------------|
+| Risk                    | Impact | Mitigation                                                  |
+| ----------------------- | ------ | ----------------------------------------------------------- |
 | Performance degradation | Medium | Feature flags, performance monitoring, graceful degradation |
-| Memory usage increase | Low | Configurable chunk limits, monitoring alerts |
-| API cost explosion | High | Cost tracking, daily limits, mock providers for development |
+| Memory usage increase   | Low    | Configurable chunk limits, monitoring alerts                |
+| API cost explosion      | High   | Cost tracking, daily limits, mock providers for development |
 
 ### Operational Risks
 
-| Risk | Impact | Mitigation |
-|------|--------|------------|
-| Complex configuration | Low | Sensible defaults, clear documentation |
-| User adoption barriers | Medium | Gradual rollout, optional feature |
-| Maintenance overhead | Medium | Automated monitoring, self-healing components |
+| Risk                   | Impact | Mitigation                                    |
+| ---------------------- | ------ | --------------------------------------------- |
+| Complex configuration  | Low    | Sensible defaults, clear documentation        |
+| User adoption barriers | Medium | Gradual rollout, optional feature             |
+| Maintenance overhead   | Medium | Automated monitoring, self-healing components |
 
 ## Testing Strategy
 
 ### Unit Testing
+
 - Document chunking algorithms
 - BM25 search accuracy
 - Context injection logic
 - Performance monitoring calculations
 
 ### Integration Testing
+
 - Full RAG workflow end-to-end
 - Feature flag toggle scenarios
 - Error handling and graceful degradation
 - Web interface API interactions
 
 ### Performance Testing
+
 - Large document processing
 - Concurrent search operations
 - Memory usage under load
@@ -186,18 +200,21 @@ const finalPrompt = enhanced.enhancedPrompt;
 ## Monitoring & Observability
 
 ### Key Metrics
+
 - **Search Latency**: P50, P95, P99 response times
 - **Cost Tracking**: Daily/monthly API usage costs
 - **Quality Metrics**: Context relevance scores
 - **Error Rates**: Failed searches, processing errors
 
 ### Alerting
+
 - Daily cost threshold exceeded
 - Average latency above acceptable limits
 - Error rate trending upward
 - Memory usage approaching limits
 
 ### Dashboards
+
 - Real-time performance metrics
 - Cost trends and projections
 - Document index statistics
@@ -206,12 +223,14 @@ const finalPrompt = enhanced.enhancedPrompt;
 ## Migration & Rollback
 
 ### Migration Strategy
+
 1. **Feature Flag Deployment**: Deploy with flags disabled
 2. **Gradual Enablement**: Enable for internal testing first
 3. **User-by-User Rollout**: Allow users to opt-in
 4. **Full Deployment**: Enable by default after validation
 
 ### Rollback Plan
+
 1. **Immediate**: Set `FEATURE_RAG_CONTEXT=false`
 2. **Verification**: Confirm existing workflows unaffected
 3. **Investigation**: Analyze logs and performance data
@@ -220,14 +239,16 @@ const finalPrompt = enhanced.enhancedPrompt;
 ## Success Metrics
 
 ### Technical Metrics
+
 - [ ] Zero regression in existing QA generation quality
 - [ ] <500ms P95 search latency for typical document sets
 - [ ] <$5/day operational cost for development environment
-- [ ] >99% uptime for RAG-enabled features
+- [ ] > 99% uptime for RAG-enabled features
 
 ### User Metrics
-- [ ] >50% of power users try document upload within 30 days
-- [ ] >20% adoption rate for RAG-enhanced QA generation
+
+- [ ] > 50% of power users try document upload within 30 days
+- [ ] > 20% adoption rate for RAG-enhanced QA generation
 - [ ] Positive feedback on answer quality improvements
 - [ ] <2 support tickets per month related to RAG features
 
@@ -242,6 +263,7 @@ The system's integration with existing architecture patterns, comprehensive moni
 ### Code Examples
 
 #### Basic Usage
+
 ```typescript
 // Enable RAG
 export FEATURE_RAG_CONTEXT=true
@@ -258,6 +280,7 @@ const response = await orchestrator.processRequest(request);
 ```
 
 #### Performance Monitoring
+
 ```typescript
 // Get performance report
 const monitor = components.performanceMonitor;

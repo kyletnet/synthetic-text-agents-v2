@@ -6,10 +6,16 @@
  * Implements the workaround resolution strategy from system philosophy analysis
  */
 
-import { readFileSync, writeFileSync, existsSync } from 'fs';
-import { join } from 'path';
-import { execSync } from 'child_process';
-import { AutoFixManager, AutoFixOperation, FileChange, DryRunResult, type SnapshotId } from './auto-fix-manager.js';
+import { readFileSync, writeFileSync, existsSync } from "fs";
+import { join } from "path";
+import { execSync } from "child_process";
+import {
+  AutoFixManager,
+  AutoFixOperation,
+  FileChange,
+  DryRunResult,
+  type SnapshotId,
+} from "./auto-fix-manager.js";
 
 interface WorkaroundFinding {
   file: string;
@@ -24,18 +30,22 @@ interface WorkaroundFinding {
 
 interface ResolutionPlan {
   finding: WorkaroundFinding;
-  strategy: 'auto-fix' | 'guided-fix' | 'manual-review' | 'architectural-change';
+  strategy:
+    | "auto-fix"
+    | "guided-fix"
+    | "manual-review"
+    | "architectural-change";
   confidence: number; // 0-1
   fixSuggestion: string;
   implementationSteps: string[];
-  riskLevel: 'low' | 'medium' | 'high';
+  riskLevel: "low" | "medium" | "high";
   estimatedTime: string;
   dependencies: string[];
 }
 
 interface ResolutionResult {
   planId: string;
-  status: 'success' | 'failed' | 'partial' | 'skipped';
+  status: "success" | "failed" | "partial" | "skipped";
   originalContent: string;
   fixedContent?: string;
   userApprovalRequired: boolean;
@@ -61,35 +71,37 @@ export class WorkaroundResolutionEngine {
       replacement: (match: string, context: string) => {
         return this.generateProperType(context);
       },
-      confidence: 0.8
+      confidence: 0.8,
     },
     {
       pattern: /: any; \/\/ TODO/gi,
       replacement: (match: string, context: string) => {
         return this.inferTypeFromContext(context);
       },
-      confidence: 0.6
+      confidence: 0.6,
     },
     {
       pattern: /\/\/ HACK: (.+)/gi,
       replacement: (match: string, hackDescription: string) => {
         return this.proposeHackSolution(hackDescription);
       },
-      confidence: 0.4
+      confidence: 0.4,
     },
     {
       pattern: /\/\/ TEMP.*stub/gi,
       replacement: () => {
-        return '// Implemented functionality';
+        return "// Implemented functionality";
       },
-      confidence: 0.9
-    }
+      confidence: 0.9,
+    },
   ];
 
   /**
    * Analyze all workarounds and generate resolution plans
    */
-  async generateResolutionPlans(findings: WorkaroundFinding[]): Promise<ResolutionPlan[]> {
+  async generateResolutionPlans(
+    findings: WorkaroundFinding[],
+  ): Promise<ResolutionPlan[]> {
     const plans: ResolutionPlan[] = [];
 
     for (const finding of findings) {
@@ -109,10 +121,18 @@ export class WorkaroundResolutionEngine {
     });
 
     console.log(`📋 Generated ${plans.length} resolution plans:`);
-    console.log(`   🔧 Auto-fixable: ${plans.filter(p => p.strategy === 'auto-fix').length}`);
-    console.log(`   🎯 Guided fixes: ${plans.filter(p => p.strategy === 'guided-fix').length}`);
-    console.log(`   📝 Manual review: ${plans.filter(p => p.strategy === 'manual-review').length}`);
-    console.log(`   🏗️ Architectural: ${plans.filter(p => p.strategy === 'architectural-change').length}`);
+    console.log(
+      `   🔧 Auto-fixable: ${plans.filter((p) => p.strategy === "auto-fix").length}`,
+    );
+    console.log(
+      `   🎯 Guided fixes: ${plans.filter((p) => p.strategy === "guided-fix").length}`,
+    );
+    console.log(
+      `   📝 Manual review: ${plans.filter((p) => p.strategy === "manual-review").length}`,
+    );
+    console.log(
+      `   🏗️ Architectural: ${plans.filter((p) => p.strategy === "architectural-change").length}`,
+    );
 
     return plans;
   }
@@ -120,9 +140,12 @@ export class WorkaroundResolutionEngine {
   /**
    * Execute auto-fixable resolution plans
    */
-  async executeAutoFixes(plans: ResolutionPlan[], userApproval: boolean = false): Promise<ResolutionResult[]> {
-    const autoFixablePlans = plans.filter(p =>
-      p.strategy === 'auto-fix' && p.confidence >= 0.7
+  async executeAutoFixes(
+    plans: ResolutionPlan[],
+    userApproval: boolean = false,
+  ): Promise<ResolutionResult[]> {
+    const autoFixablePlans = plans.filter(
+      (p) => p.strategy === "auto-fix" && p.confidence >= 0.7,
     );
 
     const results: ResolutionResult[] = [];
@@ -134,16 +157,16 @@ export class WorkaroundResolutionEngine {
 
       try {
         // Get user approval for high-risk changes
-        if (plan.riskLevel === 'high' && userApproval) {
+        if (plan.riskLevel === "high" && userApproval) {
           const approved = await this.requestApproval(plan);
           if (!approved) {
             results.push({
               planId,
-              status: 'skipped',
+              status: "skipped",
               originalContent: plan.finding.content,
               userApprovalRequired: true,
-              notes: 'User approval denied',
-              rollbackAvailable: false
+              notes: "User approval denied",
+              rollbackAvailable: false,
             });
             continue;
           }
@@ -152,20 +175,21 @@ export class WorkaroundResolutionEngine {
         const result = await this.applyFix(plan);
         results.push(result);
 
-        if (result.status === 'success') {
+        if (result.status === "success") {
           console.log(`   ✅ Fixed: ${plan.finding.file}:${plan.finding.line}`);
         } else {
-          console.log(`   ❌ Failed: ${plan.finding.file}:${plan.finding.line} - ${result.notes}`);
+          console.log(
+            `   ❌ Failed: ${plan.finding.file}:${plan.finding.line} - ${result.notes}`,
+          );
         }
-
       } catch (error) {
         results.push({
           planId,
-          status: 'failed',
+          status: "failed",
           originalContent: plan.finding.content,
           userApprovalRequired: false,
           notes: error instanceof Error ? error.message : String(error),
-          rollbackAvailable: false
+          rollbackAvailable: false,
         });
       }
     }
@@ -177,12 +201,17 @@ export class WorkaroundResolutionEngine {
   /**
    * Execute auto-fixes with rollback capability
    */
-  async executeAutoFixesWithRollback(plans: ResolutionPlan[], userApproval: boolean = false): Promise<ResolutionResult[]> {
-    const autoFixablePlans = plans.filter(p =>
-      p.strategy === 'auto-fix' && p.confidence >= 0.7
+  async executeAutoFixesWithRollback(
+    plans: ResolutionPlan[],
+    userApproval: boolean = false,
+  ): Promise<ResolutionResult[]> {
+    const autoFixablePlans = plans.filter(
+      (p) => p.strategy === "auto-fix" && p.confidence >= 0.7,
     );
 
-    console.log(`🔧 Executing ${autoFixablePlans.length} auto-fixes with rollback support...`);
+    console.log(
+      `🔧 Executing ${autoFixablePlans.length} auto-fixes with rollback support...`,
+    );
 
     const results: ResolutionResult[] = [];
 
@@ -198,20 +227,20 @@ export class WorkaroundResolutionEngine {
           priority: this.mapSeverityToPriority(plan.finding.severity),
           targetFiles: [plan.finding.file],
           changes: await this.planToFileChanges(plan),
-          metadata: { originalPlan: plan }
+          metadata: { originalPlan: plan },
         };
 
         // Get user approval for high-risk changes
-        if (plan.riskLevel === 'high' && userApproval) {
+        if (plan.riskLevel === "high" && userApproval) {
           const approved = await this.requestApproval(plan);
           if (!approved) {
             results.push({
               planId,
-              status: 'skipped',
+              status: "skipped",
               originalContent: plan.finding.content,
               userApprovalRequired: true,
-              notes: 'User approval denied',
-              rollbackAvailable: false
+              notes: "User approval denied",
+              rollbackAvailable: false,
             });
             continue;
           }
@@ -222,30 +251,34 @@ export class WorkaroundResolutionEngine {
 
         results.push({
           planId,
-          status: result.success ? 'success' : 'failed',
+          status: result.success ? "success" : "failed",
           originalContent: plan.finding.content,
-          fixedContent: result.success ? 'Applied auto-fix' : undefined,
+          fixedContent: result.success ? "Applied auto-fix" : undefined,
           userApprovalRequired: false,
-          notes: result.success ? 'Auto-fix applied with rollback support' :
-                 (result.error?.message || 'Unknown error'),
+          notes: result.success
+            ? "Auto-fix applied with rollback support"
+            : result.error?.message || "Unknown error",
           snapshotId: result.snapshotId,
-          rollbackAvailable: true
+          rollbackAvailable: true,
         });
 
         if (result.success) {
-          console.log(`   ✅ Fixed: ${plan.finding.file}:${plan.finding.line} (Snapshot: ${result.snapshotId})`);
+          console.log(
+            `   ✅ Fixed: ${plan.finding.file}:${plan.finding.line} (Snapshot: ${result.snapshotId})`,
+          );
         } else {
-          console.log(`   ❌ Failed: ${plan.finding.file}:${plan.finding.line} - Rolled back automatically`);
+          console.log(
+            `   ❌ Failed: ${plan.finding.file}:${plan.finding.line} - Rolled back automatically`,
+          );
         }
-
       } catch (error) {
         results.push({
           planId,
-          status: 'failed',
+          status: "failed",
           originalContent: plan.finding.content,
           userApprovalRequired: false,
           notes: error instanceof Error ? error.message : String(error),
-          rollbackAvailable: false
+          rollbackAvailable: false,
         });
       }
     }
@@ -257,13 +290,17 @@ export class WorkaroundResolutionEngine {
   /**
    * Perform dry-run analysis of resolution plans
    */
-  async performDryRun(plans: ResolutionPlan[]): Promise<Map<string, DryRunResult>> {
+  async performDryRun(
+    plans: ResolutionPlan[],
+  ): Promise<Map<string, DryRunResult>> {
     const dryRunResults = new Map<string, DryRunResult>();
-    const autoFixablePlans = plans.filter(p =>
-      p.strategy === 'auto-fix' && p.confidence >= 0.7
+    const autoFixablePlans = plans.filter(
+      (p) => p.strategy === "auto-fix" && p.confidence >= 0.7,
     );
 
-    console.log(`🔍 Performing dry-run analysis on ${autoFixablePlans.length} auto-fixable plans...`);
+    console.log(
+      `🔍 Performing dry-run analysis on ${autoFixablePlans.length} auto-fixable plans...`,
+    );
 
     for (const plan of autoFixablePlans) {
       const planId = this.getPlanId(plan.finding);
@@ -276,14 +313,15 @@ export class WorkaroundResolutionEngine {
           priority: this.mapSeverityToPriority(plan.finding.severity),
           targetFiles: [plan.finding.file],
           changes: await this.planToFileChanges(plan),
-          metadata: { originalPlan: plan }
+          metadata: { originalPlan: plan },
         };
 
         const dryRunResult = await this.autoFixManager.dryRun(operation);
         dryRunResults.set(planId, dryRunResult);
 
-        console.log(`   📋 ${planId}: ${dryRunResult.impact.riskLevel} risk, ${dryRunResult.changes.length} changes`);
-
+        console.log(
+          `   📋 ${planId}: ${dryRunResult.impact.riskLevel} risk, ${dryRunResult.changes.length} changes`,
+        );
       } catch (error) {
         console.error(`   ❌ Dry-run failed for ${planId}:`, error);
       }
@@ -296,7 +334,7 @@ export class WorkaroundResolutionEngine {
    * Rollback a specific resolution result
    */
   async rollbackResolution(planId: string): Promise<boolean> {
-    const result = this.resolutionHistory.find(r => r.planId === planId);
+    const result = this.resolutionHistory.find((r) => r.planId === planId);
 
     if (!result) {
       console.error(`❌ Resolution result not found: ${planId}`);
@@ -309,13 +347,15 @@ export class WorkaroundResolutionEngine {
     }
 
     try {
-      console.log(`🔄 Rolling back resolution: ${planId} to snapshot: ${result.snapshotId}`);
+      console.log(
+        `🔄 Rolling back resolution: ${planId} to snapshot: ${result.snapshotId}`,
+      );
       const success = await this.autoFixManager.rollback(result.snapshotId);
 
       if (success) {
         // Update result status
-        result.status = 'failed';
-        result.notes += ' [ROLLED BACK]';
+        result.status = "failed";
+        result.notes += " [ROLLED BACK]";
         console.log(`✅ Successfully rolled back: ${planId}`);
       }
 
@@ -335,11 +375,11 @@ export class WorkaroundResolutionEngine {
     timestamp: Date;
     filesCount: number;
   }> {
-    return this.autoFixManager.getSnapshots().map(snapshot => ({
+    return this.autoFixManager.getSnapshots().map((snapshot) => ({
       snapshotId: snapshot.id,
       operation: snapshot.operation,
       timestamp: snapshot.timestamp,
-      filesCount: snapshot.files.length
+      filesCount: snapshot.files.length,
     }));
   }
 
@@ -354,8 +394,8 @@ export class WorkaroundResolutionEngine {
    * Generate guided fix instructions for manual implementation
    */
   generateGuidedFixInstructions(plans: ResolutionPlan[]): string {
-    const guidedPlans = plans.filter(p =>
-      p.strategy === 'guided-fix' || p.strategy === 'manual-review'
+    const guidedPlans = plans.filter(
+      (p) => p.strategy === "guided-fix" || p.strategy === "manual-review",
     );
 
     let instructions = `# 🛠️ Workaround Resolution Guide\n\n`;
@@ -374,14 +414,14 @@ export class WorkaroundResolutionEngine {
       plan.implementationSteps.forEach((step, stepIndex) => {
         instructions += `${stepIndex + 1}. ${step}\n`;
       });
-      instructions += '\n';
+      instructions += "\n";
 
       if (plan.dependencies.length > 0) {
         instructions += `### 🔗 Dependencies\n`;
-        plan.dependencies.forEach(dep => {
+        plan.dependencies.forEach((dep) => {
           instructions += `- ${dep}\n`;
         });
-        instructions += '\n';
+        instructions += "\n";
       }
 
       instructions += `### ⚠️ Risk Level: ${plan.riskLevel.toUpperCase()}\n\n`;
@@ -401,21 +441,22 @@ export class WorkaroundResolutionEngine {
     architectural: ResolutionPlan[]; // Major changes (1+ months)
   } {
     return {
-      milestone1: plans.filter(p =>
-        p.strategy === 'auto-fix' ||
-        (p.estimatedTime.includes('minutes') || p.estimatedTime.includes('hour'))
+      milestone1: plans.filter(
+        (p) =>
+          p.strategy === "auto-fix" ||
+          p.estimatedTime.includes("minutes") ||
+          p.estimatedTime.includes("hour"),
       ),
-      milestone2: plans.filter(p =>
-        p.strategy === 'guided-fix' &&
-        (p.estimatedTime.includes('day') || p.estimatedTime.includes('2-3'))
+      milestone2: plans.filter(
+        (p) =>
+          p.strategy === "guided-fix" &&
+          (p.estimatedTime.includes("day") || p.estimatedTime.includes("2-3")),
       ),
-      milestone3: plans.filter(p =>
-        p.strategy === 'manual-review' &&
-        p.estimatedTime.includes('week')
+      milestone3: plans.filter(
+        (p) =>
+          p.strategy === "manual-review" && p.estimatedTime.includes("week"),
       ),
-      architectural: plans.filter(p =>
-        p.strategy === 'architectural-change'
-      )
+      architectural: plans.filter((p) => p.strategy === "architectural-change"),
     };
   }
 
@@ -424,41 +465,49 @@ export class WorkaroundResolutionEngine {
    */
   generateProgressReport(): string {
     const totalResults = this.resolutionHistory.length;
-    const successful = this.resolutionHistory.filter(r => r.status === 'success').length;
-    const failed = this.resolutionHistory.filter(r => r.status === 'failed').length;
-    const skipped = this.resolutionHistory.filter(r => r.status === 'skipped').length;
+    const successful = this.resolutionHistory.filter(
+      (r) => r.status === "success",
+    ).length;
+    const failed = this.resolutionHistory.filter(
+      (r) => r.status === "failed",
+    ).length;
+    const skipped = this.resolutionHistory.filter(
+      (r) => r.status === "skipped",
+    ).length;
 
     let report = `# 📊 Workaround Resolution Progress\n\n`;
     report += `**Total Processed**: ${totalResults}\n`;
-    report += `**Successfully Fixed**: ${successful} (${Math.round((successful/totalResults)*100)}%)\n`;
+    report += `**Successfully Fixed**: ${successful} (${Math.round((successful / totalResults) * 100)}%)\n`;
     report += `**Failed Fixes**: ${failed}\n`;
     report += `**Skipped**: ${skipped}\n\n`;
 
     if (successful > 0) {
       report += `## ✅ Recent Successes\n`;
       this.resolutionHistory
-        .filter(r => r.status === 'success')
+        .filter((r) => r.status === "success")
         .slice(-5)
-        .forEach(result => {
+        .forEach((result) => {
           report += `- Fixed: ${result.planId}\n`;
         });
-      report += '\n';
+      report += "\n";
     }
 
     if (failed > 0) {
       report += `## ❌ Issues to Address\n`;
       this.resolutionHistory
-        .filter(r => r.status === 'failed')
-        .forEach(result => {
+        .filter((r) => r.status === "failed")
+        .forEach((result) => {
           report += `- ${result.planId}: ${result.notes}\n`;
         });
-      report += '\n';
+      report += "\n";
     }
 
     return report;
   }
 
-  private async analyzeWorkaround(finding: WorkaroundFinding): Promise<ResolutionPlan> {
+  private async analyzeWorkaround(
+    finding: WorkaroundFinding,
+  ): Promise<ResolutionPlan> {
     const strategy = this.determineStrategy(finding);
     const confidence = this.calculateConfidence(finding, strategy);
 
@@ -470,77 +519,87 @@ export class WorkaroundResolutionEngine {
       implementationSteps: this.generateImplementationSteps(finding),
       riskLevel: this.assessRiskLevel(finding),
       estimatedTime: this.estimateTime(finding, strategy),
-      dependencies: this.identifyDependencies(finding)
+      dependencies: this.identifyDependencies(finding),
     };
   }
 
-  private determineStrategy(finding: WorkaroundFinding): ResolutionPlan['strategy'] {
+  private determineStrategy(
+    finding: WorkaroundFinding,
+  ): ResolutionPlan["strategy"] {
     // Check if it matches auto-fix patterns
     for (const rule of this.autoFixRules) {
       if (rule.pattern.test(finding.content)) {
-        return 'auto-fix';
+        return "auto-fix";
       }
     }
 
     // Categorize based on content analysis
-    if (finding.content.includes('Define proper type') ||
-        finding.content.includes(': any')) {
-      return 'auto-fix';
+    if (
+      finding.content.includes("Define proper type") ||
+      finding.content.includes(": any")
+    ) {
+      return "auto-fix";
     }
 
-    if (finding.type === 'HACK' || finding.severity === 'HIGH') {
-      return finding.content.length > 100 ? 'manual-review' : 'guided-fix';
+    if (finding.type === "HACK" || finding.severity === "HIGH") {
+      return finding.content.length > 100 ? "manual-review" : "guided-fix";
     }
 
-    if (finding.type === 'TODO' && finding.content.includes('implement')) {
-      return 'guided-fix';
+    if (finding.type === "TODO" && finding.content.includes("implement")) {
+      return "guided-fix";
     }
 
-    if (finding.content.includes('architecture') ||
-        finding.content.includes('refactor')) {
-      return 'architectural-change';
+    if (
+      finding.content.includes("architecture") ||
+      finding.content.includes("refactor")
+    ) {
+      return "architectural-change";
     }
 
-    return 'guided-fix';
+    return "guided-fix";
   }
 
-  private calculateConfidence(finding: WorkaroundFinding, strategy: string): number {
+  private calculateConfidence(
+    finding: WorkaroundFinding,
+    strategy: string,
+  ): number {
     let confidence = 0.5; // Base confidence
 
     // Increase confidence for patterns we can handle well
-    if (strategy === 'auto-fix') {
+    if (strategy === "auto-fix") {
       confidence = 0.8;
 
-      if (finding.content.includes('Define proper type')) confidence = 0.9;
-      if (finding.content.includes('TODO') && finding.content.length < 50) confidence = 0.7;
+      if (finding.content.includes("Define proper type")) confidence = 0.9;
+      if (finding.content.includes("TODO") && finding.content.length < 50)
+        confidence = 0.7;
     }
 
     // Adjust based on severity
-    if (finding.severity === 'HIGH') confidence -= 0.1;
-    if (finding.severity === 'CRITICAL') confidence -= 0.2;
+    if (finding.severity === "HIGH") confidence -= 0.1;
+    if (finding.severity === "CRITICAL") confidence -= 0.2;
 
     // Adjust based on context
-    if (finding.file.includes('test')) confidence += 0.1;
-    if (finding.file.includes('types')) confidence += 0.2;
+    if (finding.file.includes("test")) confidence += 0.1;
+    if (finding.file.includes("types")) confidence += 0.2;
 
     return Math.min(Math.max(confidence, 0.1), 1.0);
   }
 
   private generateFixSuggestion(finding: WorkaroundFinding): string {
-    if (finding.content.includes('Define proper type')) {
-      return 'Replace `any` type with specific interface or type definition based on usage context.';
+    if (finding.content.includes("Define proper type")) {
+      return "Replace `any` type with specific interface or type definition based on usage context.";
     }
 
-    if (finding.type === 'HACK' && finding.content.includes('bypass')) {
-      return 'Implement proper validation or error handling instead of bypassing checks.';
+    if (finding.type === "HACK" && finding.content.includes("bypass")) {
+      return "Implement proper validation or error handling instead of bypassing checks.";
     }
 
-    if (finding.type === 'TODO' && finding.content.includes('implement')) {
-      return 'Complete the implementation based on the requirements and existing patterns.';
+    if (finding.type === "TODO" && finding.content.includes("implement")) {
+      return "Complete the implementation based on the requirements and existing patterns.";
     }
 
-    if (finding.content.includes('temporary')) {
-      return 'Replace temporary solution with permanent implementation following project conventions.';
+    if (finding.content.includes("temporary")) {
+      return "Replace temporary solution with permanent implementation following project conventions.";
     }
 
     return `Address the ${finding.type.toLowerCase()} by implementing a proper solution based on project standards.`;
@@ -549,74 +608,81 @@ export class WorkaroundResolutionEngine {
   private generateImplementationSteps(finding: WorkaroundFinding): string[] {
     const steps = [];
 
-    if (finding.content.includes('Define proper type')) {
-      steps.push('Analyze the variable/parameter usage context');
-      steps.push('Define appropriate TypeScript interface or type');
-      steps.push('Replace `any` with the specific type');
-      steps.push('Run TypeScript checks to verify');
-    } else if (finding.type === 'HACK') {
-      steps.push('Understand why the hack was necessary');
-      steps.push('Research proper solution approach');
-      steps.push('Implement the correct solution');
-      steps.push('Test thoroughly to ensure no regressions');
-      steps.push('Remove the hack code');
+    if (finding.content.includes("Define proper type")) {
+      steps.push("Analyze the variable/parameter usage context");
+      steps.push("Define appropriate TypeScript interface or type");
+      steps.push("Replace `any` with the specific type");
+      steps.push("Run TypeScript checks to verify");
+    } else if (finding.type === "HACK") {
+      steps.push("Understand why the hack was necessary");
+      steps.push("Research proper solution approach");
+      steps.push("Implement the correct solution");
+      steps.push("Test thoroughly to ensure no regressions");
+      steps.push("Remove the hack code");
     } else {
       steps.push(`Review the ${finding.type.toLowerCase()} requirement`);
-      steps.push('Design the proper solution');
-      steps.push('Implement following project conventions');
-      steps.push('Add appropriate tests');
-      steps.push('Update documentation if needed');
+      steps.push("Design the proper solution");
+      steps.push("Implement following project conventions");
+      steps.push("Add appropriate tests");
+      steps.push("Update documentation if needed");
     }
 
     return steps;
   }
 
-  private assessRiskLevel(finding: WorkaroundFinding): 'low' | 'medium' | 'high' {
-    if (finding.severity === 'CRITICAL') return 'high';
-    if (finding.severity === 'HIGH') return 'medium';
+  private assessRiskLevel(
+    finding: WorkaroundFinding,
+  ): "low" | "medium" | "high" {
+    if (finding.severity === "CRITICAL") return "high";
+    if (finding.severity === "HIGH") return "medium";
 
-    if (finding.file.includes('core') ||
-        finding.file.includes('shared') ||
-        finding.content.includes('architecture')) {
-      return 'high';
+    if (
+      finding.file.includes("core") ||
+      finding.file.includes("shared") ||
+      finding.content.includes("architecture")
+    ) {
+      return "high";
     }
 
-    if (finding.type === 'HACK' || finding.content.includes('bypass')) {
-      return 'medium';
+    if (finding.type === "HACK" || finding.content.includes("bypass")) {
+      return "medium";
     }
 
-    return 'low';
+    return "low";
   }
 
   private estimateTime(finding: WorkaroundFinding, strategy: string): string {
-    if (strategy === 'auto-fix') return '15-30 minutes';
+    if (strategy === "auto-fix") return "15-30 minutes";
 
-    if (strategy === 'guided-fix') {
-      if (finding.content.length < 50) return '1-2 hours';
-      return '2-4 hours';
+    if (strategy === "guided-fix") {
+      if (finding.content.length < 50) return "1-2 hours";
+      return "2-4 hours";
     }
 
-    if (strategy === 'manual-review') {
-      if (finding.severity === 'HIGH') return '1-2 days';
-      return '4-8 hours';
+    if (strategy === "manual-review") {
+      if (finding.severity === "HIGH") return "1-2 days";
+      return "4-8 hours";
     }
 
-    return '1-4 weeks'; // architectural-change
+    return "1-4 weeks"; // architectural-change
   }
 
   private identifyDependencies(finding: WorkaroundFinding): string[] {
     const dependencies = [];
 
-    if (finding.content.includes('type') || finding.content.includes('interface')) {
-      dependencies.push('TypeScript configuration');
+    if (
+      finding.content.includes("type") ||
+      finding.content.includes("interface")
+    ) {
+      dependencies.push("TypeScript configuration");
     }
 
-    if (finding.content.includes('test')) {
-      dependencies.push('Test framework setup');
+    if (finding.content.includes("test")) {
+      dependencies.push("Test framework setup");
     }
 
-    if (finding.file.includes('shared') || finding.file.includes('core')) {
-      dependencies.push('System architecture review');
+    if (finding.file.includes("shared") || finding.file.includes("core")) {
+      dependencies.push("System architecture review");
     }
 
     return dependencies;
@@ -629,25 +695,25 @@ export class WorkaroundResolutionEngine {
       if (!existsSync(plan.finding.file)) {
         return {
           planId,
-          status: 'failed',
+          status: "failed",
           originalContent: plan.finding.content,
           userApprovalRequired: false,
-          notes: 'File not found',
-          rollbackAvailable: false
+          notes: "File not found",
+          rollbackAvailable: false,
         };
       }
 
-      const fileContent = readFileSync(plan.finding.file, 'utf8');
-      const lines = fileContent.split('\n');
+      const fileContent = readFileSync(plan.finding.file, "utf8");
+      const lines = fileContent.split("\n");
 
       if (plan.finding.line > lines.length) {
         return {
           planId,
-          status: 'failed',
+          status: "failed",
           originalContent: plan.finding.content,
           userApprovalRequired: false,
-          notes: 'Line number out of range',
-          rollbackAvailable: false
+          notes: "Line number out of range",
+          rollbackAvailable: false,
         };
       }
 
@@ -657,44 +723,46 @@ export class WorkaroundResolutionEngine {
       if (fixedLine === originalLine) {
         return {
           planId,
-          status: 'skipped',
+          status: "skipped",
           originalContent: originalLine,
           userApprovalRequired: false,
-          notes: 'No applicable auto-fix rule found',
-          rollbackAvailable: false
+          notes: "No applicable auto-fix rule found",
+          rollbackAvailable: false,
         };
       }
 
       lines[plan.finding.line - 1] = fixedLine;
-      writeFileSync(plan.finding.file, lines.join('\n'), 'utf8');
+      writeFileSync(plan.finding.file, lines.join("\n"), "utf8");
 
       return {
         planId,
-        status: 'success',
+        status: "success",
         originalContent: originalLine,
         fixedContent: fixedLine,
         userApprovalRequired: false,
-        notes: 'Auto-fix applied successfully',
-        rollbackAvailable: false
+        notes: "Auto-fix applied successfully",
+        rollbackAvailable: false,
       };
-
     } catch (error) {
       return {
         planId,
-        status: 'failed',
+        status: "failed",
         originalContent: plan.finding.content,
         userApprovalRequired: false,
         notes: error instanceof Error ? error.message : String(error),
-        rollbackAvailable: false
+        rollbackAvailable: false,
       };
     }
   }
 
-  private applyAutoFixRules(content: string, finding: WorkaroundFinding): string {
+  private applyAutoFixRules(
+    content: string,
+    finding: WorkaroundFinding,
+  ): string {
     for (const rule of this.autoFixRules) {
       if (rule.pattern.test(content)) {
         return content.replace(rule.pattern, (match, ...groups) =>
-          rule.replacement(match, finding.context)
+          rule.replacement(match, finding.context),
         );
       }
     }
@@ -703,20 +771,32 @@ export class WorkaroundResolutionEngine {
 
   private generateProperType(context: string): string {
     // Simple type inference based on context
-    if (context.includes('string') || context.includes('name') || context.includes('text')) {
-      return ': string';
+    if (
+      context.includes("string") ||
+      context.includes("name") ||
+      context.includes("text")
+    ) {
+      return ": string";
     }
-    if (context.includes('number') || context.includes('count') || context.includes('age')) {
-      return ': number';
+    if (
+      context.includes("number") ||
+      context.includes("count") ||
+      context.includes("age")
+    ) {
+      return ": number";
     }
-    if (context.includes('boolean') || context.includes('flag') || context.includes('is')) {
-      return ': boolean';
+    if (
+      context.includes("boolean") ||
+      context.includes("flag") ||
+      context.includes("is")
+    ) {
+      return ": boolean";
     }
-    return ': unknown'; // Conservative fallback
+    return ": unknown"; // Conservative fallback
   }
 
   private inferTypeFromContext(context: string): string {
-    return this.generateProperType(context) + ';';
+    return this.generateProperType(context) + ";";
   }
 
   private proposeHackSolution(hackDescription: string): string {
@@ -737,13 +817,18 @@ export class WorkaroundResolutionEngine {
     return `${finding.file}:${finding.line}:${finding.type}`;
   }
 
-  private mapSeverityToPriority(severity: WorkaroundFinding['severity']): 'P0' | 'P1' | 'P2' {
+  private mapSeverityToPriority(
+    severity: WorkaroundFinding["severity"],
+  ): "P0" | "P1" | "P2" {
     switch (severity) {
-      case 'CRITICAL': return 'P0';
-      case 'HIGH': return 'P1';
-      case 'MEDIUM':
-      case 'LOW':
-      default: return 'P2';
+      case "CRITICAL":
+        return "P0";
+      case "HIGH":
+        return "P1";
+      case "MEDIUM":
+      case "LOW":
+      default:
+        return "P2";
     }
   }
 
@@ -752,8 +837,8 @@ export class WorkaroundResolutionEngine {
       return [];
     }
 
-    const fileContent = readFileSync(plan.finding.file, 'utf8');
-    const lines = fileContent.split('\n');
+    const fileContent = readFileSync(plan.finding.file, "utf8");
+    const lines = fileContent.split("\n");
 
     if (plan.finding.line > lines.length) {
       return [];
@@ -769,20 +854,22 @@ export class WorkaroundResolutionEngine {
     // Create new content with the fixed line
     const newLines = [...lines];
     newLines[plan.finding.line - 1] = fixedLine;
-    const newContent = newLines.join('\n');
+    const newContent = newLines.join("\n");
 
-    return [{
-      filePath: plan.finding.file,
-      oldContent: fileContent,
-      newContent,
-      changeType: 'modify',
-      metadata: {
-        lineNumber: plan.finding.line,
-        originalContent: originalLine,
-        fixedContent: fixedLine,
-        planId: this.getPlanId(plan.finding)
-      }
-    }];
+    return [
+      {
+        filePath: plan.finding.file,
+        oldContent: fileContent,
+        newContent,
+        changeType: "modify",
+        metadata: {
+          lineNumber: plan.finding.line,
+          originalContent: originalLine,
+          fixedContent: fixedLine,
+          planId: this.getPlanId(plan.finding),
+        },
+      },
+    ];
   }
 }
 

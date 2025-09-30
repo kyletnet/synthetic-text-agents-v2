@@ -85,8 +85,8 @@ export default function HomePage() {
           </CardHeader>
           <CardContent>
             <p className="text-sm text-gray-600">
-              텍스트 문서(.txt), 리치 텍스트(.rtf), 기존 QA 쌍(.jsonl) 등
-              다양한 입력 시나리오를 지원합니다.
+              텍스트 문서(.txt), 리치 텍스트(.rtf), 기존 QA 쌍(.jsonl) 등 다양한
+              입력 시나리오를 지원합니다.
             </p>
           </CardContent>
         </Card>
@@ -100,8 +100,8 @@ export default function HomePage() {
           </CardHeader>
           <CardContent>
             <p className="text-sm text-gray-600">
-              9.5/10 목표 품질 점수로 투명한 추론과 모든 결정에 대한
-              포괄적인 감사 기록을 제공합니다.
+              9.5/10 목표 품질 점수로 투명한 추론과 모든 결정에 대한 포괄적인
+              감사 기록을 제공합니다.
             </p>
           </CardContent>
         </Card>
@@ -188,16 +188,12 @@ export default function HomePage() {
           <div className="text-center">
             <div className="text-2xl font-bold text-blue-600 mb-1">5%</div>
             <div className="text-sm text-gray-600">중복률</div>
-            <Badge className="mt-1 bg-green-100 text-green-800">
-              우수
-            </Badge>
+            <Badge className="mt-1 bg-green-100 text-green-800">우수</Badge>
           </div>
           <div className="text-center">
             <div className="text-2xl font-bold text-green-600 mb-1">95%</div>
             <div className="text-sm text-gray-600">증거 품질</div>
-            <Badge className="mt-1 bg-green-100 text-green-800">
-              우수
-            </Badge>
+            <Badge className="mt-1 bg-green-100 text-green-800">우수</Badge>
           </div>
           <div className="text-center">
             <div className="text-2xl font-bold text-green-600 mb-1">2%</div>
@@ -217,9 +213,7 @@ export default function HomePage() {
           <div className="text-center">
             <div className="text-2xl font-bold text-blue-600 mb-1">87.5%</div>
             <div className="text-sm text-gray-600">전체 점수</div>
-            <Badge className="mt-1 bg-green-100 text-green-800">
-              우수
-            </Badge>
+            <Badge className="mt-1 bg-green-100 text-green-800">우수</Badge>
           </div>
         </div>
       </div>

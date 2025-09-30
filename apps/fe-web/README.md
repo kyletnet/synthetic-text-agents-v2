@@ -74,7 +74,6 @@ Key test IDs for E2E testing:
 - `tab-mode-explore`: Explore mode tab
 - `chip-tag-hallucination`: Hallucination tag chip
 
-
 _Last updated: 2025-09-30_
 
 ## 📊 System Status

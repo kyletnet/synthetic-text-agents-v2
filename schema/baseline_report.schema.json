@@ -178,11 +178,11 @@
       "type": "object",
       "description": "Thresholds used for evaluation",
       "properties": {
-        "min_pass_rate": {"type": "number"},
-        "min_mean_score": {"type": "number"},
-        "max_p50_latency_ms": {"type": "number"},
-        "max_p95_latency_ms": {"type": "number"},
-        "min_cases_total": {"type": "integer"}
+        "min_pass_rate": { "type": "number" },
+        "min_mean_score": { "type": "number" },
+        "max_p50_latency_ms": { "type": "number" },
+        "max_p95_latency_ms": { "type": "number" },
+        "min_cases_total": { "type": "integer" }
       }
     },
     "gating_results": {
@@ -191,15 +191,15 @@
       "properties": {
         "p0_issues": {
           "type": "array",
-          "items": {"type": "string"}
+          "items": { "type": "string" }
         },
         "p1_issues": {
           "type": "array",
-          "items": {"type": "string"}
+          "items": { "type": "string" }
         },
         "p2_issues": {
           "type": "array",
-          "items": {"type": "string"}
+          "items": { "type": "string" }
         },
         "overall_status": {
           "type": "string",

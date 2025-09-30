@@ -15,7 +15,7 @@ import {
   Lightbulb,
   ArrowRight,
   CheckCircle,
-  ArrowDown
+  ArrowDown,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -122,13 +122,17 @@ export default function RAGPage() {
         setError(errorData.message || "Search failed");
       }
     } catch (error) {
-      setError(`Search error: ${error instanceof Error ? error.message : "Unknown error"}`);
+      setError(
+        `Search error: ${error instanceof Error ? error.message : "Unknown error"}`,
+      );
     } finally {
       setLoading(false);
     }
   };
 
-  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
@@ -136,7 +140,9 @@ export default function RAGPage() {
     const fileExt = "." + file.name.split(".").pop()?.toLowerCase();
 
     if (!allowedTypes.includes(fileExt)) {
-      setError(`File type ${fileExt} not supported. Allowed: ${allowedTypes.join(", ")}`);
+      setError(
+        `File type ${fileExt} not supported. Allowed: ${allowedTypes.join(", ")}`,
+      );
       return;
     }
 
@@ -161,7 +167,9 @@ export default function RAGPage() {
         setError(errorData.message || "Upload failed");
       }
     } catch (error) {
-      setError(`Upload error: ${error instanceof Error ? error.message : "Network error"}`);
+      setError(
+        `Upload error: ${error instanceof Error ? error.message : "Network error"}`,
+      );
     } finally {
       setUploading(false);
     }
@@ -183,7 +191,9 @@ export default function RAGPage() {
         setError(errorData.message || "Delete failed");
       }
     } catch (error) {
-      setError(`Delete error: ${error instanceof Error ? error.message : "Network error"}`);
+      setError(
+        `Delete error: ${error instanceof Error ? error.message : "Network error"}`,
+      );
     }
   };
 
@@ -212,7 +222,8 @@ export default function RAGPage() {
           RAG 문서 관리 시스템
         </h1>
         <p className="text-gray-600">
-          📝 3단계 플로우: 문서 업로드 → RAG 동작 확인 → QA 생성으로 Before/After 비교
+          📝 3단계 플로우: 문서 업로드 → RAG 동작 확인 → QA 생성으로
+          Before/After 비교
         </p>
       </div>
 
@@ -220,23 +231,43 @@ export default function RAGPage() {
       <div className="mb-8">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-4">
-            <div className={`flex items-center gap-2 px-3 py-2 rounded-lg ${
-              currentStep >= 1 ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'
-            }`}>
-              {documents.length > 0 ? <CheckCircle className="w-4 h-4" /> : <span className="w-4 h-4 bg-current rounded-full" />}
+            <div
+              className={`flex items-center gap-2 px-3 py-2 rounded-lg ${
+                currentStep >= 1
+                  ? "bg-green-100 text-green-800"
+                  : "bg-gray-100 text-gray-600"
+              }`}
+            >
+              {documents.length > 0 ? (
+                <CheckCircle className="w-4 h-4" />
+              ) : (
+                <span className="w-4 h-4 bg-current rounded-full" />
+              )}
               1️⃣ 문서 업로드
             </div>
             <ArrowRight className="w-4 h-4 text-gray-400" />
-            <div className={`flex items-center gap-2 px-3 py-2 rounded-lg ${
-              currentStep >= 2 ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-600'
-            }`}>
-              {searchResults.length > 0 ? <CheckCircle className="w-4 h-4" /> : <span className="w-4 h-4 bg-current rounded-full" />}
+            <div
+              className={`flex items-center gap-2 px-3 py-2 rounded-lg ${
+                currentStep >= 2
+                  ? "bg-blue-100 text-blue-800"
+                  : "bg-gray-100 text-gray-600"
+              }`}
+            >
+              {searchResults.length > 0 ? (
+                <CheckCircle className="w-4 h-4" />
+              ) : (
+                <span className="w-4 h-4 bg-current rounded-full" />
+              )}
               2️⃣ RAG 동작 확인
             </div>
             <ArrowRight className="w-4 h-4 text-gray-400" />
-            <div className={`flex items-center gap-2 px-3 py-2 rounded-lg ${
-              currentStep >= 3 ? 'bg-purple-100 text-purple-800' : 'bg-gray-100 text-gray-600'
-            }`}>
+            <div
+              className={`flex items-center gap-2 px-3 py-2 rounded-lg ${
+                currentStep >= 3
+                  ? "bg-purple-100 text-purple-800"
+                  : "bg-gray-100 text-gray-600"
+              }`}
+            >
               <span className="w-4 h-4 bg-current rounded-full" />
               3️⃣ QA 생성
             </div>
@@ -255,14 +286,15 @@ export default function RAGPage() {
         <Alert className="mb-6">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
-            RAG system is currently disabled. Set FEATURE_RAG_CONTEXT=true to enable document context features.
+            RAG system is currently disabled. Set FEATURE_RAG_CONTEXT=true to
+            enable document context features.
           </AlertDescription>
         </Alert>
       )}
 
       <div className="space-y-8">
         {/* 1단계: 문서 업로드 */}
-        <Card className={`${currentStep === 1 ? 'ring-2 ring-green-500' : ''}`}>
+        <Card className={`${currentStep === 1 ? "ring-2 ring-green-500" : ""}`}>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Upload className="w-5 h-5" />
@@ -287,18 +319,23 @@ export default function RAGPage() {
                   </p>
                   {!stats.enabled && (
                     <p className="text-sm text-amber-600 mt-1">
-                      ⚠️ RAG 시스템이 비활성화되어 있습니다. 업로드는 가능하지만 인덱싱되지 않습니다.
+                      ⚠️ RAG 시스템이 비활성화되어 있습니다. 업로드는 가능하지만
+                      인덱싱되지 않습니다.
                     </p>
                   )}
                 </div>
                 {uploading && (
-                  <div className="text-blue-600">문서를 업로드하고 처리하는 중...</div>
+                  <div className="text-blue-600">
+                    문서를 업로드하고 처리하는 중...
+                  </div>
                 )}
               </div>
 
               {/* 문서 리스트 */}
               <div>
-                <h3 className="font-medium mb-3">업로드된 문서 ({documents.length}개)</h3>
+                <h3 className="font-medium mb-3">
+                  업로드된 문서 ({documents.length}개)
+                </h3>
                 {documents.length === 0 ? (
                   <div className="text-center py-8 text-gray-500 border-2 border-dashed border-gray-200 rounded-lg">
                     아직 업로드된 문서가 없습니다
@@ -306,13 +343,19 @@ export default function RAGPage() {
                 ) : (
                   <div className="space-y-2 max-h-48 overflow-y-auto">
                     {documents.map((doc) => (
-                      <div key={doc.id} className="flex items-center justify-between p-3 border rounded-lg text-sm">
+                      <div
+                        key={doc.id}
+                        className="flex items-center justify-between p-3 border rounded-lg text-sm"
+                      >
                         <div className="flex items-center gap-2">
                           <FileText className="w-4 h-4 text-blue-500" />
                           <div>
-                            <div className="font-medium">{doc.path.split("/").pop()}</div>
+                            <div className="font-medium">
+                              {doc.path.split("/").pop()}
+                            </div>
                             <div className="text-gray-500">
-                              {doc.chunkCount} chunks • {formatFileSize(doc.size)}
+                              {doc.chunkCount} chunks •{" "}
+                              {formatFileSize(doc.size)}
                             </div>
                           </div>
                         </div>
@@ -338,7 +381,8 @@ export default function RAGPage() {
                   <span className="font-medium">✅ 1단계 완료!</span>
                 </div>
                 <p className="text-green-700 mt-1">
-                  문서가 성공적으로 업로드되었습니다. 이제 2단계에서 RAG 동작을 확인해보세요.
+                  문서가 성공적으로 업로드되었습니다. 이제 2단계에서 RAG 동작을
+                  확인해보세요.
                 </p>
                 <Button
                   onClick={() => setCurrentStep(2)}
@@ -354,7 +398,9 @@ export default function RAGPage() {
 
         {/* 2단계: RAG 동작 확인 */}
         {documents.length > 0 && (
-          <Card className={`${currentStep === 2 ? 'ring-2 ring-blue-500' : ''}`}>
+          <Card
+            className={`${currentStep === 2 ? "ring-2 ring-blue-500" : ""}`}
+          >
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Search className="w-5 h-5" />
@@ -365,8 +411,9 @@ export default function RAGPage() {
               <Alert className="mb-4">
                 <Search className="h-4 w-4" />
                 <AlertDescription>
-                  <strong>목적:</strong> QA 생성 시 RAG가 어떻게 관련 문서를 찾는지 미리 확인해봅니다.
-                  실제로는 자동으로 이루어지지만, 여기서는 수동으로 테스트할 수 있습니다.
+                  <strong>목적:</strong> QA 생성 시 RAG가 어떻게 관련 문서를
+                  찾는지 미리 확인해봅니다. 실제로는 자동으로 이루어지지만,
+                  여기서는 수동으로 테스트할 수 있습니다.
                 </AlertDescription>
               </Alert>
 
@@ -390,7 +437,9 @@ export default function RAGPage() {
                 {searchResults.length > 0 && (
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
-                      <h3 className="font-medium">검색 결과 ({searchResults.length}개)</h3>
+                      <h3 className="font-medium">
+                        검색 결과 ({searchResults.length}개)
+                      </h3>
                       <div className="text-sm text-green-600">
                         ✅ RAG 동작 확인 완료!
                       </div>
@@ -399,8 +448,12 @@ export default function RAGPage() {
                       {searchResults.slice(0, 3).map((result) => (
                         <div key={result.id} className="border rounded-lg p-3">
                           <div className="flex justify-between items-start mb-2">
-                            <Badge variant="outline" className="text-xs">Score: {result.score.toFixed(3)}</Badge>
-                            <span className="text-xs text-gray-500">Chunk {result.chunk.id}</span>
+                            <Badge variant="outline" className="text-xs">
+                              Score: {result.score.toFixed(3)}
+                            </Badge>
+                            <span className="text-xs text-gray-500">
+                              Chunk {result.chunk.id}
+                            </span>
                           </div>
                           <div className="text-sm bg-gray-50 p-2 rounded">
                             {result.chunk.content.substring(0, 200)}
@@ -416,7 +469,8 @@ export default function RAGPage() {
                         <span className="font-medium">✅ 2단계 완료!</span>
                       </div>
                       <p className="text-blue-700 mt-1">
-                        RAG 시스템이 정상적으로 문서를 찾을 수 있습니다. 이제 3단계에서 실제 QA를 생성해보세요!
+                        RAG 시스템이 정상적으로 문서를 찾을 수 있습니다. 이제
+                        3단계에서 실제 QA를 생성해보세요!
                       </p>
                       <Button
                         onClick={() => setCurrentStep(3)}
@@ -432,12 +486,12 @@ export default function RAGPage() {
                 {/* 2단계 스킵 옵션 */}
                 {searchResults.length === 0 && (
                   <div className="text-center py-4">
-                    <p className="text-gray-600 mb-3">이 단계는 선택사항입니다.</p>
-                    <Button
-                      onClick={() => setCurrentStep(3)}
-                      variant="outline"
-                    >
-                      바로 QA 생성으로 넘어가기 <ArrowRight className="w-4 h-4 ml-1" />
+                    <p className="text-gray-600 mb-3">
+                      이 단계는 선택사항입니다.
+                    </p>
+                    <Button onClick={() => setCurrentStep(3)} variant="outline">
+                      바로 QA 생성으로 넘어가기{" "}
+                      <ArrowRight className="w-4 h-4 ml-1" />
                     </Button>
                   </div>
                 )}
@@ -447,7 +501,7 @@ export default function RAGPage() {
         )}
 
         {/* 3단계: QA 생성 */}
-        {(documents.length > 0 && currentStep >= 3) && (
+        {documents.length > 0 && currentStep >= 3 && (
           <Card className="ring-2 ring-purple-500">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -459,11 +513,16 @@ export default function RAGPage() {
               <Alert className="mb-4">
                 <Lightbulb className="h-4 w-4" />
                 <AlertDescription>
-                  <strong>핵심 기능:</strong> 같은 주제로 RAG 적용 전후의 QA를 생성하여 품질 차이를 직접 비교해보세요.
-                  업로드한 문서 내용이 어떻게 답변 품질을 향상시키는지 확인할 수 있습니다.
+                  <strong>핵심 기능:</strong> 같은 주제로 RAG 적용 전후의 QA를
+                  생성하여 품질 차이를 직접 비교해보세요. 업로드한 문서 내용이
+                  어떻게 답변 품질을 향상시키는지 확인할 수 있습니다.
                 </AlertDescription>
               </Alert>
-              <QAGenerationTab stats={stats} error={error} setError={setError} />
+              <QAGenerationTab
+                stats={stats}
+                error={error}
+                setError={setError}
+              />
             </CardContent>
           </Card>
         )}

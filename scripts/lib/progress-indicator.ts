@@ -6,11 +6,22 @@
 export class ProgressIndicator {
   private totalSteps: number;
   private currentStep: number = 0;
-  private stepName: string = '';
+  private stepName: string = "";
   private startTime: number;
   private intervalId: NodeJS.Timeout | null = null;
   private spinnerIndex: number = 0;
-  private readonly spinnerFrames = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
+  private readonly spinnerFrames = [
+    "⠋",
+    "⠙",
+    "⠹",
+    "⠸",
+    "⠼",
+    "⠴",
+    "⠦",
+    "⠧",
+    "⠇",
+    "⠏",
+  ];
   private readonly progressBarWidth = 20;
 
   constructor(totalSteps: number) {
@@ -55,7 +66,9 @@ export class ProgressIndicator {
     const progressBar = this.generateProgressBar(percent);
     const elapsed = Math.round((Date.now() - this.startTime) / 1000);
 
-    process.stdout.write(`\\r✅ [${progressBar}] ${percent}% | ${this.stepName} | ${elapsed}s\\n`);
+    process.stdout.write(
+      `\\r✅ [${progressBar}] ${percent}% | ${this.stepName} | ${elapsed}s\\n`,
+    );
 
     if (message) {
       console.log(`   ${message}`);
@@ -75,7 +88,9 @@ export class ProgressIndicator {
     const progressBar = this.generateProgressBar(percent);
     const elapsed = Math.round((Date.now() - this.startTime) / 1000);
 
-    process.stdout.write(`\\r❌ [${progressBar}] ${percent}% | ${this.stepName} | ${elapsed}s\\n`);
+    process.stdout.write(
+      `\\r❌ [${progressBar}] ${percent}% | ${this.stepName} | ${elapsed}s\\n`,
+    );
     console.log(`   ${errorMessage}`);
   }
 
@@ -88,9 +103,11 @@ export class ProgressIndicator {
     }
 
     const elapsed = Math.round((Date.now() - this.startTime) / 1000);
-    const progressBar = '█'.repeat(this.progressBarWidth);
+    const progressBar = "█".repeat(this.progressBarWidth);
 
-    process.stdout.write(`\\r🎉 [${progressBar}] 100% | 모든 작업 완료! | ${elapsed}s\\n`);
+    process.stdout.write(
+      `\\r🎉 [${progressBar}] 100% | 모든 작업 완료! | ${elapsed}s\\n`,
+    );
   }
 
   /**
@@ -112,7 +129,9 @@ export class ProgressIndicator {
     const spinner = this.spinnerFrames[this.spinnerIndex];
     const elapsed = Math.round((Date.now() - this.startTime) / 1000);
 
-    process.stdout.write(`\\r${spinner} [${progressBar}] ${percent}% | ${this.stepName} | ${elapsed}s`);
+    process.stdout.write(
+      `\\r${spinner} [${progressBar}] ${percent}% | ${this.stepName} | ${elapsed}s`,
+    );
   }
 
   /**
@@ -122,7 +141,7 @@ export class ProgressIndicator {
     const filled = Math.round((percent / 100) * this.progressBarWidth);
     const empty = this.progressBarWidth - filled;
 
-    return '█'.repeat(filled) + '░'.repeat(empty);
+    return "█".repeat(filled) + "░".repeat(empty);
   }
 
   /**
@@ -135,7 +154,9 @@ export class ProgressIndicator {
       const spinner = this.spinnerFrames[this.spinnerIndex];
       const elapsed = Math.round((Date.now() - this.startTime) / 1000);
 
-      process.stdout.write(`\\r${spinner} [${progressBar}] ${percent}% | ${this.stepName} → ${subTaskName} | ${elapsed}s`);
+      process.stdout.write(
+        `\\r${spinner} [${progressBar}] ${percent}% | ${this.stepName} → ${subTaskName} | ${elapsed}s`,
+      );
     }
   }
 }
@@ -146,7 +167,18 @@ export class ProgressIndicator {
 export class SimpleSpinner {
   private intervalId: NodeJS.Timeout | null = null;
   private spinnerIndex: number = 0;
-  private readonly spinnerFrames = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
+  private readonly spinnerFrames = [
+    "⠋",
+    "⠙",
+    "⠹",
+    "⠸",
+    "⠼",
+    "⠴",
+    "⠦",
+    "⠧",
+    "⠇",
+    "⠏",
+  ];
   private message: string;
 
   constructor(message: string) {

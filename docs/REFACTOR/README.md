@@ -4,7 +4,6 @@
 **Steps**: PLAN_refactor → Review(설계) → Implement → DIFF Review → REVIEW_refactor → Benchmark → Docs 업데이트  
 **DoD**: 역호환 유지, 지표 악화 없음, 롤백 경로, 체크리스트 통과
 
-
 _Last updated: 2025-09-30_
 
 ## 📊 System Status

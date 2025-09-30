@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
   try {
@@ -6,24 +6,24 @@ export async function GET(request: NextRequest) {
     const mockDocuments = {
       documents: [
         {
-          id: 'claude-md',
-          path: './CLAUDE.md',
+          id: "claude-md",
+          path: "./CLAUDE.md",
           chunkCount: 25,
           lastModified: new Date().toISOString(),
           size: 15420,
           metadata: {
-            strategy: 'markdown',
+            strategy: "markdown",
             indexed: true,
           },
         },
         {
-          id: 'readme-md',
-          path: './README.md',
+          id: "readme-md",
+          path: "./README.md",
           chunkCount: 8,
           lastModified: new Date(Date.now() - 86400000).toISOString(), // 1 day ago
           size: 5120,
           metadata: {
-            strategy: 'paragraph-pack',
+            strategy: "paragraph-pack",
             indexed: true,
           },
         },
@@ -36,10 +36,10 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(mockDocuments);
   } catch (error) {
-    console.error('Failed to fetch documents:', error);
+    console.error("Failed to fetch documents:", error);
     return NextResponse.json(
-      { error: 'Failed to fetch documents' },
-      { status: 500 }
+      { error: "Failed to fetch documents" },
+      { status: 500 },
     );
   }
 }

@@ -537,7 +537,7 @@ class DLQDiskPersistence {
           ? new Date(message.nextRetryTime)
           : undefined,
       }));
-    } catch (_____error) {
+    } catch {
       // File doesn't exist or other error, return empty array
       return [];
     }

@@ -12,3 +12,24 @@ coverage/
 *.min.js
 *.min.css
 package-lock.json
+
+# Backup and archive directories
+.system-backups/
+.refactor/
+.archive/
+
+# Reports and cache (regenerated)
+reports/
+.cache/
+
+# Generated files
+*.meta.json.gz
+test-results.json
+
+# Claude settings (local)
+.claude/settings.local.json
+
+# System metadata
+.contextual-triggers.json
+.strategy-matrix.yaml
+.self-designing-roadmap.md

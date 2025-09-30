@@ -50,12 +50,20 @@ export function retrieve(
     const docFreq = corpusStats.docFreq;
 
     for (const chunk of corpus) {
-      const score = bm25Score(queryTokens, chunk, docFreq, avgDocLength, cfg.k1, cfg.b, corpus.length);
+      const score = bm25Score(
+        queryTokens,
+        chunk,
+        docFreq,
+        avgDocLength,
+        cfg.k1,
+        cfg.b,
+        corpus.length,
+      );
       results.push({
         id: chunk.id,
         score,
         chunk,
-        algorithm: "bm25"
+        algorithm: "bm25",
       });
     }
   } else {
@@ -66,7 +74,7 @@ export function retrieve(
         id: chunk.id,
         score,
         chunk,
-        algorithm: "jaccard"
+        algorithm: "jaccard",
       });
     }
   }
@@ -145,8 +153,8 @@ function bm25Score(
     const idf = Math.log((corpusSize - df + 0.5) / (df + 0.5));
 
     // BM25 term score: IDF * (tf * (k1 + 1)) / (tf + k1 * (1 - b + b * (|D| / avgdl)))
-    const termScore = idf *
-      (tf * (k1 + 1)) /
+    const termScore =
+      (idf * (tf * (k1 + 1))) /
       (tf + k1 * (1 - b + b * (termStats.docLength / avgDocLength)));
 
     score += termScore;

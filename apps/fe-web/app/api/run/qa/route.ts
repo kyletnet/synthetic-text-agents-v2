@@ -42,11 +42,15 @@ function executeScript(
 
     console.log(`[QA API] Executing: bash ${scriptPath} ${args.join(" ")}`);
 
-    const child = processLifecycleManager.spawnManaged("bash", [scriptPath, ...args], {
-      cwd: projectRoot,
-      stdio: ["pipe", "pipe", "pipe"],
-      env: { ...process.env, RUN_ID: runId },
-    });
+    const child = processLifecycleManager.spawnManaged(
+      "bash",
+      [scriptPath, ...args],
+      {
+        cwd: projectRoot,
+        stdio: ["pipe", "pipe", "pipe"],
+        env: { ...process.env, RUN_ID: runId },
+      },
+    );
 
     let stdout = "";
     let stderr = "";

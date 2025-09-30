@@ -979,7 +979,7 @@ export class ThresholdManager {
         if (record.alert_flags && record.alert_flags.length > 0) {
           failedItems++;
         }
-      } catch (_____error) {
+      } catch {
         // Skip invalid lines
       }
     }
@@ -1006,7 +1006,7 @@ export class ThresholdManager {
         if (!record.evidence_quality?.has_evidence) {
           missingEvidence++;
         }
-      } catch (_____error) {
+      } catch {
         // Skip invalid lines
       }
     }
@@ -1025,7 +1025,7 @@ export class ThresholdManager {
         if (record.hallucination?.flagged) {
           hallucinationFlags++;
         }
-      } catch (_____error) {
+      } catch {
         // Skip invalid lines
       }
     }
@@ -1042,7 +1042,7 @@ export class ThresholdManager {
         if (record.pii_license?.pii_violations) {
           totalHits += record.pii_license.pii_violations;
         }
-      } catch (_____error) {
+      } catch {
         // Skip invalid lines
       }
     }
@@ -1059,7 +1059,7 @@ export class ThresholdManager {
         if (record.pii_license?.license_violations) {
           totalViolations += record.pii_license.license_violations;
         }
-      } catch (_____error) {
+      } catch {
         // Skip invalid lines
       }
     }

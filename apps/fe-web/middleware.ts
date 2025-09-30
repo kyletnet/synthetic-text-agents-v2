@@ -7,34 +7,34 @@
  * 🔄 Seamless integration with existing API routes
  */
 
-import { NextRequest, NextResponse } from 'next/server';
-import { LLMExecutionAuthority } from '@/lib/llm-execution-authority';
+import { NextRequest, NextResponse } from "next/server";
+import { LLMExecutionAuthority } from "@/lib/llm-execution-authority";
 
 // 🎯 Routes that require LLM execution protection
 const LLM_PROTECTED_ROUTES = [
-  '/api/augment',
-  '/api/smart-augment',
-  '/api/run/qa',
-  '/api/rag/generate-qa',
-  '/api/run',
-  '/api/session',
-  '/api/expert-feedback'
+  "/api/augment",
+  "/api/smart-augment",
+  "/api/run/qa",
+  "/api/rag/generate-qa",
+  "/api/run",
+  "/api/session",
+  "/api/expert-feedback",
 ];
 
 // 🔓 Routes excluded from LLM protection (read-only or system routes)
 const EXCLUDED_ROUTES = [
-  '/api/health',
-  '/api/status',
-  '/api/ready',
-  '/api/docs',
-  '/api/maintain',
-  '/api/dashboard',
-  '/api/baseline',
-  '/api/results',
-  '/api/upload',
-  '/api/rag/documents',
-  '/api/rag/search',
-  '/api/rag/stats'
+  "/api/health",
+  "/api/status",
+  "/api/ready",
+  "/api/docs",
+  "/api/maintain",
+  "/api/dashboard",
+  "/api/baseline",
+  "/api/results",
+  "/api/upload",
+  "/api/rag/documents",
+  "/api/rag/search",
+  "/api/rag/stats",
 ];
 
 /**
@@ -44,7 +44,7 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
   const { pathname } = request.nextUrl;
 
   // 🎯 Only process API routes
-  if (!pathname.startsWith('/api/')) {
+  if (!pathname.startsWith("/api/")) {
     return NextResponse.next();
   }
 
@@ -55,12 +55,18 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
   }
 
   // 🔍 Check if route requires LLM protection
-  const requiresLLMProtection = LLM_PROTECTED_ROUTES.some(route => pathname.startsWith(route));
-  const isExcluded = EXCLUDED_ROUTES.some(route => pathname.startsWith(route));
+  const requiresLLMProtection = LLM_PROTECTED_ROUTES.some((route) =>
+    pathname.startsWith(route),
+  );
+  const isExcluded = EXCLUDED_ROUTES.some((route) =>
+    pathname.startsWith(route),
+  );
 
   if (!requiresLLMProtection || isExcluded) {
     // 📝 Log non-protected routes for monitoring
-    console.log(`📝 [Middleware] Pass-through: ${pathname} (${isExcluded ? 'excluded' : 'not LLM-related'})`);
+    console.log(
+      `📝 [Middleware] Pass-through: ${pathname} (${isExcluded ? "excluded" : "not LLM-related"})`,
+    );
     return NextResponse.next();
   }
 
@@ -71,16 +77,16 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
     // 🔒 Validate system integrity
     const integrityReport = LLMExecutionAuthority.validateSystemIntegrity();
 
-    if (integrityReport.status === 'critical') {
+    if (integrityReport.status === "critical") {
       return createExecutionDeniedResponse(
-        'System integrity critical - LLM execution denied',
+        "System integrity critical - LLM execution denied",
         {
           pathname,
           integrityStatus: integrityReport.status,
           failedChecks: Object.entries(integrityReport.checks)
             .filter(([_, passed]) => !passed)
-            .map(([check]) => check)
-        }
+            .map(([check]) => check),
+        },
       );
     }
 
@@ -88,45 +94,46 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
     const diagnostic = await LLMExecutionAuthority.performDiagnosticExecution();
 
     if (!diagnostic.success) {
-      return createExecutionDeniedResponse(
-        'LLM execution diagnostic failed',
-        {
-          pathname,
-          diagnosticWarnings: diagnostic.warnings,
-          executionPath: diagnostic.executionPath
-        }
-      );
+      return createExecutionDeniedResponse("LLM execution diagnostic failed", {
+        pathname,
+        diagnosticWarnings: diagnostic.warnings,
+        executionPath: diagnostic.executionPath,
+      });
     }
 
     // ✅ Add execution metadata to request headers
     const response = NextResponse.next();
-    response.headers.set('X-LLM-Execution-Validated', 'true');
-    response.headers.set('X-LLM-Execution-Id', generateExecutionId());
-    response.headers.set('X-LLM-System-Status', integrityReport.status);
+    response.headers.set("X-LLM-Execution-Validated", "true");
+    response.headers.set("X-LLM-Execution-Id", generateExecutionId());
+    response.headers.set("X-LLM-System-Status", integrityReport.status);
 
     console.log(`✅ [Middleware] LLM execution validated for: ${pathname}`);
     return response;
-
   } catch (error) {
     console.error(`❌ [Middleware] Validation failed for: ${pathname}`, error);
 
     // 🔄 Handle validation errors based on strict mode
     if (isStrictModeEnabled()) {
       return createExecutionDeniedResponse(
-        'LLM execution validation failed in strict mode',
+        "LLM execution validation failed in strict mode",
         {
           pathname,
-          error: error instanceof Error ? error.message : 'Unknown error',
-          strictMode: true
-        }
+          error: error instanceof Error ? error.message : "Unknown error",
+          strictMode: true,
+        },
       );
     }
 
     // 📝 Log but allow in non-strict mode
-    console.warn(`⚠️ [Middleware] Allowing request in non-strict mode: ${pathname}`);
+    console.warn(
+      `⚠️ [Middleware] Allowing request in non-strict mode: ${pathname}`,
+    );
     const response = NextResponse.next();
-    response.headers.set('X-LLM-Execution-Validated', 'false');
-    response.headers.set('X-LLM-Execution-Warning', 'Validation failed but allowed in non-strict mode');
+    response.headers.set("X-LLM-Execution-Validated", "false");
+    response.headers.set(
+      "X-LLM-Execution-Warning",
+      "Validation failed but allowed in non-strict mode",
+    );
     return response;
   }
 }
@@ -134,21 +141,24 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
 /**
  * 🚫 Create Execution Denied Response
  */
-function createExecutionDeniedResponse(reason: string, details: any): NextResponse {
+function createExecutionDeniedResponse(
+  reason: string,
+  details: any,
+): NextResponse {
   const response = {
-    error: 'LLM_EXECUTION_DENIED',
-    message: '🚫 LLM execution blocked by system protection',
+    error: "LLM_EXECUTION_DENIED",
+    message: "🚫 LLM execution blocked by system protection",
     reason,
     details,
     timestamp: new Date().toISOString(),
     support: {
-      documentation: 'https://docs.example.com/llm-execution-protection',
+      documentation: "https://docs.example.com/llm-execution-protection",
       actions: [
-        'Verify API keys are configured and valid',
-        'Check system status at /api/status',
-        'Contact support if issue persists'
-      ]
-    }
+        "Verify API keys are configured and valid",
+        "Check system status at /api/status",
+        "Contact support if issue persists",
+      ],
+    },
   };
 
   console.error(`🚫 [Middleware] Execution denied: ${reason}`, details);
@@ -156,10 +166,10 @@ function createExecutionDeniedResponse(reason: string, details: any): NextRespon
   return NextResponse.json(response, {
     status: 503,
     headers: {
-      'X-LLM-Execution-Denied': 'true',
-      'X-LLM-Denial-Reason': reason,
-      'Content-Type': 'application/json'
-    }
+      "X-LLM-Execution-Denied": "true",
+      "X-LLM-Denial-Reason": reason,
+      "Content-Type": "application/json",
+    },
   });
 }
 
@@ -167,11 +177,11 @@ function createExecutionDeniedResponse(reason: string, details: any): NextRespon
  * 🛠️ Helper Functions
  */
 function isMiddlewareEnabled(): boolean {
-  return process.env.FEATURE_LLM_EXECUTION_AUTHORITY !== 'false';
+  return process.env.FEATURE_LLM_EXECUTION_AUTHORITY !== "false";
 }
 
 function isStrictModeEnabled(): boolean {
-  return process.env.LLM_STRICT_MODE === 'true';
+  return process.env.LLM_STRICT_MODE === "true";
 }
 
 function generateExecutionId(): string {
@@ -189,11 +199,13 @@ export const config = {
      * - Image optimization (_next/image)
      * - Favicon
      */
-    '/api/:path*'
-  ]
+    "/api/:path*",
+  ],
 };
 
-console.log('🛡️ [Middleware] Universal LLM execution protection loaded');
+console.log("🛡️ [Middleware] Universal LLM execution protection loaded");
 console.log(`🛡️ [Middleware] Protected routes: ${LLM_PROTECTED_ROUTES.length}`);
 console.log(`🔓 [Middleware] Excluded routes: ${EXCLUDED_ROUTES.length}`);
-console.log(`🚨 [Middleware] Strict mode: ${isStrictModeEnabled() ? 'ENABLED' : 'DISABLED'}`);
+console.log(
+  `🚨 [Middleware] Strict mode: ${isStrictModeEnabled() ? "ENABLED" : "DISABLED"}`,
+);

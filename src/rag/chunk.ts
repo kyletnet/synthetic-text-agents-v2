@@ -77,7 +77,7 @@ function markdownChunk(text: string, cfg: Required<ChunkOptions>): Chunk[] {
         meta: {
           strategy: "markdown",
           header: section.header,
-          level: section.level
+          level: section.level,
         },
       });
     } else {
@@ -120,7 +120,15 @@ function paragraphChunk(text: string, cfg: Required<ChunkOptions>): Chunk[] {
       continue;
     }
     if (buf.length) {
-      chunks.push(toChunk(chunks.length, text, cursor, cursor + buf.length, "paragraph-pack"));
+      chunks.push(
+        toChunk(
+          chunks.length,
+          text,
+          cursor,
+          cursor + buf.length,
+          "paragraph-pack",
+        ),
+      );
       cursor += buf.length + 2; // skip assumed "\n\n"
       buf = p;
     } else {
@@ -128,14 +136,24 @@ function paragraphChunk(text: string, cfg: Required<ChunkOptions>): Chunk[] {
       const oversized = p;
       const windows = sliding(oversized, cfg.maxChars, cfg.overlap);
       for (const w of windows) {
-        chunks.push(toChunk(chunks.length, text, cursor, cursor + w.length, "sliding"));
+        chunks.push(
+          toChunk(chunks.length, text, cursor, cursor + w.length, "sliding"),
+        );
         cursor += w.length - cfg.overlap;
       }
       buf = "";
     }
   }
   if (buf.length) {
-    chunks.push(toChunk(chunks.length, text, cursor, cursor + buf.length, "paragraph-pack"));
+    chunks.push(
+      toChunk(
+        chunks.length,
+        text,
+        cursor,
+        cursor + buf.length,
+        "paragraph-pack",
+      ),
+    );
   }
 
   // Second pass: if no paragraphs or all tiny → sliding on whole text
@@ -168,7 +186,7 @@ interface MarkdownSection {
 }
 
 function splitByMarkdownHeaders(text: string): MarkdownSection[] {
-  const lines = text.split('\n');
+  const lines = text.split("\n");
   const sections: MarkdownSection[] = [];
   let currentSection: MarkdownSection | null = null;
   let contentLines: string[] = [];
@@ -179,7 +197,7 @@ function splitByMarkdownHeaders(text: string): MarkdownSection[] {
     if (headerMatch) {
       // Save previous section if exists
       if (currentSection) {
-        currentSection.content = contentLines.join('\n').trim();
+        currentSection.content = contentLines.join("\n").trim();
         if (currentSection.content) {
           sections.push(currentSection);
         }
@@ -189,7 +207,7 @@ function splitByMarkdownHeaders(text: string): MarkdownSection[] {
       currentSection = {
         header: headerMatch[2],
         level: headerMatch[1].length,
-        content: '',
+        content: "",
       };
       contentLines = [line]; // Include header in content
     } else {
@@ -199,7 +217,7 @@ function splitByMarkdownHeaders(text: string): MarkdownSection[] {
 
   // Save last section
   if (currentSection) {
-    currentSection.content = contentLines.join('\n').trim();
+    currentSection.content = contentLines.join("\n").trim();
     if (currentSection.content) {
       sections.push(currentSection);
     }
@@ -222,7 +240,13 @@ function hasMarkdownStructure(text: string): boolean {
   return /^#{1,6}\s+.+$/m.test(text);
 }
 
-function toChunk(idx: number, full: string, start: number, end: number, strategy: string = "paragraph-pack"): Chunk {
+function toChunk(
+  idx: number,
+  full: string,
+  start: number,
+  end: number,
+  strategy: string = "paragraph-pack",
+): Chunk {
   const safeStart = Math.max(0, start);
   const safeEnd = Math.min(full.length, end);
   const content = full.slice(safeStart, safeEnd);

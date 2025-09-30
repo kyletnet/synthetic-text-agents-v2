@@ -13,11 +13,13 @@ let fs: any;
 let path: any;
 
 try {
-  fs = require('fs');
-  path = require('path');
+  fs = require("fs");
+  path = require("path");
 } catch (e) {
   // Edge runtime에서는 사용 불가
-  console.log('📝 [ExecutionTracer] Running in edge runtime - file operations disabled');
+  console.log(
+    "📝 [ExecutionTracer] Running in edge runtime - file operations disabled",
+  );
 }
 
 export interface ExecutionTrace {
@@ -26,13 +28,13 @@ export interface ExecutionTrace {
   executionId: string;
   timestamp: Date;
   source: {
-    type: 'api' | 'middleware' | 'guard' | 'direct';
+    type: "api" | "middleware" | "guard" | "direct";
     origin: string;
     userAgent?: string;
     ipAddress?: string;
   };
   llmCall: {
-    provider: 'anthropic' | 'openai' | 'mock';
+    provider: "anthropic" | "openai" | "mock";
     model: string;
     endpoint: string;
     apiKeyUsed: string; // Last 4 characters
@@ -54,7 +56,7 @@ export interface ExecutionTrace {
     mockBlocked: boolean;
   };
   metadata: {
-    environment: 'development' | 'production' | 'test';
+    environment: "development" | "production" | "test";
     version: string;
     gitCommit?: string;
     buildId?: string;
@@ -82,13 +84,15 @@ export class ExecutionTracer {
   private flushInterval: number = 30000; // 30 seconds
 
   constructor() {
-    if (path && typeof process !== 'undefined' && process.cwd) {
-      this.logPath = path.join(process.cwd(), 'logs', 'execution-traces.jsonl');
+    if (path && typeof process !== "undefined" && process.cwd) {
+      this.logPath = path.join(process.cwd(), "logs", "execution-traces.jsonl");
       this.ensureLogDirectory();
       this.startPeriodicFlush();
     } else {
-      this.logPath = '/tmp/execution-traces.jsonl'; // fallback for edge runtime
-      console.log('📝 [ExecutionTracer] Running in edge runtime - using in-memory trace storage');
+      this.logPath = "/tmp/execution-traces.jsonl"; // fallback for edge runtime
+      console.log(
+        "📝 [ExecutionTracer] Running in edge runtime - using in-memory trace storage",
+      );
     }
   }
 
@@ -103,8 +107,8 @@ export class ExecutionTracer {
    * 🎯 새로운 실행 추적 시작
    */
   startTrace(context: {
-    source: ExecutionTrace['source'];
-    context: ExecutionTrace['context'];
+    source: ExecutionTrace["source"];
+    context: ExecutionTrace["context"];
     parentTraceId?: string;
   }): string {
     const traceId = `trace_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
@@ -122,8 +126,9 @@ export class ExecutionTracer {
         mockBlocked: false,
       },
       metadata: {
-        environment: process.env.NODE_ENV === 'production' ? 'production' : 'development',
-        version: process.env.npm_package_version || '1.0.0',
+        environment:
+          process.env.NODE_ENV === "production" ? "production" : "development",
+        version: process.env.npm_package_version || "1.0.0",
         gitCommit: process.env.VERCEL_GIT_COMMIT_SHA,
         buildId: process.env.BUILD_ID,
       },
@@ -131,7 +136,9 @@ export class ExecutionTracer {
 
     this.traces.set(traceId, trace as ExecutionTrace);
 
-    console.log(`🔍 [ExecutionTracer] Started trace: ${traceId} (route: ${context.context.route})`);
+    console.log(
+      `🔍 [ExecutionTracer] Started trace: ${traceId} (route: ${context.context.route})`,
+    );
     return traceId;
   }
 
@@ -144,7 +151,9 @@ export class ExecutionTracer {
 
     trace.verification.guardPassed = passed;
 
-    console.log(`🛡️ [ExecutionTracer] Guard check (${guardType}): ${passed ? 'PASSED' : 'FAILED'} - ${traceId}`);
+    console.log(
+      `🛡️ [ExecutionTracer] Guard check (${guardType}): ${passed ? "PASSED" : "FAILED"} - ${traceId}`,
+    );
   }
 
   /**
@@ -156,26 +165,34 @@ export class ExecutionTracer {
 
     trace.verification.middlewarePassed = passed;
 
-    console.log(`🚪 [ExecutionTracer] Middleware check: ${passed ? 'PASSED' : 'FAILED'} - ${traceId}`);
+    console.log(
+      `🚪 [ExecutionTracer] Middleware check: ${passed ? "PASSED" : "FAILED"} - ${traceId}`,
+    );
   }
 
   /**
    * 🔐 실행 권한 부여 기록
    */
-  recordAuthorityGrant(traceId: string, granted: boolean, executionId: string): void {
+  recordAuthorityGrant(
+    traceId: string,
+    granted: boolean,
+    executionId: string,
+  ): void {
     const trace = this.traces.get(traceId);
     if (!trace) return;
 
     trace.verification.authorityGranted = granted;
     trace.executionId = executionId;
 
-    console.log(`🔐 [ExecutionTracer] Authority grant: ${granted ? 'GRANTED' : 'DENIED'} - ${traceId} (exec: ${executionId})`);
+    console.log(
+      `🔐 [ExecutionTracer] Authority grant: ${granted ? "GRANTED" : "DENIED"} - ${traceId} (exec: ${executionId})`,
+    );
   }
 
   /**
    * 🤖 LLM 호출 기록
    */
-  recordLLMCall(traceId: string, llmCall: ExecutionTrace['llmCall']): void {
+  recordLLMCall(traceId: string, llmCall: ExecutionTrace["llmCall"]): void {
     const trace = this.traces.get(traceId);
     if (!trace) return;
 
@@ -185,8 +202,12 @@ export class ExecutionTracer {
     const cost = this.calculateCost(llmCall);
     trace.llmCall.cost = cost;
 
-    console.log(`🤖 [ExecutionTracer] LLM call recorded: ${llmCall.provider}/${llmCall.model} - ${traceId}`);
-    console.log(`💰 [ExecutionTracer] Cost: $${cost.toFixed(4)}, Tokens: ${llmCall.tokensInput}+${llmCall.tokensOutput}, Latency: ${llmCall.latency}ms`);
+    console.log(
+      `🤖 [ExecutionTracer] LLM call recorded: ${llmCall.provider}/${llmCall.model} - ${traceId}`,
+    );
+    console.log(
+      `💰 [ExecutionTracer] Cost: $${cost.toFixed(4)}, Tokens: ${llmCall.tokensInput}+${llmCall.tokensOutput}, Latency: ${llmCall.latency}ms`,
+    );
   }
 
   /**
@@ -198,7 +219,9 @@ export class ExecutionTracer {
 
     trace.verification.mockBlocked = blocked;
 
-    console.log(`🚫 [ExecutionTracer] Mock block: ${blocked ? 'BLOCKED' : 'ALLOWED'} - ${traceId} (${reason})`);
+    console.log(
+      `🚫 [ExecutionTracer] Mock block: ${blocked ? "BLOCKED" : "ALLOWED"} - ${traceId} (${reason})`,
+    );
   }
 
   /**
@@ -227,24 +250,43 @@ export class ExecutionTracer {
   getSummary(timeRange?: { start: Date; end: Date }): ExecutionSummary {
     const traces = Array.from(this.traces.values());
     const filteredTraces = timeRange
-      ? traces.filter(t => t.timestamp >= timeRange.start && t.timestamp <= timeRange.end)
+      ? traces.filter(
+          (t) => t.timestamp >= timeRange.start && t.timestamp <= timeRange.end,
+        )
       : traces;
 
     const summary: ExecutionSummary = {
       totalCalls: filteredTraces.length,
-      totalCost: filteredTraces.reduce((sum, t) => sum + (t.llmCall?.cost || 0), 0),
-      totalTokens: filteredTraces.reduce((sum, t) => sum + (t.llmCall?.tokensInput || 0) + (t.llmCall?.tokensOutput || 0), 0),
-      averageLatency: filteredTraces.reduce((sum, t) => sum + (t.llmCall?.latency || 0), 0) / filteredTraces.length || 0,
+      totalCost: filteredTraces.reduce(
+        (sum, t) => sum + (t.llmCall?.cost || 0),
+        0,
+      ),
+      totalTokens: filteredTraces.reduce(
+        (sum, t) =>
+          sum + (t.llmCall?.tokensInput || 0) + (t.llmCall?.tokensOutput || 0),
+        0,
+      ),
+      averageLatency:
+        filteredTraces.reduce((sum, t) => sum + (t.llmCall?.latency || 0), 0) /
+          filteredTraces.length || 0,
       providerBreakdown: {},
       routeBreakdown: {},
       timeRange: {
-        start: timeRange?.start || new Date(Math.min(...filteredTraces.map(t => t.timestamp.getTime()))),
-        end: timeRange?.end || new Date(Math.max(...filteredTraces.map(t => t.timestamp.getTime()))),
+        start:
+          timeRange?.start ||
+          new Date(
+            Math.min(...filteredTraces.map((t) => t.timestamp.getTime())),
+          ),
+        end:
+          timeRange?.end ||
+          new Date(
+            Math.max(...filteredTraces.map((t) => t.timestamp.getTime())),
+          ),
       },
     };
 
     // Provider breakdown
-    filteredTraces.forEach(trace => {
+    filteredTraces.forEach((trace) => {
       if (trace.llmCall?.provider) {
         summary.providerBreakdown[trace.llmCall.provider] =
           (summary.providerBreakdown[trace.llmCall.provider] || 0) + 1;
@@ -252,7 +294,7 @@ export class ExecutionTracer {
     });
 
     // Route breakdown
-    filteredTraces.forEach(trace => {
+    filteredTraces.forEach((trace) => {
       const route = trace.context.route;
       summary.routeBreakdown[route] = (summary.routeBreakdown[route] || 0) + 1;
     });
@@ -277,35 +319,43 @@ export class ExecutionTracer {
     successRate: number;
   } {
     const traces = Array.from(this.traces.values());
-    const recentTraces = traces.filter(t => Date.now() - t.timestamp.getTime() < 300000); // 5 minutes
+    const recentTraces = traces.filter(
+      (t) => Date.now() - t.timestamp.getTime() < 300000,
+    ); // 5 minutes
 
-    const successfulTraces = recentTraces.filter(t =>
-      t.verification.guardPassed &&
-      t.verification.middlewarePassed &&
-      t.verification.authorityGranted
+    const successfulTraces = recentTraces.filter(
+      (t) =>
+        t.verification.guardPassed &&
+        t.verification.middlewarePassed &&
+        t.verification.authorityGranted,
     );
 
     return {
       activeTraces: traces.length,
       recentCalls: recentTraces.length,
-      averageCost: recentTraces.reduce((sum, t) => sum + (t.llmCall?.cost || 0), 0) / recentTraces.length || 0,
-      successRate: recentTraces.length > 0 ? successfulTraces.length / recentTraces.length : 0,
+      averageCost:
+        recentTraces.reduce((sum, t) => sum + (t.llmCall?.cost || 0), 0) /
+          recentTraces.length || 0,
+      successRate:
+        recentTraces.length > 0
+          ? successfulTraces.length / recentTraces.length
+          : 0,
     };
   }
 
   /**
    * 💰 비용 계산 (모델별)
    */
-  private calculateCost(llmCall: ExecutionTrace['llmCall']): number {
+  private calculateCost(llmCall: ExecutionTrace["llmCall"]): number {
     const rates = {
       anthropic: {
-        'claude-3-5-sonnet-20240620': { input: 0.003, output: 0.015 }, // per 1K tokens
-        'claude-3-haiku': { input: 0.00025, output: 0.00125 },
-        'claude-3-opus': { input: 0.015, output: 0.075 },
+        "claude-3-5-sonnet-20240620": { input: 0.003, output: 0.015 }, // per 1K tokens
+        "claude-3-haiku": { input: 0.00025, output: 0.00125 },
+        "claude-3-opus": { input: 0.015, output: 0.075 },
       },
       openai: {
-        'gpt-4': { input: 0.03, output: 0.06 },
-        'gpt-3.5-turbo': { input: 0.001, output: 0.002 },
+        "gpt-4": { input: 0.03, output: 0.06 },
+        "gpt-3.5-turbo": { input: 0.001, output: 0.002 },
       },
       mock: {
         default: { input: 0, output: 0 },
@@ -315,9 +365,13 @@ export class ExecutionTracer {
     const providerRates = rates[llmCall.provider];
     if (!providerRates) return 0;
 
-    const modelRates = providerRates[llmCall.model] || providerRates.default || { input: 0, output: 0 };
+    const modelRates = providerRates[llmCall.model] ||
+      providerRates.default || { input: 0, output: 0 };
 
-    return (llmCall.tokensInput / 1000 * modelRates.input) + (llmCall.tokensOutput / 1000 * modelRates.output);
+    return (
+      (llmCall.tokensInput / 1000) * modelRates.input +
+      (llmCall.tokensOutput / 1000) * modelRates.output
+    );
   }
 
   /**
@@ -332,7 +386,9 @@ export class ExecutionTracer {
         fs.mkdirSync(logDir, { recursive: true });
       }
     } catch (error) {
-      console.warn('⚠️ [ExecutionTracer] Could not create log directory (edge runtime)');
+      console.warn(
+        "⚠️ [ExecutionTracer] Could not create log directory (edge runtime)",
+      );
     }
   }
 
@@ -342,15 +398,20 @@ export class ExecutionTracer {
   private writeTraceToFile(trace: ExecutionTrace): void {
     if (!fs) {
       // Edge runtime에서는 메모리에만 저장
-      console.log(`📝 [ExecutionTracer] Trace logged (memory): ${trace.traceId}`);
+      console.log(
+        `📝 [ExecutionTracer] Trace logged (memory): ${trace.traceId}`,
+      );
       return;
     }
 
     try {
-      const logLine = JSON.stringify(trace) + '\n';
-      fs.appendFileSync(this.logPath, logLine, 'utf8');
+      const logLine = JSON.stringify(trace) + "\n";
+      fs.appendFileSync(this.logPath, logLine, "utf8");
     } catch (error) {
-      console.error('🚨 [ExecutionTracer] Failed to write trace to file:', error);
+      console.error(
+        "🚨 [ExecutionTracer] Failed to write trace to file:",
+        error,
+      );
     }
   }
 
@@ -362,8 +423,9 @@ export class ExecutionTracer {
       const traceCount = this.traces.size;
       if (traceCount > this.maxTraces) {
         // 오래된 추적들 정리
-        const sortedTraces = Array.from(this.traces.entries())
-          .sort((a, b) => a[1].timestamp.getTime() - b[1].timestamp.getTime());
+        const sortedTraces = Array.from(this.traces.entries()).sort(
+          (a, b) => a[1].timestamp.getTime() - b[1].timestamp.getTime(),
+        );
 
         const toRemove = sortedTraces.slice(0, traceCount - this.maxTraces);
         toRemove.forEach(([traceId, trace]) => {
@@ -371,7 +433,9 @@ export class ExecutionTracer {
           this.traces.delete(traceId);
         });
 
-        console.log(`🧹 [ExecutionTracer] Cleaned up ${toRemove.length} old traces`);
+        console.log(
+          `🧹 [ExecutionTracer] Cleaned up ${toRemove.length} old traces`,
+        );
       }
     }, this.flushInterval);
   }
@@ -381,7 +445,7 @@ export class ExecutionTracer {
    */
   private logTraceCompletion(trace: ExecutionTrace): void {
     const duration = Date.now() - trace.timestamp.getTime();
-    const status = trace.verification.authorityGranted ? 'SUCCESS' : 'BLOCKED';
+    const status = trace.verification.authorityGranted ? "SUCCESS" : "BLOCKED";
     const cost = trace.llmCall?.cost || 0;
 
     console.log(`📊 [ExecutionTracer] COMPLETION SUMMARY:`);
@@ -390,12 +454,14 @@ export class ExecutionTracer {
     console.log(`   Route: ${trace.context.route}`);
     console.log(`   Duration: ${duration}ms`);
     console.log(`   Cost: $${cost.toFixed(4)}`);
-    console.log(`   Provider: ${trace.llmCall?.provider || 'none'}`);
-    console.log(`   Verification: Guard=${trace.verification.guardPassed}, Middleware=${trace.verification.middlewarePassed}, Authority=${trace.verification.authorityGranted}`);
+    console.log(`   Provider: ${trace.llmCall?.provider || "none"}`);
+    console.log(
+      `   Verification: Guard=${trace.verification.guardPassed}, Middleware=${trace.verification.middlewarePassed}, Authority=${trace.verification.authorityGranted}`,
+    );
   }
 }
 
 // 싱글톤 인스턴스 export
 export const executionTracer = ExecutionTracer.getInstance();
 
-console.log('🔍 [ExecutionTracer] Execution transparency system loaded');
+console.log("🔍 [ExecutionTracer] Execution transparency system loaded");

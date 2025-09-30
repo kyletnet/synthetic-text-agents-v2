@@ -7,12 +7,12 @@ import * as readline from "readline";
 
 interface ApprovalItem {
   id: string;
-  type: 'evolution' | 'refactor' | 'security';
+  type: "evolution" | "refactor" | "security";
   title: string;
   description: string;
   command: string;
   impact: string;
-  riskLevel: 'low' | 'medium' | 'high' | 'critical';
+  riskLevel: "low" | "medium" | "high" | "critical";
   autoApprovalEligible: boolean;
 }
 
@@ -29,17 +29,19 @@ class InteractiveApprovalHandler {
   constructor() {
     this.rl = readline.createInterface({
       input: process.stdin,
-      output: process.stdout
+      output: process.stdout,
     });
   }
 
   async handleApprovals(): Promise<ApprovalResult> {
-    console.log('\n🔔 Interactive Approval System');
-    console.log('════════════════════════════════════════════════════════════');
+    console.log("\n🔔 Interactive Approval System");
+    console.log("════════════════════════════════════════════════════════════");
 
     // Check if running in non-interactive mode (CI/CD, background process)
     if (!process.stdin.isTTY) {
-      console.log('⚠️ 비대화형 실행 환경 감지 - 승인이 필요한 작업을 큐에 저장합니다');
+      console.log(
+        "⚠️ 비대화형 실행 환경 감지 - 승인이 필요한 작업을 큐에 저장합니다",
+      );
       this.rl.close();
       return { approved: [], rejected: [], deferred: [], autoExecuted: [] };
     }
@@ -47,7 +49,7 @@ class InteractiveApprovalHandler {
     const approvalItems = await this.collectApprovalItems();
 
     if (approvalItems.length === 0) {
-      console.log('✅ No approvals needed!');
+      console.log("✅ No approvals needed!");
       this.rl.close();
       return { approved: [], rejected: [], deferred: [], autoExecuted: [] };
     }
@@ -56,17 +58,21 @@ class InteractiveApprovalHandler {
       approved: [],
       rejected: [],
       deferred: [],
-      autoExecuted: []
+      autoExecuted: [],
     };
 
     // 1. 자동 승인 가능한 항목들 먼저 처리
-    const autoApprovalItems = approvalItems.filter(item => item.autoApprovalEligible);
+    const autoApprovalItems = approvalItems.filter(
+      (item) => item.autoApprovalEligible,
+    );
     if (autoApprovalItems.length > 0) {
-      console.log(`\n🤖 Auto-approving ${autoApprovalItems.length} safe items...`);
+      console.log(
+        `\n🤖 Auto-approving ${autoApprovalItems.length} safe items...`,
+      );
       for (const item of autoApprovalItems) {
         try {
           console.log(`   ⚡ Executing: ${item.title}`);
-          execSync(item.command, { stdio: 'inherit' });
+          execSync(item.command, { stdio: "inherit" });
           result.autoExecuted.push(item);
         } catch (error) {
           console.log(`   ❌ Failed: ${item.title}`);
@@ -76,39 +82,45 @@ class InteractiveApprovalHandler {
     }
 
     // 2. 수동 승인 필요한 항목들
-    const manualItems = approvalItems.filter(item => !item.autoApprovalEligible);
+    const manualItems = approvalItems.filter(
+      (item) => !item.autoApprovalEligible,
+    );
 
     if (manualItems.length > 0) {
       console.log(`\n👤 ${manualItems.length} items need your approval:`);
 
       for (let i = 0; i < manualItems.length; i++) {
         const item = manualItems[i];
-        const choice = await this.promptForApproval(item, i + 1, manualItems.length);
+        const choice = await this.promptForApproval(
+          item,
+          i + 1,
+          manualItems.length,
+        );
 
         switch (choice) {
-          case 'approve':
+          case "approve":
             try {
               console.log(`   ⚡ Executing: ${item.title}`);
-              execSync(item.command, { stdio: 'inherit' });
+              execSync(item.command, { stdio: "inherit" });
               result.approved.push(item);
             } catch (error) {
               console.log(`   ❌ Execution failed: ${item.title}`);
               result.rejected.push(item);
             }
             break;
-          case 'reject':
+          case "reject":
             result.rejected.push(item);
             break;
-          case 'defer':
+          case "defer":
             result.deferred.push(item);
             break;
-          case 'approveAll':
+          case "approveAll":
             result.approved.push(item);
             // Execute current and all remaining items
             for (const remainingItem of manualItems.slice(i)) {
               try {
                 console.log(`   ⚡ Executing: ${remainingItem.title}`);
-                execSync(remainingItem.command, { stdio: 'inherit' });
+                execSync(remainingItem.command, { stdio: "inherit" });
                 if (remainingItem !== item) result.approved.push(remainingItem);
               } catch (error) {
                 console.log(`   ❌ Failed: ${remainingItem.title}`);
@@ -116,12 +128,12 @@ class InteractiveApprovalHandler {
               }
             }
             break;
-          case 'rejectAll':
+          case "rejectAll":
             result.rejected.push(...manualItems.slice(i));
             break;
         }
 
-        if (choice === 'approveAll' || choice === 'rejectAll') break;
+        if (choice === "approveAll" || choice === "rejectAll") break;
       }
     }
 
@@ -135,66 +147,77 @@ class InteractiveApprovalHandler {
 
     // 1. Evolution approvals
     try {
-      const evolutionReportPath = join(process.cwd(), 'reports', 'evolution-report.json');
+      const evolutionReportPath = join(
+        process.cwd(),
+        "reports",
+        "evolution-report.json",
+      );
       if (existsSync(evolutionReportPath)) {
-        const report = JSON.parse(readFileSync(evolutionReportPath, 'utf8'));
+        const report = JSON.parse(readFileSync(evolutionReportPath, "utf8"));
         if (report.autoEvolutionCapabilities?.needsApproval?.length > 0) {
-          report.autoEvolutionCapabilities.needsApproval.forEach((item: any, index: number) => {
-            items.push({
-              id: `evolution-${index}`,
-              type: 'evolution',
-              title: `Architecture Evolution: ${item.description}`,
-              description: item.description,
-              command: 'npm run evolution:approve',
-              impact: 'System structure improvement, duplicate removal',
-              riskLevel: item.priority === 'critical' ? 'critical' : 'medium',
-              autoApprovalEligible: item.priority === 'low'
-            });
-          });
+          report.autoEvolutionCapabilities.needsApproval.forEach(
+            (item: any, index: number) => {
+              items.push({
+                id: `evolution-${index}`,
+                type: "evolution",
+                title: `Architecture Evolution: ${item.description}`,
+                description: item.description,
+                command: "npm run evolution:approve",
+                impact: "System structure improvement, duplicate removal",
+                riskLevel: item.priority === "critical" ? "critical" : "medium",
+                autoApprovalEligible: item.priority === "low",
+              });
+            },
+          );
         }
       }
     } catch (error) {
-      console.log('⚠️ Could not load evolution approvals');
+      console.log("⚠️ Could not load evolution approvals");
     }
 
     // 2. Refactor approvals
     try {
-      const refactorStatePath = join(process.cwd(), '.refactor', 'state.json');
+      const refactorStatePath = join(process.cwd(), ".refactor", "state.json");
       if (existsSync(refactorStatePath)) {
-        const state = JSON.parse(readFileSync(refactorStatePath, 'utf8'));
-        const pendingFindings = state.findings?.filter((f: any) => f.status === 'pending') || [];
+        const state = JSON.parse(readFileSync(refactorStatePath, "utf8"));
+        const pendingFindings =
+          state.findings?.filter((f: any) => f.status === "pending") || [];
 
         if (pendingFindings.length > 0) {
           items.push({
-            id: 'refactor-batch',
-            type: 'refactor',
+            id: "refactor-batch",
+            type: "refactor",
             title: `Refactoring Improvements (${pendingFindings.length} items)`,
             description: `Code quality improvements including schema fixes, consistency improvements`,
             command: 'echo "Refactor approval - manual command needed"',
-            impact: 'Code quality improvement, technical debt reduction',
-            riskLevel: 'medium',
-            autoApprovalEligible: false // Refactoring needs careful review
+            impact: "Code quality improvement, technical debt reduction",
+            riskLevel: "medium",
+            autoApprovalEligible: false, // Refactoring needs careful review
           });
         }
       }
     } catch (error) {
-      console.log('⚠️ Could not load refactor approvals');
+      console.log("⚠️ Could not load refactor approvals");
     }
 
     // 3. ESLint fixes
     try {
-      const lintResult = execSync('npm run dev:lint', { encoding: 'utf8', stdio: 'pipe' });
+      const lintResult = execSync("npm run dev:lint", {
+        encoding: "utf8",
+        stdio: "pipe",
+      });
       const warningCount = (lintResult.match(/warning/g) || []).length;
       if (warningCount > 0) {
         items.push({
-          id: 'eslint-fix',
-          type: 'refactor',
+          id: "eslint-fix",
+          type: "refactor",
           title: `ESLint Auto-fixes (${warningCount} warnings)`,
-          description: 'Automatic code style fixes for unused variables and formatting',
-          command: 'npm run lint:fix',
-          impact: 'Code style consistency, unused variable cleanup',
-          riskLevel: 'low',
-          autoApprovalEligible: true // ESLint fixes are generally safe
+          description:
+            "Automatic code style fixes for unused variables and formatting",
+          command: "npm run lint:fix",
+          impact: "Code style consistency, unused variable cleanup",
+          riskLevel: "low",
+          autoApprovalEligible: true, // ESLint fixes are generally safe
         });
       }
     } catch (error) {
@@ -204,15 +227,21 @@ class InteractiveApprovalHandler {
     return items;
   }
 
-  private async promptForApproval(item: ApprovalItem, current: number, total: number): Promise<string> {
+  private async promptForApproval(
+    item: ApprovalItem,
+    current: number,
+    total: number,
+  ): Promise<string> {
     const riskIcon = {
-      low: '💡',
-      medium: '⚠️',
-      high: '🔶',
-      critical: '🚨'
+      low: "💡",
+      medium: "⚠️",
+      high: "🔶",
+      critical: "🚨",
     }[item.riskLevel];
 
-    console.log(`\n─────────────────────────────────────────────────────────────`);
+    console.log(
+      `\n─────────────────────────────────────────────────────────────`,
+    );
     console.log(`📋 Approval ${current}/${total}: ${riskIcon} ${item.title}`);
     console.log(`📝 Description: ${item.description}`);
     console.log(`🎯 Impact: ${item.impact}`);
@@ -227,30 +256,30 @@ class InteractiveApprovalHandler {
       console.log(`   [A] Approve ALL remaining`);
       console.log(`   [R] Reject ALL remaining`);
 
-      this.rl.question('\nChoice (y/n/d/A/R): ', (answer) => {
+      this.rl.question("\nChoice (y/n/d/A/R): ", (answer) => {
         switch (answer.toLowerCase()) {
-          case 'y':
-          case 'yes':
-            resolve('approve');
+          case "y":
+          case "yes":
+            resolve("approve");
             break;
-          case 'n':
-          case 'no':
-            resolve('reject');
+          case "n":
+          case "no":
+            resolve("reject");
             break;
-          case 'd':
-          case 'defer':
-            resolve('defer');
+          case "d":
+          case "defer":
+            resolve("defer");
             break;
-          case 'a':
-          case 'all':
-            resolve('approveAll');
+          case "a":
+          case "all":
+            resolve("approveAll");
             break;
-          case 'r':
-          case 'rejectall':
-            resolve('rejectAll');
+          case "r":
+          case "rejectall":
+            resolve("rejectAll");
             break;
           default:
-            console.log('Please enter y, n, d, A, or R');
+            console.log("Please enter y, n, d, A, or R");
             resolve(this.promptForApproval(item, current, total));
         }
       });
@@ -258,24 +287,30 @@ class InteractiveApprovalHandler {
   }
 
   private printSummary(result: ApprovalResult): void {
-    console.log('\n🎯 Approval Session Summary');
-    console.log('════════════════════════════════════════════════════════════');
+    console.log("\n🎯 Approval Session Summary");
+    console.log("════════════════════════════════════════════════════════════");
     console.log(`🤖 Auto-executed: ${result.autoExecuted.length}`);
     console.log(`✅ Approved: ${result.approved.length}`);
     console.log(`❌ Rejected: ${result.rejected.length}`);
     console.log(`⏸️  Deferred: ${result.deferred.length}`);
 
-    const total = result.autoExecuted.length + result.approved.length + result.rejected.length + result.deferred.length;
+    const total =
+      result.autoExecuted.length +
+      result.approved.length +
+      result.rejected.length +
+      result.deferred.length;
     const success = result.autoExecuted.length + result.approved.length;
     const successRate = total > 0 ? Math.round((success / total) * 100) : 100;
 
     console.log(`\n📈 Success Rate: ${successRate}%`);
 
     if (result.deferred.length > 0) {
-      console.log(`\n⏸️  Deferred items will be available in next maintenance cycle`);
+      console.log(
+        `\n⏸️  Deferred items will be available in next maintenance cycle`,
+      );
     }
 
-    console.log('\n🚀 Approval session complete!');
+    console.log("\n🚀 Approval session complete!");
   }
 }
 

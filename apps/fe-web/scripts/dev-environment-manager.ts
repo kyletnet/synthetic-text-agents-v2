@@ -7,15 +7,15 @@
  * Implements URL-based deployment options and intelligent process management
  */
 
-import { execSync, ChildProcess } from 'child_process';
-import fs from 'fs';
-import path from 'path';
-import net from 'net';
-import { circuitBreakerRegistry } from '../lib/circuit-breaker';
-import { processLifecycleManager } from '../lib/process-lifecycle-manager';
+import { execSync, ChildProcess } from "child_process";
+import fs from "fs";
+import path from "path";
+import net from "net";
+import { circuitBreakerRegistry } from "../lib/circuit-breaker";
+import { processLifecycleManager } from "../lib/process-lifecycle-manager";
 
 interface DevEnvironmentConfig {
-  mode: 'local' | 'container' | 'cloud' | 'production';
+  mode: "local" | "container" | "cloud" | "production";
   port: number;
   forceCleanup: boolean;
   singleInstance: boolean;
@@ -26,7 +26,7 @@ interface ProcessInfo {
   pid: number;
   port: number;
   startTime: Date;
-  status: 'running' | 'failed' | 'stopped';
+  status: "running" | "failed" | "stopped";
 }
 
 export class DevelopmentEnvironmentManager {
@@ -36,22 +36,22 @@ export class DevelopmentEnvironmentManager {
 
   constructor(config?: Partial<DevEnvironmentConfig>) {
     this.config = {
-      mode: 'local',
+      mode: "local",
       port: 3000,
       forceCleanup: true,
       singleInstance: true,
       healthCheckInterval: 30000,
-      ...config
+      ...config,
     };
 
-    this.lockFile = path.join(process.cwd(), '.dev-environment.lock');
+    this.lockFile = path.join(process.cwd(), ".dev-environment.lock");
   }
 
   /**
    * 🚀 Start Development Environment
    */
   async startEnvironment(): Promise<void> {
-    console.log('🏗️ [DevEnvManager] Starting development environment...');
+    console.log("🏗️ [DevEnvManager] Starting development environment...");
 
     // Step 1: Enforce single instance
     if (this.config.singleInstance) {
@@ -65,16 +65,16 @@ export class DevelopmentEnvironmentManager {
 
     // Step 3: Prepare environment based on mode
     switch (this.config.mode) {
-      case 'local':
+      case "local":
         await this.startLocalDevelopment();
         break;
-      case 'container':
+      case "container":
         await this.startContainerDevelopment();
         break;
-      case 'cloud':
+      case "cloud":
         await this.startCloudDevelopment();
         break;
-      case 'production':
+      case "production":
         await this.startProductionMode();
         break;
     }
@@ -82,7 +82,9 @@ export class DevelopmentEnvironmentManager {
     // Step 4: Setup monitoring
     this.setupHealthMonitoring();
 
-    console.log('✅ [DevEnvManager] Development environment started successfully');
+    console.log(
+      "✅ [DevEnvManager] Development environment started successfully",
+    );
   }
 
   /**
@@ -90,17 +92,21 @@ export class DevelopmentEnvironmentManager {
    */
   private async enforceSingleInstance(): Promise<void> {
     if (fs.existsSync(this.lockFile)) {
-      const lockData = JSON.parse(fs.readFileSync(this.lockFile, 'utf8'));
+      const lockData = JSON.parse(fs.readFileSync(this.lockFile, "utf8"));
 
       // Check if process is still running
       const isRunning = await this.isProcessRunning(lockData.pid);
 
       if (isRunning) {
-        console.log('🚫 [DevEnvManager] Another dev environment is already running');
-        console.log(`📊 [DevEnvManager] PID: ${lockData.pid}, Port: ${lockData.port}, Started: ${lockData.startTime}`);
+        console.log(
+          "🚫 [DevEnvManager] Another dev environment is already running",
+        );
+        console.log(
+          `📊 [DevEnvManager] PID: ${lockData.pid}, Port: ${lockData.port}, Started: ${lockData.startTime}`,
+        );
 
         // Kill existing process
-        console.log('🧹 [DevEnvManager] Terminating existing process...');
+        console.log("🧹 [DevEnvManager] Terminating existing process...");
         await this.killProcess(lockData.pid);
       }
 
@@ -113,14 +119,14 @@ export class DevelopmentEnvironmentManager {
    * 🧹 Force Cleanup All Development Processes
    */
   private async forceCleanupProcesses(): Promise<void> {
-    console.log('🧹 [DevEnvManager] Force cleaning up all dev processes...');
+    console.log("🧹 [DevEnvManager] Force cleaning up all dev processes...");
 
     try {
       // Kill all npm run dev processes
-      execSync('pkill -f "npm run dev" || true', { stdio: 'inherit' });
+      execSync('pkill -f "npm run dev" || true', { stdio: "inherit" });
 
       // Kill all Next.js processes
-      execSync('pkill -f "next dev" || true', { stdio: 'inherit' });
+      execSync('pkill -f "next dev" || true', { stdio: "inherit" });
 
       // Kill processes on common ports
       const commonPorts = [3000, 3001, 3002, 3003, 8080, 8000];
@@ -131,9 +137,12 @@ export class DevelopmentEnvironmentManager {
       // Wait for cleanup to complete
       await this.sleep(2000);
 
-      console.log('✅ [DevEnvManager] Process cleanup completed');
+      console.log("✅ [DevEnvManager] Process cleanup completed");
     } catch (error) {
-      console.warn('⚠️ [DevEnvManager] Some processes may not have been cleaned up:', error);
+      console.warn(
+        "⚠️ [DevEnvManager] Some processes may not have been cleaned up:",
+        error,
+      );
     }
   }
 
@@ -141,7 +150,7 @@ export class DevelopmentEnvironmentManager {
    * 🏠 Start Local Development Mode
    */
   private async startLocalDevelopment(): Promise<void> {
-    console.log('🏠 [DevEnvManager] Starting local development mode...');
+    console.log("🏠 [DevEnvManager] Starting local development mode...");
 
     // Find available port
     const availablePort = await this.findAvailablePort(this.config.port);
@@ -153,73 +162,88 @@ export class DevelopmentEnvironmentManager {
     await this.cleanBuildArtifacts();
 
     // Start dev server
-    const devProcess = processLifecycleManager.spawnManaged('npm', ['run', 'dev'], {
-      stdio: 'inherit',
-      env: {
-        ...process.env,
-        PORT: availablePort.toString(),
-        NODE_ENV: 'development'
-      }
-    });
+    const devProcess = processLifecycleManager.spawnManaged(
+      "npm",
+      ["run", "dev"],
+      {
+        stdio: "inherit",
+        env: {
+          ...process.env,
+          PORT: availablePort.toString(),
+          NODE_ENV: "development",
+        },
+      },
+    );
 
     // Create lock file
     this.processInfo = {
       pid: devProcess.pid!,
       port: availablePort,
       startTime: new Date(),
-      status: 'running'
+      status: "running",
     };
 
     fs.writeFileSync(this.lockFile, JSON.stringify(this.processInfo, null, 2));
 
-    console.log(`🎯 [DevEnvManager] Local dev server: http://localhost:${availablePort}`);
+    console.log(
+      `🎯 [DevEnvManager] Local dev server: http://localhost:${availablePort}`,
+    );
   }
 
   /**
    * 🐳 Start Container Development Mode
    */
   private async startContainerDevelopment(): Promise<void> {
-    console.log('🐳 [DevEnvManager] Starting container development mode...');
+    console.log("🐳 [DevEnvManager] Starting container development mode...");
 
     // Create Dockerfile if it doesn't exist
-    const dockerfilePath = path.join(process.cwd(), 'Dockerfile.dev');
+    const dockerfilePath = path.join(process.cwd(), "Dockerfile.dev");
     if (!fs.existsSync(dockerfilePath)) {
       await this.createDevDockerfile();
     }
 
     // Build and run container
-    const containerName = 'synthetic-text-agents-dev';
+    const containerName = "synthetic-text-agents-dev";
 
     try {
-      execSync(`docker stop ${containerName} && docker rm ${containerName}`, { stdio: 'inherit' });
+      execSync(`docker stop ${containerName} && docker rm ${containerName}`, {
+        stdio: "inherit",
+      });
     } catch {
       // Container may not exist
     }
 
-    execSync(`docker build -f Dockerfile.dev -t ${containerName} .`, { stdio: 'inherit' });
-    execSync(`docker run -d --name ${containerName} -p 3000:3000 ${containerName}`, { stdio: 'inherit' });
+    execSync(`docker build -f Dockerfile.dev -t ${containerName} .`, {
+      stdio: "inherit",
+    });
+    execSync(
+      `docker run -d --name ${containerName} -p 3000:3000 ${containerName}`,
+      { stdio: "inherit" },
+    );
 
-    console.log('🎯 [DevEnvManager] Container dev server: http://localhost:3000');
+    console.log(
+      "🎯 [DevEnvManager] Container dev server: http://localhost:3000",
+    );
   }
 
   /**
    * ☁️ Start Cloud Development Mode
    */
   private async startCloudDevelopment(): Promise<void> {
-    console.log('☁️ [DevEnvManager] Starting cloud development mode...');
+    console.log("☁️ [DevEnvManager] Starting cloud development mode...");
 
     // Check if Vercel CLI is available
     try {
-      execSync('vercel --version', { stdio: 'ignore' });
+      execSync("vercel --version", { stdio: "ignore" });
     } catch {
-      console.log('📦 [DevEnvManager] Installing Vercel CLI...');
-      execSync('npm install -g vercel', { stdio: 'inherit' });
+      console.log("📦 [DevEnvManager] Installing Vercel CLI...");
+      execSync("npm install -g vercel", { stdio: "inherit" });
     }
 
     // Deploy to Vercel
-    console.log('🚀 [DevEnvManager] Deploying to Vercel...');
-    const result = execSync('vercel --prod --confirm', { encoding: 'utf8' });
-    const deployUrl = result.trim().split('\n').pop();
+    console.log("🚀 [DevEnvManager] Deploying to Vercel...");
+    const result = execSync("vercel --prod --confirm", { encoding: "utf8" });
+    const deployUrl = result.trim().split("\n").pop();
 
     console.log(`🎯 [DevEnvManager] Cloud deployment: ${deployUrl}`);
 
@@ -228,48 +252,57 @@ export class DevelopmentEnvironmentManager {
       pid: process.pid,
       port: 443, // HTTPS
       startTime: new Date(),
-      status: 'running'
+      status: "running",
     };
 
-    fs.writeFileSync(this.lockFile, JSON.stringify({
-      ...this.processInfo,
-      deploymentUrl: deployUrl
-    }, null, 2));
+    fs.writeFileSync(
+      this.lockFile,
+      JSON.stringify(
+        {
+          ...this.processInfo,
+          deploymentUrl: deployUrl,
+        },
+        null,
+        2,
+      ),
+    );
   }
 
   /**
    * 🏭 Start Production Mode (for testing)
    */
   private async startProductionMode(): Promise<void> {
-    console.log('🏭 [DevEnvManager] Starting production mode for testing...');
+    console.log("🏭 [DevEnvManager] Starting production mode for testing...");
 
     // Build production
     await this.cleanBuildArtifacts();
-    execSync('npm run build', { stdio: 'inherit' });
+    execSync("npm run build", { stdio: "inherit" });
 
     // Find available port
     const availablePort = await this.findAvailablePort(this.config.port);
 
     // Start production server
-    const prodProcess = processLifecycleManager.spawnManaged('npm', ['start'], {
-      stdio: 'inherit',
+    const prodProcess = processLifecycleManager.spawnManaged("npm", ["start"], {
+      stdio: "inherit",
       env: {
         ...process.env,
         PORT: availablePort.toString(),
-        NODE_ENV: 'production'
-      }
+        NODE_ENV: "production",
+      },
     });
 
     this.processInfo = {
       pid: prodProcess.pid!,
       port: availablePort,
       startTime: new Date(),
-      status: 'running'
+      status: "running",
     };
 
     fs.writeFileSync(this.lockFile, JSON.stringify(this.processInfo, null, 2));
 
-    console.log(`🎯 [DevEnvManager] Production server: http://localhost:${availablePort}`);
+    console.log(
+      `🎯 [DevEnvManager] Production server: http://localhost:${availablePort}`,
+    );
   }
 
   /**
@@ -280,21 +313,30 @@ export class DevelopmentEnvironmentManager {
       if (this.processInfo) {
         const isHealthy = await this.checkHealth();
         if (!isHealthy) {
-          console.error('❌ [DevEnvManager] Health check failed - restarting...');
+          console.error(
+            "❌ [DevEnvManager] Health check failed - restarting...",
+          );
           clearInterval(healthCheck);
 
           // Circuit Breaker로 재시작 보호
           try {
-            await circuitBreakerRegistry.get('dev-env-restart', {
-              failureThreshold: 3,
-              timeoutWindow: 300000, // 5분 차단
-              halfOpenMaxAttempts: 1
-            }).execute(async () => {
-              await this.restartEnvironment();
-            });
+            await circuitBreakerRegistry
+              .get("dev-env-restart", {
+                failureThreshold: 3,
+                timeoutWindow: 300000, // 5분 차단
+                halfOpenMaxAttempts: 1,
+              })
+              .execute(async () => {
+                await this.restartEnvironment();
+              });
           } catch (error) {
-            console.error('🛡️ [DevEnvManager] Circuit breaker blocked restart:', error instanceof Error ? error.message : 'Unknown error');
-            console.log('🛑 [DevEnvManager] Too many restart failures - stopping automatic restarts');
+            console.error(
+              "🛡️ [DevEnvManager] Circuit breaker blocked restart:",
+              error instanceof Error ? error.message : "Unknown error",
+            );
+            console.log(
+              "🛑 [DevEnvManager] Too many restart failures - stopping automatic restarts",
+            );
             // 더 이상 재시작하지 않고 수동 개입 필요
           }
         }
@@ -302,7 +344,7 @@ export class DevelopmentEnvironmentManager {
     }, this.config.healthCheckInterval);
 
     // Cleanup on exit
-    process.on('SIGINT', () => {
+    process.on("SIGINT", () => {
       clearInterval(healthCheck);
       this.cleanup();
       process.exit(0);
@@ -313,7 +355,7 @@ export class DevelopmentEnvironmentManager {
    * 🔄 Restart Environment
    */
   private async restartEnvironment(): Promise<void> {
-    console.log('🔄 [DevEnvManager] Restarting development environment...');
+    console.log("🔄 [DevEnvManager] Restarting development environment...");
     await this.cleanup();
     await this.startEnvironment();
   }
@@ -324,7 +366,7 @@ export class DevelopmentEnvironmentManager {
   private async checkHealth(): Promise<boolean> {
     if (!this.processInfo) return false;
 
-    if (this.config.mode === 'cloud') {
+    if (this.config.mode === "cloud") {
       // For cloud mode, just return true (Vercel handles health)
       return true;
     }
@@ -354,7 +396,7 @@ export class DevelopmentEnvironmentManager {
         return port;
       }
     }
-    throw new Error('No available ports found');
+    throw new Error("No available ports found");
   }
 
   private async isPortAvailable(port: number): Promise<boolean> {
@@ -363,7 +405,7 @@ export class DevelopmentEnvironmentManager {
       server.listen(port, () => {
         server.close(() => resolve(true));
       });
-      server.on('error', () => resolve(false));
+      server.on("error", () => resolve(false));
     });
   }
 
@@ -371,27 +413,28 @@ export class DevelopmentEnvironmentManager {
     return new Promise((resolve) => {
       const socket = new net.Socket();
       socket.setTimeout(1000);
-      socket.on('connect', () => {
+      socket.on("connect", () => {
         socket.destroy();
         resolve(true);
       });
-      socket.on('timeout', () => {
+      socket.on("timeout", () => {
         socket.destroy();
         resolve(false);
       });
-      socket.on('error', () => resolve(false));
-      socket.connect(port, 'localhost');
+      socket.on("error", () => resolve(false));
+      socket.connect(port, "localhost");
     });
   }
 
   private async killProcessOnPort(port: number): Promise<void> {
     try {
-      const cmd = process.platform === 'win32'
-        ? `netstat -ano | findstr :${port}`
-        : `lsof -ti:${port}`;
+      const cmd =
+        process.platform === "win32"
+          ? `netstat -ano | findstr :${port}`
+          : `lsof -ti:${port}`;
 
-      const result = execSync(cmd, { encoding: 'utf8' });
-      const pids = result.trim().split('\n').filter(Boolean);
+      const result = execSync(cmd, { encoding: "utf8" });
+      const pids = result.trim().split("\n").filter(Boolean);
 
       for (const pid of pids) {
         await this.killProcess(parseInt(pid));
@@ -403,9 +446,9 @@ export class DevelopmentEnvironmentManager {
 
   private async killProcess(pid: number): Promise<void> {
     try {
-      process.kill(pid, 'SIGTERM');
+      process.kill(pid, "SIGTERM");
       await this.sleep(1000);
-      process.kill(pid, 'SIGKILL');
+      process.kill(pid, "SIGKILL");
     } catch {
       // Process may already be dead
     }
@@ -421,10 +464,10 @@ export class DevelopmentEnvironmentManager {
   }
 
   private async cleanBuildArtifacts(): Promise<void> {
-    const pathsToClean = ['.next', 'node_modules/.cache', 'dist'];
+    const pathsToClean = [".next", "node_modules/.cache", "dist"];
     for (const cleanPath of pathsToClean) {
       try {
-        execSync(`rm -rf ${cleanPath}`, { stdio: 'inherit' });
+        execSync(`rm -rf ${cleanPath}`, { stdio: "inherit" });
       } catch {
         // Path may not exist
       }
@@ -447,12 +490,12 @@ EXPOSE 3000
 CMD ["npm", "run", "dev"]
     `.trim();
 
-    fs.writeFileSync('Dockerfile.dev', dockerfile);
-    console.log('🐳 [DevEnvManager] Created Dockerfile.dev');
+    fs.writeFileSync("Dockerfile.dev", dockerfile);
+    console.log("🐳 [DevEnvManager] Created Dockerfile.dev");
   }
 
   private async sleep(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   /**
@@ -460,11 +503,11 @@ CMD ["npm", "run", "dev"]
    */
   getStatus(): any {
     if (fs.existsSync(this.lockFile)) {
-      const lockData = JSON.parse(fs.readFileSync(this.lockFile, 'utf8'));
+      const lockData = JSON.parse(fs.readFileSync(this.lockFile, "utf8"));
       return {
         running: true,
         ...lockData,
-        uptime: Date.now() - new Date(lockData.startTime).getTime()
+        uptime: Date.now() - new Date(lockData.startTime).getTime(),
       };
     }
     return { running: false };
@@ -474,21 +517,21 @@ CMD ["npm", "run", "dev"]
 // CLI Interface
 if (require.main === module) {
   const args = process.argv.slice(2);
-  const mode = args[0] as DevEnvironmentConfig['mode'] || 'local';
+  const mode = (args[0] as DevEnvironmentConfig["mode"]) || "local";
 
   const manager = new DevelopmentEnvironmentManager({ mode });
 
   switch (args[0]) {
-    case 'start':
+    case "start":
       manager.startEnvironment();
       break;
-    case 'status':
+    case "status":
       console.log(JSON.stringify(manager.getStatus(), null, 2));
       break;
-    case 'local':
-    case 'container':
-    case 'cloud':
-    case 'production':
+    case "local":
+    case "container":
+    case "cloud":
+    case "production":
       manager.startEnvironment();
       break;
     default:
@@ -517,4 +560,4 @@ Examples:
   }
 }
 
-console.log('🏗️ [DevEnvManager] Development Environment Manager loaded');
+console.log("🏗️ [DevEnvManager] Development Environment Manager loaded");

@@ -158,7 +158,7 @@ function scanForPii(
 ): PiiMatch[] {
   const matches: PiiMatch[] = [];
 
-  for (const { pattern, type: piiType, risk } of ENHANCED_PII_PATTERNS) {
+  for (const { pattern, risk } of ENHANCED_PII_PATTERNS) {
     let match;
     const regex = new RegExp(pattern.source, pattern.flags);
 

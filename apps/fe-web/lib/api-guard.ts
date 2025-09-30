@@ -8,8 +8,8 @@
  * - 사용자 혼란 방지
  */
 
-import { NextRequest, NextResponse } from 'next/server';
-import { apiKeyManager } from './api-key-manager';
+import { NextRequest, NextResponse } from "next/server";
+import { apiKeyManager } from "./api-key-manager";
 
 export interface APIGuardResult {
   isAllowed: boolean;
@@ -29,41 +29,52 @@ export class APIGuard {
     if (stats.totalKeys === 0) {
       return {
         isAllowed: false,
-        reason: 'NO_API_KEYS_CONFIGURED',
+        reason: "NO_API_KEYS_CONFIGURED",
         status: 503,
-        response: NextResponse.json({
-          error: 'SERVICE_UNAVAILABLE',
-          message: '❌ CRITICAL: No API keys configured. System cannot function.',
-          details: {
-            cause: 'No ANTHROPIC_API_KEY found in environment variables',
-            solution: 'Please configure at least one valid API key',
-            documentation: 'https://docs.anthropic.com/claude/reference/getting-started'
+        response: NextResponse.json(
+          {
+            error: "SERVICE_UNAVAILABLE",
+            message:
+              "❌ CRITICAL: No API keys configured. System cannot function.",
+            details: {
+              cause: "No ANTHROPIC_API_KEY found in environment variables",
+              solution: "Please configure at least one valid API key",
+              documentation:
+                "https://docs.anthropic.com/claude/reference/getting-started",
+            },
+            timestamp: new Date().toISOString(),
+            requestId: req.headers.get("x-request-id") || "unknown",
           },
-          timestamp: new Date().toISOString(),
-          requestId: req.headers.get('x-request-id') || 'unknown'
-        }, { status: 503 })
+          { status: 503 },
+        ),
       };
     }
 
     if (stats.activeKeys === 0) {
       return {
         isAllowed: false,
-        reason: 'ALL_API_KEYS_DISABLED',
+        reason: "ALL_API_KEYS_DISABLED",
         status: 503,
-        response: NextResponse.json({
-          error: 'SERVICE_UNAVAILABLE',
-          message: '❌ CRITICAL: All API keys are disabled due to failures. System cannot function.',
-          details: {
-            totalKeys: stats.totalKeys,
-            activeKeys: stats.activeKeys,
-            failedKeys: stats.failedKeys,
-            cause: 'All configured API keys have been disabled due to repeated failures',
-            solution: 'Please check your API keys and reactivate them, or add new valid keys',
-            recommendation: 'Contact support if keys were working previously'
+        response: NextResponse.json(
+          {
+            error: "SERVICE_UNAVAILABLE",
+            message:
+              "❌ CRITICAL: All API keys are disabled due to failures. System cannot function.",
+            details: {
+              totalKeys: stats.totalKeys,
+              activeKeys: stats.activeKeys,
+              failedKeys: stats.failedKeys,
+              cause:
+                "All configured API keys have been disabled due to repeated failures",
+              solution:
+                "Please check your API keys and reactivate them, or add new valid keys",
+              recommendation: "Contact support if keys were working previously",
+            },
+            timestamp: new Date().toISOString(),
+            requestId: req.headers.get("x-request-id") || "unknown",
           },
-          timestamp: new Date().toISOString(),
-          requestId: req.headers.get('x-request-id') || 'unknown'
-        }, { status: 503 })
+          { status: 503 },
+        ),
       };
     }
 
@@ -72,26 +83,30 @@ export class APIGuard {
     if (!currentKey) {
       return {
         isAllowed: false,
-        reason: 'NO_CURRENT_KEY_AVAILABLE',
+        reason: "NO_CURRENT_KEY_AVAILABLE",
         status: 503,
-        response: NextResponse.json({
-          error: 'SERVICE_UNAVAILABLE',
-          message: '❌ CRITICAL: No current API key available. System cannot function.',
-          details: {
-            totalKeys: stats.totalKeys,
-            activeKeys: stats.activeKeys,
-            cause: 'No API key is currently available for use',
-            solution: 'API key rotation failed - check key validity',
-            stats: stats
+        response: NextResponse.json(
+          {
+            error: "SERVICE_UNAVAILABLE",
+            message:
+              "❌ CRITICAL: No current API key available. System cannot function.",
+            details: {
+              totalKeys: stats.totalKeys,
+              activeKeys: stats.activeKeys,
+              cause: "No API key is currently available for use",
+              solution: "API key rotation failed - check key validity",
+              stats: stats,
+            },
+            timestamp: new Date().toISOString(),
+            requestId: req.headers.get("x-request-id") || "unknown",
           },
-          timestamp: new Date().toISOString(),
-          requestId: req.headers.get('x-request-id') || 'unknown'
-        }, { status: 503 })
+          { status: 503 },
+        ),
       };
     }
 
     return {
-      isAllowed: true
+      isAllowed: true,
     };
   }
 
@@ -100,7 +115,7 @@ export class APIGuard {
    */
   static async guardedHandler<T>(
     req: NextRequest,
-    handler: (req: NextRequest) => Promise<T>
+    handler: (req: NextRequest) => Promise<T>,
   ): Promise<T | NextResponse> {
     const guardResult = this.validateAPIKey(req);
 
@@ -115,17 +130,20 @@ export class APIGuard {
       // API 키 관련 에러인 경우 특별 처리
       if (this.isAPIKeyError(error)) {
         const stats = apiKeyManager.getStats();
-        return NextResponse.json({
-          error: 'API_KEY_ERROR',
-          message: '❌ API key error occurred during request processing',
-          details: {
-            originalError: (error as Error).message,
-            currentStats: stats,
-            recommendation: 'API key may be invalid or quota exceeded'
+        return NextResponse.json(
+          {
+            error: "API_KEY_ERROR",
+            message: "❌ API key error occurred during request processing",
+            details: {
+              originalError: (error as Error).message,
+              currentStats: stats,
+              recommendation: "API key may be invalid or quota exceeded",
+            },
+            timestamp: new Date().toISOString(),
+            requestId: req.headers.get("x-request-id") || "unknown",
           },
-          timestamp: new Date().toISOString(),
-          requestId: req.headers.get('x-request-id') || 'unknown'
-        }, { status: 503 });
+          { status: 503 },
+        );
       }
 
       // 일반 에러는 그대로 throw
@@ -137,20 +155,20 @@ export class APIGuard {
    * API 키 관련 에러인지 확인
    */
   private static isAPIKeyError(error: any): boolean {
-    const errorMessage = error?.message?.toLowerCase() || '';
+    const errorMessage = error?.message?.toLowerCase() || "";
     const apiKeyErrorPatterns = [
-      'api key',
-      'authentication',
-      'unauthorized',
-      'invalid key',
-      'quota exceeded',
-      'rate limit',
-      'billing',
-      'subscription'
+      "api key",
+      "authentication",
+      "unauthorized",
+      "invalid key",
+      "quota exceeded",
+      "rate limit",
+      "billing",
+      "subscription",
     ];
 
-    return apiKeyErrorPatterns.some(pattern =>
-      errorMessage.includes(pattern)
+    return apiKeyErrorPatterns.some((pattern) =>
+      errorMessage.includes(pattern),
     );
   }
 
@@ -158,15 +176,17 @@ export class APIGuard {
    * 개발 모드에서 사용할 수 있는 테스트 모드
    */
   static bypassForTesting(): boolean {
-    return process.env.NODE_ENV === 'development' &&
-           process.env.BYPASS_API_GUARD === 'true';
+    return (
+      process.env.NODE_ENV === "development" &&
+      process.env.BYPASS_API_GUARD === "true"
+    );
   }
 
   /**
    * 시스템 상태 체크 (헬스 체크용)
    */
   static getSystemStatus(): {
-    status: 'healthy' | 'degraded' | 'critical';
+    status: "healthy" | "degraded" | "critical";
     apiKeys: {
       total: number;
       active: number;
@@ -179,52 +199,52 @@ export class APIGuard {
 
     if (stats.totalKeys === 0) {
       return {
-        status: 'critical',
+        status: "critical",
         apiKeys: {
           total: stats.totalKeys,
           active: stats.activeKeys,
-          failed: stats.failedKeys
+          failed: stats.failedKeys,
         },
         canServeRequests: false,
-        message: 'No API keys configured'
+        message: "No API keys configured",
       };
     }
 
     if (stats.activeKeys === 0) {
       return {
-        status: 'critical',
+        status: "critical",
         apiKeys: {
           total: stats.totalKeys,
           active: stats.activeKeys,
-          failed: stats.failedKeys
+          failed: stats.failedKeys,
         },
         canServeRequests: false,
-        message: 'All API keys are disabled'
+        message: "All API keys are disabled",
       };
     }
 
     if (stats.activeKeys < stats.totalKeys / 2) {
       return {
-        status: 'degraded',
+        status: "degraded",
         apiKeys: {
           total: stats.totalKeys,
           active: stats.activeKeys,
-          failed: stats.failedKeys
+          failed: stats.failedKeys,
         },
         canServeRequests: true,
-        message: 'Some API keys are disabled - reduced capacity'
+        message: "Some API keys are disabled - reduced capacity",
       };
     }
 
     return {
-      status: 'healthy',
+      status: "healthy",
       apiKeys: {
         total: stats.totalKeys,
         active: stats.activeKeys,
-        failed: stats.failedKeys
+        failed: stats.failedKeys,
       },
       canServeRequests: true,
-      message: 'All systems operational'
+      message: "All systems operational",
     };
   }
 }
@@ -233,13 +253,13 @@ export class APIGuard {
  * API 라우트에서 사용할 데코레이터 함수
  */
 export function withAPIGuard<T extends any[], R>(
-  handler: (...args: T) => Promise<R>
+  handler: (...args: T) => Promise<R>,
 ) {
   return async (...args: T): Promise<R | NextResponse> => {
     // 첫 번째 인자가 NextRequest인지 확인
     const req = args[0] as NextRequest;
 
-    if (req && typeof req === 'object' && 'headers' in req) {
+    if (req && typeof req === "object" && "headers" in req) {
       const guardResult = APIGuard.validateAPIKey(req);
 
       if (!guardResult.isAllowed) {

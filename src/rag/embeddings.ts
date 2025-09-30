@@ -56,7 +56,8 @@ export class EmbeddingManager {
   constructor(config: EmbeddingConfig, logger: Logger) {
     this.config = config;
     this.logger = logger;
-    this.isEnabled = process.env.FEATURE_VECTOR_EMBEDDINGS === "true" && config.enabled;
+    this.isEnabled =
+      process.env.FEATURE_VECTOR_EMBEDDINGS === "true" && config.enabled;
     this.stats = {
       totalEmbeddings: 0,
       modelsUsed: [],
@@ -148,7 +149,6 @@ export class EmbeddingManager {
       });
 
       return results;
-
     } catch (error) {
       this.logger.trace({
         level: "error",
@@ -171,18 +171,20 @@ export class EmbeddingManager {
       return [];
     }
 
-    const results: Array<{ embedding: EmbeddingVector; similarity: number }> = [];
+    const results: Array<{ embedding: EmbeddingVector; similarity: number }> =
+      [];
 
     for (const embedding of this.embeddings.values()) {
-      const similarity = this.cosineSimilarity(queryEmbedding, embedding.vector);
+      const similarity = this.cosineSimilarity(
+        queryEmbedding,
+        embedding.vector,
+      );
       if (similarity >= minSimilarity) {
         results.push({ embedding, similarity });
       }
     }
 
-    return results
-      .sort((a, b) => b.similarity - a.similarity)
-      .slice(0, topK);
+    return results.sort((a, b) => b.similarity - a.similarity).slice(0, topK);
   }
 
   storeEmbedding(embedding: EmbeddingVector): void {
@@ -226,20 +228,25 @@ export class EmbeddingManager {
       throw new Error("Provider not initialized");
     }
 
-    const texts = chunks.map(chunk => chunk.content || chunk.text);
+    const texts = chunks.map((chunk) => chunk.content || chunk.text);
     const vectors = await this.provider.embed(texts);
 
-    return chunks.map((chunk, index) => ({
-      id: `emb_${chunk.id}_${Date.now()}`,
-      chunkId: chunk.id,
-      vector: vectors[index],
-      model: this.provider!.model,
-      createdAt: new Date(),
-      meta: {
-        provider: this.provider!.name,
-        dimensions: vectors[index].length,
-      },
-    }));
+    return chunks.map((chunk, index) => {
+      if (!this.provider) {
+        throw new Error("Provider not initialized");
+      }
+      return {
+        id: `emb_${chunk.id}_${Date.now()}`,
+        chunkId: chunk.id,
+        vector: vectors[index],
+        model: this.provider.model,
+        createdAt: new Date(),
+        meta: {
+          provider: this.provider.name,
+          dimensions: vectors[index].length,
+        },
+      };
+    });
   }
 
   private cosineSimilarity(a: number[], b: number[]): number {
@@ -288,12 +295,16 @@ class OpenAIEmbeddingProvider implements EmbeddingProvider {
       data: { textCount: texts.length, reason: "API not implemented yet" },
     });
 
-    return texts.map(() => Array.from({ length: this.dimensions }, () => Math.random() - 0.5));
+    return texts.map(() =>
+      Array.from({ length: this.dimensions }, () => Math.random() - 0.5),
+    );
   }
 
   estimateCost(tokenCount: number): number {
     // OpenAI embedding pricing (approximate)
-    const pricePerToken = this.model.includes("large") ? 0.00013 / 1000 : 0.00002 / 1000;
+    const pricePerToken = this.model.includes("large")
+      ? 0.00013 / 1000
+      : 0.00002 / 1000;
     return tokenCount * pricePerToken;
   }
 }
@@ -305,7 +316,10 @@ class LocalEmbeddingProvider implements EmbeddingProvider {
   maxTokens = 512;
   private logger: Logger;
 
-  constructor(model: string = "sentence-transformers/all-MiniLM-L6-v2", logger: Logger) {
+  constructor(
+    model: string = "sentence-transformers/all-MiniLM-L6-v2",
+    logger: Logger,
+  ) {
     this.model = model;
     this.logger = logger;
   }
@@ -316,10 +330,15 @@ class LocalEmbeddingProvider implements EmbeddingProvider {
       level: "warn",
       agentId: "local-embedding-provider",
       action: "mock_embeddings_returned",
-      data: { textCount: texts.length, reason: "Local inference not implemented yet" },
+      data: {
+        textCount: texts.length,
+        reason: "Local inference not implemented yet",
+      },
     });
 
-    return texts.map(() => Array.from({ length: this.dimensions }, () => Math.random() - 0.5));
+    return texts.map(() =>
+      Array.from({ length: this.dimensions }, () => Math.random() - 0.5),
+    );
   }
 
   estimateCost(_tokenCount: number): number {
@@ -341,7 +360,7 @@ class MockEmbeddingProvider implements EmbeddingProvider {
 
   async embed(texts: string[]): Promise<number[][]> {
     // Generate deterministic mock vectors based on text content
-    return texts.map(text => {
+    return texts.map((text) => {
       const hash = this.simpleHash(text);
       return Array.from({ length: this.dimensions }, (_, i) => {
         return Math.sin(hash + i) * 0.5; // Deterministic but varied
@@ -357,7 +376,7 @@ class MockEmbeddingProvider implements EmbeddingProvider {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
       const char = str.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
+      hash = (hash << 5) - hash + char;
       hash = hash & hash; // Convert to 32bit integer
     }
     return hash;

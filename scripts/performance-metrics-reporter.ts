@@ -6,9 +6,9 @@
  * Implements GPT Phase 2 recommendation for performance analysis indicators
  */
 
-import fs from 'fs/promises';
-import path from 'path';
-import { coreSystemHub } from './lib/core-system-hub.js';
+import fs from "fs/promises";
+import path from "path";
+import { coreSystemHub } from "./lib/core-system-hub.js";
 
 interface PerformanceReport {
   timestamp: string;
@@ -33,7 +33,7 @@ interface PerformanceReport {
       avgRecoveryTime: number;
     };
     trends: {
-      performanceGrade: 'A' | 'B' | 'C' | 'D';
+      performanceGrade: "A" | "B" | "C" | "D";
       recommendation: string;
       riskFactors: string[];
       optimization: string[];
@@ -47,25 +47,29 @@ interface PerformanceReport {
 }
 
 class PerformanceMetricsReporter {
-  private readonly reportsDir = './reports/performance';
+  private readonly reportsDir = "./reports/performance";
   private readonly alertThresholds = {
     latencySpike: 200, // ms
     failoverRate: 0.05, // 5%
-    performanceDrop: 0.2 // 20%
+    performanceDrop: 0.2, // 20%
   };
 
-  async generateReport(options: {
-    automated?: boolean;
-    period?: 'hourly' | 'daily' | 'weekly';
-    export?: boolean
-  } = {}): Promise<PerformanceReport> {
+  async generateReport(
+    options: {
+      automated?: boolean;
+      period?: "hourly" | "daily" | "weekly";
+      export?: boolean;
+    } = {},
+  ): Promise<PerformanceReport> {
     const reportId = `perf-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     const now = new Date();
-    const period = this.calculatePeriod(options.period || 'daily');
+    const period = this.calculatePeriod(options.period || "daily");
 
-    console.log('📊 Generating Performance Metrics Report...');
+    console.log("📊 Generating Performance Metrics Report...");
     console.log(`🔍 Report ID: ${reportId}`);
-    console.log(`⏰ Period: ${period.start.toISOString()} → ${period.end.toISOString()}\n`);
+    console.log(
+      `⏰ Period: ${period.start.toISOString()} → ${period.end.toISOString()}\n`,
+    );
 
     // Collect routing metrics
     const routingStatus = coreSystemHub.getRoutingStatus();
@@ -78,7 +82,9 @@ class PerformanceMetricsReporter {
       period: {
         start: period.start,
         end: period.end,
-        duration: this.formatDuration(period.end.getTime() - period.start.getTime())
+        duration: this.formatDuration(
+          period.end.getTime() - period.start.getTime(),
+        ),
       },
       metrics: {
         totalMessages: routingStatus.metrics.totalMessages,
@@ -86,33 +92,33 @@ class PerformanceMetricsReporter {
           directMode: {
             count: routingStatus.metrics.modeDistribution.direct,
             percentage: routingStatus.metrics.modePercentages.direct,
-            avgLatency: routingStatus.metrics.averageLatency.direct
+            avgLatency: routingStatus.metrics.averageLatency.direct,
           },
           hubMode: {
             count: routingStatus.metrics.modeDistribution.hub,
             percentage: routingStatus.metrics.modePercentages.hub,
-            avgLatency: routingStatus.metrics.averageLatency.hub
+            avgLatency: routingStatus.metrics.averageLatency.hub,
           },
           fallbackMode: {
             count: routingStatus.metrics.modeDistribution.fallback,
             percentage: routingStatus.metrics.modePercentages.fallback,
-            avgLatency: routingStatus.metrics.averageLatency.fallback
-          }
+            avgLatency: routingStatus.metrics.averageLatency.fallback,
+          },
         },
         performance: {
           latencyReduction: performanceReport.latencyReduction,
           throughputImprovement: performanceReport.throughputImprovement,
           hubHealthUptime: this.calculateUptime(routingStatus.failover),
           failoverCount: performanceReport.failoverCount,
-          avgRecoveryTime: performanceReport.avgRecoveryTime
+          avgRecoveryTime: performanceReport.avgRecoveryTime,
         },
-        trends: this.analyzeTrends(routingStatus, performanceReport)
+        trends: this.analyzeTrends(routingStatus, performanceReport),
       },
       export: {
-        reportPath: '',
-        dashboardPath: '',
-        alertsGenerated: 0
-      }
+        reportPath: "",
+        dashboardPath: "",
+        alertsGenerated: 0,
+      },
     };
 
     // Generate alerts if needed
@@ -130,18 +136,21 @@ class PerformanceMetricsReporter {
     return report;
   }
 
-  private calculatePeriod(period: 'hourly' | 'daily' | 'weekly'): { start: Date; end: Date } {
+  private calculatePeriod(period: "hourly" | "daily" | "weekly"): {
+    start: Date;
+    end: Date;
+  } {
     const end = new Date();
     const start = new Date();
 
     switch (period) {
-      case 'hourly':
+      case "hourly":
         start.setHours(start.getHours() - 1);
         break;
-      case 'daily':
+      case "daily":
         start.setDate(start.getDate() - 1);
         break;
-      case 'weekly':
+      case "weekly":
         start.setDate(start.getDate() - 7);
         break;
     }
@@ -161,62 +170,85 @@ class PerformanceMetricsReporter {
     return `${(uptimeRatio * 100).toFixed(1)}%`;
   }
 
-  private analyzeTrends(routingStatus: any, performanceReport: any): PerformanceReport['metrics']['trends'] {
+  private analyzeTrends(
+    routingStatus: any,
+    performanceReport: any,
+  ): PerformanceReport["metrics"]["trends"] {
     // Analyze performance trends and generate grade
-    const latencyReductionNum = parseFloat(performanceReport.latencyReduction.replace('%', ''));
-    const throughputImprovementNum = parseFloat(performanceReport.throughputImprovement.replace('%', ''));
+    const latencyReductionNum = parseFloat(
+      performanceReport.latencyReduction.replace("%", ""),
+    );
+    const throughputImprovementNum = parseFloat(
+      performanceReport.throughputImprovement.replace("%", ""),
+    );
 
-    let grade: 'A' | 'B' | 'C' | 'D' = 'C';
+    let grade: "A" | "B" | "C" | "D" = "C";
     const riskFactors: string[] = [];
     const optimization: string[] = [];
 
     // Grade calculation
     if (latencyReductionNum >= 50 && throughputImprovementNum >= 30) {
-      grade = 'A';
+      grade = "A";
     } else if (latencyReductionNum >= 30 && throughputImprovementNum >= 20) {
-      grade = 'B';
+      grade = "B";
     } else if (latencyReductionNum >= 15 && throughputImprovementNum >= 10) {
-      grade = 'C';
+      grade = "C";
     } else {
-      grade = 'D';
+      grade = "D";
     }
 
     // Risk analysis
     if (routingStatus.failover.emergencyQueueSize > 10) {
-      riskFactors.push('High emergency queue backlog');
+      riskFactors.push("High emergency queue backlog");
     }
     if (routingStatus.performance.hubLatency > 100) {
-      riskFactors.push('Hub latency exceeds optimal threshold');
+      riskFactors.push("Hub latency exceeds optimal threshold");
     }
     if (performanceReport.failoverCount > 5) {
-      riskFactors.push('Frequent failover events detected');
+      riskFactors.push("Frequent failover events detected");
     }
 
     // Optimization suggestions
     if (routingStatus.metrics.modeDistribution.fallback > 0) {
-      optimization.push('Investigate fallback routing triggers');
+      optimization.push("Investigate fallback routing triggers");
     }
-    if (routingStatus.performance.directLatency < routingStatus.performance.hubLatency * 0.7) {
-      optimization.push('Consider increasing direct routing ratio');
+    if (
+      routingStatus.performance.directLatency <
+      routingStatus.performance.hubLatency * 0.7
+    ) {
+      optimization.push("Consider increasing direct routing ratio");
     }
-    if (grade === 'D') {
-      optimization.push('Urgent: Review Core-Hub architecture efficiency');
+    if (grade === "D") {
+      optimization.push("Urgent: Review Core-Hub architecture efficiency");
     }
 
-    const recommendation = this.generateRecommendation(grade, riskFactors, optimization);
+    const recommendation = this.generateRecommendation(
+      grade,
+      riskFactors,
+      optimization,
+    );
 
-    return { performanceGrade: grade, recommendation, riskFactors, optimization };
+    return {
+      performanceGrade: grade,
+      recommendation,
+      riskFactors,
+      optimization,
+    };
   }
 
-  private generateRecommendation(grade: string, risks: string[], optimizations: string[]): string {
-    if (grade === 'A') {
-      return 'System performing optimally. Continue monitoring for sustained excellence.';
-    } else if (grade === 'B') {
-      return 'Good performance with minor optimization opportunities identified.';
-    } else if (grade === 'C') {
-      return 'Moderate performance. Address identified risk factors to improve grade.';
+  private generateRecommendation(
+    grade: string,
+    risks: string[],
+    optimizations: string[],
+  ): string {
+    if (grade === "A") {
+      return "System performing optimally. Continue monitoring for sustained excellence.";
+    } else if (grade === "B") {
+      return "Good performance with minor optimization opportunities identified.";
+    } else if (grade === "C") {
+      return "Moderate performance. Address identified risk factors to improve grade.";
     } else {
-      return 'URGENT: Performance below acceptable threshold. Immediate optimization required.';
+      return "URGENT: Performance below acceptable threshold. Immediate optimization required.";
     }
   }
 
@@ -224,27 +256,27 @@ class PerformanceMetricsReporter {
     const alerts: any[] = [];
 
     // Latency spike alert
-    const avgLatency = (
-      report.metrics.routingEfficiency.directMode.avgLatency +
-      report.metrics.routingEfficiency.hubMode.avgLatency
-    ) / 2;
+    const avgLatency =
+      (report.metrics.routingEfficiency.directMode.avgLatency +
+        report.metrics.routingEfficiency.hubMode.avgLatency) /
+      2;
 
     if (avgLatency > this.alertThresholds.latencySpike) {
       alerts.push({
-        type: 'latency_spike',
-        severity: 'high',
+        type: "latency_spike",
+        severity: "high",
         message: `Average latency (${avgLatency.toFixed(1)}ms) exceeds threshold (${this.alertThresholds.latencySpike}ms)`,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     }
 
     // Performance grade alert
-    if (report.metrics.trends.performanceGrade === 'D') {
+    if (report.metrics.trends.performanceGrade === "D") {
       alerts.push({
-        type: 'performance_degradation',
-        severity: 'critical',
+        type: "performance_degradation",
+        severity: "critical",
         message: `Performance grade dropped to ${report.metrics.trends.performanceGrade}`,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     }
 
@@ -256,7 +288,10 @@ class PerformanceMetricsReporter {
     await fs.mkdir(this.reportsDir, { recursive: true });
 
     const reportPath = path.join(this.reportsDir, `${report.reportId}.json`);
-    const dashboardPath = path.join(this.reportsDir, `${report.reportId}-dashboard.md`);
+    const dashboardPath = path.join(
+      this.reportsDir,
+      `${report.reportId}-dashboard.md`,
+    );
 
     // Export JSON report
     await fs.writeFile(reportPath, JSON.stringify(report, null, 2));
@@ -301,23 +336,26 @@ ${metrics.trends.recommendation}
 
 ## ⚠️ Risk Factors
 
-${metrics.trends.riskFactors.length > 0
-  ? metrics.trends.riskFactors.map(risk => `- ${risk}`).join('\n')
-  : '✅ No significant risk factors detected'
+${
+  metrics.trends.riskFactors.length > 0
+    ? metrics.trends.riskFactors.map((risk) => `- ${risk}`).join("\n")
+    : "✅ No significant risk factors detected"
 }
 
 ## 🔧 Optimization Opportunities
 
-${metrics.trends.optimization.length > 0
-  ? metrics.trends.optimization.map(opt => `- ${opt}`).join('\n')
-  : '✅ System operating at optimal efficiency'
+${
+  metrics.trends.optimization.length > 0
+    ? metrics.trends.optimization.map((opt) => `- ${opt}`).join("\n")
+    : "✅ System operating at optimal efficiency"
 }
 
 ## 🚨 Alerts Generated
 
-${report.export.alertsGenerated > 0
-  ? `${report.export.alertsGenerated} alert(s) generated. Check logs for details.`
-  : '✅ No alerts triggered during this period'
+${
+  report.export.alertsGenerated > 0
+    ? `${report.export.alertsGenerated} alert(s) generated. Check logs for details.`
+    : "✅ No alerts triggered during this period"
 }
 
 ---
@@ -325,82 +363,107 @@ ${report.export.alertsGenerated > 0
 `;
   }
 
-  private async displayReport(report: PerformanceReport, automated: boolean): Promise<void> {
+  private async displayReport(
+    report: PerformanceReport,
+    automated: boolean,
+  ): Promise<void> {
     const { metrics } = report;
 
     if (!automated) {
-      console.log('═══════════════════════════════════════');
-      console.log('📊 PERFORMANCE METRICS REPORT');
-      console.log('═══════════════════════════════════════\n');
+      console.log("═══════════════════════════════════════");
+      console.log("📊 PERFORMANCE METRICS REPORT");
+      console.log("═══════════════════════════════════════\n");
     }
 
     // Performance Grade
-    const gradeEmoji = { A: '🏆', B: '🥈', C: '🥉', D: '⚠️' };
-    console.log(`${gradeEmoji[metrics.trends.performanceGrade]} **Performance Grade**: ${metrics.trends.performanceGrade}`);
+    const gradeEmoji = { A: "🏆", B: "🥈", C: "🥉", D: "⚠️" };
+    console.log(
+      `${gradeEmoji[metrics.trends.performanceGrade]} **Performance Grade**: ${metrics.trends.performanceGrade}`,
+    );
     console.log(`💡 **Recommendation**: ${metrics.trends.recommendation}\n`);
 
     // Key Metrics
-    console.log('📈 **Key Performance Indicators**:');
-    console.log(`   Latency Reduction: ${metrics.performance.latencyReduction}`);
-    console.log(`   Throughput Improvement: ${metrics.performance.throughputImprovement}`);
+    console.log("📈 **Key Performance Indicators**:");
+    console.log(
+      `   Latency Reduction: ${metrics.performance.latencyReduction}`,
+    );
+    console.log(
+      `   Throughput Improvement: ${metrics.performance.throughputImprovement}`,
+    );
     console.log(`   Hub Uptime: ${metrics.performance.hubHealthUptime}`);
-    console.log(`   Total Messages: ${metrics.totalMessages.toLocaleString()}\n`);
+    console.log(
+      `   Total Messages: ${metrics.totalMessages.toLocaleString()}\n`,
+    );
 
     // Message Distribution Summary
-    console.log('🎯 **Routing Efficiency**:');
-    console.log(`   Direct: ${metrics.routingEfficiency.directMode.percentage} (${metrics.routingEfficiency.directMode.avgLatency.toFixed(1)}ms avg)`);
-    console.log(`   Hub: ${metrics.routingEfficiency.hubMode.percentage} (${metrics.routingEfficiency.hubMode.avgLatency.toFixed(1)}ms avg)`);
-    console.log(`   Fallback: ${metrics.routingEfficiency.fallbackMode.percentage} (${metrics.routingEfficiency.fallbackMode.avgLatency.toFixed(1)}ms avg)\n`);
+    console.log("🎯 **Routing Efficiency**:");
+    console.log(
+      `   Direct: ${metrics.routingEfficiency.directMode.percentage} (${metrics.routingEfficiency.directMode.avgLatency.toFixed(1)}ms avg)`,
+    );
+    console.log(
+      `   Hub: ${metrics.routingEfficiency.hubMode.percentage} (${metrics.routingEfficiency.hubMode.avgLatency.toFixed(1)}ms avg)`,
+    );
+    console.log(
+      `   Fallback: ${metrics.routingEfficiency.fallbackMode.percentage} (${metrics.routingEfficiency.fallbackMode.avgLatency.toFixed(1)}ms avg)\n`,
+    );
 
     // Risk Factors & Optimizations
     if (metrics.trends.riskFactors.length > 0) {
-      console.log('⚠️ **Risk Factors**:');
-      metrics.trends.riskFactors.forEach(risk => console.log(`   - ${risk}`));
-      console.log('');
+      console.log("⚠️ **Risk Factors**:");
+      metrics.trends.riskFactors.forEach((risk) => console.log(`   - ${risk}`));
+      console.log("");
     }
 
     if (metrics.trends.optimization.length > 0) {
-      console.log('🔧 **Optimization Opportunities**:');
-      metrics.trends.optimization.forEach(opt => console.log(`   - ${opt}`));
-      console.log('');
+      console.log("🔧 **Optimization Opportunities**:");
+      metrics.trends.optimization.forEach((opt) => console.log(`   - ${opt}`));
+      console.log("");
     }
 
     // Alerts
     if (report.export.alertsGenerated > 0) {
       console.log(`🚨 **Alerts Generated**: ${report.export.alertsGenerated}`);
-      console.log('');
+      console.log("");
     }
 
     if (!automated) {
-      console.log('💻 **Commands**:');
-      console.log('   npm run metrics:report              # Generate current report');
-      console.log('   npm run metrics:report -- --export    # Export detailed report');
-      console.log('   npm run metrics:auto               # Enable automated reporting');
-      console.log('');
+      console.log("💻 **Commands**:");
+      console.log(
+        "   npm run metrics:report              # Generate current report",
+      );
+      console.log(
+        "   npm run metrics:report -- --export    # Export detailed report",
+      );
+      console.log(
+        "   npm run metrics:auto               # Enable automated reporting",
+      );
+      console.log("");
     }
   }
 
   async scheduleAutomatedReporting(): Promise<void> {
-    console.log('🤖 Starting automated performance reporting...');
-    console.log('📋 Generating reports every 4 hours\n');
+    console.log("🤖 Starting automated performance reporting...");
+    console.log("📋 Generating reports every 4 hours\n");
 
     const reportInterval = 4 * 60 * 60 * 1000; // 4 hours
 
     const runAutomatedReport = async () => {
       try {
-        console.log(`\n🔄 [${new Date().toISOString()}] Automated Performance Report`);
-        console.log('─'.repeat(60));
+        console.log(
+          `\n🔄 [${new Date().toISOString()}] Automated Performance Report`,
+        );
+        console.log("─".repeat(60));
 
         await this.generateReport({
           automated: true,
-          period: 'daily',
-          export: true
+          period: "daily",
+          export: true,
         });
 
-        console.log('─'.repeat(60));
-        console.log('✅ Automated report completed\n');
+        console.log("─".repeat(60));
+        console.log("✅ Automated report completed\n");
       } catch (error) {
-        console.error('❌ Automated report failed:', error);
+        console.error("❌ Automated report failed:", error);
       }
     };
 
@@ -411,8 +474,8 @@ ${report.export.alertsGenerated > 0
     setInterval(runAutomatedReport, reportInterval);
 
     // Handle graceful shutdown
-    process.on('SIGINT', () => {
-      console.log('\n🛑 Stopping automated performance reporting...');
+    process.on("SIGINT", () => {
+      console.log("\n🛑 Stopping automated performance reporting...");
       process.exit(0);
     });
   }
@@ -424,9 +487,13 @@ async function main() {
   const reporter = new PerformanceMetricsReporter();
 
   const options = {
-    automated: args.includes('--auto'),
-    period: (args.find(arg => arg.startsWith('--period='))?.split('=')[1] as 'hourly' | 'daily' | 'weekly') || 'daily',
-    export: args.includes('--export')
+    automated: args.includes("--auto"),
+    period:
+      (args.find((arg) => arg.startsWith("--period="))?.split("=")[1] as
+        | "hourly"
+        | "daily"
+        | "weekly") || "daily",
+    export: args.includes("--export"),
   };
 
   try {
@@ -436,7 +503,7 @@ async function main() {
       await reporter.generateReport(options);
     }
   } catch (error) {
-    console.error('❌ Performance metrics reporting failed:', error);
+    console.error("❌ Performance metrics reporting failed:", error);
     process.exit(1);
   }
 }

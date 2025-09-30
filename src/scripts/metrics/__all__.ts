@@ -176,7 +176,9 @@ function calculatePercentile(values: number[], percentile: number): number {
 
 /**
  * Calculate mean value
+ * TODO: Currently unused but reserved for future statistical analysis features
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function _calculateMean(values: number[]): number {
   if (values.length === 0) return 0;
   return values.reduce((sum, val) => sum + val, 0) / values.length;

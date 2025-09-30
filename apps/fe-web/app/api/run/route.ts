@@ -151,10 +151,14 @@ async function cliProvider(request: RunRequest): Promise<RunResult> {
     // Spawn the CLI with absolute node binary using ProcessLifecycleManager
     const feCwd = process.cwd();
     const cliScript = path.resolve(feCwd, "cli", "engine_cli.js");
-    const child = processLifecycleManager.spawnManaged(process.execPath, [cliScript], {
-      cwd: feCwd,
-      stdio: ["pipe", "pipe", "pipe"],
-    });
+    const child = processLifecycleManager.spawnManaged(
+      process.execPath,
+      [cliScript],
+      {
+        cwd: feCwd,
+        stdio: ["pipe", "pipe", "pipe"],
+      },
+    );
 
     let stdout = "";
     let stderr = "";

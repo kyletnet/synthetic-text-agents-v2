@@ -42,7 +42,7 @@ export async function prewriteSessionMeta(meta: {
         : block + "\n";
     await fs.writeFile(SESSION_REPORT + ".tmp", merged, "utf8");
     await fs.rename(SESSION_REPORT + ".tmp", SESSION_REPORT);
-  } catch (______e) {
+  } catch {
     // best-effort; don't block pipeline
   }
 }
@@ -514,7 +514,9 @@ function extractThresholdMetrics(
 
 /**
  * Generate gate mapping banner
+ * TODO: Reserved for future enhanced reporting features
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function _generateGateMappingBanner(
   profile: string,
   autocalibrationEnabled: boolean,
@@ -541,7 +543,9 @@ function _generateGateMappingBanner(
 
 /**
  * Generate KPI trends section
+ * TODO: Reserved for future trend visualization features
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function _generateKPITrends(trends: {
   [key: string]: HistoricalTrend;
 }): string[] {
@@ -589,7 +593,9 @@ function _generateKPITrends(trends: {
 
 /**
  * Generate DLQ summary section
+ * TODO: Reserved for future DLQ reporting features
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function _generateDLQSummary(dlqSummary: DLQSummary): string[] {
   const lines: string[] = [];
 
@@ -1201,7 +1207,6 @@ export async function generateBaselineReports(
     sessionId = `baseline_${Date.now()}`,
     budgetLimit = 0,
     sourceTexts = [],
-    includeFullData = true,
     profile = "dev",
     enableAutocalibration = false,
     applyCalibration = false,
@@ -1351,7 +1356,7 @@ export async function generateBaselineReports(
         .filter((line) => line.trim());
       if (previousLines.length > 0) {
         // Extract summary from last line (it should contain summary data)
-        const _____lastRecord = JSON.parse(previousLines[previousLines.length - 1]);
+        // const _____lastRecord = JSON.parse(previousLines[previousLines.length - 1]);
         // Note: This is a simplified approach - in practice, you'd store summary separately
       }
     }

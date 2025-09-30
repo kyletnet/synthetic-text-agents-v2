@@ -1051,8 +1051,12 @@ function generateMarkdownReport(
   lines.push("## 6. PII and License Compliance");
   lines.push("");
   lines.push(`- **PII Violations**: ${summary.pii_license?.pii_hits || 0}`);
-  lines.push(`- **License Violations**: ${summary.pii_license?.license_hits || 0}`);
-  lines.push(`- **Total Violations**: ${summary.pii_license?.total_violations || 0}`);
+  lines.push(
+    `- **License Violations**: ${summary.pii_license?.license_hits || 0}`,
+  );
+  lines.push(
+    `- **Total Violations**: ${summary.pii_license?.total_violations || 0}`,
+  );
   lines.push(
     `- **Compliance Status**: ${summary.pii_license?.alert_triggered ? "🚨 VIOLATIONS DETECTED" : "✅ COMPLIANT"}`,
   );

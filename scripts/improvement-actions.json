@@ -5,10 +5,7 @@
     "description": "Switch to direct routing to reduce hub latency",
     "command": "npm run routing:optimize -- --mode=direct",
     "triggerConditions": {
-      "performanceGrade": [
-        "C",
-        "D"
-      ],
+      "performanceGrade": ["C", "D"],
       "latencyThreshold": 150
     },
     "riskLevel": "low",
@@ -21,9 +18,7 @@
     "description": "Optimize hub routing distribution and load balancing",
     "command": "npm run evolution:evolve -- --focus=routing",
     "triggerConditions": {
-      "performanceGrade": [
-        "D"
-      ],
+      "performanceGrade": ["D"],
       "failoverCountThreshold": 5
     },
     "riskLevel": "medium",
@@ -36,10 +31,7 @@
     "description": "Process accumulated emergency queue backlog",
     "command": "npm run system:clear-queue -- --emergency",
     "triggerConditions": {
-      "performanceGrade": [
-        "C",
-        "D"
-      ]
+      "performanceGrade": ["C", "D"]
     },
     "riskLevel": "low",
     "estimatedImpact": "10-20% throughput improvement",
@@ -51,9 +43,7 @@
     "description": "Reduce integration complexity and improve cohesion",
     "command": "npm run registry:optimize -- --auto-harmony",
     "triggerConditions": {
-      "performanceGrade": [
-        "D"
-      ]
+      "performanceGrade": ["D"]
     },
     "riskLevel": "medium",
     "estimatedImpact": "25-35% system efficiency improvement",
@@ -65,10 +55,7 @@
     "description": "Execute comprehensive system maintenance and cleanup",
     "command": "echo '🔧 JSON-based maintenance completed'",
     "triggerConditions": {
-      "performanceGrade": [
-        "C",
-        "D"
-      ],
+      "performanceGrade": ["C", "D"],
       "throughputThreshold": 0.7
     },
     "riskLevel": "low",

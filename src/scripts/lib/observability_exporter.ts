@@ -254,7 +254,7 @@ export class ObservabilityExporter {
             if (entry.cost_usd) agent.total_cost_usd += entry.cost_usd;
             if (entry.latency_ms) agent.total_latency_ms += entry.latency_ms;
           }
-        } catch (_____parseError) {
+        } catch {
           console.warn(`Failed to parse log line: ${line.slice(0, 100)}...`);
         }
       }
