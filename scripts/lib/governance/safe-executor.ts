@@ -23,6 +23,43 @@ import {
 import { LoopDetector } from "./loop-detector.js";
 import { NotificationSystem } from "./notification-system.js";
 
+/**
+ * Execute a promise with timeout, ensuring timer cleanup
+ *
+ * Design:
+ * - Prevents Node.js event loop from hanging on orphaned timers
+ * - Always clears timeout regardless of success/failure/timeout
+ * - Returns original error on timeout (not generic timeout error)
+ *
+ * @param promise - Promise to execute
+ * @param timeoutMs - Timeout in milliseconds
+ * @param timeoutError - Error to throw on timeout
+ * @returns Promise result or throws timeout error
+ */
+async function withTimeout<T>(
+  promise: Promise<T>,
+  timeoutMs: number,
+  timeoutError: Error,
+): Promise<T> {
+  let timeoutId: NodeJS.Timeout | null = null;
+
+  const timeoutPromise = new Promise<never>((_, reject) => {
+    timeoutId = setTimeout(() => {
+      reject(timeoutError);
+    }, timeoutMs);
+  });
+
+  try {
+    const result = await Promise.race([promise, timeoutPromise]);
+    return result;
+  } finally {
+    // CRITICAL: Always clear timeout to prevent event loop hanging
+    if (timeoutId !== null) {
+      clearTimeout(timeoutId);
+    }
+  }
+}
+
 export class SafeExecutor {
   private projectRoot: string;
   private loopDetector: LoopDetector;
@@ -63,6 +100,8 @@ export class SafeExecutor {
 
   /**
    * Execute with timeout and retry logic
+   *
+   * Uses withTimeout() utility to ensure timer cleanup
    */
   private async executeWithTimeout<T>(
     operation: () => Promise<T>,
@@ -74,21 +113,14 @@ export class SafeExecutor {
 
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       try {
-        // Create timeout promise
-        const timeoutPromise = new Promise<never>((_, reject) => {
-          setTimeout(() => {
-            reject(
-              new TimeoutError(
-                `Operation timed out after ${timeout}ms`,
-                options.type,
-                timeout,
-              ),
-            );
-          }, timeout);
-        });
+        // Execute with timeout (timer cleanup guaranteed by withTimeout)
+        const timeoutError = new TimeoutError(
+          `Operation timed out after ${timeout}ms`,
+          options.type,
+          timeout,
+        );
 
-        // Race between operation and timeout
-        const result = await Promise.race([operation(), timeoutPromise]);
+        const result = await withTimeout(operation(), timeout, timeoutError);
 
         // Success
         return result;
@@ -185,26 +217,6 @@ export class SafeExecutor {
     const content = readFileSync(rulesPath, "utf8");
     this.rules = JSON.parse(content) as GovernanceRulesConfig;
     return this.rules;
-  }
-
-  /**
-   * Create periodic reminder for long-running user waits
-   */
-  createUserWaitReminder(
-    message: string,
-    intervalMs: number = 300000, // 5 minutes
-  ): NodeJS.Timeout {
-    return setInterval(() => {
-      console.log(`\n⏳ ${message}`);
-      console.log(`   (Waiting for user input...)\n`);
-    }, intervalMs);
-  }
-
-  /**
-   * Clear reminder
-   */
-  clearReminder(timerId: NodeJS.Timeout): void {
-    clearInterval(timerId);
   }
 }
 
