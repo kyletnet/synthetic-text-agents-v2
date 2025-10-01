@@ -14,6 +14,7 @@ import {
 import { perfCache } from "./performance-cache.js";
 import { safeGuard } from "./safe-automation-guard.js";
 import { approvalSystem } from "./interactive-approval-system.js";
+import { wrapWithGovernance } from "./governance/engine-governance-template.js";
 import { ComponentAdapter } from "./component-integration-adapter.js";
 import { processLifecycleManager } from "./process-lifecycle-manager.js";
 import { execSync } from "child_process";
@@ -105,7 +106,8 @@ export class AdaptiveExecutionEngine extends EventEmitter {
     context?: Partial<ExecutionContext>,
     progressCallback?: ProgressCallback,
   ): Promise<ExecutionResult> {
-    const fullContext: ExecutionContext = {
+    return wrapWithGovernance("adaptive-execution-engine", async () => {
+      const fullContext: ExecutionContext = {
       priority: operation.priority,
       userPresent: false,
       systemLoad: this.getCurrentSystemLoad(),
@@ -198,11 +200,12 @@ export class AdaptiveExecutionEngine extends EventEmitter {
         errorResult.error,
       );
 
-      this.emit("execution:failed", errorResult);
-      throw error;
-    } finally {
-      this.activeOperations.delete(operation.id);
-    }
+        this.emit("execution:failed", errorResult);
+        throw error;
+      } finally {
+        this.activeOperations.delete(operation.id);
+      }
+    });
   }
 
   /**

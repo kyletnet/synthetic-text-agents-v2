@@ -9,6 +9,7 @@
 import { readFileSync, writeFileSync, existsSync } from "fs";
 import { join } from "path";
 import { execSync } from "child_process";
+import { wrapWithGovernance } from "../lib/governance/engine-governance-template.js";
 import {
   AutoFixManager,
   AutoFixOperation,
@@ -102,7 +103,8 @@ export class WorkaroundResolutionEngine {
   async generateResolutionPlans(
     findings: WorkaroundFinding[],
   ): Promise<ResolutionPlan[]> {
-    const plans: ResolutionPlan[] = [];
+    return wrapWithGovernance("workaround-resolution-engine", async () => {
+      const plans: ResolutionPlan[] = [];
 
     for (const finding of findings) {
       const plan = await this.analyzeWorkaround(finding);
@@ -130,11 +132,12 @@ export class WorkaroundResolutionEngine {
     console.log(
       `   📝 Manual review: ${plans.filter((p) => p.strategy === "manual-review").length}`,
     );
-    console.log(
-      `   🏗️ Architectural: ${plans.filter((p) => p.strategy === "architectural-change").length}`,
-    );
+      console.log(
+        `   🏗️ Architectural: ${plans.filter((p) => p.strategy === "architectural-change").length}`,
+      );
 
-    return plans;
+      return plans;
+    });
   }
 
   /**

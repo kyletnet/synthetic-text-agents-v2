@@ -4,6 +4,7 @@ import { execSync } from "child_process";
 import { existsSync, readFileSync, writeFileSync } from "fs";
 import { join } from "path";
 import { InteractiveRecommendationHandler } from "./lib/interactive-recommendation-handler.js";
+import { wrapWithGovernance } from "./lib/governance/engine-governance-template.js";
 
 interface OptimizationMetrics {
   timestamp: string;
@@ -54,8 +55,9 @@ export class OptimizationEngine {
   async optimize(
     mode: "analyze" | "implement" | "full" = "full",
   ): Promise<void> {
-    console.log("🚀 Optimization Engine - Starting Analysis");
-    console.log("════════════════════════════════════════════════════════════");
+    return wrapWithGovernance("optimization-engine", async () => {
+      console.log("🚀 Optimization Engine - Starting Analysis");
+      console.log("════════════════════════════════════════════════════════════");
 
     const startTime = Date.now();
 
@@ -92,9 +94,10 @@ export class OptimizationEngine {
     console.log(
       `   Time taken: ${Math.round((Date.now() - startTime) / 1000)}s`,
     );
-    console.log(`   Improvements: ${improvement.summary}`);
+      console.log(`   Improvements: ${improvement.summary}`);
 
-    this.saveOptimizationSession(currentMetrics, newMetrics, opportunities);
+      this.saveOptimizationSession(currentMetrics, newMetrics, opportunities);
+    });
   }
 
   private async collectMetrics(): Promise<OptimizationMetrics> {

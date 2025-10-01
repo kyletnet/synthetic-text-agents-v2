@@ -7,6 +7,7 @@
 
 import { readFileSync, existsSync } from "fs";
 import { join } from "path";
+import { wrapWithGovernance } from "./lib/governance/engine-governance-template.js";
 
 interface SystemContext {
   componentType: string;
@@ -274,7 +275,8 @@ class DesignPrincipleEngine {
    * 스크립트 파일을 분석하여 SystemContext 생성
    */
   async analyzeScript(scriptPath: string): Promise<SystemContext> {
-    const fullPath = join(this.projectRoot, scriptPath);
+    return wrapWithGovernance("design-principle-engine", async () => {
+      const fullPath = join(this.projectRoot, scriptPath);
 
     if (!existsSync(fullPath)) {
       throw new Error(`Script not found: ${scriptPath}`);
@@ -290,10 +292,11 @@ class DesignPrincipleEngine {
       userImpact: this.detectUserImpact(fileName, content),
       purpose: this.detectPurpose(fileName, content),
       dependencies: this.extractDependencies(content),
-      integrationPoints: this.findIntegrationPoints(content),
-    };
+        integrationPoints: this.findIntegrationPoints(content),
+      };
 
-    return context;
+      return context;
+    });
   }
 
   private detectComponentType(fileName: string, content: string): string {
@@ -340,7 +343,7 @@ class DesignPrincipleEngine {
   }
 
   private detectPurpose(fileName: string, content: string): string {
-    const purposes = [];
+    const purposes: string[] = [];
 
     if (fileName.includes("status") || content.includes("status"))
       purposes.push("status");
@@ -378,7 +381,7 @@ class DesignPrincipleEngine {
   }
 
   private findIntegrationPoints(content: string): string[] {
-    const points = [];
+    const points: string[] = [];
 
     if (content.includes("unified-dashboard")) points.push("unified-dashboard");
     if (content.includes("package.json")) points.push("package.json");
@@ -431,22 +434,24 @@ ${decision.reasoning.map((r) => `- ${r}`).join("\n")}
    * 모든 스크립트에 대해 설계 결정을 일괄 생성
    */
   async generateSystemDesign(): Promise<void> {
-    console.log("🏗️ Generating system-wide design decisions...");
+    return wrapWithGovernance("design-principle-engine", async () => {
+      console.log("🏗️ Generating system-wide design decisions...");
 
-    const { glob } = await import("glob");
-    const scripts = await glob("scripts/**/*.{ts,js,sh}");
+      const { glob } = await import("glob");
+      const scripts = await glob("scripts/**/*.{ts,js,sh}");
 
-    for (const script of scripts) {
-      try {
-        console.log(`\n📝 Analyzing: ${script}`);
-        const context = await this.analyzeScript(script);
-        const decision = this.makeDecision(context);
+      for (const script of scripts) {
+        try {
+          console.log(`\n📝 Analyzing: ${script}`);
+          const context = await this.analyzeScript(script);
+          const decision = this.makeDecision(context);
 
-        console.log(this.formatDecision(context, decision));
-      } catch (error) {
-        console.log(`❌ Failed to analyze ${script}: ${error}`);
+          console.log(this.formatDecision(context, decision));
+        } catch (error) {
+          console.log(`❌ Failed to analyze ${script}: ${error}`);
+        }
       }
-    }
+    });
   }
 }
 

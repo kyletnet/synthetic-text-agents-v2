@@ -83,6 +83,9 @@ jobs:
       - name: Validate Design Principles (P0 CRITICAL)
         run: npm run design:validate
 
+      - name: Validate Governance System (P0 CRITICAL)
+        run: npm run validate
+
       - name: Run ESLint
         run: npm run dev:lint
 

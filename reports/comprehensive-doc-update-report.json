@@ -1,6 +1,6 @@
 {
-  "timestamp": "2025-09-30T09:52:37.088Z",
-  "totalDocs": 37,
+  "timestamp": "2025-10-01T00:28:34.916Z",
+  "totalDocs": 38,
   "autoUpdated": 0,
   "semiAutoUpdated": 6,
   "manualRequired": 1,
@@ -319,6 +319,15 @@
       "lastModified": "2025-09-23T08:53:33.166Z",
       "needsUpdate": true,
       "autoUpdateMethod": "Generic timestamp and system info update"
+    },
+    {
+      "filePath": ".claude/commands/inspect.md",
+      "updateType": "AUTO",
+      "priority": "LOW",
+      "description": "Slash command documentation - auto-sync with npm scripts",
+      "lastModified": "2025-10-01T00:22:35.906Z",
+      "needsUpdate": false,
+      "autoUpdateMethod": "Auto-sync with npm scripts and system capabilities"
     },
     {
       "filePath": ".claude/commands/ship.md",

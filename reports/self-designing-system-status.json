@@ -1,19 +1,19 @@
 {
-  "timestamp": "2025-09-30T09:36:54.604Z",
+  "timestamp": "2025-10-01T00:24:39.296Z",
   "componentRegistry": {
-    "total": 187,
+    "total": 188,
     "compliant": 61,
-    "violations": 126,
+    "violations": 127,
     "integrationHealth": {
-      "unifiedDashboard": 8.55614973262032,
-      "packageJson": 52.406417112299465,
+      "unifiedDashboard": 8.51063829787234,
+      "packageJson": 52.659574468085104,
       "coreCommands": 8,
-      "documented": 2.6737967914438503
+      "documented": 2.6595744680851063
     }
   },
   "architecturalEvolution": {
     "opportunitiesFound": 10,
-    "autoFixable": 7,
+    "autoFixable": 6,
     "criticalImprovements": 1
   },
   "systemCapabilities": {
@@ -23,8 +23,8 @@
     "evolutionEngine": true
   },
   "systemHealth": {
-    "selfManagementScore": 33,
-    "evolutionCapability": 70,
+    "selfManagementScore": 32,
+    "evolutionCapability": 60,
     "overallReadiness": "OPERATIONAL"
   }
 }

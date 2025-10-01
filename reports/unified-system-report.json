@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-09-30T09:36:52.028Z",
+  "timestamp": "2025-10-01T00:24:37.123Z",
   "sources": [
     "reports/security-audit.json",
     "reports/system-integration-analysis.json"
@@ -9,11 +9,11 @@
     "coherence": 40,
     "redundancy": 85,
     "completeness": 90,
-    "maintainability": 86.9795918367347
+    "maintainability": 87
   },
   "consolidatedFindings": {
     "security": {
-      "timestamp": "2025-09-30T09:36:52.017Z",
+      "timestamp": "2025-10-01T00:24:37.116Z",
       "overallStatus": "PASS",
       "totalIssues": 0,
       "blockingIssues": 0,
@@ -23,8 +23,8 @@
       ]
     },
     "integration": {
-      "timestamp": "2025-09-26T07:50:35.110Z",
-      "components_analyzed": 49,
+      "timestamp": "2025-09-30T09:52:30.705Z",
+      "components_analyzed": 50,
       "integration_score": 33,
       "recommendations": {
         "immediate": [],
@@ -215,7 +215,7 @@
         "coherence": 10,
         "redundancy": 100,
         "completeness": 85,
-        "maintainability": 78.9795918367347
+        "maintainability": 79
       }
     },
     "quality": {

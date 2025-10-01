@@ -1,55 +1,76 @@
 # 명령어 가이드
 
-## 🎯 4단계 워크플로우
+## 🎯 4단계 워크플로우 (반드시 순서 준수!)
 
-모든 개발은 이 4단계를 순서대로 실행합니다:
+**⚠️  중요**: 반드시 이 순서를 지켜야 합니다. 순서를 건너뛰면 오류가 발생합니다.
 
 ```bash
-1. npm run status      # 진단
-2. npm run maintain    # 자동 수정
-3. npm run fix         # 대화형 수정
+1. npm run status      # 진단 (Single Source of Truth 생성)
+2. npm run maintain    # 자동 수정 (캐시 기반)
+3. npm run fix         # 대화형 수정 (캐시 기반)
 4. npm run ship        # 배포 준비
 ```
 
+**핵심 원칙**: `/inspect`가 모든 진단을 수행하고, `/maintain`과 `/fix`는 그 결과를 사용합니다.
+
 ---
 
-## 1️⃣ `/status` - 시스템 진단
+## 1️⃣ `/status` (=/inspect) - 시스템 진단
 
 ```bash
-npm run status        # 전체 건강도 측정
-npm run status:quick  # 빠른 체크 (TypeScript만)
+npm run status        # 전체 진단 + 캐시 생성
 ```
 
-**목적**: 현재 시스템 상태 파악 (읽기 전용)
+**목적**: Single Source of Truth - 모든 진단을 수행하고 결과를 캐싱
 
 **출력**:
 
+- `reports/inspection-results.json` (5분 TTL)
 - 건강도 점수 (0-100)
-- TypeScript, Code Style, Tests, Security
-- 컴포넌트 준수율
-- 워크어라운드 개수
+- Auto-fixable 항목 목록
+- Manual approval 항목 목록
 
-**사용 시점**: 작업 시작 전, 배포 전
+**실행 내용**:
+
+- TypeScript 컴파일 검사
+- ESLint/Prettier 검사
+- 테스트 실행 상태
+- 보안 감사
+- 워크어라운드 탐지
+- 컴포넌트 문서화
+- 리팩토링 대기 항목
+
+**사용 시점**: 작업 시작 전, 코드 변경 후, 배포 전 (필수)
 
 ---
 
 ## 2️⃣ `/maintain` - 자동 수정
 
 ```bash
-npm run maintain       # 스마트 모드 (권장)
-npm run maintain:safe  # 안전 모드 (진단만)
-npm run maintain:quick # 빠른 모드 (핵심만)
+npm run maintain       # 캐시 기반 자동 수정
 ```
 
-**목적**: 안전한 항목 자동 수정 (승인 불필요)
+**목적**: 자동 수정 가능 항목만 처리 (승인 불필요)
 
-**자동 수정 항목**:
+**전제조건**:
+
+- ⚠️  **반드시 `/status` 먼저 실행** (5분 이내)
+- ❌ 진단 안 함 - 캐시만 읽음
+
+**자동 수정 항목** (캐시에서 읽음):
 
 - ✅ Prettier 포맷팅
-- ✅ ESLint 자동 수정 가능 항목
-- ✅ 설계 원칙 검증
+- ✅ ESLint 자동 수정 가능 경고
 
-**사용 시점**: status 직후, 안전한 품질 개선
+**오류 예시**:
+
+```
+⚠️  maintain를 실행하기 전에 /inspect를 먼저 실행하세요
+⏰ 진단 결과가 오래되었습니다 (7분 전)
+✅ 올바른 순서: npm run status → npm run maintain
+```
+
+**사용 시점**: `/status` 직후 (5분 이내)
 
 ---
 
@@ -59,24 +80,29 @@ npm run maintain:quick # 빠른 모드 (핵심만)
 npm run fix
 ```
 
-**목적**: 위험한 항목 대화형 승인 후 수정
+**목적**: 수동 승인 필요 항목 대화형 처리
 
-**수정 항목**:
+**전제조건**:
 
-- Code Quality (TypeScript 오류 등)
-- Component Documentation (템플릿 생성)
+- ⚠️  **반드시 `/status` 먼저 실행** (5분 이내)
+- ❌ 진단 안 함 - 캐시만 읽음
+
+**수정 항목** (캐시에서 읽음):
+
+- Code Quality (TypeScript 오류, ESLint 에러)
+- Component Documentation (문서화 누락)
 - Workarounds (TODO/FIXME/HACK)
 - Refactoring (리팩토링 대기)
 
 **대화형 승인 옵션**:
 
-- `y/Y`: 승인하고 실행
-- `n/N`: 건너뛰기
-- `m/M`: 수동 처리
-- `a/A`: 전체 중단
-- `i/I`: 자세한 정보
+- `y`: Approve (승인하고 실행)
+- `n`: Skip (건너뛰기)
+- `m`: Manual (수동 처리로 표시)
+- `a`: Abort (전체 중단)
+- `i`: Info (자세한 정보)
 
-**사용 시점**: maintain 직후, 수동 검토 필요 항목
+**사용 시점**: `/maintain` 직후 (5분 이내)
 
 ---
 
@@ -150,14 +176,18 @@ npm run build            # 빌드
 
 ### Q2: 순서를 건너뛰면 안 되나요?
 
-**A**: 권장하지 않습니다. 각 단계가 이전 단계의 결과를 기반으로 합니다.
+**A**: **절대 안 됩니다!** 순서를 건너뛰면 오류가 발생합니다.
+
+- `/maintain`이나 `/fix`를 `/status` 없이 실행하면 강제 종료됩니다.
+- 캐시가 5분 이상 오래되면 재실행을 요구합니다.
 
 ### Q3: `/maintain` vs `/fix` 차이는?
 
 **A**:
 
-- `/maintain`: 자동 수정 (Prettier, ESLint --fix) - 승인 불필요
-- `/fix`: 대화형 수정 (워크어라운드, 리팩토링) - 승인 필요
+- `/maintain`: 자동 수정 (Prettier, ESLint --fix) - 승인 불필요, 캐시 기반
+- `/fix`: 대화형 수정 (TypeScript 오류, 워크어라운드) - 승인 필요, 캐시 기반
+- **둘 다 진단하지 않음** - 오직 캐시에서만 읽음
 
 ### Q4: `/ship`은 언제 실행하나요?
 

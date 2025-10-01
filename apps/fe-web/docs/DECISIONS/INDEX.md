@@ -1,5 +1,5 @@
 # Improvement Notes (latest)
 
-_Last updated: 2025-09-30T09:52:37.261Z_
+_Last updated: 2025-10-01T00:28:35.127Z_
 
 - [INDEX.md](DECISIONS/INDEX.md)

@@ -8,6 +8,7 @@
 import { existsSync, readFileSync, writeFileSync } from "fs";
 import { join } from "path";
 import SystemIntegrationAnalyzer from "./system-integration-analyzer.js";
+import { wrapWithGovernance } from "./lib/governance/engine-governance-template.js";
 
 interface IntegrationRule {
   id: string;
@@ -110,12 +111,21 @@ class IntegrationImprovementEngine {
   }
 
   async generateImprovementPlan(): Promise<ImprovementPlan> {
-    console.log("🔧 통합 개선 계획 생성 중...");
+    return wrapWithGovernance(
+      "integration-improvement-engine",
+      async () => {
+        console.log("🔧 통합 개선 계획 생성 중...");
 
-    // 현재 시스템 분석
-    const analysis = await this.analyzer.analyzeFullSystem();
+        // 현재 시스템 분석
+        const analysis = await this.analyzer.analyzeFullSystem();
 
-    const improvements = [];
+        const improvements: Array<{
+          rule: string;
+          action: string;
+          priority: string;
+          estimated_impact: number;
+          implementation_effort: "LOW" | "MEDIUM" | "HIGH";
+        }> = [];
 
     // 각 규칙 적용 검사
     for (const rule of this.improvementRules) {
@@ -169,10 +179,12 @@ class IntegrationImprovementEngine {
       },
     };
 
-    this.savePlan(plan);
-    this.printPlan(plan);
+        this.savePlan(plan);
+        this.printPlan(plan);
 
-    return plan;
+        return plan;
+      },
+    );
   }
 
   private calculateImpact(rule: IntegrationRule, analysis: any): number {
@@ -206,7 +218,10 @@ class IntegrationImprovementEngine {
   }
 
   async implementImprovement(improvementName: string): Promise<void> {
-    console.log(`🔧 개선사항 구현 시작: ${improvementName}`);
+    return wrapWithGovernance(
+      "integration-improvement-engine",
+      async () => {
+        console.log(`🔧 개선사항 구현 시작: ${improvementName}`);
 
     switch (improvementName) {
       case "보고서 시스템 통합":
@@ -225,9 +240,11 @@ class IntegrationImprovementEngine {
         await this.implementConflictPrevention();
         break;
 
-      default:
-        console.log("⚠️ 알 수 없는 개선사항:", improvementName);
-    }
+        default:
+          console.log("⚠️ 알 수 없는 개선사항:", improvementName);
+      }
+      },
+    );
   }
 
   private async consolidateReportingSystems(): Promise<void> {

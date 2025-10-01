@@ -1,0 +1,252 @@
+{
+  "schemaVersion": "2025-10-governance-v1",
+  "metadata": {
+    "description": "System Governance Rules - Single Source of Truth for all governance policies",
+    "lastUpdated": "2025-10-01T00:00:00.000Z",
+    "maintainer": "System Governance Team"
+  },
+  "rules": [
+    {
+      "id": "NO_LEGACY_IMPORTS",
+      "severity": "critical",
+      "description": "레거시 파일 직접 실행 차단",
+      "pattern": "scripts/(unified-dashboard|fix-orchestrator|smart-maintenance-orchestrator|ai-fix-engine|comprehensive-doc-updater|handoff-generator)",
+      "action": "throw",
+      "enabled": true,
+      "enforceInCI": true,
+      "message": "이 파일은 더 이상 직접 실행할 수 없습니다. 올바른 명령어를 사용하세요."
+    },
+    {
+      "id": "INSPECT_FIRST",
+      "severity": "critical",
+      "description": "maintain/fix 실행 전 inspect 필수",
+      "enforcedBy": "InspectionCache.enforceInspectFirst",
+      "enabled": true,
+      "enforceInCI": true,
+      "message": "maintain/fix를 실행하기 전에 npm run status를 먼저 실행하세요."
+    },
+    {
+      "id": "NO_BYPASS",
+      "severity": "critical",
+      "description": "거버넌스 우회 완전 차단",
+      "flags": {
+        "SKIP_GOVERNANCE": false,
+        "FORCE_EXECUTION": false,
+        "BYPASS_TIMEOUT": false
+      },
+      "enabled": true,
+      "enforceInCI": true,
+      "message": "거버넌스 규칙을 우회할 수 없습니다."
+    },
+    {
+      "id": "CACHE_TTL",
+      "severity": "high",
+      "description": "5분 TTL 엄수",
+      "ttlSeconds": 300,
+      "enabled": true,
+      "enforceInCI": true,
+      "message": "캐시가 만료되었습니다. npm run status를 재실행하세요."
+    }
+  ],
+  "timeoutPolicy": {
+    "user-input": {
+      "timeout": null,
+      "description": "무한 대기 허용 (사용자 승인 필요 시)",
+      "examples": ["/fix 승인 대기", "interactive prompt"]
+    },
+    "system-command": {
+      "timeout": 600000,
+      "description": "10분 (600초)",
+      "examples": ["npm install", "npm run build", "git operations"]
+    },
+    "validation": {
+      "timeout": 120000,
+      "description": "2분 (120초)",
+      "examples": ["TypeScript 컴파일", "ESLint 검사", "테스트 실행"]
+    },
+    "file-operation": {
+      "timeout": 30000,
+      "description": "30초",
+      "examples": ["파일 읽기/쓰기", "디렉토리 생성"]
+    }
+  },
+  "loopDetection": {
+    "enabled": true,
+    "maxIterations": 1000,
+    "maxRatePerSecond": 100,
+    "whitelist": [
+      "user-approval-wait",
+      "interactive-fix-session",
+      "retry-with-backoff",
+      "self-validation"
+    ],
+    "alertThreshold": {
+      "iterations": 500,
+      "ratePerSecond": 50
+    },
+    "profileEnabled": true,
+    "profilePath": "reports/loop-profile.json"
+  },
+  "notifications": {
+    "enabled": true,
+    "channels": ["console", "file", "slack", "github"],
+    "config": {
+      "slack": {
+        "webhookUrl": "${SLACK_WEBHOOK_URL}",
+        "channel": "#governance-alerts",
+        "username": "Governance Bot"
+      },
+      "github": {
+        "repo": "synthetic-text-agents-v2",
+        "owner": "${GITHUB_OWNER}",
+        "token": "${GITHUB_TOKEN}",
+        "labels": ["bug", "governance", "auto-generated"]
+      },
+      "file": {
+        "logPath": "reports/alerts",
+        "maxFiles": 100,
+        "rotationPolicy": "daily"
+      }
+    },
+    "eventTypes": {
+      "infiniteLoop": {
+        "severity": "critical",
+        "channels": ["console", "file", "slack", "github"]
+      },
+      "timeout": {
+        "severity": "high",
+        "channels": ["console", "file", "slack"]
+      },
+      "unexpectedChange": {
+        "severity": "high",
+        "channels": ["console", "file", "github"]
+      },
+      "validationFailure": {
+        "severity": "medium",
+        "channels": ["console", "file"]
+      }
+    }
+  },
+  "snapshot": {
+    "enabled": true,
+    "includePaths": [
+      "src/**/*.ts",
+      "scripts/**/*.ts",
+      "package.json",
+      "tsconfig.json",
+      "reports/**/*.json"
+    ],
+    "excludePaths": [
+      "node_modules/**",
+      "dist/**",
+      "**/*.test.ts",
+      "reports/snapshots/**",
+      "reports/operations/**"
+    ],
+    "hashAlgorithm": "sha256",
+    "retentionDays": 7
+  },
+  "operationLogging": {
+    "enabled": true,
+    "logPath": "reports/operations/governance.jsonl",
+    "detailLevel": "verbose",
+    "includeSnapshots": true,
+    "rotationPolicy": {
+      "maxSizeMB": 100,
+      "maxFiles": 10
+    }
+  },
+  "riskDomains": [
+    {
+      "path": "src/rag/**",
+      "reason": "RAG 시스템 변경은 신중히",
+      "severity": "high",
+      "requiresApproval": true
+    },
+    {
+      "path": "src/clients/**",
+      "reason": "API 클라이언트 변경 위험",
+      "severity": "high",
+      "requiresApproval": true
+    },
+    {
+      "path": "package.json",
+      "reason": "의존성 변경 검토 필요",
+      "severity": "critical",
+      "requiresApproval": true
+    },
+    {
+      "path": "scripts/lib/inspection-*.ts",
+      "reason": "Inspection 코어 로직 변경 위험",
+      "severity": "critical",
+      "requiresApproval": true
+    },
+    {
+      "path": "scripts/lib/governance/**",
+      "reason": "거버넌스 시스템 자체 변경",
+      "severity": "critical",
+      "requiresApproval": true
+    }
+  ],
+  "selfValidation": {
+    "enabled": true,
+    "maxRetries": 3,
+    "retryDelay": 1000,
+    "checks": [
+      {
+        "name": "TypeScript",
+        "command": "npm run typecheck",
+        "required": true
+      },
+      {
+        "name": "ESLint",
+        "command": "npm run lint",
+        "required": false,
+        "autoFix": "npm run lint:fix"
+      },
+      {
+        "name": "Tests",
+        "command": "npm run test",
+        "required": false
+      }
+    ]
+  },
+  "deprecatedFiles": [
+    {
+      "path": "scripts/unified-dashboard.ts",
+      "replacement": "npm run status",
+      "reason": "캐시 기반 아키텍처로 전환",
+      "deprecatedSince": "2025-10-01"
+    },
+    {
+      "path": "scripts/fix-orchestrator.ts",
+      "replacement": "npm run fix",
+      "reason": "캐시 기반 아키텍처로 전환",
+      "deprecatedSince": "2025-10-01"
+    },
+    {
+      "path": "scripts/smart-maintenance-orchestrator.ts",
+      "replacement": "npm run maintain",
+      "reason": "캐시 기반 아키텍처로 전환",
+      "deprecatedSince": "2025-10-01"
+    },
+    {
+      "path": "scripts/ai-fix-engine.ts",
+      "replacement": "npm run maintain",
+      "reason": "Self-Validation으로 통합",
+      "deprecatedSince": "2025-10-01"
+    },
+    {
+      "path": "scripts/comprehensive-doc-updater.ts",
+      "replacement": "npm run ship",
+      "reason": "Ship 워크플로우로 통합",
+      "deprecatedSince": "2025-10-01"
+    },
+    {
+      "path": "scripts/handoff-generator.ts",
+      "replacement": "npm run ship",
+      "reason": "Ship 워크플로우로 통합",
+      "deprecatedSince": "2025-10-01"
+    }
+  ]
+}

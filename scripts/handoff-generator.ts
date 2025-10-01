@@ -3,7 +3,25 @@
 /**
  * Handoff Document Generator
  * Creates comprehensive developer handoff documentation automatically
+ *
+ * ⚠️  DEPRECATED: This file is no longer directly executable.
+ * Use npm run ship instead.
  */
+
+// Governance: Block direct execution
+if (require.main === module) {
+  throw new Error(`
+❌ DEPRECATED: handoff-generator.ts는 더 이상 직접 실행할 수 없습니다.
+
+✅ 올바른 사용법:
+   npm run ship      # 배포 준비 (핸드오프 문서 포함)
+
+📚 자세한 내용: docs/MIGRATION_V2.md
+📋 Ship 워크플로우: docs/COMMAND_GUIDE.md
+
+이 파일은 테스트 호환성을 위해 import는 계속 허용됩니다.
+  `);
+}
 
 import {
   readFileSync,

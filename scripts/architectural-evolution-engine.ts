@@ -9,6 +9,7 @@ import { readFileSync, writeFileSync, existsSync, mkdirSync } from "fs";
 import { join, dirname } from "path";
 import ComponentRegistrySystem from "./component-registry-system.js";
 import DesignPrincipleEngine from "./design-principle-engine.js";
+import { wrapWithGovernance } from "./lib/governance/engine-governance-template.js";
 
 interface ComponentMetadata {
   name: string;
@@ -122,9 +123,10 @@ class ArchitecturalEvolutionEngine {
    * 시스템의 구조적 패턴을 분석하고 개선 기회를 식별
    */
   async identifyStructuralImprovements(): Promise<EvolutionaryImprovement[]> {
-    console.log(
-      "🔍 Analyzing system architecture for evolutionary improvements...",
-    );
+    return wrapWithGovernance("architectural-evolution-engine", async () => {
+      console.log(
+        "🔍 Analyzing system architecture for evolutionary improvements...",
+      );
 
     // 1. 구조적 패턴 탐지
     const patterns = await this.detectStructuralPatterns();
@@ -145,11 +147,12 @@ class ArchitecturalEvolutionEngine {
       ...consolidationOpportunities,
       ...duplications,
       ...architecturalInconsistencies,
-    ].sort(
-      (a, b) => this.calculateImpactScore(b) - this.calculateImpactScore(a),
-    );
+      ].sort(
+        (a, b) => this.calculateImpactScore(b) - this.calculateImpactScore(a),
+      );
 
-    return improvements;
+      return improvements;
+    });
   }
 
   private async detectStructuralPatterns(): Promise<StructuralPattern[]> {
@@ -640,7 +643,8 @@ class ArchitecturalEvolutionEngine {
    * 전체 진화 과정을 실행
    */
   async evolveArchitecture(): Promise<SystemEvolutionReport> {
-    console.log("🧬 Starting architectural evolution...");
+    return wrapWithGovernance("architectural-evolution-engine", async () => {
+      console.log("🧬 Starting architectural evolution...");
 
     // 1. 개선 기회 식별
     const improvements = await this.identifyStructuralImprovements();
@@ -686,11 +690,12 @@ class ArchitecturalEvolutionEngine {
     console.log(
       `   ⏳ ${report.autoEvolutionCapabilities.needsApproval.length} awaiting approval`,
     );
-    console.log(
-      `   🔧 ${report.autoEvolutionCapabilities.requiresManual.length} require manual intervention`,
-    );
+      console.log(
+        `   🔧 ${report.autoEvolutionCapabilities.requiresManual.length} require manual intervention`,
+      );
 
-    return report;
+      return report;
+    });
   }
 
   // 유틸리티 메서드들

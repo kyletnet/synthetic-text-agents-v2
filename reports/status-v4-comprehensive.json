@@ -1,8 +1,8 @@
 {
-  "timestamp": "2025-09-30T09:36:54.574Z",
+  "timestamp": "2025-10-01T00:24:39.266Z",
   "version": "4.0",
   "documentation": {
-    "timestamp": "2025-09-30T09:36:54.283Z",
+    "timestamp": "2025-10-01T00:24:39.007Z",
     "overallScore": 72,
     "totalDocuments": 18,
     "missingCount": 7,
@@ -16,7 +16,7 @@
         "priority": 1,
         "exists": true,
         "lastModified": "2025-09-30T09:28:00.575Z",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "size": 17116,
         "status": "CURRENT",
         "accessibility": "IMMEDIATE"
@@ -28,7 +28,7 @@
         "priority": 1,
         "exists": true,
         "lastModified": "2025-09-30T05:46:41.118Z",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "size": 1972,
         "status": "CURRENT",
         "accessibility": "IMMEDIATE"
@@ -40,7 +40,7 @@
         "priority": 1,
         "exists": true,
         "lastModified": "2025-09-23T08:53:33.243Z",
-        "ageInDays": 7,
+        "ageInDays": 8,
         "size": 4862,
         "status": "CURRENT",
         "accessibility": "IMMEDIATE"
@@ -52,7 +52,7 @@
         "priority": 1,
         "exists": true,
         "lastModified": "2025-09-25T04:30:54.217Z",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "size": 3321,
         "status": "CURRENT",
         "accessibility": "IMMEDIATE"
@@ -64,7 +64,7 @@
         "priority": 1,
         "exists": true,
         "lastModified": "2025-09-23T08:53:34.021Z",
-        "ageInDays": 7,
+        "ageInDays": 8,
         "size": 5538,
         "status": "CURRENT",
         "accessibility": "IMMEDIATE"
@@ -76,7 +76,7 @@
         "priority": 2,
         "exists": true,
         "lastModified": "2025-09-25T04:30:52.430Z",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "size": 2411,
         "status": "CURRENT",
         "accessibility": "IMMEDIATE"
@@ -115,7 +115,7 @@
         "priority": 2,
         "exists": true,
         "lastModified": "2025-09-23T08:53:33.638Z",
-        "ageInDays": 7,
+        "ageInDays": 8,
         "size": 29854,
         "status": "CURRENT",
         "accessibility": "IMMEDIATE"
@@ -127,7 +127,7 @@
         "priority": 2,
         "exists": true,
         "lastModified": "2025-09-23T08:53:33.810Z",
-        "ageInDays": 7,
+        "ageInDays": 8,
         "size": 7842,
         "status": "CURRENT",
         "accessibility": "IMMEDIATE"
@@ -148,7 +148,7 @@
         "priority": 2,
         "exists": true,
         "lastModified": "2025-09-23T08:53:33.330Z",
-        "ageInDays": 7,
+        "ageInDays": 8,
         "size": 937,
         "status": "CURRENT",
         "accessibility": "IMMEDIATE"
@@ -187,7 +187,7 @@
         "priority": 1,
         "exists": true,
         "lastModified": "2025-09-25T07:48:31.038Z",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "size": 2461,
         "status": "CURRENT",
         "accessibility": "MODERATE"
@@ -198,9 +198,9 @@
         "category": "DEVELOPMENT",
         "priority": 2,
         "exists": true,
-        "lastModified": "2025-09-30T09:36:52.029Z",
+        "lastModified": "2025-10-01T00:24:37.124Z",
         "ageInDays": 0,
-        "size": 7451,
+        "size": 7423,
         "status": "CURRENT",
         "accessibility": "MODERATE"
       }
@@ -292,7 +292,7 @@
         "type": "FIXME",
         "severity": "HIGH",
         "context": "try { | const todoGrep = execSync(",
-        "ageInDays": 6,
+        "ageInDays": 7,
         "estimation": "1-2 hours"
       },
       {
@@ -302,7 +302,7 @@
         "type": "FIXME",
         "severity": "HIGH",
         "context": "const todoGrep = execSync( | { encoding: \"utf-8\" },",
-        "ageInDays": 6,
+        "ageInDays": 7,
         "estimation": "1-2 hours"
       },
       {
@@ -312,7 +312,7 @@
         "type": "FIXME",
         "severity": "HIGH",
         "context": "const grepResult = execSync( | { encoding: \"utf8\" },",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "1-2 hours"
       },
       {
@@ -322,7 +322,7 @@
         "type": "HACK",
         "severity": "HIGH",
         "context": "const grepResult = execSync( | { encoding: \"utf8\" },",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "1-2 hours"
       },
       {
@@ -332,7 +332,7 @@
         "type": "HACK",
         "severity": "HIGH",
         "context": "? \"LOW\" | ? \"HIGH\"",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "30min-1 hour"
       },
       {
@@ -342,7 +342,7 @@
         "type": "FIXME",
         "severity": "HIGH",
         "context": " | await this.scanForTodoComments();",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "1-2 hours"
       },
       {
@@ -352,7 +352,7 @@
         "type": "HACK",
         "severity": "HIGH",
         "context": " | await this.scanForTodoComments();",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "1-2 hours"
       },
       {
@@ -362,7 +362,7 @@
         "type": "HACK",
         "severity": "HIGH",
         "context": "const { stdout } = await execAsync( | );",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "1-2 hours"
       },
       {
@@ -372,7 +372,7 @@
         "type": "FIXME",
         "severity": "HIGH",
         "context": "const { stdout } = await execAsync( | );",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "1-2 hours"
       },
       {
@@ -382,7 +382,7 @@
         "type": "HACK",
         "severity": "HIGH",
         "context": "const { stdout } = await execAsync( | );",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "1-2 hours"
       },
       {
@@ -392,7 +392,7 @@
         "type": "FIXME",
         "severity": "HIGH",
         "context": " | this.addIssue({",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "1-2 hours"
       },
       {
@@ -402,7 +402,7 @@
         "type": "FIXME",
         "severity": "HIGH",
         "context": "impact: \"Code quality and maintainability\", | });",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "1-2 hours"
       },
       {
@@ -412,7 +412,7 @@
         "type": "FIXME",
         "severity": "HIGH",
         "context": "content: string; | severity: \"LOW\" | \"MEDIUM\" | \"HIGH\" | \"CRITICAL\";",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "1-2 hours"
       },
       {
@@ -422,7 +422,7 @@
         "type": "HACK",
         "severity": "HIGH",
         "context": "content: string; | severity: \"LOW\" | \"MEDIUM\" | \"HIGH\" | \"CRITICAL\";",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "1-2 hours"
       },
       {
@@ -432,7 +432,7 @@
         "type": "FIXME",
         "severity": "HIGH",
         "context": "TODO: /\\b(TODO|@todo)\\b/gi, | HACK: /\\b(HACK|@hack)\\b/gi,",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "1-2 hours"
       },
       {
@@ -442,7 +442,7 @@
         "type": "HACK",
         "severity": "HIGH",
         "context": "FIXME: /\\b(FIXME|@fixme)\\b/gi, | TEMP: /\\b(TEMP|@temp|temporary)\\b/gi,",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "30min-1 hour"
       },
       {
@@ -452,7 +452,7 @@
         "type": "FIXME",
         "severity": "HIGH",
         "context": "const grepResult = execSync( | { encoding: \"utf8\" },",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "1-2 hours"
       },
       {
@@ -462,7 +462,7 @@
         "type": "HACK",
         "severity": "HIGH",
         "context": "const grepResult = execSync( | { encoding: \"utf8\" },",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "1-2 hours"
       },
       {
@@ -472,7 +472,7 @@
         "type": "FIXME",
         "severity": "HIGH",
         "context": "const upperContent = content.toUpperCase(); | if (upperContent.includes(\"HACK\")) return \"HACK\";",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "1-2 hours"
       },
       {
@@ -482,7 +482,7 @@
         "type": "HACK",
         "severity": "HIGH",
         "context": "if (upperContent.includes(\"FIXME\")) return \"FIXME\"; | if (upperContent.includes(\"WORKAROUND\")) retur",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "30min-1 hour"
       },
       {
@@ -492,7 +492,7 @@
         "type": "FIXME",
         "severity": "HIGH",
         "context": "if ( | type === \"HACK\" ||",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "1-2 hours"
       },
       {
@@ -502,7 +502,7 @@
         "type": "HACK",
         "severity": "HIGH",
         "context": "type === \"FIXME\" || | upperContent.includes(\"BUG\") ||",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "30min-1 hour"
       },
       {
@@ -512,7 +512,7 @@
         "type": "FIXME",
         "severity": "HIGH",
         "context": "TODO: 0, | HACK: 0,",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "1-2 hours"
       },
       {
@@ -522,7 +522,7 @@
         "type": "HACK",
         "severity": "HIGH",
         "context": "FIXME: 0, | TEMP: 0,",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "30min-1 hour"
       },
       {
@@ -532,7 +532,7 @@
         "type": "HACK",
         "severity": "HIGH",
         "context": " | recommendations.push(",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "30min-1 hour"
       },
       {
@@ -542,7 +542,7 @@
         "type": "FIXME",
         "severity": "HIGH",
         "context": " | recommendations.push(",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "1-2 hours"
       },
       {
@@ -552,7 +552,7 @@
         "type": "FIXME",
         "severity": "HIGH",
         "context": "recommendations.push( | );",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "1-2 hours"
       },
       {
@@ -562,7 +562,7 @@
         "type": "FIXME",
         "severity": "HIGH",
         "context": "- **TODO**: ${report.breakdown.TODO} | - **HACK**: ${report.breakdown.HACK}",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "1-2 hours"
       },
       {
@@ -572,7 +572,7 @@
         "type": "HACK",
         "severity": "HIGH",
         "context": "- **FIXME**: ${report.breakdown.FIXME} | - **TEMP**: ${report.breakdown.TEMP}",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "30min-1 hour"
       },
       {
@@ -582,7 +582,7 @@
         "type": "FIXME",
         "severity": "HIGH",
         "context": " | lineNum = 0;",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "1-2 hours"
       },
       {
@@ -592,7 +592,7 @@
         "type": "FIXME",
         "severity": "HIGH",
         "context": "lineNum++; | issues.push({",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "1-2 hours"
       },
       {
@@ -602,7 +602,7 @@
         "type": "FIXME",
         "severity": "HIGH",
         "context": "severity: \"info\", | });",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "1-2 hours"
       },
       {
@@ -612,7 +612,7 @@
         "type": "FIXME",
         "severity": "HIGH",
         "context": "try { | const patterns = [\"TODO\", \"FIXME\", \"HACK\", \"WORKAROUND\"];",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "1-2 hours"
       },
       {
@@ -622,7 +622,7 @@
         "type": "HACK",
         "severity": "HIGH",
         "context": "try { | const patterns = [\"TODO\", \"FIXME\", \"HACK\", \"WORKAROUND\"];",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "1-2 hours"
       },
       {
@@ -632,7 +632,7 @@
         "type": "FIXME",
         "severity": "HIGH",
         "context": "// TODO, FIXME, HACK, WORKAROUND 패턴 검색 | let totalCount = 0;",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "1-2 hours"
       },
       {
@@ -642,7 +642,7 @@
         "type": "HACK",
         "severity": "HIGH",
         "context": "// TODO, FIXME, HACK, WORKAROUND 패턴 검색 | let totalCount = 0;",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "1-2 hours"
       },
       {
@@ -652,7 +652,7 @@
         "type": "FIXME",
         "severity": "HIGH",
         "context": "console.log( | );",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "1-2 hours"
       },
       {
@@ -662,7 +662,7 @@
         "type": "HACK",
         "severity": "HIGH",
         "context": "console.log( | );",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "1-2 hours"
       },
       {
@@ -672,7 +672,7 @@
         "type": "FIXME",
         "severity": "HIGH",
         "context": "content: string; | severity: \"LOW\" | \"MEDIUM\" | \"HIGH\" | \"CRITICAL\";",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "1-2 hours"
       },
       {
@@ -682,7 +682,7 @@
         "type": "HACK",
         "severity": "HIGH",
         "context": "content: string; | severity: \"LOW\" | \"MEDIUM\" | \"HIGH\" | \"CRITICAL\";",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "1-2 hours"
       },
       {
@@ -692,7 +692,7 @@
         "type": "HACK",
         "severity": "HIGH",
         "context": "{ | replacement: (match: string, hackDescription: string) => {",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "30min-1 hour"
       },
       {
@@ -702,7 +702,7 @@
         "type": "HACK",
         "severity": "HIGH",
         "context": " | return finding.content.length > 100 ? \"manual-review\" : \"guided-fix\";",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "30min-1 hour"
       },
       {
@@ -712,7 +712,7 @@
         "type": "HACK",
         "severity": "HIGH",
         "context": " | return \"Implement proper validation or error handling instead of bypassing checks.\";",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "30min-1 hour"
       },
       {
@@ -722,7 +722,7 @@
         "type": "HACK",
         "severity": "HIGH",
         "context": "steps.push(\"Run TypeScript checks to verify\"); | steps.push(\"Understand why the hack was necessary\")",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "30min-1 hour"
       },
       {
@@ -732,7 +732,7 @@
         "type": "HACK",
         "severity": "HIGH",
         "context": "} else if (finding.type === \"HACK\") { | steps.push(\"Research proper solution approach\");",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "30min-1 hour"
       },
       {
@@ -742,7 +742,7 @@
         "type": "HACK",
         "severity": "HIGH",
         "context": "steps.push(\"Test thoroughly to ensure no regressions\"); | } else {",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "30min-1 hour"
       },
       {
@@ -752,7 +752,7 @@
         "type": "HACK",
         "severity": "HIGH",
         "context": " | return \"medium\";",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "30min-1 hour"
       },
       {
@@ -762,7 +762,7 @@
         "type": "FIXME",
         "severity": "HIGH",
         "context": "content: string; | severity: \"LOW\" | \"MEDIUM\" | \"HIGH\" | \"CRITICAL\";",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "1-2 hours"
       },
       {
@@ -772,7 +772,7 @@
         "type": "HACK",
         "severity": "HIGH",
         "context": "content: string; | severity: \"LOW\" | \"MEDIUM\" | \"HIGH\" | \"CRITICAL\";",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "1-2 hours"
       },
       {
@@ -782,7 +782,7 @@
         "type": "FIXME",
         "severity": "HIGH",
         "context": "// Search for common workaround patterns | const output = execSync(searchCmd, { encoding: \"utf8\", st",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "1-2 hours"
       },
       {
@@ -792,7 +792,7 @@
         "type": "HACK",
         "severity": "HIGH",
         "context": "// Search for common workaround patterns | const output = execSync(searchCmd, { encoding: \"utf8\", st",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "1-2 hours"
       },
       {
@@ -802,7 +802,7 @@
         "type": "FIXME",
         "severity": "HIGH",
         "context": "content: string, | if (content.includes(\"FIXME\")) return \"FIXME\";",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "1-2 hours"
       },
       {
@@ -812,7 +812,7 @@
         "type": "HACK",
         "severity": "HIGH",
         "context": "content: string, | if (content.includes(\"FIXME\")) return \"FIXME\";",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "1-2 hours"
       },
       {
@@ -822,7 +822,7 @@
         "type": "FIXME",
         "severity": "HIGH",
         "context": "): \"TODO\" | \"FIXME\" | \"HACK\" | \"TEMP\" | \"WORKAROUND\" { | if (content.includes(\"HACK\")) return \"HACK\"",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "1-2 hours"
       },
       {
@@ -832,7 +832,7 @@
         "type": "HACK",
         "severity": "HIGH",
         "context": "if (content.includes(\"FIXME\")) return \"FIXME\"; | if (content.includes(\"TEMP\")) return \"TEMP\";",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "30min-1 hour"
       },
       {
@@ -842,7 +842,7 @@
         "type": "FIXME",
         "severity": "HIGH",
         "context": "if ( | content.includes(\"HACK\") ||",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "1-2 hours"
       },
       {
@@ -852,7 +852,7 @@
         "type": "HACK",
         "severity": "HIGH",
         "context": "content.includes(\"FIXME\") || | content.includes(\"security\")",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "30min-1 hour"
       },
       {
@@ -1258,7 +1258,7 @@
         "type": "WORKAROUND",
         "severity": "MEDIUM",
         "context": "- Q: What's the best approach for troubleshooting when a customer reports that their software integr",
-        "ageInDays": 7,
+        "ageInDays": 8,
         "estimation": "1-2 hours"
       },
       {
@@ -1268,7 +1268,7 @@
         "type": "WORKAROUND",
         "severity": "MEDIUM",
         "context": "| \"WARNING\" | | \"DEPENDENCY\"",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "30min-1 hour"
       },
       {
@@ -1278,7 +1278,7 @@
         "type": "WORKAROUND",
         "severity": "MEDIUM",
         "context": "const grepResult = execSync( | { encoding: \"utf8\" },",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "1-2 hours"
       },
       {
@@ -1288,7 +1288,7 @@
         "type": "WORKAROUND",
         "severity": "MEDIUM",
         "context": "| \"WARNING\" | | \"DEPENDENCY\"",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "30min-1 hour"
       },
       {
@@ -1298,7 +1298,7 @@
         "type": "WORKAROUND",
         "severity": "MEDIUM",
         "context": "/** | * Intelligently scans codebase for temporary solutions and technical debt",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "30min-1 hour"
       },
       {
@@ -1308,7 +1308,7 @@
         "type": "WORKAROUND",
         "severity": "MEDIUM",
         "context": "content: string; | severity: \"LOW\" | \"MEDIUM\" | \"HIGH\" | \"CRITICAL\";",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "1-2 hours"
       },
       {
@@ -1318,7 +1318,7 @@
         "type": "WORKAROUND",
         "severity": "MEDIUM",
         "context": "TEMP: /\\b(TEMP|@temp|temporary)\\b/gi, | };",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "30min-1 hour"
       },
       {
@@ -1328,7 +1328,7 @@
         "type": "WORKAROUND",
         "severity": "MEDIUM",
         "context": "const grepResult = execSync( | { encoding: \"utf8\" },",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "1-2 hours"
       },
       {
@@ -1338,7 +1338,7 @@
         "type": "WORKAROUND",
         "severity": "MEDIUM",
         "context": "if (upperContent.includes(\"HACK\")) return \"HACK\"; | if (upperContent.includes(\"TEMP\")) return \"TEMP\"",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "30min-1 hour"
       },
       {
@@ -1348,7 +1348,7 @@
         "type": "WORKAROUND",
         "severity": "MEDIUM",
         "context": "if ( | upperContent.includes(\"REFACTOR\") ||",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "30min-1 hour"
       },
       {
@@ -1358,7 +1358,7 @@
         "type": "WORKAROUND",
         "severity": "MEDIUM",
         "context": "TEMP: 0, | };",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "30min-1 hour"
       },
       {
@@ -1368,7 +1368,7 @@
         "type": "WORKAROUND",
         "severity": "MEDIUM",
         "context": "- **TEMP**: ${report.breakdown.TEMP} | ",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "30min-1 hour"
       },
       {
@@ -1378,7 +1378,7 @@
         "type": "WORKAROUND",
         "severity": "MEDIUM",
         "context": "### 📈 Statistics | - **Average Age**: ${report.stats.averageAge} days",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "30min-1 hour"
       },
       {
@@ -1388,7 +1388,7 @@
         "type": "WORKAROUND",
         "severity": "MEDIUM",
         "context": "* 역할: | * - 심각도별 우선순위 정렬",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "2-4 days"
       },
       {
@@ -1398,7 +1398,7 @@
         "type": "WORKAROUND",
         "severity": "MEDIUM",
         "context": "id: string; | severity: \"low\" | \"medium\" | \"high\" | \"critical\";",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "2-4 days"
       },
       {
@@ -1408,7 +1408,7 @@
         "type": "WORKAROUND",
         "severity": "MEDIUM",
         "context": "try { | const patterns = [\"TODO\", \"FIXME\", \"HACK\", \"WORKAROUND\"];",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "1-2 hours"
       },
       {
@@ -1418,7 +1418,7 @@
         "type": "WORKAROUND",
         "severity": "MEDIUM",
         "context": "// TODO, FIXME, HACK, WORKAROUND 패턴 검색 | let totalCount = 0;",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "1-2 hours"
       },
       {
@@ -1428,7 +1428,7 @@
         "type": "WORKAROUND",
         "severity": "MEDIUM",
         "context": "id: \"workarounds\", | severity: \"medium\",",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "30min-1 hour"
       },
       {
@@ -1438,7 +1438,7 @@
         "type": "WORKAROUND",
         "severity": "MEDIUM",
         "context": "documentation: \"📚\", | refactor: \"♻️\",",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "30min-1 hour"
       },
       {
@@ -1448,7 +1448,7 @@
         "type": "WORKAROUND",
         "severity": "MEDIUM",
         "context": "console.log( | );",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "1-2 hours"
       },
       {
@@ -1458,7 +1458,7 @@
         "type": "WORKAROUND",
         "severity": "MEDIUM",
         "context": "try { | const resolutionEvents = this.eventBuffer.filter(",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "30min-1 hour"
       },
       {
@@ -1468,7 +1468,7 @@
         "type": "WORKAROUND",
         "severity": "MEDIUM",
         "context": "recommendations.push( | );",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "30min-1 hour"
       },
       {
@@ -1478,7 +1478,7 @@
         "type": "WORKAROUND",
         "severity": "MEDIUM",
         "context": "import { smartDecisionMatrix } from \"./smart-decision-matrix.js\"; | import { perfCache } from \"./per",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "30min-1 hour"
       },
       {
@@ -1488,7 +1488,7 @@
         "type": "WORKAROUND",
         "severity": "MEDIUM",
         "context": "{ | component: \"workaround-resolution-engine\" as ComponentId,",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "30min-1 hour"
       },
       {
@@ -1498,7 +1498,7 @@
         "type": "WORKAROUND",
         "severity": "MEDIUM",
         "context": "/** | * Systematic conversion of temporary fixes to permanent solutions",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "30min-1 hour"
       },
       {
@@ -1508,7 +1508,7 @@
         "type": "WORKAROUND",
         "severity": "MEDIUM",
         "context": "* Systematic conversion of temporary fixes to permanent solutions | */",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "4-8 hours"
       },
       {
@@ -1518,7 +1518,7 @@
         "type": "WORKAROUND",
         "severity": "MEDIUM",
         "context": "content: string; | severity: \"LOW\" | \"MEDIUM\" | \"HIGH\" | \"CRITICAL\";",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "1-2 hours"
       },
       {
@@ -1528,7 +1528,7 @@
         "type": "WORKAROUND",
         "severity": "MEDIUM",
         "context": " | instructions += `Generated ${new Date().toISOString()}\\n\\n`;",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "30min-1 hour"
       },
       {
@@ -1538,7 +1538,7 @@
         "type": "WORKAROUND",
         "severity": "MEDIUM",
         "context": " | report += `**Total Processed**: ${totalResults}\\n`;",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "30min-1 hour"
       },
       {
@@ -1548,7 +1548,7 @@
         "type": "WORKAROUND",
         "severity": "MEDIUM",
         "context": "/** | * End-to-end system for systematically resolving the 157 temporary fixes",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "30min-1 hour"
       },
       {
@@ -1558,7 +1558,7 @@
         "type": "WORKAROUND",
         "severity": "MEDIUM",
         "context": "import { join } from \"path\"; | ",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "30min-1 hour"
       },
       {
@@ -1568,7 +1568,7 @@
         "type": "WORKAROUND",
         "severity": "MEDIUM",
         "context": "content: string; | severity: \"LOW\" | \"MEDIUM\" | \"HIGH\" | \"CRITICAL\";",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "1-2 hours"
       },
       {
@@ -1578,7 +1578,7 @@
         "type": "WORKAROUND",
         "severity": "MEDIUM",
         "context": "\"reports\", | );",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "30min-1 hour"
       },
       {
@@ -1588,7 +1588,7 @@
         "type": "WORKAROUND",
         "severity": "MEDIUM",
         "context": "): Promise<void> { | console.log(`   Mode: ${mode}`);",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "30min-1 hour"
       },
       {
@@ -1598,7 +1598,7 @@
         "type": "WORKAROUND",
         "severity": "MEDIUM",
         "context": "console.log(\"\"); | console.log(`   📄 Full report: ${this.reportPath}`);",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "30min-1 hour"
       },
       {
@@ -1608,7 +1608,7 @@
         "type": "WORKAROUND",
         "severity": "MEDIUM",
         "context": "private async detectWorkarounds(): Promise<WorkaroundFinding[]> { | try {",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "30min-1 hour"
       },
       {
@@ -1618,7 +1618,7 @@
         "type": "WORKAROUND",
         "severity": "MEDIUM",
         "context": "try { | encoding: \"utf8\",",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "30min-1 hour"
       },
       {
@@ -1628,7 +1628,7 @@
         "type": "WORKAROUND",
         "severity": "MEDIUM",
         "context": "try { | const searchCmd = `find . -name \"*.ts\" -not -path \"./node_modules/*\" -not -path \"./dist*/*\" ",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "30min-1 hour"
       },
       {
@@ -1638,7 +1638,7 @@
         "type": "WORKAROUND",
         "severity": "MEDIUM",
         "context": "// Search for common workaround patterns | const output = execSync(searchCmd, { encoding: \"utf8\", st",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "1-2 hours"
       },
       {
@@ -1648,7 +1648,7 @@
         "type": "WORKAROUND",
         "severity": "MEDIUM",
         "context": "content: string, | if (content.includes(\"FIXME\")) return \"FIXME\";",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "1-2 hours"
       },
       {
@@ -1658,7 +1658,7 @@
         "type": "WORKAROUND",
         "severity": "MEDIUM",
         "context": "if (content.includes(\"TEMP\")) return \"TEMP\"; | return \"TODO\";",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "30min-1 hour"
       },
       {
@@ -1668,7 +1668,7 @@
         "type": "WORKAROUND",
         "severity": "MEDIUM",
         "context": "\"reports\", | );",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "1-2 hours"
       },
       {
@@ -1678,7 +1678,7 @@
         "type": "WORKAROUND",
         "severity": "MEDIUM",
         "context": " | implementationPlan += `Generated: ${new Date().toISOString()}\\n\\n`;",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "4-8 hours"
       },
       {
@@ -1688,7 +1688,7 @@
         "type": "WORKAROUND",
         "severity": "MEDIUM",
         "context": " | report += `Generated: ${new Date().toISOString()}\\n`;",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "30min-1 hour"
       },
       {
@@ -1698,7 +1698,7 @@
         "type": "WORKAROUND",
         "severity": "MEDIUM",
         "context": "report += `## 📄 Generated Artifacts\\n\\n`; | report += `- **Implementation Plan**: \\`reports/impleme",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "30min-1 hour"
       },
       {
@@ -1708,7 +1708,7 @@
         "type": "WORKAROUND",
         "severity": "MEDIUM",
         "context": "report += `- **Implementation Plan**: \\`reports/implementation-plan.md\\`\\n`; | ",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "1-2 hours"
       },
       {
@@ -1718,7 +1718,7 @@
         "type": "WORKAROUND",
         "severity": "MEDIUM",
         "context": "report += `---\\n\\n`; | ",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "30min-1 hour"
       },
       {
@@ -1728,7 +1728,7 @@
         "type": "WORKAROUND",
         "severity": "MEDIUM",
         "context": "import DocumentOptimizer from \"./document-optimizer.js\"; | import ReferenceTracker from \"./reference",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "30min-1 hour"
       },
       {
@@ -1810,7 +1810,7 @@
         "type": "TEMP",
         "severity": "LOW",
         "context": "try { | const tempFile = this.budgetFile + \".tmp\";",
-        "ageInDays": 7,
+        "ageInDays": 8,
         "estimation": "30min-1 hour"
       },
       {
@@ -1820,7 +1820,7 @@
         "type": "TEMP",
         "severity": "LOW",
         "context": " | const tempPath = checkpointPath + \".tmp\";",
-        "ageInDays": 7,
+        "ageInDays": 8,
         "estimation": "30min-1 hour"
       },
       {
@@ -1830,7 +1830,7 @@
         "type": "TEMP",
         "severity": "LOW",
         "context": " | const recordCount = await this.streamProcess(",
-        "ageInDays": 7,
+        "ageInDays": 8,
         "estimation": "30min-1 hour"
       },
       {
@@ -1840,7 +1840,7 @@
         "type": "TEMP",
         "severity": "LOW",
         "context": "} catch (error) { | if (fs.existsSync(tempPath)) {",
-        "ageInDays": 7,
+        "ageInDays": 8,
         "estimation": "30min-1 hour"
       },
       {
@@ -1850,7 +1850,7 @@
         "type": "TODO",
         "severity": "LOW",
         "context": "// 3. Manifest integrity (if provided) | ",
-        "ageInDays": 7,
+        "ageInDays": 8,
         "estimation": "4-8 hours"
       },
       {
@@ -1860,7 +1860,7 @@
         "type": "TODO",
         "severity": "LOW",
         "context": " | console.log(`[DLQ] Archived processed entry: ${entry.id}`);",
-        "ageInDays": 7,
+        "ageInDays": 8,
         "estimation": "30min-1 hour"
       },
       {
@@ -1870,7 +1870,7 @@
         "type": "TEMP",
         "severity": "LOW",
         "context": "- Q: What's the best approach for troubleshooting when a customer reports that their software integr",
-        "ageInDays": 7,
+        "ageInDays": 8,
         "estimation": "1-2 hours"
       },
       {
@@ -1880,7 +1880,7 @@
         "type": "TODO",
         "severity": "LOW",
         "context": "try { | const todoGrep = execSync(",
-        "ageInDays": 6,
+        "ageInDays": 7,
         "estimation": "1-2 hours"
       },
       {
@@ -1890,7 +1890,7 @@
         "type": "TODO",
         "severity": "LOW",
         "context": "const todoGrep = execSync( | { encoding: \"utf-8\" },",
-        "ageInDays": 6,
+        "ageInDays": 7,
         "estimation": "1-2 hours"
       },
       {
@@ -1900,7 +1900,7 @@
         "type": "TODO",
         "severity": "LOW",
         "context": "### 현재 이슈 | - **ESLint 경고**: ${currentIssues.eslint_warnings}개",
-        "ageInDays": 6,
+        "ageInDays": 7,
         "estimation": "30min-1 hour"
       },
       {
@@ -1910,7 +1910,7 @@
         "type": "TODO",
         "severity": "LOW",
         "context": "? ` | ${currentIssues.todo_comments",
-        "ageInDays": 6,
+        "ageInDays": 7,
         "estimation": "30min-1 hour"
       },
       {
@@ -1920,7 +1920,7 @@
         "type": "TODO",
         "severity": "LOW",
         "context": ".slice(0, 3) | .join(\"\\n\")}",
-        "ageInDays": 6,
+        "ageInDays": 7,
         "estimation": "30min-1 hour"
       },
       {
@@ -1930,7 +1930,7 @@
         "type": "TODO",
         "severity": "LOW",
         "context": "0, | );",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "30min-1 hour"
       },
       {
@@ -1940,7 +1940,7 @@
         "type": "TODO",
         "severity": "LOW",
         "context": "lines[errorLine] = | ",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "1-2 hours"
       },
       {
@@ -1950,7 +1950,7 @@
         "type": "TODO",
         "severity": "LOW",
         "context": "priority: \"MEDIUM\" as const, | },",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "1-2 hours"
       },
       {
@@ -1960,7 +1960,7 @@
         "type": "TEMP",
         "severity": "LOW",
         "context": "f.includes(\"test\") || | f.includes(\"experiment\") ||",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "30min-1 hour"
       },
       {
@@ -1970,7 +1970,7 @@
         "type": "TEMP",
         "severity": "LOW",
         "context": "f.includes(\"-backup\") || | f.includes(\"experiment\") ||",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "30min-1 hour"
       },
       {
@@ -1980,7 +1980,7 @@
         "type": "TEMP",
         "severity": "LOW",
         "context": "const unused = []; | ",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "30min-1 hour"
       },
       {
@@ -1990,7 +1990,7 @@
         "type": "TEMP",
         "severity": "LOW",
         "context": " | const temporaryWorkarounds = await this.findTemporaryWorkarounds();",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "30min-1 hour"
       },
       {
@@ -2000,7 +2000,7 @@
         "type": "TODO",
         "severity": "LOW",
         "context": "const grepResult = execSync( | { encoding: \"utf8\" },",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "1-2 hours"
       },
       {
@@ -2010,7 +2010,7 @@
         "type": "TEMP",
         "severity": "LOW",
         "context": "const grepResult = execSync( | { encoding: \"utf8\" },",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "1-2 hours"
       },
       {
@@ -2020,7 +2020,7 @@
         "type": "TODO",
         "severity": "LOW",
         "context": "content.substring(0, 100) + (content.length > 100 ? \"...\" : \"\"), | ? \"LOW\"",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "30min-1 hour"
       },
       {
@@ -2030,7 +2030,7 @@
         "type": "TEMP",
         "severity": "LOW",
         "context": " | ",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "30min-1 hour"
       },
       {
@@ -2040,7 +2040,7 @@
         "type": "TEMP",
         "severity": "LOW",
         "context": "data.temporaryWorkarounds.length === 0 | : `Found ${data.temporaryWorkarounds.length} temporary solu",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "30min-1 hour"
       },
       {
@@ -2050,7 +2050,7 @@
         "type": "TEMP",
         "severity": "LOW",
         "context": "? \"✅ No temporary workarounds found!\" | ",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "30min-1 hour"
       },
       {
@@ -2060,7 +2060,7 @@
         "type": "TEMP",
         "severity": "LOW",
         "context": "async generateHealthReport(): Promise<SyncHealthReport> { | ",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "1-2 hours"
       },
       {
@@ -2070,7 +2070,7 @@
         "type": "TODO",
         "severity": "LOW",
         "context": " | await this.scanForTodoComments();",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "1-2 hours"
       },
       {
@@ -2080,7 +2080,7 @@
         "type": "TODO",
         "severity": "LOW",
         "context": "const { stdout } = await execAsync( | );",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "1-2 hours"
       },
       {
@@ -2090,7 +2090,7 @@
         "type": "TEMP",
         "severity": "LOW",
         "context": "line.includes(\"temporarily disabled\") || | line.includes(\"TODO.*FIX\".toLowerCase())",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "30min-1 hour"
       },
       {
@@ -2100,7 +2100,7 @@
         "type": "TODO",
         "severity": "LOW",
         "context": "line.includes(\"temporary stub\") || | ) {",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "1-2 hours"
       },
       {
@@ -2110,7 +2110,7 @@
         "type": "TODO",
         "severity": "LOW",
         "context": "const { stdout } = await execAsync( | );",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "1-2 hours"
       },
       {
@@ -2120,7 +2120,7 @@
         "type": "TODO",
         "severity": "LOW",
         "context": " | this.addIssue({",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "1-2 hours"
       },
       {
@@ -2130,7 +2130,7 @@
         "type": "TODO",
         "severity": "LOW",
         "context": "const prop = e.message.match(/'([^']+)'/)?.[1] || \"newProp\"; | })",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "30min-1 hour"
       },
       {
@@ -2140,7 +2140,7 @@
         "type": "TEMP",
         "severity": "LOW",
         "context": "/** | * Intelligently scans codebase for temporary solutions and technical debt",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "30min-1 hour"
       },
       {
@@ -2150,7 +2150,7 @@
         "type": "TEMP",
         "severity": "LOW",
         "context": "* Temporary Workaround Detection System | */",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "30min-1 hour"
       },
       {
@@ -2160,7 +2160,7 @@
         "type": "TODO",
         "severity": "LOW",
         "context": "content: string; | severity: \"LOW\" | \"MEDIUM\" | \"HIGH\" | \"CRITICAL\";",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "1-2 hours"
       },
       {
@@ -2170,7 +2170,7 @@
         "type": "TEMP",
         "severity": "LOW",
         "context": "content: string; | severity: \"LOW\" | \"MEDIUM\" | \"HIGH\" | \"CRITICAL\";",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "1-2 hours"
       },
       {
@@ -2180,7 +2180,7 @@
         "type": "TODO",
         "severity": "LOW",
         "context": "private searchPatterns = { | FIXME: /\\b(FIXME|@fixme)\\b/gi,",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "30min-1 hour"
       },
       {
@@ -2190,7 +2190,7 @@
         "type": "TEMP",
         "severity": "LOW",
         "context": "HACK: /\\b(HACK|@hack)\\b/gi, | WORKAROUND: /\\b(WORKAROUND|@workaround)\\b/gi,",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "30min-1 hour"
       },
       {
@@ -2200,7 +2200,7 @@
         "type": "TEMP",
         "severity": "LOW",
         "context": "async scanWorkarounds(): Promise<WorkaroundReport> { | ",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "30min-1 hour"
       },
       {
@@ -2210,7 +2210,7 @@
         "type": "TODO",
         "severity": "LOW",
         "context": "const grepResult = execSync( | { encoding: \"utf8\" },",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "1-2 hours"
       },
       {
@@ -2220,7 +2220,7 @@
         "type": "TEMP",
         "severity": "LOW",
         "context": "const grepResult = execSync( | { encoding: \"utf8\" },",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "1-2 hours"
       },
       {
@@ -2230,7 +2230,7 @@
         "type": "TEMP",
         "severity": "LOW",
         "context": "if (upperContent.includes(\"WORKAROUND\")) return \"WORKAROUND\"; | return \"TODO\";",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "30min-1 hour"
       },
       {
@@ -2240,7 +2240,7 @@
         "type": "TODO",
         "severity": "LOW",
         "context": "if (upperContent.includes(\"TEMP\")) return \"TEMP\"; | }",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "30min-1 hour"
       },
       {
@@ -2250,7 +2250,7 @@
         "type": "TODO",
         "severity": "LOW",
         "context": "const breakdown: Record<string, number> = { | FIXME: 0,",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "30min-1 hour"
       },
       {
@@ -2260,7 +2260,7 @@
         "type": "TEMP",
         "severity": "LOW",
         "context": "HACK: 0, | WORKAROUND: 0,",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "30min-1 hour"
       },
       {
@@ -2270,7 +2270,7 @@
         "type": "TEMP",
         "severity": "LOW",
         "context": "return ` | ",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "30min-1 hour"
       },
       {
@@ -2280,7 +2280,7 @@
         "type": "TODO",
         "severity": "LOW",
         "context": "### 📋 Breakdown by Type | - **FIXME**: ${report.breakdown.FIXME}",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "30min-1 hour"
       },
       {
@@ -2290,7 +2290,7 @@
         "type": "TEMP",
         "severity": "LOW",
         "context": "- **HACK**: ${report.breakdown.HACK} | - **WORKAROUND**: ${report.breakdown.WORKAROUND}",
-        "ageInDays": 5,
+        "ageInDays": 6,
         "estimation": "30min-1 hour"
       },
       {
@@ -2300,7 +2300,7 @@
         "type": "TEMP",
         "severity": "LOW",
         "context": "const enhancedSection = content.match( | );",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "30min-1 hour"
       },
       {
@@ -2310,7 +2310,7 @@
         "type": "TODO",
         "severity": "LOW",
         "context": " | lineNum = 0;",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "1-2 hours"
       },
       {
@@ -2320,7 +2320,7 @@
         "type": "TODO",
         "severity": "LOW",
         "context": "lineNum++; | issues.push({",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "1-2 hours"
       },
       {
@@ -2330,7 +2330,7 @@
         "type": "TODO",
         "severity": "LOW",
         "context": "severity: \"info\", | });",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "1-2 hours"
       },
       {
@@ -2340,7 +2340,7 @@
         "type": "TODO",
         "severity": "LOW",
         "context": "try { | const patterns = [\"TODO\", \"FIXME\", \"HACK\", \"WORKAROUND\"];",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "1-2 hours"
       },
       {
@@ -2350,7 +2350,7 @@
         "type": "TODO",
         "severity": "LOW",
         "context": "// TODO, FIXME, HACK, WORKAROUND 패턴 검색 | let totalCount = 0;",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "1-2 hours"
       },
       {
@@ -2360,7 +2360,7 @@
         "type": "TODO",
         "severity": "LOW",
         "context": "severity: \"medium\", | autoFixable: false,",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "30min-1 hour"
       },
       {
@@ -2370,7 +2370,7 @@
         "type": "TODO",
         "severity": "LOW",
         "context": "console.log( | );",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "1-2 hours"
       },
       {
@@ -2380,7 +2380,7 @@
         "type": "TEMP",
         "severity": "LOW",
         "context": " | await fs.copyFile(filePath, tempBackupPath);",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "30min-1 hour"
       },
       {
@@ -2390,7 +2390,7 @@
         "type": "TEMP",
         "severity": "LOW",
         "context": " | await fs.unlink(tempBackupPath);",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "30min-1 hour"
       },
       {
@@ -2400,7 +2400,7 @@
         "type": "TEMP",
         "severity": "LOW",
         "context": "`4. If failed: restore from snapshot`, | ];",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "30min-1 hour"
       },
       {
@@ -2410,7 +2410,7 @@
         "type": "TEMP",
         "severity": "LOW",
         "context": "* Workaround Resolution Engine | * Implements the workaround resolution strategy from system philoso",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "1-2 hours"
       },
       {
@@ -2420,7 +2420,7 @@
         "type": "TODO",
         "severity": "LOW",
         "context": "content: string; | severity: \"LOW\" | \"MEDIUM\" | \"HIGH\" | \"CRITICAL\";",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "1-2 hours"
       },
       {
@@ -2430,7 +2430,7 @@
         "type": "TEMP",
         "severity": "LOW",
         "context": "content: string; | severity: \"LOW\" | \"MEDIUM\" | \"HIGH\" | \"CRITICAL\";",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "1-2 hours"
       },
       {
@@ -2440,7 +2440,7 @@
         "type": "TODO",
         "severity": "LOW",
         "context": "{ | replacement: (match: string, context: string) => {",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "30min-1 hour"
       },
       {
@@ -2450,7 +2450,7 @@
         "type": "TODO",
         "severity": "LOW",
         "context": "{ | replacement: (match: string, context: string) => {",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "30min-1 hour"
       },
       {
@@ -2460,7 +2460,7 @@
         "type": "TEMP",
         "severity": "LOW",
         "context": "{ | replacement: () => {",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "30min-1 hour"
       },
       {
@@ -2470,7 +2470,7 @@
         "type": "TODO",
         "severity": "LOW",
         "context": " | return \"guided-fix\";",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "4-8 hours"
       },
       {
@@ -2480,7 +2480,7 @@
         "type": "TODO",
         "severity": "LOW",
         "context": "if (finding.content.includes(\"Define proper type\")) confidence = 0.9; | confidence = 0.7;",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "30min-1 hour"
       },
       {
@@ -2490,7 +2490,7 @@
         "type": "TODO",
         "severity": "LOW",
         "context": " | return \"Complete the implementation based on the requirements and existing patterns.\";",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "4-8 hours"
       },
       {
@@ -2500,7 +2500,7 @@
         "type": "TEMP",
         "severity": "LOW",
         "context": " | return \"Replace temporary solution with permanent implementation following project conventions.\";",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "30min-1 hour"
       },
       {
@@ -2510,7 +2510,7 @@
         "type": "TEMP",
         "severity": "LOW",
         "context": "* Comprehensive Workaround Resolution Orchestrator | * Implements the complete resolution strategy f",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "1-2 hours"
       },
       {
@@ -2520,7 +2520,7 @@
         "type": "TODO",
         "severity": "LOW",
         "context": "content: string; | severity: \"LOW\" | \"MEDIUM\" | \"HIGH\" | \"CRITICAL\";",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "1-2 hours"
       },
       {
@@ -2530,7 +2530,7 @@
         "type": "TEMP",
         "severity": "LOW",
         "context": "content: string; | severity: \"LOW\" | \"MEDIUM\" | \"HIGH\" | \"CRITICAL\";",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "1-2 hours"
       },
       {
@@ -2540,7 +2540,7 @@
         "type": "TEMP",
         "severity": "LOW",
         "context": "console.log(`   Mode: ${mode}`); | console.log(\"\");",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "1-2 hours"
       },
       {
@@ -2550,7 +2550,7 @@
         "type": "TODO",
         "severity": "LOW",
         "context": "// Search for common workaround patterns | const output = execSync(searchCmd, { encoding: \"utf8\", st",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "1-2 hours"
       },
       {
@@ -2560,7 +2560,7 @@
         "type": "TEMP",
         "severity": "LOW",
         "context": "// Search for common workaround patterns | const output = execSync(searchCmd, { encoding: \"utf8\", st",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "1-2 hours"
       },
       {
@@ -2570,7 +2570,7 @@
         "type": "TODO",
         "severity": "LOW",
         "context": "content: string, | if (content.includes(\"FIXME\")) return \"FIXME\";",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "1-2 hours"
       },
       {
@@ -2580,7 +2580,7 @@
         "type": "TEMP",
         "severity": "LOW",
         "context": "content: string, | if (content.includes(\"FIXME\")) return \"FIXME\";",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "1-2 hours"
       },
       {
@@ -2590,7 +2590,7 @@
         "type": "TEMP",
         "severity": "LOW",
         "context": "if (content.includes(\"HACK\")) return \"HACK\"; | if (content.includes(\"WORKAROUND\")) return \"WORKAROUN",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "30min-1 hour"
       },
       {
@@ -2600,7 +2600,7 @@
         "type": "TODO",
         "severity": "LOW",
         "context": "if (content.includes(\"WORKAROUND\")) return \"WORKAROUND\"; | }",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "30min-1 hour"
       },
       {
@@ -2610,7 +2610,7 @@
         "type": "TODO",
         "severity": "LOW",
         "context": "} | return \"NOT_IMPLEMENTED\";",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "4-8 hours"
       },
       {
@@ -2620,7 +2620,7 @@
         "type": "TEMP",
         "severity": "LOW",
         "context": " | const workaroundDetector = new WorkaroundDetector();",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "30min-1 hour"
       },
       {
@@ -2630,7 +2630,7 @@
         "type": "TODO",
         "severity": "LOW",
         "context": "async embed(texts: string[]): Promise<number[][]> { | // For now, return mock vectors to avoid API c",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "4-8 hours"
       },
       {
@@ -2640,7 +2640,7 @@
         "type": "TODO",
         "severity": "LOW",
         "context": "async embed(texts: string[]): Promise<number[][]> { | this.logger.trace({",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "4-8 hours"
       },
       {
@@ -2650,7 +2650,7 @@
         "type": "TODO",
         "severity": "LOW",
         "context": "if (this.config.enableEmbeddings && this.components.embeddingManager) { | this.logger.trace({",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "4-8 hours"
       },
       {
@@ -2660,7 +2660,7 @@
         "type": "TEMP",
         "severity": "LOW",
         "context": "try { | const tempFile = this.budgetFile + \".tmp\";",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "30min-1 hour"
       },
       {
@@ -2670,7 +2670,7 @@
         "type": "TEMP",
         "severity": "LOW",
         "context": " | const tempPath = checkpointPath + \".tmp\";",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "30min-1 hour"
       },
       {
@@ -2680,7 +2680,7 @@
         "type": "TEMP",
         "severity": "LOW",
         "context": " | const recordCount = await this.streamProcess(",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "30min-1 hour"
       },
       {
@@ -2690,7 +2690,7 @@
         "type": "TEMP",
         "severity": "LOW",
         "context": "} catch (error) { | if (fs.existsSync(tempPath)) {",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "30min-1 hour"
       },
       {
@@ -2700,7 +2700,7 @@
         "type": "TODO",
         "severity": "LOW",
         "context": "* Calculate mean value | */",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "30min-1 hour"
       },
       {
@@ -2710,7 +2710,7 @@
         "type": "TODO",
         "severity": "LOW",
         "context": "* Generate gate mapping banner | */",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "30min-1 hour"
       },
       {
@@ -2720,7 +2720,7 @@
         "type": "TODO",
         "severity": "LOW",
         "context": "* Generate KPI trends section | */",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "30min-1 hour"
       },
       {
@@ -2730,7 +2730,7 @@
         "type": "TODO",
         "severity": "LOW",
         "context": "* Generate DLQ summary section | */",
-        "ageInDays": 0,
+        "ageInDays": 1,
         "estimation": "30min-1 hour"
       },
       {
@@ -3122,8 +3122,8 @@
       }
     ],
     "stats": {
-      "oldestWorkaround": 7,
-      "averageAge": 2,
+      "oldestWorkaround": 8,
+      "averageAge": 3,
       "filesAffected": 36,
       "estimatedEffort": "38.6d"
     },
@@ -3154,7 +3154,7 @@
     "unusedDirectories": [],
     "archiveActions": [],
     "stats": {
-      "totalFiles": 1911,
+      "totalFiles": 2176,
       "potentialSavings": "1MB",
       "cleanupScore": 90
     }

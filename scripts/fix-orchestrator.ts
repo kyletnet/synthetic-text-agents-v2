@@ -3,6 +3,9 @@
 /**
  * /fix 명령어 - 대화형 품질 수정 시스템
  *
+ * ⚠️  DEPRECATED: This file is no longer directly executable.
+ * Use scripts/fix-engine.ts instead.
+ *
  * 철학: 사용자가 하나씩 승인하며 수정
  *
  * 역할:
@@ -17,6 +20,22 @@
  * 3. npm run fix       (대화형 수정) ← 여기
  * 4. npm run ship      (배포 준비)
  */
+
+// Governance: Block direct execution
+if (require.main === module) {
+  throw new Error(`
+❌ DEPRECATED: fix-orchestrator.ts는 더 이상 직접 실행할 수 없습니다.
+
+✅ 올바른 사용법:
+   npm run fix       # 대화형 수정 (캐시 기반)
+   npm run status    # 진단 재실행
+
+📚 자세한 내용: docs/MIGRATION_V2.md
+📋 새로운 구현: scripts/fix-engine.ts
+
+이 파일은 테스트 호환성을 위해 import는 계속 허용됩니다.
+  `);
+}
 
 import { execSync } from "child_process";
 import { existsSync, readFileSync, writeFileSync } from "fs";

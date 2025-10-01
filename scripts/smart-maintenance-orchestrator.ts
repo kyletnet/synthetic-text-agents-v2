@@ -1,5 +1,26 @@
 #!/usr/bin/env tsx
 
+/**
+ * ⚠️  DEPRECATED: This file is no longer directly executable.
+ * Use scripts/maintain-engine.ts instead.
+ */
+
+// Governance: Block direct execution
+if (require.main === module) {
+  throw new Error(`
+❌ DEPRECATED: smart-maintenance-orchestrator.ts는 더 이상 직접 실행할 수 없습니다.
+
+✅ 올바른 사용법:
+   npm run maintain  # 자동 수정 (캐시 기반 + Self-Validation)
+   npm run status    # 진단 재실행
+
+📚 자세한 내용: docs/MIGRATION_V2.md
+📋 새로운 구현: scripts/maintain-engine.ts
+
+이 파일은 테스트 호환성을 위해 import는 계속 허용됩니다.
+  `);
+}
+
 // Set process-level listener limit to prevent memory leaks
 process.setMaxListeners(50);
 
@@ -133,7 +154,15 @@ class SmartMaintenanceOrchestrator {
         "Self-Healing Engine 건강도 체크 (Dormant/Circuit Breaker/Task 과부하)",
     },
 
-    // PHASE 2: Advanced Analysis (High Priority)
+    // PHASE 2: Auto-fix Only (High Priority)
+    {
+      name: "prettier-autofix",
+      command: "npm run lint:fix",
+      frequency: "on-change",
+      priority: "high",
+      autoRun: true,
+      description: "Prettier + ESLint 자동 수정",
+    },
     {
       name: "advanced-refactor-audit",
       command: "npm run advanced:audit",
@@ -141,22 +170,6 @@ class SmartMaintenanceOrchestrator {
       priority: "high",
       autoRun: true,
       description: "전체 리팩토링 감사 및 자동 적용",
-    },
-    {
-      name: "system-health-check",
-      command: "npm run status",
-      frequency: "daily",
-      priority: "high",
-      autoRun: true,
-      description: "시스템 전체 건강도 체크",
-    },
-    {
-      name: "self-designing-status",
-      command: "npm run registry:summary",
-      frequency: "daily",
-      priority: "medium",
-      autoRun: true,
-      description: "Self-Designing System 준수도 체크",
     },
 
     // PHASE 3: Self-Designing System & Governance
@@ -201,7 +214,7 @@ class SmartMaintenanceOrchestrator {
       description: "통합 규칙 감사",
     },
 
-    // PHASE 4: Workflow & UX Validation
+    // PHASE 4: Documentation & Registry Sync
     {
       name: "workflow-gap-detection",
       command: "tsx scripts/workflow-gap-detector.ts",
@@ -209,14 +222,6 @@ class SmartMaintenanceOrchestrator {
       priority: "high",
       autoRun: true,
       description: "워크플로우 결함 자동 감지",
-    },
-    {
-      name: "typescript-autofix",
-      command: "npm run fix",
-      frequency: "on-change",
-      priority: "medium",
-      autoRun: true,
-      description: "TypeScript + ESLint 자동 수정 (Quality Gates 실패 시)",
     },
     {
       name: "security-audit",
@@ -300,6 +305,7 @@ class SmartMaintenanceOrchestrator {
 
   /**
    * 메인테넌스 모드별 실행
+   * NOTE: /maintain은 자동 수정만 수행, 진단은 /inspect에서 수행
    */
   async runMaintenanceWithMode(
     mode: "smart" | "safe" | "force" = "smart",
@@ -309,10 +315,10 @@ class SmartMaintenanceOrchestrator {
     this.safeMode = safeMode;
     const modeLabel =
       mode === "smart" && autoFix
-        ? "🤖 Smart Maintenance (진단+자동수정+재검증+리팩터링)"
+        ? "🤖 Smart Maintenance (자동수정+리팩터링)"
         : mode === "smart"
-          ? "🤖 Smart Maintenance (진단+자동수정+재검증)"
-          : "🛡️ Safe Maintenance (진단만)";
+          ? "🤖 Smart Maintenance (자동수정)"
+          : "🛡️ Safe Maintenance (검증만)";
     console.log(`${modeLabel} Starting...`);
     console.log("═".repeat(60));
 
@@ -332,22 +338,8 @@ class SmartMaintenanceOrchestrator {
       issuesFound: 0,
     };
 
-    // 시작 전 시스템 건강도 측정
-    if (mode === "smart") {
-      try {
-        const healthResult = execSync("npm run status:quick", {
-          encoding: "utf8",
-          stdio: "inherit",
-        });
-        const healthMatch = healthResult.match(/시스템 건강도: (\d+)\/100/);
-        if (healthMatch) {
-          session.healthScoreBefore = parseInt(healthMatch[1]);
-          console.log(`📊 시작 전 건강도: ${session.healthScoreBefore}/100`);
-        }
-      } catch {
-        console.log("📊 시작 전 건강도 측정 실패 (계속 진행)");
-      }
-    }
+    // NOTE: 건강도 측정은 /inspect 명령어에서 수행
+    // /maintain은 자동 수정만 담당
 
     // Phase 1: Quality Gates
     progress.startStep(
@@ -458,28 +450,8 @@ class SmartMaintenanceOrchestrator {
     // Phase 2: Advanced Analysis
     progress.startStep("Phase 2: Advanced Analysis (Security, Integration)", 2);
 
-    // 스마트 모드: 종료 후 시스템 건강도 재측정
-    if (mode === "smart" && session.fixed > 0) {
-      progress.updateSubTask("시스템 건강도 재측정 중");
-      try {
-        console.log("\n🔄 자동수정 완료 후 시스템 재검증...");
-        const healthResult = execSync("npm run status:quick", {
-          encoding: "utf8",
-          stdio: "inherit",
-        });
-        const healthMatch = healthResult.match(/시스템 건강도: (\d+)\/100/);
-        if (healthMatch) {
-          session.healthScoreAfter = parseInt(healthMatch[1]);
-          const improvement =
-            session.healthScoreAfter - (session.healthScoreBefore || 0);
-          console.log(
-            `📈 수정 후 건강도: ${session.healthScoreAfter}/100 (${improvement >= 0 ? "+" : ""}${improvement})`,
-          );
-        }
-      } catch {
-        console.log("📊 수정 후 건강도 측정 실패");
-      }
-    }
+    // NOTE: 건강도 재측정은 /inspect 명령어로 별도 실행
+    // /maintain은 자동 수정 후 즉시 종료
 
     // 설정 저장
     this.saveConfig(tasks);
@@ -1486,7 +1458,7 @@ class SmartMaintenanceOrchestrator {
    * 사용자 소통 필요 사항 체크 및 알림
    */
   private async checkUserCommunicationNeeds(
-    session: MaintenanceSession,
+    _session: MaintenanceSession,
   ): Promise<void> {
     try {
       const { UserCommunicationSystem } = await import(
@@ -1673,7 +1645,7 @@ npm run optimize    # 성능 최적화 분석
    */
   private sendCompletionNotification(
     session: MaintenanceSession,
-    mode: string,
+    _mode: string,
   ): void {
     const duration = Date.now() - session.timestamp.getTime();
     const durationSec = Math.round(duration / 1000);

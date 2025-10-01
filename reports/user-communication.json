@@ -1,6 +1,6 @@
 {
-  "sessionId": "comm-1759225160633",
-  "timestamp": "2025-09-30T09:39:20.633Z",
+  "sessionId": "comm-1759278515536",
+  "timestamp": "2025-10-01T00:28:35.536Z",
   "items": [
     {
       "id": "approval-disconnected",
@@ -12,7 +12,7 @@
       "suggestedAction": "/maintain에 --with-approvals 옵션 추가 또는 자동 통합",
       "command": "npm run approve:interactive",
       "autoExecutable": false,
-      "created": "2025-09-30T09:39:20.615Z",
+      "created": "2025-10-01T00:28:35.529Z",
       "requiresUserInput": true
     },
     {
@@ -24,7 +24,7 @@
       "context": "중복 제거, 구조 개선 등의 변경사항",
       "command": "npm run evolution:approve",
       "autoExecutable": false,
-      "created": "2025-09-30T09:39:20.633Z",
+      "created": "2025-10-01T00:28:35.536Z",
       "requiresUserInput": true
     },
     {
@@ -36,7 +36,7 @@
       "context": "2-command 철학에서 벗어나 복잡성 증가",
       "suggestedAction": "핵심 명령어 3개 (maintain, ship, optimize)로 재구조화",
       "autoExecutable": false,
-      "created": "2025-09-30T09:39:20.615Z",
+      "created": "2025-10-01T00:28:35.529Z",
       "requiresUserInput": true
     },
     {
@@ -48,7 +48,7 @@
       "context": "더 많은 작업을 자동화할지 사용자 제어를 유지할지 결정 필요",
       "suggestedAction": "단계적 자동화 증가 또는 현재 레벨 유지",
       "autoExecutable": false,
-      "created": "2025-09-30T09:39:20.615Z",
+      "created": "2025-10-01T00:28:35.529Z",
       "requiresUserInput": true
     },
     {
@@ -60,7 +60,7 @@
       "context": "현재 최적화는 하위 명령어지만 핵심 기능으로 성장",
       "suggestedAction": "/optimize를 3번째 핵심 명령어로 승격",
       "autoExecutable": true,
-      "created": "2025-09-30T09:39:20.615Z",
+      "created": "2025-10-01T00:28:35.529Z",
       "requiresUserInput": false
     }
   ],

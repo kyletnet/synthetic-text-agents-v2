@@ -19,11 +19,11 @@
     "impact": "시스템 구조 개선, 중복 제거",
     "riskLevel": "medium",
     "priority": "medium",
-    "timeoutAt": "2025-09-30T09:39:09.515Z",
+    "timeoutAt": "2025-10-01T00:28:26.859Z",
     "source": "maintenance",
     "id": "approval_1759225149518_pcz7n",
     "createdAt": "2025-09-30T09:39:09.518Z",
-    "attempts": 1
+    "attempts": 2
   },
   {
     "title": "워크어라운드/TODO 마커 132개",
@@ -32,10 +32,10 @@
     "impact": "기술 부채 감소, 코드 품질 개선",
     "riskLevel": "medium",
     "priority": "medium",
-    "timeoutAt": "2025-09-30T09:44:00.161Z",
+    "timeoutAt": "2025-10-01T00:26:26.774Z",
     "source": "maintenance",
     "id": "approval_1759225440163_l56sj",
     "createdAt": "2025-09-30T09:44:00.163Z",
-    "attempts": 1
+    "attempts": 2
   }
 ]

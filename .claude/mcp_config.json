@@ -22,6 +22,10 @@
     "status": {
       "description": "Check system status",
       "handler": "echo \"🔍 Git Status:\" && git status --short && echo \"\" && echo \"🔧 TypeScript Check:\" && npm run typecheck"
+    },
+    "inspect": {
+      "description": "Inspect system health and compliance",
+      "handler": "npm run status"
     }
   }
 }

@@ -7,6 +7,7 @@
 import { promises as fs } from "fs";
 import { join } from "path";
 import { TypeScriptCompileChecker } from "./ts-compile-checker.js";
+import { wrapWithGovernance } from "./lib/governance/engine-governance-template.js";
 
 interface FixAttempt {
   file: string;
@@ -38,7 +39,8 @@ class AIFixEngine {
   }
 
   async autoFix(filterType?: string): Promise<FixReport> {
-    console.log("🤖 Starting AI-powered automatic fixes...");
+    return wrapWithGovernance("ai-fix-engine", async () => {
+      console.log("🤖 Starting AI-powered automatic fixes...");
 
     // 롤백 정보 저장을 위한 세션 ID 생성
     const sessionId = `fix-${Date.now()}`;
@@ -92,10 +94,11 @@ class AIFixEngine {
       successfulFixes: fixAttempts.filter((f) => f.success).length,
       attempts: fixAttempts,
       remainingErrors: afterReport.summary.totalErrors,
-    };
+      };
 
-    await this.generateFixReport(report);
-    return report;
+      await this.generateFixReport(report);
+      return report;
+    });
   }
 
   private filterErrorsByType(errors: any[], filterType: string): any[] {

@@ -3,7 +3,27 @@
 /**
  * Unified System Dashboard v4.0
  * Complete developer handoff and system optimization platform
+ *
+ * ⚠️  DEPRECATED: This file is no longer directly executable.
+ * Use the cache-based workflow instead.
  */
+
+// Governance: Block direct execution
+if (require.main === module) {
+  throw new Error(`
+❌ DEPRECATED: unified-dashboard.ts는 더 이상 직접 실행할 수 없습니다.
+
+✅ 올바른 사용법:
+   npm run status    # 시스템 진단
+   npm run maintain  # 자동 수정
+   npm run fix       # 대화형 수정
+
+📚 자세한 내용: docs/MIGRATION_V2.md
+📋 거버넌스 철학: docs/GOVERNANCE_PHILOSOPHY.md
+
+이 파일은 테스트 호환성을 위해 import는 계속 허용됩니다.
+  `);
+}
 
 // Set process-level listener limit to prevent memory leaks
 process.setMaxListeners(50);
