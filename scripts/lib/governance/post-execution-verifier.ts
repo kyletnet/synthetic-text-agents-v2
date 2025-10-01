@@ -84,7 +84,9 @@ export class PostExecutionVerifier {
       console.error("\n❌ Unexpected file changes detected:");
 
       diff.unexpectedChanges.forEach((change) => {
-        console.error(`   ${this.getSeverityIcon(change.severity)} ${change.path}`);
+        console.error(
+          `   ${this.getSeverityIcon(change.severity)} ${change.path}`,
+        );
         console.error(`      ${change.reason}`);
 
         // Notify
@@ -104,7 +106,10 @@ export class PostExecutionVerifier {
    * Display diff summary
    */
   private displayDiff(diff: SnapshotDiff): void {
-    if (diff.summary.totalFilesChanged === 0 && diff.dependenciesChanged.length === 0) {
+    if (
+      diff.summary.totalFilesChanged === 0 &&
+      diff.dependenciesChanged.length === 0
+    ) {
       console.log("      ℹ️  No changes detected");
       return;
     }
@@ -124,7 +129,9 @@ export class PostExecutionVerifier {
     }
 
     if (diff.dependenciesChanged.length > 0) {
-      console.log(`         📦 ${diff.dependenciesChanged.length} dependency(ies) changed`);
+      console.log(
+        `         📦 ${diff.dependenciesChanged.length} dependency(ies) changed`,
+      );
     }
 
     console.log(`      Risk level: ${diff.summary.riskLevel.toUpperCase()}`);
@@ -145,7 +152,9 @@ export class PostExecutionVerifier {
 
       console.log("      ✓ TypeScript passed");
     } catch (error) {
-      const output = (error as { stdout?: Buffer; stderr?: Buffer }).stdout?.toString() || "";
+      const output =
+        (error as { stdout?: Buffer; stderr?: Buffer }).stdout?.toString() ||
+        "";
       const errorCount = (output.match(/error TS/g) || []).length;
 
       console.error(`      ❌ TypeScript failed: ${errorCount} error(s)`);
@@ -171,7 +180,9 @@ export class PostExecutionVerifier {
 
       console.log("      ✓ ESLint passed");
     } catch (error) {
-      const output = (error as { stdout?: Buffer; stderr?: Buffer }).stdout?.toString() || "";
+      const output =
+        (error as { stdout?: Buffer; stderr?: Buffer }).stdout?.toString() ||
+        "";
       const warningCount = (output.match(/warning/g) || []).length;
       const errorCount = (output.match(/error/g) || []).length;
 

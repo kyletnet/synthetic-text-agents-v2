@@ -111,80 +111,77 @@ class IntegrationImprovementEngine {
   }
 
   async generateImprovementPlan(): Promise<ImprovementPlan> {
-    return wrapWithGovernance(
-      "integration-improvement-engine",
-      async () => {
-        console.log("🔧 통합 개선 계획 생성 중...");
+    return wrapWithGovernance("integration-improvement-engine", async () => {
+      console.log("🔧 통합 개선 계획 생성 중...");
 
-        // 현재 시스템 분석
-        const analysis = await this.analyzer.analyzeFullSystem();
+      // 현재 시스템 분석
+      const analysis = await this.analyzer.analyzeFullSystem();
 
-        const improvements: Array<{
-          rule: string;
-          action: string;
-          priority: string;
-          estimated_impact: number;
-          implementation_effort: "LOW" | "MEDIUM" | "HIGH";
-        }> = [];
+      const improvements: Array<{
+        rule: string;
+        action: string;
+        priority: string;
+        estimated_impact: number;
+        implementation_effort: "LOW" | "MEDIUM" | "HIGH";
+      }> = [];
 
-    // 각 규칙 적용 검사
-    for (const rule of this.improvementRules) {
-      if (rule.checkFunction(analysis)) {
-        const estimatedImpact = this.calculateImpact(rule, analysis);
-        const effort = this.estimateEffort(rule);
+      // 각 규칙 적용 검사
+      for (const rule of this.improvementRules) {
+        if (rule.checkFunction(analysis)) {
+          const estimatedImpact = this.calculateImpact(rule, analysis);
+          const effort = this.estimateEffort(rule);
 
-        improvements.push({
-          rule: rule.name,
-          action: rule.improvementAction,
-          priority: rule.priority,
-          estimated_impact: estimatedImpact,
-          implementation_effort: effort,
-        });
+          improvements.push({
+            rule: rule.name,
+            action: rule.improvementAction,
+            priority: rule.priority,
+            estimated_impact: estimatedImpact,
+            implementation_effort: effort,
+          });
+        }
       }
-    }
 
-    // 구현 순서 결정 (우선순위 + 영향도 기반)
-    const implementationOrder = improvements
-      .sort((a, b) => {
-        const priorityWeight = { CRITICAL: 4, HIGH: 3, MEDIUM: 2, LOW: 1 };
-        const priorityDiff =
-          priorityWeight[a.priority as keyof typeof priorityWeight] -
-          priorityWeight[b.priority as keyof typeof priorityWeight];
-        return priorityDiff !== 0
-          ? -priorityDiff
-          : b.estimated_impact - a.estimated_impact;
-      })
-      .map((i) => i.rule);
+      // 구현 순서 결정 (우선순위 + 영향도 기반)
+      const implementationOrder = improvements
+        .sort((a, b) => {
+          const priorityWeight = { CRITICAL: 4, HIGH: 3, MEDIUM: 2, LOW: 1 };
+          const priorityDiff =
+            priorityWeight[a.priority as keyof typeof priorityWeight] -
+            priorityWeight[b.priority as keyof typeof priorityWeight];
+          return priorityDiff !== 0
+            ? -priorityDiff
+            : b.estimated_impact - a.estimated_impact;
+        })
+        .map((i) => i.rule);
 
-    const plan: ImprovementPlan = {
-      timestamp: new Date().toISOString(),
-      currentScore: analysis.integration_score,
-      targetScore: Math.min(
-        85,
-        analysis.integration_score +
-          improvements.reduce((sum, i) => sum + i.estimated_impact, 0),
-      ),
-      improvements,
-      implementation_order: implementationOrder,
-      expected_outcome: {
-        integration_score_gain: improvements.reduce(
-          (sum, i) => sum + i.estimated_impact,
-          0,
+      const plan: ImprovementPlan = {
+        timestamp: new Date().toISOString(),
+        currentScore: analysis.integration_score,
+        targetScore: Math.min(
+          85,
+          analysis.integration_score +
+            improvements.reduce((sum, i) => sum + i.estimated_impact, 0),
         ),
-        user_experience_improvement:
-          improvements.filter(
-            (i) => i.priority === "CRITICAL" || i.priority === "HIGH",
-          ).length * 15,
-        maintenance_benefit: improvements.length * 10,
-      },
-    };
+        improvements,
+        implementation_order: implementationOrder,
+        expected_outcome: {
+          integration_score_gain: improvements.reduce(
+            (sum, i) => sum + i.estimated_impact,
+            0,
+          ),
+          user_experience_improvement:
+            improvements.filter(
+              (i) => i.priority === "CRITICAL" || i.priority === "HIGH",
+            ).length * 15,
+          maintenance_benefit: improvements.length * 10,
+        },
+      };
 
-        this.savePlan(plan);
-        this.printPlan(plan);
+      this.savePlan(plan);
+      this.printPlan(plan);
 
-        return plan;
-      },
-    );
+      return plan;
+    });
   }
 
   private calculateImpact(rule: IntegrationRule, analysis: any): number {
@@ -218,33 +215,30 @@ class IntegrationImprovementEngine {
   }
 
   async implementImprovement(improvementName: string): Promise<void> {
-    return wrapWithGovernance(
-      "integration-improvement-engine",
-      async () => {
-        console.log(`🔧 개선사항 구현 시작: ${improvementName}`);
+    return wrapWithGovernance("integration-improvement-engine", async () => {
+      console.log(`🔧 개선사항 구현 시작: ${improvementName}`);
 
-    switch (improvementName) {
-      case "보고서 시스템 통합":
-        await this.consolidateReportingSystems();
-        break;
+      switch (improvementName) {
+        case "보고서 시스템 통합":
+          await this.consolidateReportingSystems();
+          break;
 
-      case "명령어 계층화":
-        await this.reorganizeCommands();
-        break;
+        case "명령어 계층화":
+          await this.reorganizeCommands();
+          break;
 
-      case "시스템 간 자동 시너지":
-        await this.implementAutoSynergy();
-        break;
+        case "시스템 간 자동 시너지":
+          await this.implementAutoSynergy();
+          break;
 
-      case "충돌 방지 시스템":
-        await this.implementConflictPrevention();
-        break;
+        case "충돌 방지 시스템":
+          await this.implementConflictPrevention();
+          break;
 
         default:
           console.log("⚠️ 알 수 없는 개선사항:", improvementName);
       }
-      },
-    );
+    });
   }
 
   private async consolidateReportingSystems(): Promise<void> {

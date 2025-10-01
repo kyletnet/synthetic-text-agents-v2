@@ -50,11 +50,13 @@ npm run ship        # 배포 준비
 ### 2. 워크플로우 변경
 
 **Before (v1):**
+
 ```bash
 npm run dev:maintain  # 독립 실행 (자체 진단)
 ```
 
 **After (v2):**
+
 ```bash
 npm run status     # 1. 진단 (필수, 캐시 생성)
 npm run maintain   # 2. 자동 수정 (캐시 읽기 + Self-Validation)
@@ -62,6 +64,7 @@ npm run fix        # 3. 대화형 수정 (캐시 읽기)
 ```
 
 **순서 강제:**
+
 - `maintain`과 `fix`는 반드시 `status`를 먼저 실행해야 함
 - 캐시 유효기간: 5분 (TTL)
 - 캐시 만료 시 자동으로 재진단 요구
@@ -92,6 +95,7 @@ npm run fix        # 3. 대화형 수정 (캐시 읽기)
 ```
 
 **장점:**
+
 - 모든 명령어가 동일한 진단 결과 사용 (일관성)
 - 중복 진단 제거 (성능 향상)
 - 5분 TTL로 항상 최신 상태 보장
@@ -134,6 +138,7 @@ npm run maintain
 ```
 
 **동작 방식:**
+
 - 최대 3회 재시도
 - ESLint 경고는 `npm run lint:fix`로 자동 수정
 - TypeScript 오류는 수동 개입 필요
@@ -143,14 +148,15 @@ npm run maintain
 
 **핵심 철학**: "무한 대기 ≠ 무한 루프"
 
-| 작업 타입 | 타임아웃 | 예시 |
-|----------|---------|------|
-| **user-input** | 없음 (무한 대기) | `/fix` 승인 대기 |
-| **system-command** | 10분 | `npm install` |
-| **validation** | 2분 | TypeScript 컴파일 |
-| **file-operation** | 30초 | 파일 읽기/쓰기 |
+| 작업 타입          | 타임아웃         | 예시              |
+| ------------------ | ---------------- | ----------------- |
+| **user-input**     | 없음 (무한 대기) | `/fix` 승인 대기  |
+| **system-command** | 10분             | `npm install`     |
+| **validation**     | 2분              | TypeScript 컴파일 |
+| **file-operation** | 30초             | 파일 읽기/쓰기    |
 
 **무한루프 감지:**
+
 - 반복 횟수 기반 (최대 1000회)
 - 속도 기반 (초당 100회 이상 의심)
 - 화이트리스트 (의도적 재시도 루프 허용)
@@ -202,6 +208,7 @@ cat governance-rules.json
 ```
 
 **주요 섹션:**
+
 - `rules`: 거버넌스 규칙 (NO_LEGACY_IMPORTS, INSPECT_FIRST, etc.)
 - `timeoutPolicy`: 작업 타입별 타임아웃 설정
 - `loopDetection`: 무한루프 감지 설정
@@ -228,11 +235,13 @@ npm run status && npm run maintain && npm run fix
 ### Q1: "enforce /inspect first" 에러
 
 **문제:**
+
 ```
 ⚠️  maintain를 실행하기 전에 /inspect를 먼저 실행하세요
 ```
 
 **해결:**
+
 ```bash
 npm run status    # 먼저 진단 실행
 npm run maintain  # 그 다음 maintain 실행
@@ -241,11 +250,13 @@ npm run maintain  # 그 다음 maintain 실행
 ### Q2: 캐시 만료 에러
 
 **문제:**
+
 ```
 ⏰ 진단 결과가 오래되었습니다 (6분 전)
 ```
 
 **해결:**
+
 ```bash
 npm run status    # 재진단
 ```
@@ -253,11 +264,13 @@ npm run status    # 재진단
 ### Q3: Self-Validation 실패
 
 **문제:**
+
 ```
 ❌ Self-validation failed: Manual intervention required
 ```
 
 **해결:**
+
 ```bash
 # TypeScript 오류 확인
 npm run typecheck
@@ -269,11 +282,13 @@ npm run maintain
 ### Q4: 레거시 파일 실행 차단
 
 **문제:**
+
 ```
 ❌ DEPRECATED: unified-dashboard.ts는 더 이상 직접 실행할 수 없습니다.
 ```
 
 **해결:**
+
 ```bash
 npm run status    # 올바른 명령어 사용
 ```
@@ -285,6 +300,7 @@ npm run status    # 올바른 명령어 사용
 ### Q: 왜 캐시 기반으로 변경했나요?
 
 **A**: 일관성과 성능 향상
+
 - 모든 명령어가 동일한 진단 결과 사용 (불일치 제거)
 - 중복 진단 방지 (시간 절약)
 - 5분 TTL로 항상 최신 상태 유지
@@ -292,6 +308,7 @@ npm run status    # 올바른 명령어 사용
 ### Q: Self-Validation이 실패하면 어떻게 되나요?
 
 **A**: 최대 3회 자동 재시도
+
 - ESLint 경고: 자동 수정 시도
 - TypeScript 오류: 수동 개입 필요
 - 3회 실패 시 에러 발생
@@ -299,6 +316,7 @@ npm run status    # 올바른 명령어 사용
 ### Q: 무한 대기가 위험하지 않나요?
 
 **A**: 사용자 입력만 무한 대기
+
 - 사용자 승인 필요 작업: 타임아웃 없음 (무한 대기 OK)
 - 시스템 작업: 타임아웃 적용 (무한루프 방지)
 - 루프 감지로 이중 보호
@@ -306,6 +324,7 @@ npm run status    # 올바른 명령어 사용
 ### Q: 거버넌스 우회 가능한가요?
 
 **A**: 불가능 (No Bypass Philosophy)
+
 - `SKIP_GOVERNANCE` 옵션 없음
 - `--force` 플래그 없음
 - 모든 작업에 거버넌스 강제 적용
@@ -313,6 +332,7 @@ npm run status    # 올바른 명령어 사용
 ### Q: 기존 테스트는 영향 받나요?
 
 **A**: 영향 없음
+
 - 레거시 파일 `import`는 허용 (테스트 호환성)
 - 직접 실행만 차단됨
 
@@ -340,6 +360,7 @@ npm run status    # 올바른 명령어 사용
 **마이그레이션 완료!** 🎉
 
 문제가 있다면:
+
 1. `npm run validate` 실행
 2. 에러 메시지 확인
 3. 이 가이드의 Troubleshooting 섹션 참조

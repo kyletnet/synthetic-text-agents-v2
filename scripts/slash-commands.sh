@@ -282,34 +282,44 @@ case "${1:-}" in
         print_success "Complete system sync finished!"
         ;;
 
-    "status"|"/status")
-        print_header "System Status Check"
+    "inspect"|"/inspect")
+        print_header "System Inspection - Comprehensive Diagnosis"
+        print_status "Running full system diagnostics..."
+        npm run status || print_error "Inspection failed"
+        print_success "Inspection complete - check reports/inspection-results.json"
+        ;;
 
-        # 🤖 Smart AI-Enhanced Status (NEW)
-        tsx scripts/smart-status.ts
-        echo ""
+    "maintain"|"/maintain")
+        print_header "System Maintenance - Auto-fix"
+        print_status "Running automatic fixes (no approval needed)..."
+        npm run maintain || print_error "Maintenance failed"
+        print_success "Auto-fixes complete"
+        ;;
 
-        print_status "Additional checks:"
-        npm run docs:status
-        npm run typecheck
-        print_status "Git status:"
-        git status --porcelain
-
-        # 📋 임시 처리 이슈 요약 (NEW)
-        print_status "임시 처리된 이슈 현황:"
-        npm run issues:report 2>/dev/null || echo "   ℹ️ 아직 추적된 이슈 없음"
-        echo ""
-
-        print_success "Status check complete"
+    "fix"|"/fix")
+        print_header "System Fix - Interactive Approval"
+        print_status "Running interactive fixes (approval required)..."
+        npm run fix || print_error "Fix process failed"
+        print_success "Interactive fixes complete"
         ;;
 
     "ship"|"/ship")
-        print_header "Full Deployment Pipeline"
+        print_header "Full Deployment Pipeline + Deploy"
+
+        # 1. Pre-ship validation
+        print_status "Phase 1: Pre-ship validation..."
         cleanup_old_docs
         update_slash_commands
+
+        # 2. Run full ship pipeline (validation + docs + optimization)
+        print_status "Phase 2: Running ship pipeline..."
         npm run ship || (print_error "Ship command failed" && exit 1)
+
+        # 3. Deploy (commit + push)
+        print_status "Phase 3: Deploying to repository..."
         auto_commit_push
-        print_success "Deployment pipeline complete!"
+
+        print_success "🚢 Deployment complete! Changes pushed to remote."
         ;;
 
     "clean"|"/clean")
@@ -408,10 +418,14 @@ Updates on $timestamp
     "help"|"/help"|"")
         print_header "Available Slash Commands"
         echo ""
-        echo -e "${BLUE}Essential Commands:${NC}"
+        echo -e "${BLUE}4-Step Quality Workflow (순서 준수 필수!):${NC}"
+        echo "  /inspect  - 정밀 진단 (TypeScript, ESLint, Tests, Security, etc)"
+        echo "  /maintain - 자동 수정 (Prettier, ESLint --fix)"
+        echo "  /fix      - 대화형 수정 (TypeScript errors, Workarounds)"
+        echo "  /ship     - 배포 준비 + 실제 배포 (검증 + 문서화 + commit + push)"
+        echo ""
+        echo -e "${BLUE}System Management:${NC}"
         echo "  /sync   - Complete system update (docs, cleanup, commit, push)"
-        echo "  /status - System health check"
-        echo "  /ship   - Full deployment pipeline"
         echo "  /clean  - Cleanup old files"
         echo ""
         echo -e "${BLUE}Development Commands:${NC}"

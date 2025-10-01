@@ -69,10 +69,7 @@ export class GovernanceEnforcer {
    * Find all *-engine.ts files
    */
   private findEngineFiles(): string[] {
-    const patterns = [
-      "scripts/*-engine.ts",
-      "scripts/**/*-engine.ts",
-    ];
+    const patterns = ["scripts/*-engine.ts", "scripts/**/*-engine.ts"];
 
     const files: string[] = [];
     for (const pattern of patterns) {
@@ -101,7 +98,7 @@ export class GovernanceEnforcer {
     // Exemptions (files that don't need governance)
     const exemptions = [
       "validate-engine.ts", // Validation only
-      "verify-engine.ts",   // Uses governance internally
+      "verify-engine.ts", // Uses governance internally
     ];
 
     if (exemptions.some((exempt) => filePath.includes(exempt))) {
@@ -109,7 +106,9 @@ export class GovernanceEnforcer {
     }
 
     // Check 1: Imports GovernanceRunner OR wrapWithGovernance (new pattern)
-    const hasGovernanceImport = content.includes("GovernanceRunner") || content.includes("wrapWithGovernance");
+    const hasGovernanceImport =
+      content.includes("GovernanceRunner") ||
+      content.includes("wrapWithGovernance");
     if (!hasGovernanceImport) {
       violations.push({
         file: relativePath,
@@ -119,7 +118,9 @@ export class GovernanceEnforcer {
     }
 
     // Check 2: Uses executeWithGovernance OR wrapWithGovernance
-    const hasGovernanceUsage = content.includes("executeWithGovernance") || content.includes("wrapWithGovernance(");
+    const hasGovernanceUsage =
+      content.includes("executeWithGovernance") ||
+      content.includes("wrapWithGovernance(");
     if (!hasGovernanceUsage) {
       violations.push({
         file: relativePath,
@@ -130,7 +131,11 @@ export class GovernanceEnforcer {
 
     // Check 3: Has governance property (skip for wrapper pattern)
     const usesWrapperPattern = content.includes("wrapWithGovernance(");
-    if (!usesWrapperPattern && !content.includes("private governance:") && !content.includes("private governance =")) {
+    if (
+      !usesWrapperPattern &&
+      !content.includes("private governance:") &&
+      !content.includes("private governance =")
+    ) {
       violations.push({
         file: relativePath,
         reason: "Missing property: private governance",

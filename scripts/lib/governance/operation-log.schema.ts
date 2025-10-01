@@ -188,12 +188,15 @@ export interface LogQueryFilters {
  */
 export interface LogAggregation {
   /** Aggregation by operation */
-  byOperation: Record<string, {
-    count: number;
-    successRate: number;
-    avgDuration: number;
-    failureReasons: Record<string, number>;
-  }>;
+  byOperation: Record<
+    string,
+    {
+      count: number;
+      successRate: number;
+      avgDuration: number;
+      failureReasons: Record<string, number>;
+    }
+  >;
 
   /** Aggregation by status */
   byStatus: Record<string, number>;

@@ -103,7 +103,9 @@ class ValidateEngine {
       }
 
       if (rules.schemaVersion !== "2025-10-governance-v1") {
-        console.warn(`   ⚠️  Schema version ${rules.schemaVersion} (expected 2025-10-governance-v1)`);
+        console.warn(
+          `   ⚠️  Schema version ${rules.schemaVersion} (expected 2025-10-governance-v1)`,
+        );
       }
 
       // Check required sections
@@ -126,7 +128,9 @@ class ValidateEngine {
       // Count enabled rules
       const enabledRules = rules.rules.filter((r) => r.enabled);
       console.log(`   ✓ Schema version: ${rules.schemaVersion}`);
-      console.log(`   ✓ Enabled rules: ${enabledRules.length}/${rules.rules.length}`);
+      console.log(
+        `   ✓ Enabled rules: ${enabledRules.length}/${rules.rules.length}`,
+      );
       console.log(`   ✓ Risk domains: ${rules.riskDomains.length}`);
       console.log(`   ✓ Deprecated files: ${rules.deprecatedFiles.length}`);
 
@@ -201,9 +205,15 @@ class ValidateEngine {
     console.log(`   ✓ Cache valid (${age})`);
 
     if (validation.results) {
-      console.log(`   ✓ Health score: ${validation.results.summary.healthScore}/100`);
-      console.log(`   ✓ Auto-fixable: ${validation.results.summary.autoFixableCount}`);
-      console.log(`   ✓ Needs approval: ${validation.results.summary.manualApprovalCount}`);
+      console.log(
+        `   ✓ Health score: ${validation.results.summary.healthScore}/100`,
+      );
+      console.log(
+        `   ✓ Auto-fixable: ${validation.results.summary.autoFixableCount}`,
+      );
+      console.log(
+        `   ✓ Needs approval: ${validation.results.summary.manualApprovalCount}`,
+      );
     }
 
     return true;
@@ -217,11 +227,15 @@ class ValidateEngine {
     const result = await enforcer.enforce();
 
     if (result.violations.length === 0) {
-      console.log(`   ✓ All ${result.summary.total} engines are governance-compliant`);
+      console.log(
+        `   ✓ All ${result.summary.total} engines are governance-compliant`,
+      );
       return true;
     }
 
-    console.error(`   ❌ ${result.violations.length} governance violation(s) found`);
+    console.error(
+      `   ❌ ${result.violations.length} governance violation(s) found`,
+    );
     result.violations.forEach((v) => {
       console.error(`      - ${v.file}: ${v.reason}`);
     });

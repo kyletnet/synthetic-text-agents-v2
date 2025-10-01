@@ -12,7 +12,13 @@
  * - Query and aggregation support
  */
 
-import { existsSync, appendFileSync, readFileSync, mkdirSync, statSync } from "fs";
+import {
+  existsSync,
+  appendFileSync,
+  readFileSync,
+  mkdirSync,
+  statSync,
+} from "fs";
 import { join, dirname } from "path";
 import { execSync } from "child_process";
 import type {
@@ -26,11 +32,19 @@ import type {
 export class OperationLogger {
   private projectRoot: string;
   private logPath: string;
-  private currentOperation: Map<string, { startTime: number; startMemory: NodeJS.MemoryUsage }> = new Map();
+  private currentOperation: Map<
+    string,
+    { startTime: number; startMemory: NodeJS.MemoryUsage }
+  > = new Map();
 
   constructor(projectRoot: string = process.cwd()) {
     this.projectRoot = projectRoot;
-    this.logPath = join(projectRoot, "reports", "operations", "governance.jsonl");
+    this.logPath = join(
+      projectRoot,
+      "reports",
+      "operations",
+      "governance.jsonl",
+    );
 
     // Ensure directory exists
     const dir = dirname(this.logPath);
@@ -85,7 +99,9 @@ export class OperationLogger {
   ): void {
     const operationData = this.currentOperation.get(operationId);
     if (!operationData) {
-      console.warn(`⚠️  Operation ${operationId} not found in current operations`);
+      console.warn(
+        `⚠️  Operation ${operationId} not found in current operations`,
+      );
       return;
     }
 
@@ -136,11 +152,7 @@ export class OperationLogger {
   /**
    * Log error
    */
-  logError(
-    operationId: string,
-    error: Error,
-    details?: unknown,
-  ): void {
+  logError(operationId: string, error: Error, details?: unknown): void {
     const log: OperationLog = {
       id: operationId,
       timestamp: new Date().toISOString(),
@@ -295,7 +307,9 @@ export class OperationLogger {
   /**
    * Calculate performance metrics
    */
-  private calculateMetrics(startMemory: NodeJS.MemoryUsage): PerformanceMetrics {
+  private calculateMetrics(
+    startMemory: NodeJS.MemoryUsage,
+  ): PerformanceMetrics {
     const currentMemory = process.memoryUsage();
 
     return {
@@ -382,14 +396,20 @@ export class OperationLogger {
   async displayStatistics(): Promise<void> {
     const result = await this.query({ pageSize: 1000 });
 
-    const successCount = result.logs.filter((l) => l.status === "success").length;
-    const failureCount = result.logs.filter((l) => l.status === "failure").length;
+    const successCount = result.logs.filter(
+      (l) => l.status === "success",
+    ).length;
+    const failureCount = result.logs.filter(
+      (l) => l.status === "failure",
+    ).length;
 
     console.log("\n📊 Operation Log Statistics:");
     console.log(`   Total operations: ${result.total}`);
     console.log(`   Success: ${successCount}`);
     console.log(`   Failure: ${failureCount}`);
-    console.log(`   Success rate: ${result.total > 0 ? ((successCount / result.total) * 100).toFixed(1) : 0}%`);
+    console.log(
+      `   Success rate: ${result.total > 0 ? ((successCount / result.total) * 100).toFixed(1) : 0}%`,
+    );
     console.log(`   Log size: ${(this.getLogSize() / 1024).toFixed(2)} KB\n`);
   }
 }
@@ -399,9 +419,7 @@ export class OperationLogger {
  */
 let globalOperationLogger: OperationLogger | null = null;
 
-export function getOperationLogger(
-  projectRoot?: string,
-): OperationLogger {
+export function getOperationLogger(projectRoot?: string): OperationLogger {
   if (!globalOperationLogger) {
     globalOperationLogger = new OperationLogger(projectRoot);
   }

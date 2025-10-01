@@ -106,32 +106,32 @@ export class WorkaroundResolutionEngine {
     return wrapWithGovernance("workaround-resolution-engine", async () => {
       const plans: ResolutionPlan[] = [];
 
-    for (const finding of findings) {
-      const plan = await this.analyzeWorkaround(finding);
-      plans.push(plan);
-      this.resolutionPlans.set(this.getPlanId(finding), plan);
-    }
+      for (const finding of findings) {
+        const plan = await this.analyzeWorkaround(finding);
+        plans.push(plan);
+        this.resolutionPlans.set(this.getPlanId(finding), plan);
+      }
 
-    // Sort by confidence and priority
-    plans.sort((a, b) => {
-      const priorityWeight = { CRITICAL: 4, HIGH: 3, MEDIUM: 2, LOW: 1 };
-      const aPriority = priorityWeight[a.finding.severity];
-      const bPriority = priorityWeight[b.finding.severity];
+      // Sort by confidence and priority
+      plans.sort((a, b) => {
+        const priorityWeight = { CRITICAL: 4, HIGH: 3, MEDIUM: 2, LOW: 1 };
+        const aPriority = priorityWeight[a.finding.severity];
+        const bPriority = priorityWeight[b.finding.severity];
 
-      if (aPriority !== bPriority) return bPriority - aPriority;
-      return b.confidence - a.confidence;
-    });
+        if (aPriority !== bPriority) return bPriority - aPriority;
+        return b.confidence - a.confidence;
+      });
 
-    console.log(`📋 Generated ${plans.length} resolution plans:`);
-    console.log(
-      `   🔧 Auto-fixable: ${plans.filter((p) => p.strategy === "auto-fix").length}`,
-    );
-    console.log(
-      `   🎯 Guided fixes: ${plans.filter((p) => p.strategy === "guided-fix").length}`,
-    );
-    console.log(
-      `   📝 Manual review: ${plans.filter((p) => p.strategy === "manual-review").length}`,
-    );
+      console.log(`📋 Generated ${plans.length} resolution plans:`);
+      console.log(
+        `   🔧 Auto-fixable: ${plans.filter((p) => p.strategy === "auto-fix").length}`,
+      );
+      console.log(
+        `   🎯 Guided fixes: ${plans.filter((p) => p.strategy === "guided-fix").length}`,
+      );
+      console.log(
+        `   📝 Manual review: ${plans.filter((p) => p.strategy === "manual-review").length}`,
+      );
       console.log(
         `   🏗️ Architectural: ${plans.filter((p) => p.strategy === "architectural-change").length}`,
       );

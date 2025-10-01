@@ -9,6 +9,7 @@
 ## 🎯 이번 세션 완료 작업 (Phase 11-12)
 
 ### ✅ Phase 11: 6개 엔진 Governance 통합
+
 1. **integration-improvement-engine.ts** (415줄)
    - `generateImprovementPlan()`, `implementImprovement()` 래핑
 
@@ -28,14 +29,17 @@
    - `execute()` 래핑
 
 ### ✅ Phase 12: /ship 명령어 강화
+
 - `/ship`에 `npm run validate` 추가 (design:validate 다음)
 - package.json 중복 "maintain" 키 제거
 
 ### ✅ Governance Enforcer 업데이트
+
 - `wrapWithGovernance()` 패턴 인식 추가
 - 기존 GovernanceRunner 패턴과 병행 지원
 
 ### ✅ 문서 업데이트
+
 - `GOVERNANCE_SYSTEM_REPORT.md` 업데이트
   - 6개 신규 엔진 반영
   - Wrapper 패턴 설명 추가
@@ -46,19 +50,24 @@
 ## 📊 최종 검증 결과
 
 ### TypeScript
+
 ```bash
 npm run typecheck
 ```
+
 ✅ **0 errors**
 
 ### Governance
+
 ```bash
 npm run validate
 ```
+
 ✅ **0 violations**
 ✅ **22개 엔진 모두 준수**
 
 ### 통합된 엔진 총계
+
 - **Phase 0-9**: inspect, maintain, fix, validate, verify (5개)
 - **Phase 10**: optimization (1개)
 - **Phase 11**: integration-improvement, design-principle, architectural-evolution, ai-fix, workaround-resolution, adaptive-execution (6개)
@@ -69,6 +78,7 @@ npm run validate
 ## 🎯 당신이 사용할 슬래시 명령어
 
 ### 일상 개발 (매일 사용)
+
 ```bash
 /maintain           # 자동 수정 (Prettier, ESLint, 설계 검증)
                     # → Governance 자동 실행
@@ -79,6 +89,7 @@ npm run validate
 ```
 
 ### 배포 준비 (주기적 사용)
+
 ```bash
 /ship               # 배포 전 전체 검증
                     # 실행 순서:
@@ -93,12 +104,14 @@ npm run validate
 ```
 
 ### 검증 전용
+
 ```bash
 /verify             # 시스템 무결성 검증
 npm run typecheck   # TypeScript 검증
 ```
 
 ### 문제 발생 시
+
 ```bash
 /validate           # 1. 빠른 거버넌스 체크
 /inspect            # 2. 상세 진단 (느림, 3분+, 타임아웃 가능)
@@ -111,6 +124,7 @@ npm run typecheck   # TypeScript 검증
 ## ⚠️ 알려진 이슈
 
 ### 1. /inspect (npm run status) 타임아웃
+
 - **현상**: 3분 타임아웃 발생
 - **원인**: 병렬 실행 적용했지만 여전히 느림 (8개 진단 작업)
 - **해결책**:
@@ -123,6 +137,7 @@ npm run typecheck   # TypeScript 검증
 ## 📁 주요 파일 위치
 
 ### Governance 핵심
+
 ```
 governance-rules.json                                    # 설정
 scripts/lib/governance/governance-runner.ts             # 중앙 실행기
@@ -132,6 +147,7 @@ scripts/lib/diagnostic-timeouts.ts                      # 타임아웃 관리
 ```
 
 ### 통합 완료 엔진
+
 ```
 scripts/inspection-engine.ts                            # Phase 0-9
 scripts/maintain-engine.ts                              # Phase 0-9
@@ -148,6 +164,7 @@ scripts/lib/adaptive-execution-engine.ts                # Phase 11
 ```
 
 ### 문서
+
 ```
 GOVERNANCE_SYSTEM_REPORT.md                             # 통합 보고서
 GOVERNANCE_HANDOFF.md                                   # 이전 핸드오프
@@ -161,39 +178,43 @@ docs/MIGRATION_V2.md                                    # 마이그레이션
 ## 🎉 완성된 기능 (현재 상태)
 
 ### Core Features
-| Feature | Status | Details |
-|---------|--------|---------|
-| 13개 엔진 통합 | ✅ | 모든 주요 엔진 governance 적용 |
-| Wrapper 패턴 | ✅ | 경량 통합 패턴 확립 |
-| 자동 검증 | ✅ | GovernanceEnforcer 22개 엔진 체크 |
-| CI/CD 통합 | ✅ | `.github/workflows/ci.yml`에 validate 추가 |
-| /ship 강화 | ✅ | validate 추가 완료 |
-| 완전한 거버넌스 | ✅ | Preflight, Snapshot, Logging, Verification |
-| Operation Logs | ✅ | `reports/operations/governance.jsonl` |
-| 문서화 | ✅ | 5개 문서 최신 상태 |
+
+| Feature         | Status | Details                                    |
+| --------------- | ------ | ------------------------------------------ |
+| 13개 엔진 통합  | ✅     | 모든 주요 엔진 governance 적용             |
+| Wrapper 패턴    | ✅     | 경량 통합 패턴 확립                        |
+| 자동 검증       | ✅     | GovernanceEnforcer 22개 엔진 체크          |
+| CI/CD 통합      | ✅     | `.github/workflows/ci.yml`에 validate 추가 |
+| /ship 강화      | ✅     | validate 추가 완료                         |
+| 완전한 거버넌스 | ✅     | Preflight, Snapshot, Logging, Verification |
+| Operation Logs  | ✅     | `reports/operations/governance.jsonl`      |
+| 문서화          | ✅     | 5개 문서 최신 상태                         |
 
 ---
 
 ## 🚀 선택적 개선 항목 (Phase 13, 필요시)
 
 ### 1. register-engine.ts 자동 등록 시스템
+
 **목적**: 새 엔진 추가 시 자동 탐지 및 등록
 **우선순위**: P2 (낮음)
 **이유**: 현재 GovernanceEnforcer가 자동 탐지 중
 
 **구현 예시**:
+
 ```typescript
 // scripts/register-engine.ts
 registerEngine({
-  name: 'my-new-engine',
-  file: 'scripts/my-new-engine.ts',
+  name: "my-new-engine",
+  file: "scripts/my-new-engine.ts",
   governance: true,
-  executionType: 'system-command',
-  cli: 'npm run my-engine'
+  executionType: "system-command",
+  cli: "npm run my-engine",
 });
 ```
 
 ### 2. Snapshot Freeze 시스템
+
 **목적**: 배포마다 거버넌스 상태 스냅샷 저장
 **우선순위**: P3 (낮음)
 **이유**: 현재 operation logs가 충분한 감사 추적 제공
@@ -207,6 +228,7 @@ registerEngine({
 ### 현재: **90% 완료**
 
 **완료된 부분 (90%)**:
+
 - ✅ Governance 시스템 전체 구조
 - ✅ 13개 엔진 통합
 - ✅ 자동 검증 (GovernanceEnforcer)
@@ -215,6 +237,7 @@ registerEngine({
 - ✅ 문서화
 
 **선택적 부분 (10%)**:
+
 - ⏳ register-engine.ts (선택)
 - ⏳ Snapshot Freeze (선택)
 - ⏳ /inspect 타임아웃 최적화 (선택)
@@ -226,6 +249,7 @@ registerEngine({
 ## 🔄 다음 세션 시작 방법
 
 ### 시나리오 1: 정상 개발 계속
+
 ```bash
 # 그냥 평소처럼 개발하면 됩니다
 /maintain           # 코드 수정 후
@@ -233,6 +257,7 @@ registerEngine({
 ```
 
 ### 시나리오 2: 선택적 개선 (Phase 13)
+
 ```
 @SESSION_HANDOFF_PHASE12.md 읽고 Phase 13 진행해줘.
 
@@ -245,6 +270,7 @@ registerEngine({
 ```
 
 ### 시나리오 3: 문제 발생 시
+
 ```
 @SESSION_HANDOFF_PHASE12.md 읽고 현재 상태 확인해줘.
 
@@ -262,6 +288,7 @@ registerEngine({
 ## 📞 Git 커밋 히스토리
 
 ### Phase 11 커밋
+
 ```
 commit c104add
 feat: Phase 11 - 6개 엔진 governance 통합 완료
@@ -270,6 +297,7 @@ feat: Phase 11 - 6개 엔진 governance 통합 완료
 ```
 
 ### Phase 12 커밋
+
 ```
 commit 5906738
 feat: Phase 12 - /ship 명령어 강화 및 중복 제거

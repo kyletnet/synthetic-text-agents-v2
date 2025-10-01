@@ -57,43 +57,45 @@ export class OptimizationEngine {
   ): Promise<void> {
     return wrapWithGovernance("optimization-engine", async () => {
       console.log("🚀 Optimization Engine - Starting Analysis");
-      console.log("════════════════════════════════════════════════════════════");
+      console.log(
+        "════════════════════════════════════════════════════════════",
+      );
 
-    const startTime = Date.now();
+      const startTime = Date.now();
 
-    // 1. Collect current metrics
-    const currentMetrics = await this.collectMetrics();
-    console.log(`📊 Current System Metrics:`);
-    console.log(`   Workflow Gaps: ${currentMetrics.workflowGaps}`);
-    console.log(
-      `   Governance Coverage: ${currentMetrics.governanceCoverage}%`,
-    );
-    console.log(`   Automation Level: ${currentMetrics.automationLevel}%`);
+      // 1. Collect current metrics
+      const currentMetrics = await this.collectMetrics();
+      console.log(`📊 Current System Metrics:`);
+      console.log(`   Workflow Gaps: ${currentMetrics.workflowGaps}`);
+      console.log(
+        `   Governance Coverage: ${currentMetrics.governanceCoverage}%`,
+      );
+      console.log(`   Automation Level: ${currentMetrics.automationLevel}%`);
 
-    // 2. Identify optimization opportunities
-    const opportunities = await this.identifyOptimizations(currentMetrics);
-    console.log(
-      `\\n🔍 Found ${opportunities.length} optimization opportunities`,
-    );
+      // 2. Identify optimization opportunities
+      const opportunities = await this.identifyOptimizations(currentMetrics);
+      console.log(
+        `\\n🔍 Found ${opportunities.length} optimization opportunities`,
+      );
 
-    if (mode === "analyze") {
-      this.printOptimizationReport(opportunities);
-      return;
-    }
+      if (mode === "analyze") {
+        this.printOptimizationReport(opportunities);
+        return;
+      }
 
-    // 3. Implement optimizations
-    if (mode === "implement" || mode === "full") {
-      await this.implementOptimizations(opportunities);
-    }
+      // 3. Implement optimizations
+      if (mode === "implement" || mode === "full") {
+        await this.implementOptimizations(opportunities);
+      }
 
-    // 4. Measure improvement
-    const newMetrics = await this.collectMetrics();
-    const improvement = this.calculateImprovement(currentMetrics, newMetrics);
+      // 4. Measure improvement
+      const newMetrics = await this.collectMetrics();
+      const improvement = this.calculateImprovement(currentMetrics, newMetrics);
 
-    console.log(`\\n📈 Optimization Results:`);
-    console.log(
-      `   Time taken: ${Math.round((Date.now() - startTime) / 1000)}s`,
-    );
+      console.log(`\\n📈 Optimization Results:`);
+      console.log(
+        `   Time taken: ${Math.round((Date.now() - startTime) / 1000)}s`,
+      );
       console.log(`   Improvements: ${improvement.summary}`);
 
       this.saveOptimizationSession(currentMetrics, newMetrics, opportunities);

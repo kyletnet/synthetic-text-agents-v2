@@ -278,20 +278,20 @@ class DesignPrincipleEngine {
     return wrapWithGovernance("design-principle-engine", async () => {
       const fullPath = join(this.projectRoot, scriptPath);
 
-    if (!existsSync(fullPath)) {
-      throw new Error(`Script not found: ${scriptPath}`);
-    }
+      if (!existsSync(fullPath)) {
+        throw new Error(`Script not found: ${scriptPath}`);
+      }
 
-    const content = readFileSync(fullPath, "utf8");
-    const fileName = scriptPath.split("/").pop() || "";
+      const content = readFileSync(fullPath, "utf8");
+      const fileName = scriptPath.split("/").pop() || "";
 
-    // 파일 내용과 이름을 분석하여 컨텍스트 추출
-    const context: SystemContext = {
-      componentType: this.detectComponentType(fileName, content),
-      riskLevel: this.detectRiskLevel(fileName, content),
-      userImpact: this.detectUserImpact(fileName, content),
-      purpose: this.detectPurpose(fileName, content),
-      dependencies: this.extractDependencies(content),
+      // 파일 내용과 이름을 분석하여 컨텍스트 추출
+      const context: SystemContext = {
+        componentType: this.detectComponentType(fileName, content),
+        riskLevel: this.detectRiskLevel(fileName, content),
+        userImpact: this.detectUserImpact(fileName, content),
+        purpose: this.detectPurpose(fileName, content),
+        dependencies: this.extractDependencies(content),
         integrationPoints: this.findIntegrationPoints(content),
       };
 

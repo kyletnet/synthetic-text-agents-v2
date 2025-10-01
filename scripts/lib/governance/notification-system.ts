@@ -12,7 +12,13 @@
  * - Non-blocking notifications
  */
 
-import { existsSync, readFileSync, writeFileSync, mkdirSync, appendFileSync } from "fs";
+import {
+  existsSync,
+  readFileSync,
+  writeFileSync,
+  mkdirSync,
+  appendFileSync,
+} from "fs";
 import { join } from "path";
 import type {
   GovernanceRulesConfig,
@@ -302,7 +308,9 @@ ${JSON.stringify(event.details, null, 2)}
       `.trim();
 
       // Note: Actual GitHub API call would go here
-      console.log(`📢 Would create GitHub issue: ${owner}/${githubConfig.repo}`);
+      console.log(
+        `📢 Would create GitHub issue: ${owner}/${githubConfig.repo}`,
+      );
       console.log(`   Title: ${title}`);
 
       // In production:
@@ -356,9 +364,7 @@ ${JSON.stringify(event.details, null, 2)}
 
     const rulesPath = join(this.projectRoot, "governance-rules.json");
     if (!existsSync(rulesPath)) {
-      throw new Error(
-        `governance-rules.json not found at ${rulesPath}`,
-      );
+      throw new Error(`governance-rules.json not found at ${rulesPath}`);
     }
 
     const content = readFileSync(rulesPath, "utf8");
@@ -372,11 +378,9 @@ ${JSON.stringify(event.details, null, 2)}
   async test(): Promise<void> {
     console.log("🧪 Testing notification system...\n");
 
-    await this.broadcast(
-      "test",
-      "Test notification from Governance System",
-      { test: true },
-    );
+    await this.broadcast("test", "Test notification from Governance System", {
+      test: true,
+    });
 
     console.log("✅ Test notification sent\n");
   }

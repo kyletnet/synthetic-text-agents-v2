@@ -15,7 +15,10 @@
 
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from "fs";
 import { join } from "path";
-import { InfiniteLoopError, type GovernanceRulesConfig } from "./governance-types.js";
+import {
+  InfiniteLoopError,
+  type GovernanceRulesConfig,
+} from "./governance-types.js";
 import { NotificationSystem } from "./notification-system.js";
 
 export interface LoopProfile {
@@ -215,9 +218,7 @@ export class LoopDetector {
 
     const rulesPath = join(this.projectRoot, "governance-rules.json");
     if (!existsSync(rulesPath)) {
-      throw new Error(
-        `governance-rules.json not found at ${rulesPath}`,
-      );
+      throw new Error(`governance-rules.json not found at ${rulesPath}`);
     }
 
     const content = readFileSync(rulesPath, "utf8");

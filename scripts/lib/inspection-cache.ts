@@ -8,7 +8,13 @@
  * - Strict validation before use
  */
 
-import { existsSync, readFileSync, writeFileSync, mkdirSync, unlinkSync } from "fs";
+import {
+  existsSync,
+  readFileSync,
+  writeFileSync,
+  mkdirSync,
+  unlinkSync,
+} from "fs";
 import { join, dirname } from "path";
 import type {
   InspectionResults,
@@ -145,7 +151,9 @@ export class InspectionCache {
     if (validation.valid && validation.results) {
       const age = this.getCacheAge();
       console.log(`\n📋 Inspection Results (${age})`);
-      console.log(`   Health Score: ${validation.results.summary.healthScore}/100`);
+      console.log(
+        `   Health Score: ${validation.results.summary.healthScore}/100`,
+      );
       console.log(
         `   Auto-fixable: ${validation.results.summary.autoFixableCount}개`,
       );

@@ -150,7 +150,10 @@ export async function wrapWithGovernance<T>(
   description?: string,
 ): Promise<T> {
   const governance = new GovernanceRunner();
-  const context = EngineGovernanceTemplate.createContext(engineName, description);
+  const context = EngineGovernanceTemplate.createContext(
+    engineName,
+    description,
+  );
 
   return await governance.executeWithGovernance(operation, context);
 }

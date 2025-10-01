@@ -42,58 +42,63 @@ class AIFixEngine {
     return wrapWithGovernance("ai-fix-engine", async () => {
       console.log("🤖 Starting AI-powered automatic fixes...");
 
-    // 롤백 정보 저장을 위한 세션 ID 생성
-    const sessionId = `fix-${Date.now()}`;
-    await this.createFixSession(sessionId);
+      // 롤백 정보 저장을 위한 세션 ID 생성
+      const sessionId = `fix-${Date.now()}`;
+      await this.createFixSession(sessionId);
 
-    // 1. 현재 TypeScript 오류 분석
-    const compileReport = await this.tsChecker.checkCompilation();
+      // 1. 현재 TypeScript 오류 분석
+      const compileReport = await this.tsChecker.checkCompilation();
 
-    if (compileReport.summary.totalErrors === 0) {
-      console.log("✅ No TypeScript errors found!");
-      return {
-        timestamp: new Date().toISOString(),
-        totalErrors: 0,
-        fixAttempts: 0,
-        successfulFixes: 0,
-        attempts: [],
-        remainingErrors: 0,
-      };
-    }
+      if (compileReport.summary.totalErrors === 0) {
+        console.log("✅ No TypeScript errors found!");
+        return {
+          timestamp: new Date().toISOString(),
+          totalErrors: 0,
+          fixAttempts: 0,
+          successfulFixes: 0,
+          attempts: [],
+          remainingErrors: 0,
+        };
+      }
 
-    console.log(`🔍 Found ${compileReport.summary.totalErrors} errors to fix`);
-
-    // 2. 수정 가능한 오류들 필터링
-    let errorsToFix = compileReport.errors;
-    if (filterType) {
-      errorsToFix = this.filterErrorsByType(compileReport.errors, filterType);
       console.log(
-        `🎯 Filtering for '${filterType}': ${errorsToFix.length} errors selected`,
+        `🔍 Found ${compileReport.summary.totalErrors} errors to fix`,
       );
-    }
 
-    // 3. 파일별로 그룹화하여 수정 시도
-    const fixAttempts: FixAttempt[] = [];
-    const errorsByFile = this.groupErrorsByFile(errorsToFix);
+      // 2. 수정 가능한 오류들 필터링
+      let errorsToFix = compileReport.errors;
+      if (filterType) {
+        errorsToFix = this.filterErrorsByType(compileReport.errors, filterType);
+        console.log(
+          `🎯 Filtering for '${filterType}': ${errorsToFix.length} errors selected`,
+        );
+      }
 
-    for (const [filePath, fileErrors] of Object.entries(errorsByFile)) {
-      console.log(`🔧 Fixing ${fileErrors.length} errors in ${filePath}`);
+      // 3. 파일별로 그룹화하여 수정 시도
+      const fixAttempts: FixAttempt[] = [];
+      const errorsByFile = this.groupErrorsByFile(errorsToFix);
 
-      const fileFixAttempts = await this.fixErrorsInFile(filePath, fileErrors);
-      fixAttempts.push(...fileFixAttempts);
-    }
+      for (const [filePath, fileErrors] of Object.entries(errorsByFile)) {
+        console.log(`🔧 Fixing ${fileErrors.length} errors in ${filePath}`);
 
-    // 4. 수정 후 재검증
-    console.log("🔍 Re-checking after fixes...");
-    const afterReport = await this.tsChecker.checkCompilation();
+        const fileFixAttempts = await this.fixErrorsInFile(
+          filePath,
+          fileErrors,
+        );
+        fixAttempts.push(...fileFixAttempts);
+      }
 
-    const report: FixReport = {
-      timestamp: new Date().toISOString(),
-      totalErrors: compileReport.summary.totalErrors,
-      fixAttempts: fixAttempts.length,
-      successfulFixes: fixAttempts.filter((f) => f.success).length,
-      attempts: fixAttempts,
-      remainingErrors: afterReport.summary.totalErrors,
+      // 4. 수정 후 재검증
+      console.log("🔍 Re-checking after fixes...");
+      const afterReport = await this.tsChecker.checkCompilation();
+
+      const report: FixReport = {
+        timestamp: new Date().toISOString(),
+        totalErrors: compileReport.summary.totalErrors,
+        fixAttempts: fixAttempts.length,
+        successfulFixes: fixAttempts.filter((f) => f.success).length,
+        attempts: fixAttempts,
+        remainingErrors: afterReport.summary.totalErrors,
       };
 
       await this.generateFixReport(report);

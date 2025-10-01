@@ -196,7 +196,9 @@ export class GovernanceRunner {
 
     const successCount = logs.logs.filter((l) => l.status === "success").length;
     const failureCount = logs.logs.filter((l) => l.status === "failure").length;
-    const bypassCount = logs.logs.filter((l) => l.operation === "bypass").length;
+    const bypassCount = logs.logs.filter(
+      (l) => l.operation === "bypass",
+    ).length;
 
     return {
       totalOperations: logs.total,
@@ -212,9 +214,7 @@ export class GovernanceRunner {
  */
 let globalGovernanceRunner: GovernanceRunner | null = null;
 
-export function getGovernanceRunner(
-  projectRoot?: string,
-): GovernanceRunner {
+export function getGovernanceRunner(projectRoot?: string): GovernanceRunner {
   if (!globalGovernanceRunner) {
     globalGovernanceRunner = new GovernanceRunner(projectRoot);
   }

@@ -14,7 +14,10 @@
 
 import { readFileSync, existsSync } from "fs";
 import { join } from "path";
-import type { GovernanceRulesConfig, DeprecatedFile } from "./governance-types.js";
+import type {
+  GovernanceRulesConfig,
+  DeprecatedFile,
+} from "./governance-types.js";
 
 export interface LegacyImportWarning {
   file: string;
@@ -40,9 +43,7 @@ export class LegacyImportChecker {
 
     const rulesPath = join(this.projectRoot, "governance-rules.json");
     if (!existsSync(rulesPath)) {
-      throw new Error(
-        `governance-rules.json not found at ${rulesPath}`,
-      );
+      throw new Error(`governance-rules.json not found at ${rulesPath}`);
     }
 
     const content = readFileSync(rulesPath, "utf8");
@@ -108,7 +109,7 @@ export class LegacyImportChecker {
     }
 
     console.log(`\n⚠️  Legacy Imports Detected: ${warnings.length}\n`);
-    console.log("=" .repeat(70));
+    console.log("=".repeat(70));
 
     // Group by deprecated file
     const grouped = this.groupByDeprecated(warnings);
@@ -151,9 +152,7 @@ export class LegacyImportChecker {
     const rules = this.loadRules();
     const relativePath = filePath.replace(this.projectRoot + "/", "");
 
-    return (
-      rules.deprecatedFiles.find((d) => d.path === relativePath) || null
-    );
+    return rules.deprecatedFiles.find((d) => d.path === relativePath) || null;
   }
 
   /**
@@ -199,7 +198,9 @@ export class LegacyImportChecker {
     const rules = this.loadRules();
     const relativePath = filePath.replace(this.projectRoot + "/", "");
 
-    const deprecated = rules.deprecatedFiles.find((d) => d.path === relativePath);
+    const deprecated = rules.deprecatedFiles.find(
+      (d) => d.path === relativePath,
+    );
     if (!deprecated) return false;
 
     // Check if there's a corresponding rule with action: "throw"

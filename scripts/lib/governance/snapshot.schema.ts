@@ -123,7 +123,9 @@ export interface SnapshotCompareOptions {
   strictMode?: boolean;
 
   /** Custom risk assessment function */
-  riskAssessor?: (diff: SnapshotDiff) => "critical" | "high" | "medium" | "low" | "none";
+  riskAssessor?: (
+    diff: SnapshotDiff,
+  ) => "critical" | "high" | "medium" | "low" | "none";
 }
 
 /**

@@ -129,8 +129,12 @@ export class PreflightChecker {
 
       if (status.trim()) {
         const lines = status.trim().split("\n");
-        console.log(`      ⚠️  ${lines.length} uncommitted change(s) on ${branch}`);
-        console.log("      💡 Consider committing before governance operations");
+        console.log(
+          `      ⚠️  ${lines.length} uncommitted change(s) on ${branch}`,
+        );
+        console.log(
+          "      💡 Consider committing before governance operations",
+        );
       } else {
         console.log(`      ✓ Clean working tree on ${branch}`);
       }
@@ -186,7 +190,8 @@ export class PreflightChecker {
       }
 
       // Count enabled rules
-      const enabledRules = rules.rules?.filter((r: { enabled: boolean }) => r.enabled) || [];
+      const enabledRules =
+        rules.rules?.filter((r: { enabled: boolean }) => r.enabled) || [];
       console.log(`      ✓ ${enabledRules.length} rule(s) enabled`);
     } catch (error) {
       throw new Error(
@@ -232,9 +237,7 @@ export class PreflightChecker {
  */
 let globalPreflightChecker: PreflightChecker | null = null;
 
-export function getPreflightChecker(
-  projectRoot?: string,
-): PreflightChecker {
+export function getPreflightChecker(projectRoot?: string): PreflightChecker {
   if (!globalPreflightChecker) {
     globalPreflightChecker = new PreflightChecker(projectRoot);
   }

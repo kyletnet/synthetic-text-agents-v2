@@ -56,7 +56,9 @@ class MaintainEngine {
           // 2. Load cached results
           const validation = this.cache.validateCache();
           if (!validation.valid || !validation.results) {
-            console.error("\n❌ Internal error: cache validation passed but no results");
+            console.error(
+              "\n❌ Internal error: cache validation passed but no results",
+            );
             process.exit(1);
           }
 
@@ -112,9 +114,7 @@ class MaintainEngine {
 
     for (let i = 0; i < items.length; i++) {
       const item = items[i];
-      console.log(
-        `[${i + 1}/${items.length}] ${item.description}`,
-      );
+      console.log(`[${i + 1}/${items.length}] ${item.description}`);
       console.log(`   → ${item.command}`);
 
       try {
@@ -154,12 +154,12 @@ class MaintainEngine {
    * Self-Validation with retry logic 🆕
    */
   private async selfValidateWithRetry(maxRetries = 3): Promise<void> {
-    console.log('\n🔄 Self-Validation...');
-    console.log('═'.repeat(60));
+    console.log("\n🔄 Self-Validation...");
+    console.log("═".repeat(60));
 
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       // Checkpoint for loop detection
-      this.loopDetector.checkpoint('self-validation', maxRetries);
+      this.loopDetector.checkpoint("self-validation", maxRetries);
 
       const validation = await this.safeExecutor.execute(
         async () => {
@@ -171,32 +171,41 @@ class MaintainEngine {
 
           return { ts: tsResult, lint: lintResult };
         },
-        { type: 'validation' },
+        { type: "validation" },
       );
 
       // Check if passed
       if (!validation.ts.hasErrors && !validation.lint.hasErrors) {
-        console.log(`✅ Self-validation passed (attempt ${attempt}/${maxRetries})\n`);
-        this.loopDetector.reset('self-validation');
+        console.log(
+          `✅ Self-validation passed (attempt ${attempt}/${maxRetries})\n`,
+        );
+        this.loopDetector.reset("self-validation");
         return;
       }
 
       // Auto-fix if possible
       if (validation.lint.autoFixable && attempt < maxRetries) {
-        console.log(`🔧 Retry ${attempt}/${maxRetries}: Auto-fixing validation issues...`);
+        console.log(
+          `🔧 Retry ${attempt}/${maxRetries}: Auto-fixing validation issues...`,
+        );
 
         try {
-          execSync('npm run lint:fix', { stdio: 'inherit', cwd: this.projectRoot });
+          execSync("npm run lint:fix", {
+            stdio: "inherit",
+            cwd: this.projectRoot,
+          });
         } catch (error) {
           console.error(`   ❌ Auto-fix failed: ${(error as Error).message}`);
         }
       } else {
         console.error(`❌ Self-validation failed after ${attempt} attempt(s)`);
-        console.error('   TypeScript errors:', validation.ts.errorCount || 0);
-        console.error('   ESLint errors:', validation.lint.errorCount || 0);
+        console.error("   TypeScript errors:", validation.ts.errorCount || 0);
+        console.error("   ESLint errors:", validation.lint.errorCount || 0);
 
         if (attempt === maxRetries) {
-          throw new Error('Self-validation failed: Manual intervention required');
+          throw new Error(
+            "Self-validation failed: Manual intervention required",
+          );
         }
       }
     }
@@ -207,10 +216,10 @@ class MaintainEngine {
    */
   private checkTypeScript(): { hasErrors: boolean; errorCount: number } {
     try {
-      execSync('npm run typecheck', { stdio: 'pipe', cwd: this.projectRoot });
+      execSync("npm run typecheck", { stdio: "pipe", cwd: this.projectRoot });
       return { hasErrors: false, errorCount: 0 };
     } catch (error) {
-      const output = (error as { stdout?: Buffer }).stdout?.toString() || '';
+      const output = (error as { stdout?: Buffer }).stdout?.toString() || "";
       const errorCount = (output.match(/error TS/g) || []).length;
       return { hasErrors: true, errorCount };
     }
@@ -225,10 +234,10 @@ class MaintainEngine {
     autoFixable: boolean;
   } {
     try {
-      execSync('npm run lint', { stdio: 'pipe', cwd: this.projectRoot });
+      execSync("npm run lint", { stdio: "pipe", cwd: this.projectRoot });
       return { hasErrors: false, errorCount: 0, autoFixable: false };
     } catch (error) {
-      const output = (error as { stdout?: Buffer }).stdout?.toString() || '';
+      const output = (error as { stdout?: Buffer }).stdout?.toString() || "";
       const errorCount = (output.match(/error/g) || []).length;
       const warningCount = (output.match(/warning/g) || []).length;
 
@@ -246,7 +255,9 @@ class MaintainEngine {
   private showSummary(items: AutoFixableItem[]): void {
     console.log("\n📊 Auto-fix Summary:");
     console.log(`   Total items: ${items.length}`);
-    console.log(`   Estimated time saved: ${items.reduce((sum, item) => sum + (item.estimatedDuration || 0), 0)}s`);
+    console.log(
+      `   Estimated time saved: ${items.reduce((sum, item) => sum + (item.estimatedDuration || 0), 0)}s`,
+    );
   }
 
   /**
@@ -257,9 +268,7 @@ class MaintainEngine {
     console.log("═".repeat(60));
 
     if (manualCount > 0) {
-      console.log(
-        `\n⚠️  ${manualCount} items need manual approval`,
-      );
+      console.log(`\n⚠️  ${manualCount} items need manual approval`);
       console.log(`   → npm run fix (interactive review)\n`);
     } else {
       console.log("\n✅ All issues resolved! Ready to ship.");

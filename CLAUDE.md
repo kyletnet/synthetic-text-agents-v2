@@ -355,15 +355,23 @@ Before marking implementation complete:
 
 ### Command Workflow
 
-**4단계 워크플로우**:
+**4단계 워크플로우 (정밀 진단과 완전 수정)**:
 
 모든 개발은 이 4단계를 순서대로:
 
 ```bash
-1. npm run status      # 진단
-2. npm run maintain    # 자동 수정
-3. npm run fix         # 대화형 수정
-4. npm run ship        # 배포 준비
+1. /inspect            # 정밀 진단 (Single Source of Truth 생성)
+   (= npm run status)  # TypeScript, ESLint, Tests, Security, Workarounds 등 전체 점검
+                       # 출력: reports/inspection-results.json (5분 TTL)
+
+2. /maintain           # 자동 수정 (캐시 기반, 승인 불필요)
+   (= npm run maintain)# Prettier, ESLint --fix 자동 실행
+
+3. /fix                # 대화형 수정 (캐시 기반, 승인 필요)
+   (= npm run fix)     # TypeScript 오류, Workarounds, 문서화 누락 등 처리
+
+4. /ship               # 배포 준비 + 실제 배포
+   (bash script)       # Validation + Docs + Optimization + Commit + Push
 ```
 
 **일상 개발 (3단계)**:

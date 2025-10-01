@@ -162,8 +162,14 @@ export class SnapshotManager {
     const rules = this.loadGovernanceRules();
     const files: Record<string, FileSnapshot> = {};
 
-    const patterns = rules?.snapshot?.includePaths || ["src/**/*.ts", "scripts/**/*.ts"];
-    const excludePatterns = rules?.snapshot?.excludePaths || ["node_modules/**", "dist/**"];
+    const patterns = rules?.snapshot?.includePaths || [
+      "src/**/*.ts",
+      "scripts/**/*.ts",
+    ];
+    const excludePatterns = rules?.snapshot?.excludePaths || [
+      "node_modules/**",
+      "dist/**",
+    ];
 
     for (const pattern of patterns) {
       const matches = glob.sync(pattern, {
@@ -442,9 +448,7 @@ export class SnapshotManager {
  */
 let globalSnapshotManager: SnapshotManager | null = null;
 
-export function getSnapshotManager(
-  projectRoot?: string,
-): SnapshotManager {
+export function getSnapshotManager(projectRoot?: string): SnapshotManager {
   if (!globalSnapshotManager) {
     globalSnapshotManager = new SnapshotManager(projectRoot);
   }

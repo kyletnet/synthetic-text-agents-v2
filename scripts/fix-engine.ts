@@ -56,7 +56,9 @@ class FixEngine {
           // 2. Load cached results
           const validation = this.cache.validateCache();
           if (!validation.valid || !validation.results) {
-            console.error("\n❌ Internal error: cache validation passed but no results");
+            console.error(
+              "\n❌ Internal error: cache validation passed but no results",
+            );
             process.exit(1);
           }
 
@@ -118,7 +120,8 @@ class FixEngine {
       console.log("═".repeat(70));
 
       // 심각도 색상 강조
-      const severityIcon = item.severity === "critical" ? "🚨 긴급" : "⚠️  주의";
+      const severityIcon =
+        item.severity === "critical" ? "🚨 긴급" : "⚠️  주의";
       console.log(`\n${icon} ${severityIcon}: ${item.description}`);
 
       console.log(`\n📊 상세 정보:`);
@@ -130,7 +133,9 @@ class FixEngine {
       console.log(`   ${item.suggestedAction}`);
 
       if (item.files && item.files.length > 0) {
-        console.log(`\n📁 영향 받는 파일 (상위 ${Math.min(5, item.files.length)}개):`);
+        console.log(
+          `\n📁 영향 받는 파일 (상위 ${Math.min(5, item.files.length)}개):`,
+        );
         item.files.slice(0, 5).forEach((file, idx) => {
           console.log(`   ${idx + 1}. ${file}`);
         });
@@ -160,10 +165,7 @@ class FixEngine {
       console.log("   i = 더 자세한 정보 보기");
       console.log("─".repeat(70));
 
-      const answer = await this.prompt(
-        rl,
-        "\n👉 선택 [y/n/m/a/i]: ",
-      );
+      const answer = await this.prompt(rl, "\n👉 선택 [y/n/m/a/i]: ");
 
       console.log(""); // 빈 줄
 
@@ -212,13 +214,21 @@ class FixEngine {
    */
   private getExplanation(itemId: string): string {
     const explanations: Record<string, string> = {
-      "typescript-errors": "TypeScript 컴파일 오류는 코드의 타입이 맞지 않아 발생합니다. 빌드가 실패할 수 있습니다.",
-      "eslint-errors": "ESLint 오류는 코드 품질 규칙을 위반한 것입니다. 잠재적 버그나 보안 문제일 수 있습니다.",
-      "workarounds": "TODO/FIXME 마커는 임시 해결책이나 나중에 수정해야 할 부분을 표시한 것입니다.",
-      "component-documentation": "컴포넌트 문서가 누락되면 다른 개발자가 코드를 이해하기 어렵습니다.",
-      "refactor-pending": "리팩토링 대기 항목은 코드 구조를 개선해야 하는 부분입니다. 유지보수성을 높입니다.",
+      "typescript-errors":
+        "TypeScript 컴파일 오류는 코드의 타입이 맞지 않아 발생합니다. 빌드가 실패할 수 있습니다.",
+      "eslint-errors":
+        "ESLint 오류는 코드 품질 규칙을 위반한 것입니다. 잠재적 버그나 보안 문제일 수 있습니다.",
+      workarounds:
+        "TODO/FIXME 마커는 임시 해결책이나 나중에 수정해야 할 부분을 표시한 것입니다.",
+      "component-documentation":
+        "컴포넌트 문서가 누락되면 다른 개발자가 코드를 이해하기 어렵습니다.",
+      "refactor-pending":
+        "리팩토링 대기 항목은 코드 구조를 개선해야 하는 부분입니다. 유지보수성을 높입니다.",
     };
-    return explanations[itemId] || "시스템 품질을 개선하기 위해 검토가 필요한 항목입니다.";
+    return (
+      explanations[itemId] ||
+      "시스템 품질을 개선하기 위해 검토가 필요한 항목입니다."
+    );
   }
 
   /**
@@ -229,34 +239,36 @@ class FixEngine {
       "typescript-errors": [
         "이 TypeScript 오류가 빌드에 영향을 미치나요?",
         "얼마나 긴급하게 수정해야 하나요?",
-        "수정하는데 얼마나 걸릴까요?"
+        "수정하는데 얼마나 걸릴까요?",
       ],
       "eslint-errors": [
         "이 ESLint 오류가 보안 문제인가요?",
         "프로덕션에 영향을 미칠 수 있나요?",
-        "지금 당장 수정해야 하나요?"
+        "지금 당장 수정해야 하나요?",
       ],
-      "workarounds": [
+      workarounds: [
         "이 TODO 마커들 중 긴급한 것이 있나요?",
         "언제까지 해결해야 하나요?",
-        "어떤 것부터 우선 처리해야 하나요?"
+        "어떤 것부터 우선 처리해야 하나요?",
       ],
       "component-documentation": [
         "문서가 없으면 어떤 문제가 생기나요?",
         "언제까지 문서를 작성해야 하나요?",
-        "누가 문서를 작성해야 하나요?"
+        "누가 문서를 작성해야 하나요?",
       ],
       "refactor-pending": [
         "리팩토링을 안 하면 어떤 문제가 생기나요?",
         "언제 리팩토링을 진행할 계획인가요?",
-        "리팩토링에 얼마나 시간이 걸릴까요?"
-      ]
+        "리팩토링에 얼마나 시간이 걸릴까요?",
+      ],
     };
-    return questions[itemId] || [
-      "이것은 얼마나 중요한가요?",
-      "언제까지 처리해야 하나요?",
-      "누가 담당해야 하나요?"
-    ];
+    return (
+      questions[itemId] || [
+        "이것은 얼마나 중요한가요?",
+        "언제까지 처리해야 하나요?",
+        "누가 담당해야 하나요?",
+      ]
+    );
   }
 
   /**

@@ -108,97 +108,97 @@ export class AdaptiveExecutionEngine extends EventEmitter {
   ): Promise<ExecutionResult> {
     return wrapWithGovernance("adaptive-execution-engine", async () => {
       const fullContext: ExecutionContext = {
-      priority: operation.priority,
-      userPresent: false,
-      systemLoad: this.getCurrentSystemLoad(),
-      timeConstraints: "moderate",
-      errorTolerance: "low",
-      automationLevel: "supervised",
-      ...context,
-    };
-
-    // Get decision from Smart Decision Matrix
-    const decision = await smartDecisionMatrix.makeDecision(
-      operation.name,
-      fullContext,
-    );
-
-    console.log(`🎯 Adaptive execution for ${operation.name}:`);
-    console.log(`   Strategy: ${decision.execution}`);
-    console.log(`   Reasoning: ${decision.reasoning}`);
-    console.log(
-      `   Trade-offs: P=${Math.round(decision.tradeoffs.performance * 100)}% S=${Math.round(decision.tradeoffs.safety * 100)}% U=${Math.round(decision.tradeoffs.usability * 100)}%`,
-    );
-
-    const startTime = performance.now();
-
-    // Register active operation
-    const controller = new AbortController();
-    this.activeOperations.set(operation.id, {
-      operation,
-      context: fullContext,
-      decision,
-      startTime,
-      controller,
-    });
-
-    try {
-      // Execute based on selected strategy
-      const result = await this.executeWithStrategy(
-        operation,
-        decision,
-        fullContext,
-        progressCallback,
-      );
-
-      // Record outcome for learning
-      smartDecisionMatrix.recordOutcome(operation.name, {
-        duration: result.duration,
-        success: result.success,
-        userFeedback: result.userInteraction?.userSatisfaction,
-      });
-
-      // Update safety guard
-      await safeGuard.recordAttempt(
-        operation.command,
-        result.success,
-        result.duration,
-        result.error,
-      );
-
-      this.emit("execution:completed", result);
-      return result;
-    } catch (error) {
-      const duration = performance.now() - startTime;
-      const errorResult: ExecutionResult = {
-        operationId: operation.id,
-        success: false,
-        duration,
-        strategy: decision.execution,
-        error: error instanceof Error ? error.message : String(error),
-        performance: {
-          cpuUsage: 0,
-          memoryUsage: process.memoryUsage().heapUsed / 1024 / 1024,
-          cacheHits: 0,
-        },
-        userInteraction: {
-          approvalsRequested: 0,
-          progressUpdates: 0,
-        },
+        priority: operation.priority,
+        userPresent: false,
+        systemLoad: this.getCurrentSystemLoad(),
+        timeConstraints: "moderate",
+        errorTolerance: "low",
+        automationLevel: "supervised",
+        ...context,
       };
 
-      // Record failure for learning
-      smartDecisionMatrix.recordOutcome(operation.name, {
-        duration,
-        success: false,
+      // Get decision from Smart Decision Matrix
+      const decision = await smartDecisionMatrix.makeDecision(
+        operation.name,
+        fullContext,
+      );
+
+      console.log(`🎯 Adaptive execution for ${operation.name}:`);
+      console.log(`   Strategy: ${decision.execution}`);
+      console.log(`   Reasoning: ${decision.reasoning}`);
+      console.log(
+        `   Trade-offs: P=${Math.round(decision.tradeoffs.performance * 100)}% S=${Math.round(decision.tradeoffs.safety * 100)}% U=${Math.round(decision.tradeoffs.usability * 100)}%`,
+      );
+
+      const startTime = performance.now();
+
+      // Register active operation
+      const controller = new AbortController();
+      this.activeOperations.set(operation.id, {
+        operation,
+        context: fullContext,
+        decision,
+        startTime,
+        controller,
       });
 
-      await safeGuard.recordAttempt(
-        operation.command,
-        false,
-        duration,
-        errorResult.error,
-      );
+      try {
+        // Execute based on selected strategy
+        const result = await this.executeWithStrategy(
+          operation,
+          decision,
+          fullContext,
+          progressCallback,
+        );
+
+        // Record outcome for learning
+        smartDecisionMatrix.recordOutcome(operation.name, {
+          duration: result.duration,
+          success: result.success,
+          userFeedback: result.userInteraction?.userSatisfaction,
+        });
+
+        // Update safety guard
+        await safeGuard.recordAttempt(
+          operation.command,
+          result.success,
+          result.duration,
+          result.error,
+        );
+
+        this.emit("execution:completed", result);
+        return result;
+      } catch (error) {
+        const duration = performance.now() - startTime;
+        const errorResult: ExecutionResult = {
+          operationId: operation.id,
+          success: false,
+          duration,
+          strategy: decision.execution,
+          error: error instanceof Error ? error.message : String(error),
+          performance: {
+            cpuUsage: 0,
+            memoryUsage: process.memoryUsage().heapUsed / 1024 / 1024,
+            cacheHits: 0,
+          },
+          userInteraction: {
+            approvalsRequested: 0,
+            progressUpdates: 0,
+          },
+        };
+
+        // Record failure for learning
+        smartDecisionMatrix.recordOutcome(operation.name, {
+          duration,
+          success: false,
+        });
+
+        await safeGuard.recordAttempt(
+          operation.command,
+          false,
+          duration,
+          errorResult.error,
+        );
 
         this.emit("execution:failed", errorResult);
         throw error;

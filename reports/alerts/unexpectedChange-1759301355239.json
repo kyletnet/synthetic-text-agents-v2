@@ -1,0 +1,11 @@
+{
+  "type": "unexpectedChange",
+  "severity": "high",
+  "message": "⚠️  Unexpected File Change\n\nPath: scripts/lib/governance/risk-domain-registry.ts\nReason: 거버넌스 시스템 자체 변경\nSeverity: CRITICAL\nTimestamp: 2025-10-01T06:49:15.239Z",
+  "details": {
+    "path": "scripts/lib/governance/risk-domain-registry.ts",
+    "reason": "거버넌스 시스템 자체 변경",
+    "severity": "critical"
+  },
+  "timestamp": "2025-10-01T06:49:15.239Z"
+}

@@ -15,7 +15,11 @@
 import { existsSync, readFileSync } from "fs";
 import { join } from "path";
 import { execSync } from "child_process";
-import type { GovernanceRulesConfig, RiskDomain, Severity } from "./governance-types.js";
+import type {
+  GovernanceRulesConfig,
+  RiskDomain,
+  Severity,
+} from "./governance-types.js";
 
 export interface RiskAssessment {
   path: string;
@@ -50,7 +54,9 @@ export class RiskDomainRegistry {
 
     for (const risk of risks) {
       if (risk.risk) {
-        console.log(`      ${this.getSeverityIcon(risk.risk.severity)} ${risk.path}`);
+        console.log(
+          `      ${this.getSeverityIcon(risk.risk.severity)} ${risk.path}`,
+        );
         console.log(`         ${risk.risk.reason}`);
 
         if (risk.requiresApproval) {
@@ -198,9 +204,7 @@ export class RiskDomainRegistry {
 
     const rulesPath = join(this.projectRoot, "governance-rules.json");
     if (!existsSync(rulesPath)) {
-      throw new Error(
-        `governance-rules.json not found at ${rulesPath}`,
-      );
+      throw new Error(`governance-rules.json not found at ${rulesPath}`);
     }
 
     const content = readFileSync(rulesPath, "utf8");
@@ -253,7 +257,9 @@ export class RiskDomainRegistry {
       .filter((r) => r.severity === "critical" || r.severity === "high")
       .slice(0, 5)
       .forEach((risk, i) => {
-        console.log(`      ${i + 1}. ${this.getSeverityIcon(risk.severity)} ${risk.path}`);
+        console.log(
+          `      ${i + 1}. ${this.getSeverityIcon(risk.severity)} ${risk.path}`,
+        );
         console.log(`         ${risk.reason}`);
       });
 

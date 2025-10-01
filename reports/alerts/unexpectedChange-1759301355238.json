@@ -1,0 +1,11 @@
+{
+  "type": "unexpectedChange",
+  "severity": "high",
+  "message": "⚠️  Unexpected File Change\n\nPath: scripts/lib/inspection-cache.ts\nReason: Inspection 코어 로직 변경 위험\nSeverity: CRITICAL\nTimestamp: 2025-10-01T06:49:15.238Z",
+  "details": {
+    "path": "scripts/lib/inspection-cache.ts",
+    "reason": "Inspection 코어 로직 변경 위험",
+    "severity": "critical"
+  },
+  "timestamp": "2025-10-01T06:49:15.238Z"
+}

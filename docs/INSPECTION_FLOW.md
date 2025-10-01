@@ -21,6 +21,7 @@ inspect → maintain → fix → ship
 **Purpose**: 모든 시스템 진단을 수행하고 결과를 캐싱
 
 **What it does**:
+
 - TypeScript 컴파일 검사
 - ESLint/Prettier 검사
 - 테스트 실행 상태
@@ -36,9 +37,7 @@ inspect → maintain → fix → ship
   "schemaVersion": "2025-10-inspect-v1",
   "timestamp": "2025-10-01T12:00:00Z",
   "ttl": 300,
-  "autoFixable": [
-    { "id": "prettier", "command": "npx prettier --write ." }
-  ],
+  "autoFixable": [{ "id": "prettier", "command": "npx prettier --write ." }],
   "manualApprovalNeeded": [
     { "id": "typescript-errors", "severity": "critical", "count": 5 }
   ],
@@ -56,23 +55,27 @@ inspect → maintain → fix → ship
 **Purpose**: 자동 수정 가능 항목만 처리 (승인 불필요)
 
 **Prerequisites**:
+
 - ✅ `reports/inspection-results.json` must exist
 - ✅ Cache must be fresh (< 5 minutes)
 - ❌ NO diagnosis - reads from cache only
 
 **What it does**:
+
 1. Validate cache (enforceInspectFirst)
 2. Read `autoFixable` items from cache
 3. Execute commands without approval
 4. Display results
 
 **Example**:
+
 ```bash
 npm run status      # Creates cache
 npm run maintain    # Uses cache, auto-fixes
 ```
 
 **Error if no cache**:
+
 ```
 ⚠️  maintain를 실행하기 전에 /inspect를 먼저 실행하세요
 
@@ -88,17 +91,20 @@ npm run maintain    # Uses cache, auto-fixes
 **Purpose**: 수동 승인 필요 항목 대화형 처리
 
 **Prerequisites**:
+
 - ✅ `reports/inspection-results.json` must exist
 - ✅ Cache must be fresh (< 5 minutes)
 - ❌ NO diagnosis - reads from cache only
 
 **What it does**:
+
 1. Validate cache (enforceInspectFirst)
 2. Read `manualApprovalNeeded` items from cache
 3. Interactive approval (y/n/m/a/i)
 4. Display results
 
 **Approval Options**:
+
 - `y`: Approve (mark for action)
 - `n`: Skip
 - `m`: Mark for manual handling
@@ -106,6 +112,7 @@ npm run maintain    # Uses cache, auto-fixes
 - `i`: Show additional info
 
 **Example**:
+
 ```bash
 npm run status      # Creates cache
 npm run maintain    # Auto-fixes
@@ -129,6 +136,7 @@ if (ageSeconds > TTL) {
 ```
 
 **Why 5 minutes?**
+
 - Short enough to stay fresh
 - Long enough for full workflow
 - Forces re-inspection after significant changes
@@ -153,6 +161,7 @@ if (!hasCache()) {
 ```
 
 **GPT Advice**:
+
 > "Never auto-trigger fallback inspection inside /fix"
 > "Respect TTL (5 min) for inspection cache"
 
@@ -187,6 +196,7 @@ if (!hasCache()) {
 ### 1. Consistency
 
 ✅ maintain과 fix는 **동일한 진단 결과** 사용
+
 - No race conditions
 - No duplicate diagnosis
 - Perfect consistency
@@ -194,12 +204,14 @@ if (!hasCache()) {
 ### 2. Traceability
 
 ✅ 모든 수정은 **진단 시점** 기록
+
 - `inspection-results.json`에 timestamp
 - 언제 무엇이 발견됐는지 추적 가능
 
 ### 3. Reproducibility
 
 ✅ 같은 캐시로 **반복 실행** 가능
+
 - maintain 실패 → 재실행 가능
 - fix 중단 → 나중에 재개 가능
 
@@ -249,7 +261,6 @@ npm run ship
 
 - name: Auto-fix
   run: npm run maintain
-
 # fix는 CI에서 실행 안 함 (수동 승인 필요)
 ```
 
@@ -301,7 +312,7 @@ cache.enforceInspectFirst("fix");
 
 ```typescript
 export interface InspectionResults {
-  schemaVersion: "2025-10-inspect-v1";  // For future migration
+  schemaVersion: "2025-10-inspect-v1"; // For future migration
   timestamp: string;
   ttl: number;
   autoFixable: AutoFixableItem[];
@@ -311,6 +322,7 @@ export interface InspectionResults {
 ```
 
 **Versioning**: `YYYY-MM-inspect-v{N}`
+
 - Allows automatic migration
 - Detects incompatible formats
 
@@ -318,13 +330,13 @@ export interface InspectionResults {
 
 ## 🔧 Implementation Files
 
-| File | Purpose |
-|------|---------|
-| `scripts/inspection-engine.ts` | Run all diagnostics, create cache |
-| `scripts/maintain-engine.ts` | Auto-fix from cache |
-| `scripts/fix-engine.ts` | Interactive approval from cache |
-| `scripts/lib/inspection-schema.ts` | Type definitions |
-| `scripts/lib/inspection-cache.ts` | Cache validation & enforcement |
+| File                               | Purpose                           |
+| ---------------------------------- | --------------------------------- |
+| `scripts/inspection-engine.ts`     | Run all diagnostics, create cache |
+| `scripts/maintain-engine.ts`       | Auto-fix from cache               |
+| `scripts/fix-engine.ts`            | Interactive approval from cache   |
+| `scripts/lib/inspection-schema.ts` | Type definitions                  |
+| `scripts/lib/inspection-cache.ts`  | Cache validation & enforcement    |
 
 ---
 

@@ -128,25 +128,25 @@ class ArchitecturalEvolutionEngine {
         "🔍 Analyzing system architecture for evolutionary improvements...",
       );
 
-    // 1. 구조적 패턴 탐지
-    const patterns = await this.detectStructuralPatterns();
+      // 1. 구조적 패턴 탐지
+      const patterns = await this.detectStructuralPatterns();
 
-    // 2. 중복성 분석
-    const duplications = await this.analyzeDuplications();
+      // 2. 중복성 분석
+      const duplications = await this.analyzeDuplications();
 
-    // 3. 통합 기회 식별
-    const consolidationOpportunities =
-      await this.identifyConsolidationOpportunities(patterns);
+      // 3. 통합 기회 식별
+      const consolidationOpportunities =
+        await this.identifyConsolidationOpportunities(patterns);
 
-    // 4. 아키텍처 불일치 탐지
-    const architecturalInconsistencies =
-      await this.detectArchitecturalInconsistencies();
+      // 4. 아키텍처 불일치 탐지
+      const architecturalInconsistencies =
+        await this.detectArchitecturalInconsistencies();
 
-    // 5. 개선 기회를 우선순위별로 정렬
-    const improvements = [
-      ...consolidationOpportunities,
-      ...duplications,
-      ...architecturalInconsistencies,
+      // 5. 개선 기회를 우선순위별로 정렬
+      const improvements = [
+        ...consolidationOpportunities,
+        ...duplications,
+        ...architecturalInconsistencies,
       ].sort(
         (a, b) => this.calculateImpactScore(b) - this.calculateImpactScore(a),
       );
@@ -646,50 +646,54 @@ class ArchitecturalEvolutionEngine {
     return wrapWithGovernance("architectural-evolution-engine", async () => {
       console.log("🧬 Starting architectural evolution...");
 
-    // 1. 개선 기회 식별
-    const improvements = await this.identifyStructuralImprovements();
+      // 1. 개선 기회 식별
+      const improvements = await this.identifyStructuralImprovements();
 
-    // 2. 설계 원칙 대비 검증
-    const safeImprovements = await this.validateAgainstPrinciples(improvements);
+      // 2. 설계 원칙 대비 검증
+      const safeImprovements =
+        await this.validateAgainstPrinciples(improvements);
 
-    // 3. 자동 적용 가능한 것들 실행
-    await this.applyStructuralEvolution(safeImprovements);
+      // 3. 자동 적용 가능한 것들 실행
+      await this.applyStructuralEvolution(safeImprovements);
 
-    // 4. 진화 보고서 생성
-    const report: SystemEvolutionReport = {
-      timestamp: new Date().toISOString(),
-      version: "1.0.0",
-      analysisResults: {
-        patternsFound: await this.detectStructuralPatterns(),
-        improvementsIdentified: improvements,
-        systemHealthTrend: await this.calculateHealthTrend(),
-        complexityTrend: await this.calculateComplexityTrend(),
-      },
-      autoEvolutionCapabilities: {
-        canAutoFix: safeImprovements.filter((i) => this.canAutoApply(i)),
-        needsApproval: safeImprovements.filter(
-          (i) =>
-            !this.canAutoApply(i) && i.estimatedImpact.riskLevel !== "high",
-        ),
-        requiresManual: safeImprovements.filter(
-          (i) => i.estimatedImpact.riskLevel === "high",
-        ),
-      },
-      evolutionHistory: this.loadEvolutionHistory(),
-    };
+      // 4. 진화 보고서 생성
+      const report: SystemEvolutionReport = {
+        timestamp: new Date().toISOString(),
+        version: "1.0.0",
+        analysisResults: {
+          patternsFound: await this.detectStructuralPatterns(),
+          improvementsIdentified: improvements,
+          systemHealthTrend: await this.calculateHealthTrend(),
+          complexityTrend: await this.calculateComplexityTrend(),
+        },
+        autoEvolutionCapabilities: {
+          canAutoFix: safeImprovements.filter((i) => this.canAutoApply(i)),
+          needsApproval: safeImprovements.filter(
+            (i) =>
+              !this.canAutoApply(i) && i.estimatedImpact.riskLevel !== "high",
+          ),
+          requiresManual: safeImprovements.filter(
+            (i) => i.estimatedImpact.riskLevel === "high",
+          ),
+        },
+        evolutionHistory: this.loadEvolutionHistory(),
+      };
 
-    // 보고서 저장
-    const reportPath = join(this.projectRoot, "reports/evolution-report.json");
-    writeFileSync(reportPath, JSON.stringify(report, null, 2));
+      // 보고서 저장
+      const reportPath = join(
+        this.projectRoot,
+        "reports/evolution-report.json",
+      );
+      writeFileSync(reportPath, JSON.stringify(report, null, 2));
 
-    console.log(`🎉 Architecture evolution completed!`);
-    console.log(`   📊 ${improvements.length} improvements identified`);
-    console.log(
-      `   ⚡ ${report.autoEvolutionCapabilities.canAutoFix.length} auto-applied`,
-    );
-    console.log(
-      `   ⏳ ${report.autoEvolutionCapabilities.needsApproval.length} awaiting approval`,
-    );
+      console.log(`🎉 Architecture evolution completed!`);
+      console.log(`   📊 ${improvements.length} improvements identified`);
+      console.log(
+        `   ⚡ ${report.autoEvolutionCapabilities.canAutoFix.length} auto-applied`,
+      );
+      console.log(
+        `   ⏳ ${report.autoEvolutionCapabilities.needsApproval.length} awaiting approval`,
+      );
       console.log(
         `   🔧 ${report.autoEvolutionCapabilities.requiresManual.length} require manual intervention`,
       );

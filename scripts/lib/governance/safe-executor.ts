@@ -151,10 +151,7 @@ export class SafeExecutor {
     };
 
     try {
-      const result = await this.execute(
-        () => operation(checkpoint),
-        options,
-      );
+      const result = await this.execute(() => operation(checkpoint), options);
 
       // Reset loop detector on success
       this.loopDetector.reset(operationId);
@@ -182,9 +179,7 @@ export class SafeExecutor {
 
     const rulesPath = join(this.projectRoot, "governance-rules.json");
     if (!existsSync(rulesPath)) {
-      throw new Error(
-        `governance-rules.json not found at ${rulesPath}`,
-      );
+      throw new Error(`governance-rules.json not found at ${rulesPath}`);
     }
 
     const content = readFileSync(rulesPath, "utf8");

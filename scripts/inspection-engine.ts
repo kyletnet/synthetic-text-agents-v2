@@ -22,7 +22,10 @@ import { existsSync, readFileSync } from "fs";
 import { join } from "path";
 import { InspectionCache } from "./lib/inspection-cache.js";
 import { GovernanceRunner } from "./lib/governance/governance-runner.js";
-import { DIAGNOSTIC_TIMEOUTS, getTimeoutMessage } from "./lib/diagnostic-timeouts.js";
+import {
+  DIAGNOSTIC_TIMEOUTS,
+  getTimeoutMessage,
+} from "./lib/diagnostic-timeouts.js";
 import type {
   InspectionResults,
   AutoFixableItem,
@@ -151,10 +154,12 @@ class InspectionEngine {
     }
 
     // Process Tests
-    const tests = testsResult.status === "fulfilled" ? testsResult.value : "fail";
+    const tests =
+      testsResult.status === "fulfilled" ? testsResult.value : "fail";
 
     // Process Security
-    const security = securityResult.status === "fulfilled" ? securityResult.value : "fail";
+    const security =
+      securityResult.status === "fulfilled" ? securityResult.value : "fail";
 
     // Process Workarounds
     if (workaroundsResult.status === "fulfilled" && workaroundsResult.value) {
@@ -174,12 +179,15 @@ class InspectionEngine {
       healthScore -= 5;
     }
 
-    const prettierIssues = prettierResult.status === "fulfilled" ? prettierResult.value : null;
-    const eslintAutoFix = eslintResult.status === "fulfilled" ? eslintResult.value.autoFixable : null;
+    const prettierIssues =
+      prettierResult.status === "fulfilled" ? prettierResult.value : null;
+    const eslintAutoFix =
+      eslintResult.status === "fulfilled"
+        ? eslintResult.value.autoFixable
+        : null;
 
     return {
-      totalIssues:
-        this.autoFixable.length + this.manualApprovalNeeded.length,
+      totalIssues: this.autoFixable.length + this.manualApprovalNeeded.length,
       autoFixableCount: this.autoFixable.length,
       manualApprovalCount: this.manualApprovalNeeded.length,
       healthScore: Math.max(0, healthScore),
@@ -205,7 +213,7 @@ class InspectionEngine {
     } catch (error: any) {
       // Timeout이나 critical error는 건너뛰기
       if (error.killed || error.signal === "SIGTERM") {
-        console.log(`   ⚠️  ${getTimeoutMessage('prettier')}`);
+        console.log(`   ⚠️  ${getTimeoutMessage("prettier")}`);
         return null;
       }
 
@@ -254,7 +262,7 @@ class InspectionEngine {
     } catch (error: any) {
       // Timeout handling
       if (error.killed || error.signal === "SIGTERM") {
-        console.log(`   ⚠️  ${getTimeoutMessage('eslint')}`);
+        console.log(`   ⚠️  ${getTimeoutMessage("eslint")}`);
         return { autoFixable: null, manual: null };
       }
 
@@ -293,7 +301,7 @@ class InspectionEngine {
     } catch (error: any) {
       // Timeout handling
       if (error.killed || error.signal === "SIGTERM") {
-        console.log(`   ⚠️  ${getTimeoutMessage('typescript')}`);
+        console.log(`   ⚠️  ${getTimeoutMessage("typescript")}`);
         return {
           hasErrors: true,
           item: {
@@ -337,7 +345,7 @@ class InspectionEngine {
       return "pass";
     } catch (error: any) {
       if (error.killed || error.signal === "SIGTERM") {
-        console.log(`   ⚠️  ${getTimeoutMessage('tests')}`);
+        console.log(`   ⚠️  ${getTimeoutMessage("tests")}`);
         return "fail";
       }
       return "fail";
@@ -357,7 +365,7 @@ class InspectionEngine {
       return "pass";
     } catch (error: any) {
       if (error.killed || error.signal === "SIGTERM") {
-        console.log(`   ⚠️  ${getTimeoutMessage('security')}`);
+        console.log(`   ⚠️  ${getTimeoutMessage("security")}`);
         return "fail";
       }
       return "fail";
@@ -396,7 +404,9 @@ class InspectionEngine {
         totalCount += parseInt(countOutput.trim()) || 0;
       } catch (error: any) {
         if (error.killed || error.signal === "SIGTERM") {
-          console.log(`   ⚠️  ${getTimeoutMessage('grep')} for pattern ${pattern}`);
+          console.log(
+            `   ⚠️  ${getTimeoutMessage("grep")} for pattern ${pattern}`,
+          );
         }
         // No matches or timeout
       }
@@ -440,8 +450,7 @@ class InspectionEngine {
         description: `컴포넌트 문서화 누락 ${nonCompliant}개`,
         count: nonCompliant,
         impact: "시스템 이해도 향상, 유지보수성 개선",
-        suggestedAction:
-          "npm run registry:violations로 미준수 컴포넌트 확인",
+        suggestedAction: "npm run registry:violations로 미준수 컴포넌트 확인",
       };
     } catch {
       return null;

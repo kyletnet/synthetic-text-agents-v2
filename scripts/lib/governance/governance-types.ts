@@ -85,7 +85,12 @@ export interface NotificationConfig {
   eventTypes: Record<string, EventTypeConfig>;
 }
 
-export type NotificationChannel = "console" | "file" | "slack" | "github" | "email";
+export type NotificationChannel =
+  | "console"
+  | "file"
+  | "slack"
+  | "github"
+  | "email";
 
 export interface EventTypeConfig {
   severity: Severity;
