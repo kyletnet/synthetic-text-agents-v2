@@ -9,6 +9,7 @@ import { readFileSync, existsSync, readdirSync, statSync } from "fs";
 import { join } from "path";
 import { glob } from "glob";
 import { DesignPrincipleMapper } from "./lib/design-principle-mapper.js";
+import { detectEnvironment } from "./lib/env-detection.js";
 
 interface AuditFinding {
   category: string;

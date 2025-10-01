@@ -77,20 +77,20 @@ export class Logger {
    * Masks: email addresses, API keys, phone numbers, credit cards
    */
   private maskPII(data: unknown): unknown {
-    if (typeof data === 'string') {
+    if (typeof data === "string") {
       return this.maskPIIString(data);
     }
 
     if (Array.isArray(data)) {
-      return data.map(item => this.maskPII(item));
+      return data.map((item) => this.maskPII(item));
     }
 
-    if (data && typeof data === 'object') {
+    if (data && typeof data === "object") {
       const masked: Record<string, unknown> = {};
       for (const [key, value] of Object.entries(data)) {
         // Mask known sensitive keys
         if (/api[_-]?key|password|token|secret|auth/i.test(key)) {
-          masked[key] = '***REDACTED***';
+          masked[key] = "***REDACTED***";
         } else {
           masked[key] = this.maskPII(value);
         }
@@ -105,21 +105,28 @@ export class Logger {
    * Mask PII patterns in string
    */
   private maskPIIString(str: string): string {
-    return str
-      // Email addresses
-      .replace(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g, '***EMAIL***')
-      // API keys (various formats)
-      .replace(/\b(sk-[a-zA-Z0-9]{48})\b/g, '***API_KEY***')
-      .replace(/\b([A-Za-z0-9_-]{32,})\b/g, (match) => {
-        // Only mask if it looks like a token (all caps/numbers, no spaces)
-        return /^[A-Z0-9_-]+$/.test(match) && match.length > 20 ? '***TOKEN***' : match;
-      })
-      // Phone numbers (US format)
-      .replace(/\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g, '***PHONE***')
-      // Credit card numbers
-      .replace(/\b\d{4}[-\s]?\d{4}[-\s]?\d{4}[-\s]?\d{4}\b/g, '***CARD***')
-      // SSN
-      .replace(/\b\d{3}-\d{2}-\d{4}\b/g, '***SSN***');
+    return (
+      str
+        // Email addresses
+        .replace(
+          /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g,
+          "***EMAIL***",
+        )
+        // API keys (various formats)
+        .replace(/\b(sk-[a-zA-Z0-9]{48})\b/g, "***API_KEY***")
+        .replace(/\b([A-Za-z0-9_-]{32,})\b/g, (match) => {
+          // Only mask if it looks like a token (all caps/numbers, no spaces)
+          return /^[A-Z0-9_-]+$/.test(match) && match.length > 20
+            ? "***TOKEN***"
+            : match;
+        })
+        // Phone numbers (US format)
+        .replace(/\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g, "***PHONE***")
+        // Credit card numbers
+        .replace(/\b\d{4}[-\s]?\d{4}[-\s]?\d{4}[-\s]?\d{4}\b/g, "***CARD***")
+        // SSN
+        .replace(/\b\d{3}-\d{2}-\d{4}\b/g, "***SSN***")
+    );
   }
 
   /**

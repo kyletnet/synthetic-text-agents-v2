@@ -46,6 +46,7 @@ npm run fix -- --non-interactive  # Non-interactive list mode (for AI)
 ### Interactive Mode (Default)
 
 For each issue:
+
 - Shows context and impact
 - Prompts for approval (y/n)
 - Applies fix if approved
@@ -56,6 +57,7 @@ For each issue:
 ### Non-Interactive Mode
 
 Lists all issues without prompting:
+
 - Shows all manual approval items
 - No user input required
 - Read-only analysis

@@ -1,6 +1,7 @@
 #!/usr/bin/env tsx
 
 import * as readline from "readline";
+import { detectEnvironment } from "./env-detection.js";
 import { execSync } from "child_process";
 
 interface Recommendation {

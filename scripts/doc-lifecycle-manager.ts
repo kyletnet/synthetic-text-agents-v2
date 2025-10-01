@@ -15,7 +15,15 @@
  * - Automatic cleanup of expired documents
  */
 
-import { readFile, writeFile, rename, unlink, mkdir, readdir, stat } from "fs/promises";
+import {
+  readFile,
+  writeFile,
+  rename,
+  unlink,
+  mkdir,
+  readdir,
+  stat,
+} from "fs/promises";
 import { existsSync } from "fs";
 import { execSync } from "child_process";
 import { glob } from "glob";
@@ -97,8 +105,10 @@ class DocLifecycleManager {
    */
   private detectStatus(content: string, docPath: string): DocStatus {
     // Explicit status markers
-    if (content.includes("**Status**: Deprecated") ||
-        content.includes("⚠️ DEPRECATED")) {
+    if (
+      content.includes("**Status**: Deprecated") ||
+      content.includes("⚠️ DEPRECATED")
+    ) {
       return "deprecated";
     }
     if (content.includes("**Status**: Archived")) {
@@ -189,11 +199,17 @@ class DocLifecycleManager {
     deprecationDate?: Date;
     deletionDate?: Date;
   } {
-    const deprecationMatch = content.match(/\*\*Deprecation Date\*\*:\s*(\d{4}-\d{2}-\d{2})/);
-    const deletionMatch = content.match(/\*\*Deletion Date\*\*:\s*(\d{4}-\d{2}-\d{2})/);
+    const deprecationMatch = content.match(
+      /\*\*Deprecation Date\*\*:\s*(\d{4}-\d{2}-\d{2})/,
+    );
+    const deletionMatch = content.match(
+      /\*\*Deletion Date\*\*:\s*(\d{4}-\d{2}-\d{2})/,
+    );
 
     return {
-      deprecationDate: deprecationMatch ? new Date(deprecationMatch[1]) : undefined,
+      deprecationDate: deprecationMatch
+        ? new Date(deprecationMatch[1])
+        : undefined,
       deletionDate: deletionMatch ? new Date(deletionMatch[1]) : undefined,
     };
   }
@@ -248,14 +264,14 @@ class DocLifecycleManager {
       replacementDoc?: string;
       reason?: string;
       gracePeriodDays?: number;
-    } = {}
+    } = {},
   ): Promise<void> {
     const plan = await this.proposeDeprecation(docPath);
 
     if (!plan.safe) {
       throw new Error(
         `Cannot deprecate ${docPath}: has ${plan.details?.references?.length} active references.\n` +
-          `Run: npm run doc:lifecycle -- --update-refs ${docPath}`
+          `Run: npm run doc:lifecycle -- --update-refs ${docPath}`,
       );
     }
 
@@ -372,7 +388,9 @@ For the latest version, see [Active Documentation](../../active/)
       }
     }
 
-    return stale.sort((a, b) => a.lastModified.getTime() - b.lastModified.getTime());
+    return stale.sort(
+      (a, b) => a.lastModified.getTime() - b.lastModified.getTime(),
+    );
   }
 
   /**
@@ -387,7 +405,9 @@ For the latest version, see [Active Documentation](../../active/)
       if (entry.deleteAt < now) {
         if (existsSync(entry.path)) {
           await unlink(entry.path);
-          console.log(`🗑️  Deleted: ${entry.path} (deprecated ${this.getDaysAgo(entry.deprecatedAt)} days ago)`);
+          console.log(
+            `🗑️  Deleted: ${entry.path} (deprecated ${this.getDaysAgo(entry.deprecatedAt)} days ago)`,
+          );
           deleted++;
         }
 
@@ -412,8 +432,11 @@ For the latest version, see [Active Documentation](../../active/)
 
     // Count by status
     const allDocs = await glob("docs/**/*.md");
-    const active = allDocs.filter((d) => d.startsWith("docs/active/") ||
-                                          (!d.includes("/archived/") && !d.includes("/deprecated/")));
+    const active = allDocs.filter(
+      (d) =>
+        d.startsWith("docs/active/") ||
+        (!d.includes("/archived/") && !d.includes("/deprecated/")),
+    );
     const archived = allDocs.filter((d) => d.includes("/archived/"));
     const deprecated = allDocs.filter((d) => d.includes("/deprecated/"));
 
@@ -441,7 +464,9 @@ For the latest version, see [Active Documentation](../../active/)
     if (registry.length > 0) {
       console.log(`\n🗑️  Scheduled for Deletion:`);
       for (const entry of registry) {
-        const daysUntil = Math.ceil((entry.deleteAt.getTime() - Date.now()) / (24 * 60 * 60 * 1000));
+        const daysUntil = Math.ceil(
+          (entry.deleteAt.getTime() - Date.now()) / (24 * 60 * 60 * 1000),
+        );
         console.log(`   - ${entry.path} (in ${daysUntil} days)`);
       }
     }
@@ -470,7 +495,9 @@ For the latest version, see [Active Documentation](../../active/)
     }));
   }
 
-  private async updateDeprecationRegistry(entry: DeprecationRegistryEntry): Promise<void> {
+  private async updateDeprecationRegistry(
+    entry: DeprecationRegistryEntry,
+  ): Promise<void> {
     const registry = await this.loadDeprecationRegistry();
     registry.push(entry);
 
@@ -553,12 +580,18 @@ Examples:
 
       case "--find-stale": {
         const stale = await manager.findStaleDocuments(90);
-        console.log(`\n⚠️  Found ${stale.length} stale documents (90+ days):\n`);
+        console.log(
+          `\n⚠️  Found ${stale.length} stale documents (90+ days):\n`,
+        );
         for (const doc of stale) {
-          const days = Math.floor((Date.now() - doc.lastModified.getTime()) / (24 * 60 * 60 * 1000));
+          const days = Math.floor(
+            (Date.now() - doc.lastModified.getTime()) / (24 * 60 * 60 * 1000),
+          );
           console.log(`- ${doc.path} (${days} days old)`);
         }
-        console.log(`\n💡 Suggested: npm run doc:lifecycle -- --deprecate <path>`);
+        console.log(
+          `\n💡 Suggested: npm run doc:lifecycle -- --deprecate <path>`,
+        );
         break;
       }
 
@@ -574,9 +607,11 @@ Examples:
         const gracePeriodIdx = args.indexOf("--grace-period");
 
         const options = {
-          replacementDoc: replacementIdx >= 0 ? args[replacementIdx + 1] : undefined,
+          replacementDoc:
+            replacementIdx >= 0 ? args[replacementIdx + 1] : undefined,
           reason: reasonIdx >= 0 ? args[reasonIdx + 1] : undefined,
-          gracePeriodDays: gracePeriodIdx >= 0 ? parseInt(args[gracePeriodIdx + 1]) : 90,
+          gracePeriodDays:
+            gracePeriodIdx >= 0 ? parseInt(args[gracePeriodIdx + 1]) : 90,
         };
 
         await manager.deprecateDocument(docPath, options);

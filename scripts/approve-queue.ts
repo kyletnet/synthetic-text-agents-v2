@@ -7,6 +7,7 @@
 
 import { approvalQueue } from "./lib/approval-queue.js";
 import { simplifiedApproval } from "./lib/simplified-approval-system.js";
+import { detectEnvironment } from "./lib/env-detection.js";
 
 class ApprovalQueueHandler {
   /**

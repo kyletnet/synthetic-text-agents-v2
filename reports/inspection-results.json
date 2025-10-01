@@ -1,12 +1,21 @@
 {
   "schemaVersion": "2025-10-inspect-v1",
-  "autoFixable": [],
+  "autoFixable": [
+    {
+      "id": "prettier-format",
+      "severity": "low",
+      "description": "코드 포매팅 불일치",
+      "command": "npx prettier --write .",
+      "estimatedDuration": 10,
+      "impact": "코드 스타일 일관성 개선"
+    }
+  ],
   "manualApprovalNeeded": [
     {
       "id": "workarounds",
       "severity": "critical",
-      "description": "워크어라운드/TODO 마커 144개",
-      "count": 144,
+      "description": "워크어라운드/TODO 마커 146개",
+      "count": 146,
       "files": [
         "src/rag/embeddings.ts",
         "src/rag/factory.ts",
@@ -14,26 +23,26 @@
         "src/scripts/metrics/__all__.ts",
         "scripts/fix-orchestrator.ts",
         "scripts/resolve-workarounds.ts",
+        "scripts/refactor-engine.ts",
         "scripts/ai-fix-engine.ts",
         "scripts/comprehensive-doc-updater.ts",
-        "scripts/handoff-generator.ts",
-        "scripts/inspection-engine.ts"
+        "scripts/handoff-generator.ts"
       ],
       "impact": "기술 부채 감소, 코드 품질 개선",
       "suggestedAction": "우선순위가 높은 항목부터 순차적으로 해결 (grep으로 검색 가능)"
     }
   ],
   "summary": {
-    "totalIssues": 1,
-    "autoFixableCount": 0,
+    "totalIssues": 2,
+    "autoFixableCount": 1,
     "manualApprovalCount": 1,
-    "healthScore": 90,
+    "healthScore": 85,
     "typescript": "pass",
-    "codeStyle": "pass",
+    "codeStyle": "fail",
     "tests": "pass",
     "security": "pass",
     "integrationScore": 55
   },
-  "timestamp": "2025-10-01T08:30:53.069Z",
+  "timestamp": "2025-10-01T14:54:32.841Z",
   "ttl": 1800
 }

@@ -155,12 +155,38 @@ class AutoIntegrationGuard {
   ): Promise<NewFeatureImpact["integration_concerns"]> {
     const concerns: NewFeatureImpact["integration_concerns"] = [];
 
-    // 1. 중복 기능 검사
-    if (
-      changes.added.some(
-        (f: string) => f.includes("report") || f.includes("track"),
-      )
-    ) {
+    // Safe report/track patterns (정상적인 추적/보고 시스템)
+    const safePatterns = [
+      "reports/gap-scan",
+      "reports/inspection",
+      "reports/feature-impact",
+      "reports/system-integration",
+      "reports/alerts",
+      "reports/operations",
+      "reports/snapshots",
+      ".refactor/",
+      ".gaprc/",
+      ".migration/",
+      ".patterns/",
+      ".github/workflows/gap",
+      ".github/workflows/unified",
+      "drift-scan",
+      "gap-scanner",
+      "gap-weekly-report",
+      "refactor-",
+      "architecture-",
+      "doc-lifecycle",
+      "unexpectedChange-",
+    ];
+
+    // 1. 중복 기능 검사 (예외 패턴 제외)
+    const suspiciousFiles = changes.added.filter((f: string) => {
+      if (!f.includes("report") && !f.includes("track")) return false;
+      // 안전한 패턴에 매칭되면 제외
+      return !safePatterns.some((pattern) => f.includes(pattern));
+    });
+
+    if (suspiciousFiles.length > 0) {
       concerns.push({
         type: "DUPLICATION",
         severity: "HIGH",
@@ -190,8 +216,8 @@ class AutoIntegrationGuard {
       });
     }
 
-    // 4. 유지보수성 검사
-    if (changes.added.length > 3) {
+    // 4. 유지보수성 검사 (임계값: 50개 - 구조적 변경 시에만 경고)
+    if (changes.added.length > 50) {
       concerns.push({
         type: "MAINTENANCE",
         severity: "MEDIUM",

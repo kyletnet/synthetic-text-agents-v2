@@ -54,7 +54,10 @@ Archived on 2025-01-01.
 
       expect(deprecatedPath.includes("/deprecated/")).toBe(true);
       expect(archivedPath.includes("/archived/")).toBe(true);
-      expect(!activePath.includes("/deprecated/") && !activePath.includes("/archived/")).toBe(true);
+      expect(
+        !activePath.includes("/deprecated/") &&
+          !activePath.includes("/archived/"),
+      ).toBe(true);
     });
   });
 
@@ -89,8 +92,12 @@ Replaced by [Better Doc](docs/BETTER_DOC.md)
 **Deletion Date**: 2025-04-15
       `;
 
-      const deprecationMatch = content.match(/\*\*Deprecation Date\*\*:\s*(\d{4}-\d{2}-\d{2})/);
-      const deletionMatch = content.match(/\*\*Deletion Date\*\*:\s*(\d{4}-\d{2}-\d{2})/);
+      const deprecationMatch = content.match(
+        /\*\*Deprecation Date\*\*:\s*(\d{4}-\d{2}-\d{2})/,
+      );
+      const deletionMatch = content.match(
+        /\*\*Deletion Date\*\*:\s*(\d{4}-\d{2}-\d{2})/,
+      );
 
       expect(deprecationMatch).toBeDefined();
       expect(deprecationMatch![1]).toBe("2025-01-15");
@@ -114,11 +121,7 @@ Replaced by [Better Doc](docs/BETTER_DOC.md)
     it("should identify unsafe deprecation (has references)", () => {
       const metadata = {
         path: "docs/IMPORTANT_DOC.md",
-        referencedBy: [
-          "src/main.ts",
-          "docs/GUIDE.md",
-          "README.md",
-        ],
+        referencedBy: ["src/main.ts", "docs/GUIDE.md", "README.md"],
         hasReferences: true,
       };
 
@@ -203,7 +206,9 @@ For the latest version, see [Active Documentation](../../active/)
       expect(entry.replacementDoc).toBeDefined();
       expect(entry.deprecatedAt).toBeInstanceOf(Date);
       expect(entry.deleteAt).toBeInstanceOf(Date);
-      expect(entry.deleteAt.getTime()).toBeGreaterThan(entry.deprecatedAt.getTime());
+      expect(entry.deleteAt.getTime()).toBeGreaterThan(
+        entry.deprecatedAt.getTime(),
+      );
     });
 
     it("should identify expired documents", () => {
@@ -233,7 +238,9 @@ For the latest version, see [Active Documentation](../../active/)
     it("should calculate days until deletion", () => {
       const now = new Date("2025-01-01");
       const deleteAt = new Date("2025-04-01");
-      const daysUntil = Math.ceil((deleteAt.getTime() - now.getTime()) / (24 * 60 * 60 * 1000));
+      const daysUntil = Math.ceil(
+        (deleteAt.getTime() - now.getTime()) / (24 * 60 * 60 * 1000),
+      );
 
       expect(daysUntil).toBe(90);
     });
@@ -241,7 +248,9 @@ For the latest version, see [Active Documentation](../../active/)
     it("should calculate days since deprecation", () => {
       const deprecatedAt = new Date("2025-01-01");
       const now = new Date("2025-02-01");
-      const daysAgo = Math.floor((now.getTime() - deprecatedAt.getTime()) / (24 * 60 * 60 * 1000));
+      const daysAgo = Math.floor(
+        (now.getTime() - deprecatedAt.getTime()) / (24 * 60 * 60 * 1000),
+      );
 
       expect(daysAgo).toBe(31);
     });
@@ -251,11 +260,19 @@ For the latest version, see [Active Documentation](../../active/)
       const threshold = 90 * 24 * 60 * 60 * 1000; // 90 days in ms
 
       const docs = [
-        { path: "docs/FRESH.md", lastModified: new Date(now - 30 * 24 * 60 * 60 * 1000) }, // 30 days ago
-        { path: "docs/STALE.md", lastModified: new Date(now - 100 * 24 * 60 * 60 * 1000) }, // 100 days ago
+        {
+          path: "docs/FRESH.md",
+          lastModified: new Date(now - 30 * 24 * 60 * 60 * 1000),
+        }, // 30 days ago
+        {
+          path: "docs/STALE.md",
+          lastModified: new Date(now - 100 * 24 * 60 * 60 * 1000),
+        }, // 100 days ago
       ];
 
-      const stale = docs.filter((doc) => now - doc.lastModified.getTime() > threshold);
+      const stale = docs.filter(
+        (doc) => now - doc.lastModified.getTime() > threshold,
+      );
 
       expect(stale.length).toBe(1);
       expect(stale[0].path).toBe("docs/STALE.md");

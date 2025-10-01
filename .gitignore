@@ -81,6 +81,8 @@ node_modules/
 npm-debug.log*
 outputs/*.keys
 reports/history/*
+reports/snapshots/*
+!reports/snapshots/.keep
 RUN_LOGS/*
 secret.*
 secrets.*

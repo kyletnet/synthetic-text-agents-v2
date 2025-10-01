@@ -1,6 +1,6 @@
 {
-  "timestamp": "2025-10-01T00:28:34.916Z",
-  "totalDocs": 38,
+  "timestamp": "2025-10-01T15:11:03.080Z",
+  "totalDocs": 40,
   "autoUpdated": 0,
   "semiAutoUpdated": 6,
   "manualRequired": 1,
@@ -19,7 +19,7 @@
       "updateType": "SEMI_AUTO",
       "priority": "HIGH",
       "description": "Claude system configuration - needs feature updates",
-      "lastModified": "2025-09-30T09:28:00.575Z",
+      "lastModified": "2025-10-01T06:43:53.682Z",
       "needsUpdate": false,
       "autoUpdateMethod": "Generic timestamp and system info update"
     },
@@ -321,11 +321,20 @@
       "autoUpdateMethod": "Generic timestamp and system info update"
     },
     {
+      "filePath": ".claude/commands/fix.md",
+      "updateType": "AUTO",
+      "priority": "LOW",
+      "description": "Slash command documentation - auto-sync with npm scripts",
+      "lastModified": "2025-10-01T12:17:01.828Z",
+      "needsUpdate": false,
+      "autoUpdateMethod": "Auto-sync with npm scripts and system capabilities"
+    },
+    {
       "filePath": ".claude/commands/inspect.md",
       "updateType": "AUTO",
       "priority": "LOW",
       "description": "Slash command documentation - auto-sync with npm scripts",
-      "lastModified": "2025-10-01T00:22:35.906Z",
+      "lastModified": "2025-10-01T06:40:59.664Z",
       "needsUpdate": false,
       "autoUpdateMethod": "Auto-sync with npm scripts and system capabilities"
     },
@@ -334,7 +343,16 @@
       "updateType": "AUTO",
       "priority": "LOW",
       "description": "Slash command documentation - auto-sync with npm scripts",
-      "lastModified": "2025-09-30T05:46:36.820Z",
+      "lastModified": "2025-10-01T12:17:01.845Z",
+      "needsUpdate": false,
+      "autoUpdateMethod": "Auto-sync with npm scripts and system capabilities"
+    },
+    {
+      "filePath": ".claude/commands/refactor.md",
+      "updateType": "AUTO",
+      "priority": "LOW",
+      "description": "Slash command documentation - auto-sync with npm scripts",
+      "lastModified": "2025-10-01T14:55:56.710Z",
       "needsUpdate": false,
       "autoUpdateMethod": "Auto-sync with npm scripts and system capabilities"
     },
@@ -343,7 +361,7 @@
       "updateType": "AUTO",
       "priority": "LOW",
       "description": "Slash command documentation - auto-sync with npm scripts",
-      "lastModified": "2025-09-30T05:46:36.815Z",
+      "lastModified": "2025-10-01T00:35:26.000Z",
       "needsUpdate": false,
       "autoUpdateMethod": "Auto-sync with npm scripts and system capabilities"
     }

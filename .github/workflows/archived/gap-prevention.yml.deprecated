@@ -1,0 +1,222 @@
+name: GAP Prevention System
+
+on:
+  pull_request:
+    branches: [main, develop]
+  push:
+    branches: [main, develop]
+  # Allow manual trigger
+  workflow_dispatch:
+
+jobs:
+  gap-scanner:
+    name: GAP Scanner
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate .gaprc.json
+        run: |
+          echo "🔍 Validating GAP configuration..."
+          npm run gap:config -- validate
+
+      - name: Check .gaprc.json changes
+        id: gaprc-changes
+        run: |
+          if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q "^.gaprc.json$"; then
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "⚠️  .gaprc.json has been modified in this PR"
+          else
+            echo "changed=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create backup before scan
+        run: |
+          echo "💾 Creating backup..."
+          npm run gap:backup -- create "CI backup before scan (SHA: ${{ github.sha }})"
+
+      - name: Run GAP Scanner
+        id: gap-scan
+        env:
+          GAP_SCAN_MODE: shadow
+          CI: true
+        run: |
+          echo "🔍 Running GAP Scanner..."
+          npm run gap:scan || true
+
+          # Extract results
+          P0=$(cat reports/gap-scan-results.json | jq -r '.summary.P0')
+          P1=$(cat reports/gap-scan-results.json | jq -r '.summary.P1')
+          P2=$(cat reports/gap-scan-results.json | jq -r '.summary.P2')
+          TOTAL=$(cat reports/gap-scan-results.json | jq -r '.summary.total')
+
+          echo "p0=$P0" >> $GITHUB_OUTPUT
+          echo "p1=$P1" >> $GITHUB_OUTPUT
+          echo "p2=$P2" >> $GITHUB_OUTPUT
+          echo "total=$TOTAL" >> $GITHUB_OUTPUT
+
+      - name: Post PR Comment
+        if: github.event_name == 'pull_request'
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "💬 Posting GAP scan results to PR..."
+          npm run gap:pr-bot -- post || echo "⚠️  PR bot requires gh CLI"
+
+      - name: Check for P0 Critical Gaps
+        if: steps.gap-scan.outputs.p0 != '0'
+        run: |
+          echo "❌ P0 Critical gaps detected: ${{ steps.gap-scan.outputs.p0 }}"
+          echo "This is currently in shadow mode and won't fail the build"
+          echo "In Week 4, this will block the PR"
+          exit 0  # Shadow mode - don't fail yet
+
+      - name: Alert on .gaprc.json changes
+        if: steps.gaprc-changes.outputs.changed == 'true'
+        run: |
+          echo "⚠️  .gaprc.json CHANGED in this PR"
+          echo "This affects the entire GAP Prevention System"
+          echo "Please ensure this change is reviewed by a system admin"
+          echo ""
+          echo "Changes to .gaprc.json require:"
+          echo "  1. Backup validation"
+          echo "  2. Team notification"
+          echo "  3. Rollback plan"
+
+      - name: Upload GAP Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: gap-scan-report
+          path: reports/gap-scan-results.json
+          retention-days: 30
+
+      - name: Generate Metrics
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          echo "📊 Generating metrics..."
+          npm run gap:scan:metrics -- --report=daily --export=json
+
+      - name: Upload Metrics
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/upload-artifact@v4
+        with:
+          name: gap-metrics
+          path: reports/metrics/
+          retention-days: 90
+
+  dependency-check:
+    name: Dependency Version Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check for unpinned dependencies
+        run: |
+          echo "🔍 Checking for unpinned critical dependencies..."
+
+          # Check if ESLint, TypeScript, Prettier are pinned
+          ISSUES=0
+
+          if ! grep -q '"eslint": "[0-9]' package.json; then
+            echo "⚠️  ESLint version should be pinned"
+            ISSUES=$((ISSUES + 1))
+          fi
+
+          if ! grep -q '"typescript": "[0-9]' package.json; then
+            echo "⚠️  TypeScript version should be pinned"
+            ISSUES=$((ISSUES + 1))
+          fi
+
+          if ! grep -q '"prettier": "[0-9]' package.json; then
+            echo "⚠️  Prettier version should be pinned (if used)"
+          fi
+
+          if [ $ISSUES -gt 0 ]; then
+            echo ""
+            echo "❌ Found $ISSUES unpinned critical dependencies"
+            echo "This can cause GAP Scanner to behave inconsistently"
+            echo "Please pin versions in package.json"
+            exit 1
+          else
+            echo "✅ All critical dependencies are pinned"
+          fi
+
+  gaprc-protection:
+    name: .gaprc.json Protection Check
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check .gaprc.json modifications
+        id: check-gaprc
+        run: |
+          if git diff --name-only origin/${{ github.base_ref }}...${{ github.sha }} | grep -q "^.gaprc.json$"; then
+            echo "modified=true" >> $GITHUB_OUTPUT
+
+            # Check who modified it
+            AUTHOR=$(git log -1 --format='%an' -- .gaprc.json)
+            echo "author=$AUTHOR" >> $GITHUB_OUTPUT
+
+            # Get the diff
+            git diff origin/${{ github.base_ref }}...${{ github.sha }} -- .gaprc.json > /tmp/gaprc-diff.txt
+
+            echo "📋 .gaprc.json Changes:"
+            cat /tmp/gaprc-diff.txt
+          else
+            echo "modified=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Require review for .gaprc.json changes
+        if: steps.check-gaprc.outputs.modified == 'true'
+        run: |
+          echo "⚠️  .gaprc.json has been modified by ${{ steps.check-gaprc.outputs.author }}"
+          echo ""
+          echo "This PR modifies the GAP Prevention System configuration."
+          echo "Required actions:"
+          echo "  ✅ Review by GAP system admin required"
+          echo "  ✅ Backup created and verified"
+          echo "  ✅ Rollback plan documented"
+          echo "  ✅ Team notification sent"
+          echo ""
+          echo "GitHub Protection Rule should enforce admin review."
+
+  override-detection:
+    name: GAP Override Detection
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check for GAP_SCAN_MODE overrides in code
+        run: |
+          echo "🔍 Checking for GAP_SCAN_MODE=disabled in codebase..."
+
+          if grep -r "GAP_SCAN_MODE=disabled" --include="*.sh" --include="*.yml" --include="*.yaml" .; then
+            echo ""
+            echo "⚠️  Found GAP_SCAN_MODE=disabled override"
+            echo "This bypasses the GAP Prevention System"
+            echo "Please document the reason in the commit message"
+            exit 1
+          else
+            echo "✅ No suspicious GAP_SCAN_MODE overrides found"
+          fi

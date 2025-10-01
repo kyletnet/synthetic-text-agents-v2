@@ -8,6 +8,7 @@
 
 import readline from "readline";
 import chalk from "chalk";
+import { detectEnvironment } from "./lib/env-detection.js";
 
 interface MaintenanceAction {
   id: string;
@@ -106,6 +107,19 @@ class InteractiveMaintenanceHandler {
   }
 
   async handleMaintenanceActions(actions: MaintenanceAction[]): Promise<void> {
+    // Check environment before interactive operations
+    const env = detectEnvironment();
+    if (!env.isInteractive) {
+      console.log(
+        "\n⚠️  비대화형 환경 감지 - 대화형 유지보수를 사용할 수 없습니다.",
+      );
+      console.log(
+        "💡 터미널에서 직접 실행하거나 npm run maintain을 사용하세요.",
+      );
+      this.rl.close();
+      return;
+    }
+
     console.log("\n🔧 **스마트 유지보수 시작**");
     console.log("=".repeat(50));
 

@@ -1,0 +1,364 @@
+#!/usr/bin/env node
+
+/**
+ * GAP PR Bot
+ *
+ * Automatically comments on PRs with GAP scan results:
+ * - Posts scan summary
+ * - Lists detected gaps
+ * - Provides fix suggestions
+ * - Tracks gap resolution
+ */
+
+import { readFile } from "fs/promises";
+import { existsSync } from "fs";
+import { execSync } from "child_process";
+
+// ============================================================================
+// Types
+// ============================================================================
+
+interface GapScanReport {
+  timestamp: Date;
+  mode: string;
+  totalChecks: number;
+  enabledChecks: number;
+  gaps: Array<{
+    id: string;
+    checkId: string;
+    severity: "P0" | "P1" | "P2";
+    category: string;
+    title: string;
+    description: string;
+    autoFixable: boolean;
+    details?: Record<string, unknown>;
+  }>;
+  summary: {
+    P0: number;
+    P1: number;
+    P2: number;
+    total: number;
+  };
+  executionTime: number;
+}
+
+// ============================================================================
+// PR Bot
+// ============================================================================
+
+class GapPRBot {
+  private reportPath = "reports/gap-scan-results.json";
+
+  /**
+   * Post comment to PR
+   */
+  async postComment(): Promise<void> {
+    // Load scan results
+    if (!existsSync(this.reportPath)) {
+      console.log("ℹ️  No scan results found, skipping PR comment");
+      return;
+    }
+
+    const content = await readFile(this.reportPath, "utf-8");
+    const report = JSON.parse(content) as GapScanReport;
+
+    // Generate comment
+    const comment = this.generateComment(report);
+
+    // Post using gh CLI
+    await this.postToGitHub(comment);
+  }
+
+  /**
+   * Generate markdown comment
+   */
+  private generateComment(report: GapScanReport): string {
+    const { summary, gaps } = report;
+
+    let comment = "## 🔍 GAP Scanner Results\n\n";
+
+    // Summary
+    comment += "### 📊 Summary\n\n";
+    comment += `- **Mode**: \`${report.mode}\`\n`;
+    comment += `- **Checks Run**: ${report.enabledChecks}/${report.totalChecks}\n`;
+    comment += `- **Execution Time**: ${report.executionTime}ms\n\n`;
+
+    // Gap counts
+    comment += "### 📈 Gap Detection\n\n";
+    comment += "| Severity | Count | Status |\n";
+    comment += "|----------|-------|--------|\n";
+    comment += `| 🔴 P0 Critical | ${summary.P0} | ${summary.P0 > 0 ? "⚠️ Action Required" : "✅ Pass"} |\n`;
+    comment += `| 🟡 P1 High | ${summary.P1} | ${summary.P1 > 0 ? "⚠️ Review Needed" : "✅ Pass"} |\n`;
+    comment += `| 🟢 P2 Medium | ${summary.P2} | ${summary.P2 > 0 ? "ℹ️ Minor Issues" : "✅ Pass"} |\n`;
+    comment += `| **Total** | **${summary.total}** | ${summary.total > 0 ? "📝 See Details" : "🎉 All Clear"} |\n\n`;
+
+    // Detailed gaps
+    if (gaps.length > 0) {
+      comment += "### 🔎 Detected Gaps\n\n";
+
+      // Group by severity
+      const p0Gaps = gaps.filter((g) => g.severity === "P0");
+      const p1Gaps = gaps.filter((g) => g.severity === "P1");
+      const p2Gaps = gaps.filter((g) => g.severity === "P2");
+
+      if (p0Gaps.length > 0) {
+        comment += "#### 🔴 P0 Critical (Must Fix)\n\n";
+        for (const gap of p0Gaps) {
+          comment += this.formatGap(gap);
+        }
+      }
+
+      if (p1Gaps.length > 0) {
+        comment += "#### 🟡 P1 High (Should Fix)\n\n";
+        for (const gap of p1Gaps) {
+          comment += this.formatGap(gap);
+        }
+      }
+
+      if (p2Gaps.length > 0) {
+        comment += "#### 🟢 P2 Medium (Nice to Fix)\n\n";
+        for (const gap of p2Gaps) {
+          comment += this.formatGap(gap);
+        }
+      }
+    } else {
+      comment += "### ✅ No Gaps Detected\n\n";
+      comment += "All checks passed! 🎉\n\n";
+    }
+
+    // Action items
+    if (summary.total > 0) {
+      comment += "### 📋 Action Items\n\n";
+
+      if (summary.P0 > 0) {
+        comment += "- ⚠️ **P0 Critical**: Must be fixed before merge\n";
+      }
+      if (summary.P1 > 0) {
+        comment += "- 📝 **P1 High**: Strongly recommended to fix\n";
+      }
+      if (summary.P2 > 0) {
+        comment += "- ℹ️ **P2 Medium**: Consider fixing for better quality\n";
+      }
+
+      const autoFixable = gaps.filter((g) => g.autoFixable).length;
+      if (autoFixable > 0) {
+        comment += `\n💡 **${autoFixable} gap(s) can be auto-fixed**: Run \`npm run gap:scan -- --auto-fix\`\n`;
+      }
+
+      comment += "\n";
+    }
+
+    // Commands
+    comment += "### 🛠️ Commands\n\n";
+    comment += "```bash\n";
+    comment += "# Run GAP scanner locally\n";
+    comment += "npm run gap:scan\n\n";
+    comment += "# Auto-fix eligible gaps\n";
+    comment += "npm run gap:scan -- --auto-fix\n\n";
+    comment += "# View detailed report\n";
+    comment += "cat reports/gap-scan-results.json\n";
+    comment += "```\n\n";
+
+    // Footer
+    comment += "---\n";
+    comment += `_Generated by GAP Scanner at ${new Date(report.timestamp).toISOString()}_\n`;
+
+    return comment;
+  }
+
+  private formatGap(gap: GapScanReport["gaps"][0]): string {
+    let text = `**${gap.checkId}**: ${gap.title}\n`;
+    text += `- ${gap.description}\n`;
+    text += `- Category: \`${gap.category}\`\n`;
+    text += `- Auto-fixable: ${gap.autoFixable ? "✅ Yes" : "❌ No"}\n`;
+
+    if (gap.details) {
+      const details = Object.entries(gap.details)
+        .map(([key, value]) => `  - ${key}: ${JSON.stringify(value)}`)
+        .join("\n");
+      if (details) {
+        text += `- Details:\n${details}\n`;
+      }
+    }
+
+    text += "\n";
+    return text;
+  }
+
+  /**
+   * Post comment to GitHub using gh CLI
+   */
+  private async postToGitHub(comment: string): Promise<void> {
+    // Check if gh CLI is available
+    try {
+      execSync("which gh", { stdio: "ignore" });
+    } catch {
+      console.log("⚠️  GitHub CLI (gh) not found. Comment not posted.");
+      console.log("\nInstall: https://cli.github.com/");
+      console.log("\nGenerated comment:\n");
+      console.log(comment);
+      return;
+    }
+
+    // Check if in a PR context (CI environment)
+    const prNumber = process.env.PR_NUMBER || process.env.GITHUB_PR_NUMBER;
+
+    if (!prNumber) {
+      console.log("ℹ️  Not in PR context. Comment not posted.");
+      console.log("\nSet PR_NUMBER or GITHUB_PR_NUMBER environment variable.");
+      console.log("\nGenerated comment:\n");
+      console.log(comment);
+      return;
+    }
+
+    // Save comment to temp file
+    const tempFile = "/tmp/gap-pr-comment.md";
+    const { writeFileSync } = await import("fs");
+    writeFileSync(tempFile, comment);
+
+    try {
+      // Post comment
+      execSync(`gh pr comment ${prNumber} --body-file ${tempFile}`, {
+        stdio: "inherit",
+      });
+
+      console.log(`✅ Posted GAP scan results to PR #${prNumber}`);
+    } catch (error) {
+      console.error("❌ Failed to post PR comment:");
+      console.error(error instanceof Error ? error.message : "Unknown error");
+      console.log("\nGenerated comment:\n");
+      console.log(comment);
+    }
+  }
+
+  /**
+   * Update existing comment
+   */
+  async updateComment(): Promise<void> {
+    console.log("ℹ️  Update comment feature not yet implemented");
+    console.log("   Will create a new comment instead");
+    await this.postComment();
+  }
+
+  /**
+   * Clear all GAP bot comments
+   */
+  async clearComments(): Promise<void> {
+    const prNumber = process.env.PR_NUMBER || process.env.GITHUB_PR_NUMBER;
+
+    if (!prNumber) {
+      console.log("ℹ️  Not in PR context. Cannot clear comments.");
+      return;
+    }
+
+    try {
+      // List comments
+      const output = execSync(
+        `gh pr view ${prNumber} --json comments --jq '.comments[].id'`,
+        {
+          encoding: "utf-8",
+        },
+      );
+
+      const commentIds = output.trim().split("\n").filter(Boolean);
+
+      // Delete GAP bot comments (would need to identify them by content)
+      console.log(
+        `ℹ️  Found ${commentIds.length} comment(s) on PR #${prNumber}`,
+      );
+      console.log(
+        "   Manual deletion required (search for 'GAP Scanner Results')",
+      );
+    } catch (error) {
+      console.error("❌ Failed to list PR comments");
+    }
+  }
+}
+
+// ============================================================================
+// CLI
+// ============================================================================
+
+async function main() {
+  const args = process.argv.slice(2);
+  const bot = new GapPRBot();
+
+  const command = args[0];
+
+  try {
+    switch (command) {
+      case "post":
+      case "--post": {
+        await bot.postComment();
+        break;
+      }
+
+      case "update":
+      case "--update": {
+        await bot.updateComment();
+        break;
+      }
+
+      case "clear":
+      case "--clear": {
+        await bot.clearComments();
+        break;
+      }
+
+      default: {
+        console.log(`
+GAP PR Bot
+
+Usage:
+  npm run gap:pr-bot -- post      # Post scan results to PR
+  npm run gap:pr-bot -- update    # Update existing comment
+  npm run gap:pr-bot -- clear     # Clear all GAP comments
+
+Environment Variables:
+  PR_NUMBER          Pull request number (required)
+  GITHUB_PR_NUMBER   Alternative PR number variable
+
+Requirements:
+  - GitHub CLI (gh) installed: https://cli.github.com/
+  - Authenticated: gh auth login
+  - PR_NUMBER environment variable set
+
+CI/CD Integration:
+  # .github/workflows/gap-scan.yml
+  - name: Run GAP Scanner
+    run: npm run gap:scan
+
+  - name: Post PR Comment
+    env:
+      PR_NUMBER: \${{ github.event.pull_request.number }}
+    run: npm run gap:pr-bot -- post
+
+Examples:
+  # Post results to PR #123
+  PR_NUMBER=123 npm run gap:pr-bot -- post
+
+  # Update existing comment
+  PR_NUMBER=123 npm run gap:pr-bot -- update
+
+  # Clear all GAP comments
+  PR_NUMBER=123 npm run gap:pr-bot -- clear
+
+Note: If gh CLI is not available, the comment will be printed to console.
+        `);
+      }
+    }
+  } catch (error) {
+    console.error(
+      "\n❌ Error:",
+      error instanceof Error ? error.message : "Unknown error",
+    );
+    process.exit(1);
+  }
+}
+
+// Run if executed directly
+if (import.meta.url === `file://${process.argv[1]}`) {
+  main().catch(console.error);
+}
+
+export { GapPRBot };

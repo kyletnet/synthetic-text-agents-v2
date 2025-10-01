@@ -1,0 +1,33 @@
+# GAP Prevention System Code Owners
+#
+# This file defines who must review changes to critical GAP system files.
+# Changes to these files affect the entire development workflow and quality gates.
+#
+# Learn more: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# GAP System Configuration (requires admin review)
+/.gaprc.json @gap-admin
+/.gapignore @gap-admin
+/schema/gaprc.schema.json @gap-admin
+
+# GAP Core Scripts (requires system maintainer review)
+/scripts/gap-*.ts @gap-maintainers
+/scripts/lib/backup-lifecycle-manager.ts @gap-maintainers
+/scripts/init-gap-system.ts @gap-maintainers
+
+# CI/CD Workflows (requires DevOps review)
+/.github/workflows/gap-prevention.yml @devops-team
+
+# Pre-commit Hooks (requires security review)
+/.git/hooks/pre-commit @security-team @gap-admin
+
+# Documentation (requires documentation team review)
+/docs/GAP_SCANNER_GUIDE.md @docs-team
+/.github/ONBOARDING_PR_TEMPLATE.md @docs-team
+
+# Package Dependencies (requires security review for GAP-critical deps)
+# Only ESLint, TypeScript, Prettier versions require approval
+/package.json @security-team @gap-admin
+
+# Fallback: All other files can be reviewed by any team member
+* @team-members

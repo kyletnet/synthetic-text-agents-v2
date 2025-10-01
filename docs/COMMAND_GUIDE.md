@@ -1,17 +1,21 @@
 # 명령어 가이드
 
-## 🎯 4단계 워크플로우 (반드시 순서 준수!)
+## 🎯 5단계 워크플로우 (반드시 순서 준수!)
 
 **⚠️ 중요**: 반드시 이 순서를 지켜야 합니다. 순서를 건너뛰면 오류가 발생합니다.
 
 ```bash
 1. /inspect    # 정밀 진단 (Single Source of Truth 생성)
-2. /maintain   # 자동 수정 (캐시 기반)
-3. /fix        # 대화형 수정 (캐시 기반)
-4. /ship       # 배포 준비 + 실제 배포
+2. /maintain   # 자동 수정 (캐시 기반, 스타일)
+3. /fix        # 대화형 수정 (캐시 기반, 오류)
+4. /refactor   # 구조 개선 (캐시 기반, 아키텍처) - 선택적
+5. /ship       # 배포 준비 + 실제 배포
 ```
 
-**핵심 원칙**: `/inspect`가 모든 진단을 수행하고, `/maintain`과 `/fix`는 그 결과를 사용합니다.
+**핵심 원칙**:
+
+- `/inspect`가 모든 진단을 수행하고, 나머지 명령어는 그 결과를 사용합니다.
+- `/refactor`는 **선택적 단계**입니다. 구조 개선이 필요할 때만 실행하세요.
 
 ---
 
@@ -108,11 +112,80 @@ npm run fix
 - `a`: Abort (전체 중단)
 - `i`: Info (자세한 정보)
 
-**사용 시점**: `/maintain` 직후 (5분 이내)
+**사용 시점**: `/maintain` 직후 (30분 이내)
 
 ---
 
-## 4️⃣ `/ship` - 배포 준비 + 실제 배포
+## 4️⃣ `/refactor` - 구조 개선 (선택적)
+
+### 🔍 Step 4a: Preview (권장)
+
+```bash
+/refactor-preview    # 미리보기 (변경 없음)
+```
+
+**목적**: 리팩토링 영향도 분석 (READ-ONLY)
+
+- 📋 변경 예정 항목 목록 표시
+- 🎯 위험도 평가 (Low/Medium/High)
+- 📊 영향받는 파일 수 표시
+- ⚠️ **변경 없음 - 안전한 미리보기**
+
+### 🔧 Step 4b: Apply
+
+```bash
+bash scripts/slash-commands.sh refactor
+# OR
+npm run refactor
+```
+
+**목적**: 구조적 개선 (파일 간 아키텍처 문제 해결)
+
+**전제조건**:
+
+- ⚠️ **반드시 `/inspect` 먼저 실행** (30분 이내)
+- ❌ 진단 안 함 - 캐시만 읽음
+
+**처리 항목** (캐시에서 읽음):
+
+- 🔧 중복 export 제거
+- 🔧 Config 파일 정규화 (tsconfig drift 등)
+- 🔧 모듈 경계 위반 수정
+- 🔧 사용하지 않는 import 대량 제거
+
+**MECE 구분**:
+
+| 명령어      | 범위           | 예시                       |
+| ----------- | -------------- | -------------------------- |
+| `/maintain` | 코드 스타일    | Prettier, ESLint --fix     |
+| `/fix`      | 단일 파일 오류 | TypeScript 오류, TODO 마커 |
+| `/refactor` | 파일 간 구조   | 중복 export, config drift  |
+
+**안전성**:
+
+- ⚠️ **모든 변경은 수동 승인 필요** (autoFix=false 기본값)
+- 📸 Governance 통합 (스냅샷, 롤백 지원)
+- 🔍 `/refactor-preview`로 미리 확인 권장
+
+**권장 순서**:
+
+```bash
+1. /refactor-preview   # 먼저 미리보기
+2. /refactor           # 확인 후 적용 (승인 필요)
+3. npm run test        # 테스트 실행
+4. /inspect            # 재진단으로 검증
+```
+
+**사용 시점**: 구조 개선이 필요할 때 (선택적)
+
+**⚠️ 중요**:
+
+- 이 단계는 **선택적**입니다. 리팩토링 항목이 없으면 건너뛰어도 됩니다.
+- **반드시 `/refactor-preview`로 먼저 확인**하세요!
+
+---
+
+## 5️⃣ `/ship` - 배포 준비 + 실제 배포
 
 ```bash
 bash scripts/slash-commands.sh ship
@@ -149,7 +222,23 @@ bash scripts/slash-commands.sh ship
 
 ## 🚀 완전한 워크플로우
 
-### 일상 개발 (3단계)
+### 일상 개발 (간단한 수정)
+
+```bash
+# 1. 정밀 진단
+/inspect
+
+# 2. 자동 수정 (스타일)
+/maintain
+
+# 3. 대화형 수정 (오류)
+/fix
+
+# 4. 배포 (구조 개선 건너뛰기)
+/ship
+```
+
+### 구조 개선 포함 (완전한 5단계)
 
 ```bash
 # 1. 정밀 진단
@@ -161,24 +250,31 @@ bash scripts/slash-commands.sh ship
 # 3. 대화형 수정 (승인 필요 항목)
 /fix
 
-# 4. 커밋
-git add -A
-git commit -m "fix: 품질 개선"
-```
+# 4a. 구조 개선 미리보기 (권장)
+/refactor-preview
 
-### 배포 직전 (4단계)
+# 4b. 구조 개선 적용
+/refactor
 
-```bash
-# 1-3. 일상 개발 워크플로우
-/inspect
-/maintain
-/fix
-
-# 4. 배포 준비 + 배포
+# 5. 배포 준비 + 배포
 /ship
 
 # 완료!
 # Changes pushed to remote repository
+```
+
+### 배포 전 체크리스트
+
+```
+□ /inspect 실행 완료 (건강도 85+ 확인)
+□ /maintain 실행 완료 (스타일 자동 수정)
+□ /fix 실행 완료 (TypeScript/Workaround 수정)
+□ /refactor-preview 실행 (구조 개선 미리보기, 선택적)
+□ /refactor 실행 완료 (구조 개선 적용, 선택적)
+□ 테스트 통과 확인 (npm run test)
+□ TypeScript 오류 0개 확인 (npm run typecheck)
+□ 재진단 확인 (/inspect 다시 실행)
+□ /ship 실행 준비 완료
 ```
 
 ### CI/CD (자동)
@@ -245,10 +341,14 @@ npm run gap:scan:quick        # Quick scan (fast checks only)
 npm run gap:scan:metrics      # GAP metrics and trends
 npm run gap:config            # Manage GAP configuration
 npm run gap:pr-bot            # GAP PR validation bot
+npm run gap:backup            # Backup lifecycle manager
+npm run gap:dashboard         # Visual dashboard (one-time)
+npm run gap:watch             # Live dashboard (auto-refresh)
+npm run init:gap-system       # Initialize GAP system (one-time setup)
 ```
 
 **Purpose**: Prevent quality gaps before they become issues
-**Checks**: CLI docs, governance sync, PII masking, test coverage, doc cross-refs, agent chain tests
+**Checks**: 9 comprehensive checks including CLI docs, governance sync, PII masking, test coverage, doc lifecycle, and more
 
 ### Document Lifecycle Management
 
@@ -443,16 +543,19 @@ system component:testcomponent     # Test component system
 ## 📖 Related Documentation
 
 **Quality & Prevention:**
+
 - See: [@file docs/GAP_SCANNER_GUIDE.md](GAP_SCANNER_GUIDE.md) - GAP Scanner user guide
 - See: [@file docs/DEVELOPMENT_STANDARDS.md](DEVELOPMENT_STANDARDS.md) - Development standards
 - See: [@file docs/TYPESCRIPT_GUIDELINES.md](TYPESCRIPT_GUIDELINES.md) - TypeScript guidelines
 
 **Workflow & Planning:**
+
 - See: [@file docs/ROLLOUT_PLAN.md](ROLLOUT_PLAN.md) - Rollout and rollback strategy
 - See: [@file docs/TEST_PLAN.md](TEST_PLAN.md) - Testing strategy
 - See: [@file docs/PLAN_super.md](PLAN_super.md) - UX 4-step release plan
 
 **System & Architecture:**
+
 - See: [@file CLAUDE.md](../CLAUDE.md) - System philosophy and architecture
 - See: [@file docs/SYSTEM_ARCHITECTURE_MAP.md](SYSTEM_ARCHITECTURE_MAP.md) - Architecture map
 

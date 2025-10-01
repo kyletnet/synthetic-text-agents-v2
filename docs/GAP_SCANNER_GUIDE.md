@@ -11,6 +11,7 @@
 GAP Scanner는 시스템 일관성을 자동으로 검증하는 프로액티브 품질 보증 도구입니다.
 
 **핵심 가치:**
+
 - 🛡️ **예방 우선**: 문제 발생 전 자동 차단
 - 📚 **진실성 보장**: 코드-문서-거버넌스 일관성
 - 🔄 **지속 가능**: 자동화된 생명주기 관리
@@ -61,15 +62,18 @@ GAP Scanner는 8개 카테고리를 검사합니다:
 ### 1. CLI Documentation Coverage (P1)
 
 **검사 내용:**
+
 - `package.json`의 모든 스크립트가 문서화되어 있는지
 
 **예시 gap:**
+
 ```
 Undocumented CLI command: gap:scan
 'gap:scan' exists in package.json but not documented in docs/COMMAND_GUIDE.md
 ```
 
 **수정 방법:**
+
 ```bash
 # docs/COMMAND_GUIDE.md에 추가
 - `npm run gap:scan`: Run GAP scanner
@@ -80,16 +84,19 @@ Undocumented CLI command: gap:scan
 ### 2. Governance-Code Consistency (P0)
 
 **검사 내용:**
+
 - `governance-rules.json`과 실제 코드의 일치 여부
 - 특히 CACHE_TTL 같은 정책 값 동기화
 
 **예시 gap:**
+
 ```
 Governance rule mismatch: CACHE_TTL
 Code: 1800s, Governance: 300s
 ```
 
 **수정 방법:**
+
 ```bash
 # Auto-fix 가능
 npm run gap:scan -- --auto-fix
@@ -100,16 +107,19 @@ npm run gap:scan -- --auto-fix
 ### 3. PII Masking Implementation (P0)
 
 **검사 내용:**
+
 - Logger에 PII 마스킹 함수 구현 여부
 - `maskPII`, `redactPII`, `sanitizePII` 함수 존재
 
 **예시 gap:**
+
 ```
 PII masking not implemented in logger.ts
 Missing functions: maskPII, sanitizePII
 ```
 
 **수정 방법:**
+
 ```typescript
 // src/shared/logger.ts
 private maskPII(data: unknown): unknown {
@@ -122,15 +132,18 @@ private maskPII(data: unknown): unknown {
 ### 4. Test Coverage (P1)
 
 **검사 내용:**
+
 - 새로 추가된 파일에 대한 테스트 존재 여부
 
 **예시 gap:**
+
 ```
 Missing test: gap-scanner.ts
 New file scripts/gap-scanner.ts has no corresponding test
 ```
 
 **수정 방법:**
+
 ```bash
 # tests/gap-scanner.test.ts 생성
 ```
@@ -140,17 +153,21 @@ New file scripts/gap-scanner.ts has no corresponding test
 ### 5. Document Cross-References (P2)
 
 **검사 내용:**
+
 - 문서 간 상호참조 링크 충분성
 
 **예시 gap:**
+
 ```
 Insufficient document cross-references
 Only 5 cross-references found (minimum: 10)
 ```
 
 **수정 방법:**
+
 ```markdown
 <!-- 문서에 추가 -->
+
 See: @file docs/OTHER_DOC.md
 ```
 
@@ -159,15 +176,18 @@ See: @file docs/OTHER_DOC.md
 ### 6. Agent Chain E2E Tests (P1)
 
 **검사 내용:**
+
 - Agent chain (Evidence → Answer → Audit) E2E 테스트 존재
 
 **예시 gap:**
+
 ```
 Agent chain E2E test missing
 No test covers: Evidence → Answer → Audit
 ```
 
 **수정 방법:**
+
 ```typescript
 // tests/integration/agent-chain.test.ts
 it("should process full agent chain", async () => {
@@ -180,16 +200,19 @@ it("should process full agent chain", async () => {
 ### 7. Document Lifecycle (P2)
 
 **검사 내용:**
+
 - Deprecated 문서 관리
 - 참조 추적
 
 **예시 gap:**
+
 ```
 Deprecated doc still referenced: OLD_DOC.md
 3 files still reference this deprecated document
 ```
 
 **수정 방법:**
+
 ```bash
 # 참조 업데이트 후
 npm run doc:lifecycle -- --deprecate docs/OLD_DOC.md
@@ -200,9 +223,11 @@ npm run doc:lifecycle -- --deprecate docs/OLD_DOC.md
 ### 8. Deprecated Reference Enforcement (P1)
 
 **검사 내용:**
+
 - Grace period 경과 후 deprecated 문서 참조
 
 **예시 gap:**
+
 ```
 Deprecated doc referenced (grace period expired)
 Must update before commit
@@ -217,11 +242,11 @@ Must update before commit
 ```json
 {
   "globalSettings": {
-    "mode": "shadow",           // disabled | shadow | enforce
-    "failOn": [],               // ["P0"] or ["P0", "P1"]
+    "mode": "shadow", // disabled | shadow | enforce
+    "failOn": [], // ["P0"] or ["P0", "P1"]
     "autoFix": {
       "enabled": false,
-      "maxSeverity": "P2"       // P2만 자동 수정
+      "maxSeverity": "P2" // P2만 자동 수정
     }
   },
 
@@ -269,11 +294,13 @@ GAP_SCAN_MODE=shadow npm run gap:scan
 ```
 
 **특징:**
+
 - Gap 발견해도 실패하지 않음
 - 보고서만 생성
 - 안전하게 테스트 가능
 
 **사용 시기:**
+
 - Week 1 관찰 기간
 - 새 체크 추가 후
 - 팀 적응 기간
@@ -287,11 +314,13 @@ GAP_SCAN_MODE=enforce npm run gap:scan
 ```
 
 **특징:**
+
 - P0/P1 gap 발견 시 실패
 - Pre-commit hook에서 사용
 - CI/CD에서 사용
 
 **사용 시기:**
+
 - Week 4 이후
 - 전체 팀 적용 후
 
@@ -306,6 +335,7 @@ cat reports/gap-scan-results.json
 ```
 
 **구조:**
+
 ```json
 {
   "timestamp": "2025-10-01T10:44:28.739Z",
@@ -450,6 +480,7 @@ npm run ship  # gap:scan 자동 실행
 ### Pre-commit Hook
 
 **자동 설치:**
+
 ```bash
 # 1. Install git hooks (includes GAP Scanner)
 bash scripts/install-git-hooks.sh
@@ -459,6 +490,7 @@ bash scripts/install-git-hooks.sh
 ```
 
 **수동 설치:**
+
 ```bash
 # Copy template to .git/hooks/
 cp scripts/git-hooks/pre-commit .git/hooks/pre-commit
@@ -466,6 +498,7 @@ chmod +x .git/hooks/pre-commit
 ```
 
 **Hook 동작:**
+
 - ✅ Design validation
 - ✅ TypeScript compilation
 - ⚠️ ESLint (warnings non-blocking)
@@ -473,11 +506,13 @@ chmod +x .git/hooks/pre-commit
 - ⚠️ **GAP Scanner (shadow mode - Week 1, non-blocking)**
 
 **Shadow mode 설명:**
+
 - P0/P1 갭이 발견되어도 커밋이 차단되지 않음
 - 경고만 표시하여 개발자에게 알림
 - Week 4 이후 enforce mode로 전환 예정
 
 **Hook bypass:**
+
 ```bash
 # 긴급 커밋 시 hook 건너뛰기
 git commit --no-verify -m "emergency fix"
@@ -498,17 +533,20 @@ git commit --no-verify -m "emergency fix"
 ## 📖 Related Documentation
 
 **Core Guides:**
+
 - See: [@file docs/COMMAND_GUIDE.md](COMMAND_GUIDE.md) - Complete command reference
 - See: [@file CLAUDE.md](../CLAUDE.md) - System philosophy and architecture
 - See: [@file docs/DEVELOPMENT_STANDARDS.md](DEVELOPMENT_STANDARDS.md) - Development standards
 - See: [@file docs/TYPESCRIPT_GUIDELINES.md](TYPESCRIPT_GUIDELINES.md) - TypeScript guidelines
 
 **Workflow:**
+
 - See: [@file docs/COMMAND_WORKFLOW_GUIDE.md](COMMAND_WORKFLOW_GUIDE.md) - 4-step workflow guide
 - See: [@file docs/ROLLOUT_PLAN.md](ROLLOUT_PLAN.md) - Rollout and rollback strategy
 - See: [@file docs/TEST_PLAN.md](TEST_PLAN.md) - Testing strategy
 
 **Configuration:**
+
 - See: [@file .gaprc.json](../.gaprc.json) - GAP Scanner configuration
 - See: [@file .gapignore](../.gapignore) - GAP ignore patterns
 - See: [@file governance-rules.json](../governance-rules.json) - Governance rules
@@ -538,11 +576,13 @@ npm run ship      # 배포
 ## 📞 Support
 
 **Documentation:**
+
 - `docs/COMMAND_WORKFLOW_GUIDE.md` - 전체 워크플로우
 - `docs/COMMAND_GUIDE.md` - 명령어 레퍼런스
 - `.gaprc.json` - 설정 파일
 
 **Issues:**
+
 - GitHub Issues: [Report a bug](https://github.com/your-repo/issues)
 - Slack: #gap-scanner
 
@@ -551,6 +591,7 @@ npm run ship      # 배포
 ## 📝 Changelog
 
 **v1.0.0 (2025-10-01)**
+
 - Initial release
 - 8 core checks implemented
 - Shadow/Enforce mode support

@@ -6,21 +6,7 @@
  * Use npm run ship instead.
  */
 
-// Governance: Block direct execution
-if (require.main === module) {
-  throw new Error(`
-❌ DEPRECATED: comprehensive-doc-updater.ts는 더 이상 직접 실행할 수 없습니다.
-
-✅ 올바른 사용법:
-   npm run ship      # 배포 준비 (문서 동기화 포함)
-   npm run docs:refresh  # 문서만 업데이트
-
-📚 자세한 내용: docs/MIGRATION_V2.md
-📋 Ship 워크플로우: docs/COMMAND_GUIDE.md
-
-이 파일은 테스트 호환성을 위해 import는 계속 허용됩니다.
-  `);
-}
+// Note: This script is used by npm run docs:refresh (part of ship pipeline)
 
 import { promises as fs } from "fs";
 import { join, dirname } from "path";

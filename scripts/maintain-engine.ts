@@ -44,13 +44,14 @@ class MaintainEngine {
   async run(): Promise<void> {
     console.log("🔧 Maintain Engine - Auto-fix + Self-Validation");
     console.log("═".repeat(60));
+    console.log("⏳ Starting maintenance workflow...\n");
 
     try {
       // Run with governance enforcement
       await this.governance.executeWithGovernance(
         async () => {
           // 1. Enforce /inspect first (GPT Advice)
-          console.log("\n📋 Checking inspection results...");
+          console.log("📋 Step 1/4: Checking inspection results...");
           this.cache.enforceInspectFirst("maintain");
 
           // 2. Load cached results
@@ -74,16 +75,19 @@ class MaintainEngine {
           }
 
           console.log(
-            `\n🔧 Found ${results.autoFixable.length} auto-fixable items\n`,
+            `\n🔧 Found ${results.autoFixable.length} auto-fixable items`,
           );
 
           // 4. Execute auto-fixes
+          console.log("\n⚙️  Step 2/4: Executing auto-fixes...");
           await this.executeAutoFixes(results.autoFixable);
 
           // 5. Self-Validation 🆕
+          console.log("\n🔍 Step 3/4: Self-validation...");
           await this.selfValidateWithRetry();
 
           // 6. Display summary
+          console.log("\n📊 Step 4/4: Summary");
           this.showSummary(results.autoFixable);
 
           // 7. Show next steps
@@ -264,18 +268,29 @@ class MaintainEngine {
    * Show next steps
    */
   private showNextSteps(manualCount: number): void {
-    console.log("\n🚀 Next Steps:");
+    console.log("\n🚀 Recommended Next Steps:");
     console.log("═".repeat(60));
 
     if (manualCount > 0) {
-      console.log(`\n⚠️  ${manualCount} items need manual approval`);
-      console.log(`   → npm run fix (interactive review)\n`);
+      console.log(
+        `\n1️⃣  Fix ${manualCount} critical issues (manual approval):`,
+      );
+      console.log(`   npm run fix`);
+      console.log("\n2️⃣  Optional: Check for refactoring needs:");
+      console.log("   /inspect (re-run to detect refactoring)");
+      console.log("\n3️⃣  Deploy:");
+      console.log("   npm run ship");
     } else {
-      console.log("\n✅ All issues resolved! Ready to ship.");
-      console.log("   → npm run ship (final verification)\n");
+      console.log("\n✅ All auto-fixable issues resolved!");
+      console.log("\n1️⃣  Optional: Check for refactoring needs:");
+      console.log("   /inspect (re-run to detect refactoring)");
+      console.log("\n2️⃣  Deploy:");
+      console.log("   npm run ship");
     }
 
-    console.log("💡 Re-run /inspect if code changed significantly");
+    console.log(
+      "\n📋 Workflow: /inspect → /maintain → /fix → [/refactor] → /ship",
+    );
   }
 }
 

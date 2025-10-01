@@ -50,7 +50,8 @@ describe("Agent Chain E2E", () => {
       input: evidenceStep.output,
       output: {
         question: "What is TypeScript?",
-        answer: "TypeScript is a typed superset of JavaScript that provides static type checking.",
+        answer:
+          "TypeScript is a typed superset of JavaScript that provides static type checking.",
         metadata: {
           complexity: 5,
           qualityScore: 8.5,
@@ -60,7 +61,9 @@ describe("Agent Chain E2E", () => {
 
     expect(answerStep.output.question).toBeDefined();
     expect(answerStep.output.answer).toBeDefined();
-    expect(answerStep.output.metadata.qualityScore).toBeGreaterThanOrEqual(testInput.qualityTarget);
+    expect(answerStep.output.metadata.qualityScore).toBeGreaterThanOrEqual(
+      testInput.qualityTarget,
+    );
 
     logger.info("Answer step completed", {
       question: answerStep.output.question,
@@ -83,7 +86,9 @@ describe("Agent Chain E2E", () => {
     };
 
     expect(auditStep.output.passed).toBe(true);
-    expect(auditStep.output.score).toBeGreaterThanOrEqual(testInput.qualityTarget);
+    expect(auditStep.output.score).toBeGreaterThanOrEqual(
+      testInput.qualityTarget,
+    );
     expect(auditStep.output.issues.length).toBe(0);
 
     logger.info("Audit step completed", {
@@ -93,9 +98,10 @@ describe("Agent Chain E2E", () => {
 
     // Verify complete chain
     const chainResult = {
-      success: evidenceStep.output.confidence > 0.7 &&
-               answerStep.output.metadata.qualityScore >= testInput.qualityTarget &&
-               auditStep.output.passed,
+      success:
+        evidenceStep.output.confidence > 0.7 &&
+        answerStep.output.metadata.qualityScore >= testInput.qualityTarget &&
+        auditStep.output.passed,
       steps: [evidenceStep.agent, answerStep.agent, auditStep.agent],
     };
 
@@ -177,6 +183,9 @@ describe("Agent Chain E2E", () => {
 
     expect(totalDuration).toBe(performanceMetrics.total.duration);
 
-    logger.info("Agent chain performance metrics validated", performanceMetrics.total);
+    logger.info(
+      "Agent chain performance metrics validated",
+      performanceMetrics.total,
+    );
   });
 });

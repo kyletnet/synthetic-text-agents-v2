@@ -1,0 +1,101 @@
+{
+  "$schema": "../schema/pattern-registry.schema.json",
+  "version": "2025-10-01",
+  "category": "CLI Entry Points",
+  "description": "Mandatory patterns for all CLI entry point scripts",
+  "patterns": [
+    {
+      "id": "ENV_DETECTION_READLINE",
+      "name": "Environment Detection for readline",
+      "severity": "P0",
+      "description": "All scripts using readline MUST use centralized environment detection",
+      "antipattern": {
+        "regex": "process\\.stdin\\.isTTY(?!.*detectEnvironment)",
+        "explanation": "Direct isTTY check without detectEnvironment() import"
+      },
+      "correctPattern": {
+        "code": "import { detectEnvironment } from './lib/env-detection.js';\n\nconst env = detectEnvironment();\nif (!env.isInteractive) {\n  console.log('Non-interactive environment detected');\n  process.exit(0);\n}",
+        "explanation": "Use centralized detectEnvironment() utility"
+      },
+      "enforcement": "error",
+      "autoFixable": true,
+      "autoFixCommand": "npm run patterns:fix --pattern=ENV_DETECTION_READLINE",
+      "testFiles": [
+        "scripts/fix-engine.ts",
+        "scripts/test-readline-approval.ts"
+      ],
+      "references": [
+        "scripts/lib/env-detection.ts",
+        "docs/ENVIRONMENT_DETECTION_ANALYSIS.md"
+      ],
+      "rationale": "Prevents readline hang in Claude Code, ensures consistent environment detection across all entry points"
+    },
+    {
+      "id": "GOVERNANCE_WRAPPER",
+      "name": "Governance Execution Wrapper",
+      "severity": "P1",
+      "description": "All governance-aware scripts should use GovernanceRunner",
+      "antipattern": {
+        "regex": "async\\s+function\\s+main\\(\\).*\\{(?!.*GovernanceRunner)",
+        "explanation": "Main function without governance wrapper"
+      },
+      "correctPattern": {
+        "code": "import { GovernanceRunner } from './lib/governance/governance-runner.js';\n\nconst governance = new GovernanceRunner(process.cwd());\nawait governance.executeWithGovernance(async () => {\n  // Your logic here\n}, { operation: 'operation-name' });",
+        "explanation": "Wrap execution in governance layer for snapshot/validation"
+      },
+      "enforcement": "warning",
+      "autoFixable": false,
+      "references": [
+        "scripts/lib/governance/governance-runner.ts",
+        "governance-rules.json"
+      ],
+      "rationale": "Ensures all operations are tracked, validated, and can be rolled back"
+    },
+    {
+      "id": "INSPECTION_CACHE_FIRST",
+      "name": "Inspection Cache Enforcement",
+      "severity": "P0",
+      "description": "maintain/fix commands must check inspection cache first",
+      "antipattern": {
+        "regex": "class\\s+(Maintain|Fix)Engine.*constructor\\(\\)(?!.*InspectionCache)",
+        "explanation": "Engine class without InspectionCache dependency"
+      },
+      "correctPattern": {
+        "code": "import { InspectionCache } from './lib/inspection-cache.js';\n\nclass FixEngine {\n  private cache: InspectionCache;\n  \n  constructor() {\n    this.cache = new InspectionCache(process.cwd());\n  }\n  \n  async run() {\n    this.cache.enforceInspectFirst('fix');\n    const { results } = this.cache.validateCache();\n    // Use results...\n  }\n}",
+        "explanation": "Always check inspection cache before processing"
+      },
+      "enforcement": "error",
+      "autoFixable": false,
+      "references": [
+        "scripts/lib/inspection-cache.ts",
+        "governance-rules.json"
+      ],
+      "rationale": "Prevents inconsistent state, ensures all operations work from same snapshot"
+    }
+  ],
+  "migrationGuides": [
+    {
+      "from": "process.stdin.isTTY",
+      "to": "detectEnvironment()",
+      "steps": [
+        "Import detectEnvironment from ./lib/env-detection.js",
+        "Replace process.stdin.isTTY checks with env.isInteractive",
+        "Remove manual CLAUDECODE checks",
+        "Test in both TTY and non-TTY environments"
+      ],
+      "automationScript": "scripts/lib/patterns/migrate-env-detection.ts"
+    }
+  ],
+  "exemptions": [
+    {
+      "file": "scripts/lib/env-detection.ts",
+      "pattern": "ENV_DETECTION_READLINE",
+      "reason": "This is the source of truth - allowed to use process.stdin.isTTY directly"
+    },
+    {
+      "file": "scripts/test-*.ts",
+      "pattern": "GOVERNANCE_WRAPPER",
+      "reason": "Test files may skip governance for testing purposes"
+    }
+  ]
+}

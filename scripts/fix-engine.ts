@@ -25,6 +25,7 @@ import { InspectionCache } from "./lib/inspection-cache.js";
 import { GovernanceRunner } from "./lib/governance/governance-runner.js";
 import { SafeExecutor } from "./lib/governance/safe-executor.js";
 import type { ManualApprovalItem } from "./lib/inspection-schema.js";
+import { detectEnvironment } from "./lib/env-detection.js";
 
 class FixEngine {
   private cache: InspectionCache;
@@ -41,13 +42,20 @@ class FixEngine {
     this.cache = new InspectionCache(this.projectRoot);
     this.governance = new GovernanceRunner(this.projectRoot);
     this.safeExecutor = new SafeExecutor(this.projectRoot);
-    this.nonInteractive = process.argv.includes("--non-interactive");
+
+    // Use centralized environment detection
+    const env = detectEnvironment();
+    const hasFlag = process.argv.includes("--non-interactive");
+
+    // Override: explicit flag always forces non-interactive
+    this.nonInteractive = hasFlag || env.isNonInteractive;
   }
 
   /**
    * Main entry point
    */
   async run(): Promise<void> {
+    console.log("⏳ Starting fix workflow...\n");
     const mode = this.nonInteractive
       ? "Non-Interactive List"
       : "Interactive Manual Approval";
@@ -68,7 +76,9 @@ class FixEngine {
             console.error(
               "\n❌ Internal error: cache validation passed but no results",
             );
-            process.exit(1);
+            throw new Error(
+              "Cache validation inconsistency - this should never happen",
+            );
           }
 
           const { results } = validation;
@@ -339,16 +349,32 @@ class FixEngine {
     console.log(`   ⏭️  Skipped: ${this.skipped}`);
     console.log(`   📝 Manual: ${this.manual}`);
 
-    console.log("\n🚀 Next Steps:");
+    console.log("\n🚀 Recommended Next Steps:");
+    console.log("═".repeat(60));
+
     if (this.fixed > 0 || this.manual > 0) {
       console.log(
-        `   1. Address ${this.fixed + this.manual} approved/manual items`,
+        `\n1️⃣  Address ${this.fixed + this.manual} approved/manual items`,
       );
-      console.log("   2. Re-run: npm run status");
-      console.log("   3. Verify: npm run ship");
+      console.log("\n2️⃣  Re-run inspection to verify:");
+      console.log("   npm run status");
+      console.log("\n3️⃣  Optional: Check for structural improvements:");
+      console.log("   npm run /refactor-preview   # Preview refactoring");
+      console.log("   npm run /refactor           # Apply refactoring");
+      console.log("\n4️⃣  Deploy:");
+      console.log("   npm run ship");
     } else {
-      console.log("   → npm run ship (final verification)");
+      console.log("\n✅ All fixes applied or skipped!");
+      console.log("\n1️⃣  Optional: Check for structural improvements:");
+      console.log("   npm run /refactor-preview   # Preview refactoring");
+      console.log("   npm run /refactor           # Apply refactoring");
+      console.log("\n2️⃣  Deploy:");
+      console.log("   npm run ship");
     }
+
+    console.log(
+      "\n📋 Workflow: /inspect → /maintain → /fix → [/refactor] → /ship",
+    );
   }
 }
 

@@ -1,0 +1,13 @@
+{
+  "version": "1.0.0",
+  "backups": [
+    {
+      "path": ".gaprc/backup.1759317770889.json",
+      "createdAt": "2025-10-01T11:22:50.889Z",
+      "expiresAt": "2025-10-31T11:22:50.889Z",
+      "reason": "Test backup for verification",
+      "isEmergency": false,
+      "sourceHash": "3125f205"
+    }
+  ]
+}

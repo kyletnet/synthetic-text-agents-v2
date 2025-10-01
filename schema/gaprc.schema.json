@@ -1,0 +1,203 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/your-org/synthetic-text-agents-v2/schema/gaprc.schema.json",
+  "title": "GAP Scanner Configuration",
+  "description": "Configuration schema for GAP Prevention System",
+  "type": "object",
+  "required": ["version", "globalSettings", "checks", "teams", "metrics"],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "JSON Schema reference"
+    },
+    "version": {
+      "type": "string",
+      "description": "Configuration version",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+      "examples": ["1.0.0"]
+    },
+    "globalSettings": {
+      "type": "object",
+      "description": "Global GAP scanner settings",
+      "required": ["mode", "failOn", "autoFix", "timeout", "reportPath"],
+      "properties": {
+        "mode": {
+          "type": "string",
+          "description": "Scanner operating mode",
+          "enum": ["disabled", "shadow", "enforce"],
+          "default": "shadow"
+        },
+        "failOn": {
+          "type": "array",
+          "description": "Severity levels that cause failure",
+          "items": {
+            "type": "string",
+            "enum": ["P0", "P1", "P2"]
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+        "autoFix": {
+          "type": "object",
+          "description": "Auto-fix configuration",
+          "required": ["enabled", "maxSeverity"],
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "description": "Enable auto-fix",
+              "default": false
+            },
+            "maxSeverity": {
+              "type": "string",
+              "description": "Maximum severity to auto-fix",
+              "enum": ["P0", "P1", "P2"],
+              "default": "P2"
+            }
+          }
+        },
+        "timeout": {
+          "type": "number",
+          "description": "Scanner timeout in milliseconds",
+          "minimum": 1000,
+          "maximum": 300000,
+          "default": 30000
+        },
+        "reportPath": {
+          "type": "string",
+          "description": "Path to save scan reports",
+          "default": "reports/gap-scan-results.json"
+        }
+      }
+    },
+    "checks": {
+      "type": "array",
+      "description": "List of GAP checks",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "enabled",
+          "severity",
+          "category",
+          "autoFixable"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique check identifier",
+            "pattern": "^[a-z0-9-]+$"
+          },
+          "name": {
+            "type": "string",
+            "description": "Human-readable check name",
+            "minLength": 1
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "Whether check is enabled",
+            "default": true
+          },
+          "severity": {
+            "type": "string",
+            "description": "Check severity level",
+            "enum": ["P0", "P1", "P2"]
+          },
+          "category": {
+            "type": "string",
+            "description": "Check category",
+            "enum": ["docs", "governance", "security", "testing"]
+          },
+          "config": {
+            "type": "object",
+            "description": "Check-specific configuration",
+            "additionalProperties": true
+          },
+          "autoFixable": {
+            "type": "boolean",
+            "description": "Whether check supports auto-fix"
+          },
+          "autoFix": {
+            "type": "object",
+            "description": "Auto-fix configuration for this check",
+            "properties": {
+              "strategy": {
+                "type": "string",
+                "description": "Auto-fix strategy"
+              },
+              "requiresApproval": {
+                "type": "boolean",
+                "description": "Whether auto-fix requires approval",
+                "default": false
+              }
+            }
+          }
+        }
+      }
+    },
+    "teams": {
+      "type": "object",
+      "description": "Team-specific configurations",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["mode", "failOn"],
+        "properties": {
+          "members": {
+            "type": "array",
+            "description": "Team member usernames",
+            "items": {
+              "type": "string"
+            },
+            "uniqueItems": true
+          },
+          "mode": {
+            "type": "string",
+            "description": "Scanner mode for this team",
+            "enum": ["disabled", "shadow", "enforce"]
+          },
+          "failOn": {
+            "type": "array",
+            "description": "Severity levels that cause failure for this team",
+            "items": {
+              "type": "string",
+              "enum": ["P0", "P1", "P2"]
+            },
+            "uniqueItems": true
+          }
+        }
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "description": "Metrics collection settings",
+      "required": ["enabled", "collectInterval"],
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Enable metrics collection",
+          "default": true
+        },
+        "collectInterval": {
+          "type": "string",
+          "description": "Metrics collection interval",
+          "enum": ["hourly", "daily", "weekly", "monthly"],
+          "default": "daily"
+        },
+        "reportRecipients": {
+          "type": "array",
+          "description": "Email addresses for metric reports",
+          "items": {
+            "type": "string",
+            "format": "email"
+          }
+        },
+        "slackWebhook": {
+          "type": "string",
+          "description": "Slack webhook URL for notifications",
+          "format": "uri"
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}

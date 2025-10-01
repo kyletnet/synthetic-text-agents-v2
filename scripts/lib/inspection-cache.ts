@@ -165,6 +165,41 @@ export class InspectionCache {
       console.log(`   Run: npm run status`);
     }
   }
+
+  /**
+   * Check if cache exists (without validation)
+   */
+  exists(): boolean {
+    return existsSync(this.cachePath);
+  }
+
+  /**
+   * Check if cache is expired
+   */
+  isExpired(): boolean {
+    const validation = this.validateCache();
+    return validation.reason === "expired";
+  }
+
+  /**
+   * Get cache age in minutes
+   */
+  getAge(): number {
+    const validation = this.validateCache();
+    if (!validation.ageSeconds) return 0;
+    return Math.floor(validation.ageSeconds / 60);
+  }
+
+  /**
+   * Load cached results (throws if invalid)
+   */
+  load(): InspectionResults | null {
+    const validation = this.validateCache();
+    if (!validation.valid || !validation.results) {
+      return null;
+    }
+    return validation.results;
+  }
 }
 
 /**

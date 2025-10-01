@@ -1,0 +1,7 @@
+# Deprecated Documents
+
+This folder contains deprecated documents that are pending deletion.
+
+All documents here should have frontmatter with:
+- deprecatedDate: YYYY-MM-DD
+- replacedBy: path/to/new/doc.md

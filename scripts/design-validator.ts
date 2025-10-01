@@ -11,6 +11,7 @@ import { existsSync, readFileSync } from "fs";
 import { join } from "path";
 import * as glob from "glob";
 import { runGovernedScript } from "./lib/governance/governed-script.js";
+import { detectEnvironment } from "./lib/env-detection.js";
 
 interface DesignViolation {
   file: string;
@@ -71,6 +72,17 @@ class DesignValidator {
         "\n❌ [DesignValidator] FAILED - P0 violations must be fixed",
       );
       this.printViolations();
+
+      // ENFORCEMENT: Block build/commit on P0 violations
+      const enforceMode = process.env.DESIGN_VALIDATOR_ENFORCE !== "false";
+      if (enforceMode) {
+        console.log("\n🔒 [DesignValidator] BLOCKING: P0 violations detected");
+        console.log(
+          "💡 Fix the violations above or set DESIGN_VALIDATOR_ENFORCE=false to bypass (not recommended)",
+        );
+        process.exit(1);
+      }
+
       return { success: false, violations: this.violations };
     }
 
@@ -218,20 +230,26 @@ class DesignValidator {
       const content = this.readFile(join(this.rootDir, file));
       if (!content) continue;
 
-      // Check for stdin usage without TTY check
+      // Check for stdin usage without environment detection
       if (
         content.includes("process.stdin") &&
-        content.match(/readline|createInterface/) &&
-        !content.includes("process.stdin.isTTY")
+        content.match(/readline|createInterface/)
       ) {
-        this.addViolation({
-          file,
-          rule: "CHECK_TTY_BEFORE_STDIN",
-          severity: "P0",
-          message: "stdin usage without isTTY check",
-          suggestion:
-            "Check process.stdin.isTTY and queue approvals in non-interactive mode",
-        });
+        const hasEnvDetection =
+          content.includes("detectEnvironment") ||
+          content.includes("from './lib/env-detection");
+        const hasLegacyCheck = content.includes("process.stdin.isTTY");
+
+        if (!hasEnvDetection && !hasLegacyCheck) {
+          this.addViolation({
+            file,
+            rule: "CHECK_ENVIRONMENT_BEFORE_STDIN",
+            severity: "P0",
+            message: "stdin usage without environment detection",
+            suggestion:
+              "Import and use detectEnvironment() from ./lib/env-detection.js",
+          });
+        }
       }
     }
   }

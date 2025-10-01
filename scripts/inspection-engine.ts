@@ -26,6 +26,11 @@ import {
   DIAGNOSTIC_TIMEOUTS,
   getTimeoutMessage,
 } from "./lib/diagnostic-timeouts.js";
+import {
+  createCodebaseSnapshot,
+  validateInvariants,
+  ALL_INVARIANTS,
+} from "./lib/patterns/architecture-invariants.js";
 import type {
   InspectionResults,
   AutoFixableItem,
@@ -102,6 +107,21 @@ class InspectionEngine {
 
     console.log("   🚀 Running diagnostics in parallel...\n");
 
+    // Show progress indicator
+    const checks = [
+      "Prettier",
+      "ESLint",
+      "TypeScript",
+      "Tests",
+      "Security",
+      "Architecture",
+      "Workarounds",
+      "Documentation",
+      "Refactoring",
+    ];
+    console.log(`   📊 Checking: ${checks.join(", ")}`);
+    console.log("   ⏳ This may take 30-60 seconds...\n");
+
     // Execute all checks in parallel
     const [
       prettierResult,
@@ -109,6 +129,7 @@ class InspectionEngine {
       typescriptResult,
       testsResult,
       securityResult,
+      architectureResult,
       workaroundsResult,
       docResult,
       refactorResult,
@@ -118,10 +139,13 @@ class InspectionEngine {
       Promise.resolve(this.checkTypeScript()),
       Promise.resolve(this.checkTests()),
       this.checkSecurity(),
+      Promise.resolve(this.checkArchitecture()),
       Promise.resolve(this.detectWorkarounds()),
       Promise.resolve(this.checkComponentDocumentation()),
       Promise.resolve(this.checkRefactoringQueue()),
     ]);
+
+    console.log("   ✅ All checks complete!\n");
 
     // Process Prettier
     if (prettierResult.status === "fulfilled" && prettierResult.value) {
@@ -160,6 +184,19 @@ class InspectionEngine {
     // Process Security
     const security =
       securityResult.status === "fulfilled" ? securityResult.value : "fail";
+
+    // Process Architecture
+    if (architectureResult.status === "fulfilled" && architectureResult.value) {
+      this.manualApprovalNeeded.push(architectureResult.value);
+      // P0 violations are critical - major health score penalty
+      if (architectureResult.value.description.includes("P0")) {
+        healthScore -= 30;
+      } else if (architectureResult.value.description.includes("P1")) {
+        healthScore -= 15;
+      } else {
+        healthScore -= 5;
+      }
+    }
 
     // Process Workarounds
     if (workaroundsResult.status === "fulfilled" && workaroundsResult.value) {
@@ -427,6 +464,53 @@ class InspectionEngine {
   }
 
   /**
+   * Check architecture invariants (P0 violations are critical)
+   */
+  private checkArchitecture(): ManualApprovalItem | null {
+    try {
+      console.log("   🏛️  Validating architecture invariants...");
+      const snapshot = createCodebaseSnapshot(this.projectRoot);
+      const violations = validateInvariants(snapshot, ALL_INVARIANTS);
+
+      if (violations.length === 0) {
+        console.log("      ✓ Architecture validated");
+        return null;
+      }
+
+      // Group by severity
+      const p0 = violations.filter((v) => v.severity === "P0");
+      const p1 = violations.filter((v) => v.severity === "P1");
+      const p2 = violations.filter((v) => v.severity === "P2");
+
+      console.log(
+        `      ⚠️  Found ${p0.length} P0, ${p1.length} P1, ${p2.length} P2 violations`,
+      );
+
+      // Create description with severity breakdown
+      const description = `Architecture violations: ${p0.length} P0 (Critical), ${p1.length} P1 (High), ${p2.length} P2 (Medium)`;
+
+      return {
+        id: "architecture-violations",
+        severity: p0.length > 0 ? "critical" : "high",
+        description,
+        count: violations.length,
+        impact:
+          p0.length > 0
+            ? "🔴 BLOCKING: System architecture violations must be fixed"
+            : p1.length > 0
+              ? "🟡 HIGH: Architecture issues should be addressed soon"
+              : "🟢 LOW: Minor architecture improvements recommended",
+        suggestedAction: "npm run _arch:validate to see detailed violations",
+      };
+    } catch (error) {
+      console.log(
+        `      ⚠️  Architecture check failed: ${(error as Error).message}`,
+      );
+      return null;
+    }
+  }
+
+  /**
    * Check component documentation compliance
    */
   private checkComponentDocumentation(): ManualApprovalItem | null {
@@ -559,33 +643,69 @@ class InspectionEngine {
   }
 
   /**
-   * Show next steps
+   * Show next steps based on findings
+   * Provides smart workflow guidance
    */
   private showNextSteps(): void {
-    console.log("\n🚀 Next Steps:");
+    console.log("\n🚀 Recommended Next Steps:");
     console.log("═".repeat(60));
 
-    if (this.autoFixable.length > 0) {
-      console.log(
-        `\n1️⃣  Auto-fix ${this.autoFixable.length} items: npm run maintain`,
-      );
-    }
+    // Check if refactoring is needed
+    const hasRefactoring = this.manualApprovalNeeded.some(
+      (item) => item.id === "refactor-pending",
+    );
 
-    if (this.manualApprovalNeeded.length > 0) {
-      console.log(
-        `2️⃣  Review ${this.manualApprovalNeeded.length} items: npm run fix`,
-      );
-    }
-
+    // Scenario 1: Clean system
     if (
       this.autoFixable.length === 0 &&
       this.manualApprovalNeeded.length === 0
     ) {
-      console.log("✅ System is healthy! Ready to ship.");
-      console.log("\n💡 Deploy: npm run ship");
+      console.log("\n✅ System is healthy! No issues found.");
+      console.log("\n💡 Ready to deploy:");
+      console.log("   npm run ship");
+      return;
     }
 
-    console.log("\n⏰ Re-run inspection in 5 minutes if needed");
+    // Scenario 2: Has issues
+    let step = 1;
+
+    if (this.autoFixable.length > 0) {
+      console.log(
+        `\n${step}️⃣  Auto-fix ${this.autoFixable.length} style issues:`,
+      );
+      console.log("   npm run maintain");
+      step++;
+    }
+
+    const nonRefactorItems = this.manualApprovalNeeded.filter(
+      (item) => item.id !== "refactor-pending",
+    );
+
+    if (nonRefactorItems.length > 0) {
+      console.log(
+        `\n${step}️⃣  Fix ${nonRefactorItems.length} critical issues (manual approval):`,
+      );
+      console.log("   npm run fix");
+      step++;
+    }
+
+    if (hasRefactoring) {
+      const refactorItem = this.manualApprovalNeeded.find(
+        (item) => item.id === "refactor-pending",
+      );
+      console.log(`\n${step}️⃣  Optional: Structural refactoring`);
+      console.log(`   📊 ${refactorItem?.count || 0} items pending`);
+      console.log("   npm run /refactor-preview   # Preview changes (safe)");
+      console.log("   npm run /refactor           # Apply changes");
+      step++;
+    }
+
+    console.log(`\n${step}️⃣  Deploy:`);
+    console.log("   npm run ship");
+
+    console.log("\n📋 Complete workflow:");
+    console.log("   /inspect → /maintain → /fix → [/refactor] → /ship");
+    console.log("\n⏰ Cache valid for: 30 minutes");
   }
 }
 

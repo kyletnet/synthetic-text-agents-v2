@@ -1,0 +1,130 @@
+{
+  "$schema": "./schema/docrc.schema.json",
+  "version": "1.0.0",
+  "description": "Documentation-Code relationship tracking and drift detection",
+
+  "docs": [
+    {
+      "path": "docs/ENVIRONMENT_DETECTION_ANALYSIS.md",
+      "type": "technical-analysis",
+      "status": "active",
+      "relatedCode": [
+        "scripts/lib/env-detection.ts",
+        ".patterns/cli-mandates.json",
+        "scripts/lib/patterns/architecture-invariants.ts"
+      ],
+      "relatedDocs": ["docs/ARCHITECTURE_ENFORCEMENT_SYSTEM.md"],
+      "autoSyncEnabled": true,
+      "lastVerified": "2025-10-01T22:50:00Z",
+      "owner": "architecture-team",
+      "reviewCycle": "monthly"
+    },
+    {
+      "path": "docs/ARCHITECTURE_ENFORCEMENT_SYSTEM.md",
+      "type": "user-guide",
+      "status": "active",
+      "relatedCode": [
+        "scripts/validate-architecture.ts",
+        "scripts/lib/patterns/architecture-invariants.ts",
+        ".patterns/cli-mandates.json",
+        ".migration/progress.json"
+      ],
+      "relatedDocs": [
+        "docs/ENVIRONMENT_DETECTION_ANALYSIS.md",
+        "docs/CRITICAL_ISSUES_AND_IMPROVEMENTS.md"
+      ],
+      "autoSyncEnabled": true,
+      "lastVerified": "2025-10-01T22:50:00Z",
+      "owner": "architecture-team",
+      "reviewCycle": "monthly"
+    },
+    {
+      "path": "docs/CRITICAL_ISSUES_AND_IMPROVEMENTS.md",
+      "type": "issue-tracking",
+      "status": "active",
+      "relatedCode": [
+        "scripts/validate-architecture.ts",
+        ".github/workflows/*.yml"
+      ],
+      "autoSyncEnabled": false,
+      "lastVerified": "2025-10-01T22:50:00Z",
+      "owner": "project-lead",
+      "reviewCycle": "weekly",
+      "expiresAt": "2025-11-01T00:00:00Z",
+      "archiveAfterExpiry": true
+    },
+    {
+      "path": "docs/SYSTEM_INTEGRATION_FINAL_PLAN.md",
+      "type": "roadmap",
+      "status": "active",
+      "relatedCode": [
+        "scripts/inspection-engine.ts",
+        "scripts/fix-engine.ts",
+        "scripts/refactor-engine.ts",
+        ".github/workflows/unified-quality-gate.yml"
+      ],
+      "autoSyncEnabled": false,
+      "lastVerified": "2025-10-01T22:50:00Z",
+      "owner": "project-lead",
+      "reviewCycle": "weekly",
+      "expiresAt": "2025-12-01T00:00:00Z"
+    },
+    {
+      "path": "docs/SYSTEM_WIDE_DESIGN_AUDIT.md",
+      "type": "audit-report",
+      "status": "active",
+      "relatedCode": [
+        "scripts/*-engine.ts",
+        ".github/workflows/*.yml",
+        "governance-rules.json"
+      ],
+      "autoSyncEnabled": true,
+      "lastVerified": "2025-10-01T23:00:00Z",
+      "owner": "architecture-team",
+      "reviewCycle": "monthly"
+    },
+    {
+      "path": ".github/BRANCH_PROTECTION.md",
+      "type": "configuration-guide",
+      "status": "active",
+      "relatedCode": [],
+      "relatedDocs": ["docs/ARCHITECTURE_ENFORCEMENT_SYSTEM.md"],
+      "autoSyncEnabled": false,
+      "lastVerified": "2025-10-01T22:50:00Z",
+      "owner": "devops-team",
+      "reviewCycle": "quarterly"
+    }
+  ],
+
+  "driftDetection": {
+    "enabled": true,
+    "checkOnCommit": true,
+    "checkOnCI": true,
+    "thresholds": {
+      "warningDays": 7,
+      "errorDays": 30
+    },
+    "autoArchive": {
+      "enabled": true,
+      "afterDays": 90
+    }
+  },
+
+  "notifications": {
+    "driftDetected": {
+      "channels": ["console", "file"],
+      "recipients": ["architecture-team"]
+    },
+    "documentExpiring": {
+      "channels": ["console"],
+      "daysBeforeExpiry": 7
+    }
+  },
+
+  "rules": {
+    "requireOwner": true,
+    "requireRelatedCode": true,
+    "requireReviewCycle": true,
+    "enforceExpiryForIssueTracking": true
+  }
+}

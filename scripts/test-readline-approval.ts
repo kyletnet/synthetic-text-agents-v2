@@ -6,24 +6,19 @@
  */
 
 import { createInterface } from "readline";
+import {
+  detectEnvironment,
+  printEnvironmentInfo,
+} from "./lib/env-detection.js";
 
 console.log("🧪 Readline Approval Test");
 console.log("=".repeat(60));
 
-// 환경 감지
-const isClaudeCode =
-  process.env.CLAUDECODE === "1" ||
-  process.env.CLAUDE_CODE_ENTRYPOINT === "cli";
-const isTTY = process.stdin.isTTY;
+// Use centralized environment detection
+const env = detectEnvironment();
+printEnvironmentInfo();
 
-console.log(`\n📊 Environment Detection:`);
-console.log(`   CLAUDECODE: ${process.env.CLAUDECODE}`);
-console.log(`   CLAUDE_CODE_ENTRYPOINT: ${process.env.CLAUDE_CODE_ENTRYPOINT}`);
-console.log(`   stdin.isTTY: ${isTTY}`);
-console.log(`   isClaudeCode: ${isClaudeCode}`);
-console.log(`   isInteractive: ${isTTY || isClaudeCode}`);
-
-if (!isTTY && !isClaudeCode) {
+if (!env.isInteractive) {
   console.log("\n❌ Non-interactive environment - would skip");
   process.exit(0);
 }

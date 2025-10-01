@@ -7,6 +7,7 @@
 
 import { createInterface } from "readline";
 import { safeGuard } from "./safe-automation-guard.js";
+import { detectEnvironment } from "./env-detection.js";
 
 interface ApprovalRequest {
   title: string;

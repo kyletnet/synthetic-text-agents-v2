@@ -40,6 +40,7 @@ npm run ship      # Via npm (validation + docs only, no deploy)
 ```
 
 **8 Steps:**
+
 1. Design principles validation (`design:validate`)
 2. System validation (`validate`)
 3. Verification checks (`verify`)

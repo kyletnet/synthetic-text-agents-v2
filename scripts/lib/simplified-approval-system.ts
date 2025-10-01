@@ -9,6 +9,7 @@
 import { createInterface } from "readline";
 import { approvalAnalyzer, ApprovalCriteria } from "./approval-criteria.js";
 import { approvalQueue, PendingApprovalItem } from "./approval-queue.js";
+import { detectEnvironment } from "./env-detection.js";
 
 interface SimplifiedApprovalRequest {
   title: string;
@@ -105,12 +106,8 @@ class SimplifiedApprovalSystem {
     analysis: any,
     safeMode: boolean = false,
   ): Promise<ApprovalResult> {
-    // 비대화형 환경 감지 (stdin이 TTY가 아닌 경우)
-    // Claude Code 환경은 stdin.isTTY가 undefined지만 대화형 지원
-    const isClaudeCode =
-      process.env.CLAUDECODE === "1" ||
-      process.env.CLAUDE_CODE_ENTRYPOINT === "cli";
-    const isInteractive = process.stdin.isTTY || isClaudeCode;
+    // Use centralized environment detection
+    const { isInteractive } = detectEnvironment();
 
     if (!isInteractive) {
       // 비대화형 환경: 즉시 큐에 저장

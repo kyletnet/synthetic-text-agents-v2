@@ -5,21 +5,9 @@
  * Use scripts/maintain-engine.ts instead.
  */
 
-// Governance: Block direct execution
-if (require.main === module) {
-  throw new Error(`
-❌ DEPRECATED: smart-maintenance-orchestrator.ts는 더 이상 직접 실행할 수 없습니다.
-
-✅ 올바른 사용법:
-   npm run maintain  # 자동 수정 (캐시 기반 + Self-Validation)
-   npm run status    # 진단 재실행
-
-📚 자세한 내용: docs/MIGRATION_V2.md
-📋 새로운 구현: scripts/maintain-engine.ts
-
-이 파일은 테스트 호환성을 위해 import는 계속 허용됩니다.
-  `);
-}
+// ESM-compatible deprecation guard
+import { autoBlockIfDeprecated } from "./lib/deprecated-guard.js";
+autoBlockIfDeprecated(import.meta.url);
 
 // Set process-level listener limit to prevent memory leaks
 process.setMaxListeners(50);
