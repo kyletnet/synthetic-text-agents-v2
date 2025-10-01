@@ -449,9 +449,38 @@ npm run ship  # gap:scan 자동 실행
 
 ### Pre-commit Hook
 
+**자동 설치:**
 ```bash
-# .git/hooks/pre-commit (자동 설치됨)
-npm run gap:scan
+# 1. Install git hooks (includes GAP Scanner)
+bash scripts/install-git-hooks.sh
+
+# 2. Hooks are now active!
+# GAP Scanner runs automatically on every commit
+```
+
+**수동 설치:**
+```bash
+# Copy template to .git/hooks/
+cp scripts/git-hooks/pre-commit .git/hooks/pre-commit
+chmod +x .git/hooks/pre-commit
+```
+
+**Hook 동작:**
+- ✅ Design validation
+- ✅ TypeScript compilation
+- ⚠️ ESLint (warnings non-blocking)
+- ✅ Tests (all must pass)
+- ⚠️ **GAP Scanner (shadow mode - Week 1, non-blocking)**
+
+**Shadow mode 설명:**
+- P0/P1 갭이 발견되어도 커밋이 차단되지 않음
+- 경고만 표시하여 개발자에게 알림
+- Week 4 이후 enforce mode로 전환 예정
+
+**Hook bypass:**
+```bash
+# 긴급 커밋 시 hook 건너뛰기
+git commit --no-verify -m "emergency fix"
 ```
 
 ### CI/CD
