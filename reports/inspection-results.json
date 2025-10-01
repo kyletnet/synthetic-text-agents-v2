@@ -1,15 +1,6 @@
 {
   "schemaVersion": "2025-10-inspect-v1",
-  "autoFixable": [
-    {
-      "id": "prettier-format",
-      "severity": "low",
-      "description": "코드 포매팅 불일치",
-      "command": "npx prettier --write .",
-      "estimatedDuration": 10,
-      "impact": "코드 스타일 일관성 개선"
-    }
-  ],
+  "autoFixable": [],
   "manualApprovalNeeded": [
     {
       "id": "workarounds",
@@ -33,16 +24,16 @@
     }
   ],
   "summary": {
-    "totalIssues": 2,
-    "autoFixableCount": 1,
+    "totalIssues": 1,
+    "autoFixableCount": 0,
     "manualApprovalCount": 1,
-    "healthScore": 85,
+    "healthScore": 90,
     "typescript": "pass",
-    "codeStyle": "fail",
+    "codeStyle": "pass",
     "tests": "pass",
     "security": "pass",
     "integrationScore": 55
   },
-  "timestamp": "2025-10-01T07:44:28.591Z",
+  "timestamp": "2025-10-01T08:30:53.069Z",
   "ttl": 1800
 }

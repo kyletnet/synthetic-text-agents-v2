@@ -41,8 +41,8 @@
     {
       "id": "CACHE_TTL",
       "severity": "high",
-      "description": "5분 TTL 엄수",
-      "ttlSeconds": 300,
+      "description": "30분 TTL 엄수",
+      "ttlSeconds": 1800,
       "enabled": true,
       "enforceInCI": true,
       "message": "캐시가 만료되었습니다. npm run status를 재실행하세요."

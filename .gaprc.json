@@ -1,0 +1,131 @@
+{
+  "$schema": "./schema/gaprc.schema.json",
+  "version": "1.0.0",
+  "globalSettings": {
+    "mode": "shadow",
+    "failOn": [],
+    "autoFix": {
+      "enabled": false,
+      "maxSeverity": "P2"
+    },
+    "timeout": 30000,
+    "reportPath": "reports/gap-scan-results.json"
+  },
+
+  "checks": [
+    {
+      "id": "cli-documentation",
+      "name": "CLI Documentation Coverage",
+      "enabled": true,
+      "severity": "P1",
+      "category": "docs",
+      "config": {
+        "excludePatterns": ["_hidden:", "dev:", "utility:"],
+        "requiredDocs": ["docs/COMMAND_GUIDE.md"]
+      },
+      "autoFixable": false
+    },
+    {
+      "id": "governance-sync",
+      "name": "Governance-Code Consistency",
+      "enabled": true,
+      "severity": "P0",
+      "category": "governance",
+      "config": {
+        "governanceFile": "governance-rules.json",
+        "codeFiles": ["scripts/lib/inspection-cache.ts"]
+      },
+      "autoFixable": true,
+      "autoFix": {
+        "strategy": "update-governance-from-code",
+        "requiresApproval": true
+      }
+    },
+    {
+      "id": "pii-masking",
+      "name": "PII Masking in Logger",
+      "enabled": true,
+      "severity": "P0",
+      "category": "security",
+      "config": {
+        "requiredFunctions": ["maskPII", "redactPII", "sanitizePII"],
+        "targetFiles": ["src/shared/logger.ts"]
+      },
+      "autoFixable": false
+    },
+    {
+      "id": "test-coverage",
+      "name": "New Feature Test Coverage",
+      "enabled": true,
+      "severity": "P1",
+      "category": "testing",
+      "config": {
+        "testPattern": "tests/**/*.test.ts",
+        "coverageThreshold": 0
+      },
+      "autoFixable": false
+    },
+    {
+      "id": "doc-cross-refs",
+      "name": "Document Cross-References",
+      "enabled": true,
+      "severity": "P2",
+      "category": "docs",
+      "config": {
+        "minReferences": 10,
+        "patterns": ["@file", "@docs/", "See:"]
+      },
+      "autoFixable": false
+    },
+    {
+      "id": "agent-e2e",
+      "name": "Agent Chain E2E Tests",
+      "enabled": true,
+      "severity": "P1",
+      "category": "testing",
+      "config": {
+        "requiredChains": ["Evidence → Answer → Audit"],
+        "testPattern": "tests/integration/**/*.test.ts"
+      },
+      "autoFixable": false
+    },
+    {
+      "id": "doc-lifecycle",
+      "name": "Document Lifecycle Compliance",
+      "enabled": true,
+      "severity": "P2",
+      "category": "docs",
+      "config": {
+        "allowDeprecated": true,
+        "maxDeprecatedAge": 90,
+        "requireReplacement": true
+      },
+      "autoFixable": false
+    },
+    {
+      "id": "deprecated-reference-enforcement",
+      "name": "Deprecated Document Reference Check",
+      "enabled": true,
+      "severity": "P1",
+      "category": "docs",
+      "config": {
+        "failOnDeprecatedReference": true,
+        "allowGracePeriod": 7,
+        "exemptions": [
+          "tests/legacy/**",
+          "docs/migration/**"
+        ]
+      },
+      "autoFixable": false
+    }
+  ],
+
+  "teams": {},
+
+  "metrics": {
+    "enabled": true,
+    "collectInterval": "daily",
+    "reportRecipients": [],
+    "slackWebhook": ""
+  }
+}

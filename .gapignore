@@ -1,0 +1,30 @@
+# GAP Scanner Ignore Patterns
+
+# Legacy code
+tests/legacy/**
+scripts/experimental/**
+
+# Deprecated documents (already tracked)
+docs/deprecated/**
+
+# Third-party
+node_modules/**
+dist/**
+dist-export/**
+.git/**
+
+# Temporary files
+*.tmp
+*.bak
+
+# Build artifacts
+reports/gap-scan-results.json
+.gaprc/backup-registry.json
+
+# IDE
+.vscode/**
+.idea/**
+
+# OS
+.DS_Store
+Thumbs.db

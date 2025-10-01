@@ -53,19 +53,80 @@ export class Logger {
   }
 
   debug(message: string, data?: unknown): void {
-    this.pinoLogger.debug({ data }, message);
+    const sanitized = data ? this.sanitize(data) : data;
+    this.pinoLogger.debug({ data: sanitized }, message);
   }
 
   info(message: string, data?: unknown): void {
-    this.pinoLogger.info({ data }, message);
+    const sanitized = data ? this.sanitize(data) : data;
+    this.pinoLogger.info({ data: sanitized }, message);
   }
 
   warn(message: string, data?: unknown): void {
-    this.pinoLogger.warn({ data }, message);
+    const sanitized = data ? this.sanitize(data) : data;
+    this.pinoLogger.warn({ data: sanitized }, message);
   }
 
   error(message: string, error?: unknown): void {
-    this.pinoLogger.error({ error }, message);
+    const sanitized = error ? this.sanitize(error) : error;
+    this.pinoLogger.error({ error: sanitized }, message);
+  }
+
+  /**
+   * Mask PII (Personally Identifiable Information) in log data
+   * Masks: email addresses, API keys, phone numbers, credit cards
+   */
+  private maskPII(data: unknown): unknown {
+    if (typeof data === 'string') {
+      return this.maskPIIString(data);
+    }
+
+    if (Array.isArray(data)) {
+      return data.map(item => this.maskPII(item));
+    }
+
+    if (data && typeof data === 'object') {
+      const masked: Record<string, unknown> = {};
+      for (const [key, value] of Object.entries(data)) {
+        // Mask known sensitive keys
+        if (/api[_-]?key|password|token|secret|auth/i.test(key)) {
+          masked[key] = '***REDACTED***';
+        } else {
+          masked[key] = this.maskPII(value);
+        }
+      }
+      return masked;
+    }
+
+    return data;
+  }
+
+  /**
+   * Mask PII patterns in string
+   */
+  private maskPIIString(str: string): string {
+    return str
+      // Email addresses
+      .replace(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g, '***EMAIL***')
+      // API keys (various formats)
+      .replace(/\b(sk-[a-zA-Z0-9]{48})\b/g, '***API_KEY***')
+      .replace(/\b([A-Za-z0-9_-]{32,})\b/g, (match) => {
+        // Only mask if it looks like a token (all caps/numbers, no spaces)
+        return /^[A-Z0-9_-]+$/.test(match) && match.length > 20 ? '***TOKEN***' : match;
+      })
+      // Phone numbers (US format)
+      .replace(/\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g, '***PHONE***')
+      // Credit card numbers
+      .replace(/\b\d{4}[-\s]?\d{4}[-\s]?\d{4}[-\s]?\d{4}\b/g, '***CARD***')
+      // SSN
+      .replace(/\b\d{3}-\d{2}-\d{4}\b/g, '***SSN***');
+  }
+
+  /**
+   * Sanitize data before logging (mask PII)
+   */
+  private sanitize<T>(data: T): T {
+    return this.maskPII(data) as T;
   }
 
   async initialize(): Promise<void> {
