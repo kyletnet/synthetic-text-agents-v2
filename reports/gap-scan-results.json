@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-10-01T10:44:28.739Z",
+  "timestamp": "2025-10-01T10:55:19.787Z",
   "mode": "shadow",
   "totalChecks": 8,
   "enabledChecks": 8,
@@ -1227,84 +1227,6 @@
       }
     },
     {
-      "id": "cli-doc-gap:scan",
-      "checkId": "cli-documentation",
-      "severity": "P1",
-      "category": "docs",
-      "title": "Undocumented CLI command: gap:scan",
-      "description": "'gap:scan' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
-      "autoFixable": false,
-      "details": {
-        "command": "gap:scan",
-        "documentation": "docs/COMMAND_GUIDE.md"
-      }
-    },
-    {
-      "id": "cli-doc-gap:scan:quick",
-      "checkId": "cli-documentation",
-      "severity": "P1",
-      "category": "docs",
-      "title": "Undocumented CLI command: gap:scan:quick",
-      "description": "'gap:scan:quick' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
-      "autoFixable": false,
-      "details": {
-        "command": "gap:scan:quick",
-        "documentation": "docs/COMMAND_GUIDE.md"
-      }
-    },
-    {
-      "id": "cli-doc-gap:scan:metrics",
-      "checkId": "cli-documentation",
-      "severity": "P1",
-      "category": "docs",
-      "title": "Undocumented CLI command: gap:scan:metrics",
-      "description": "'gap:scan:metrics' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
-      "autoFixable": false,
-      "details": {
-        "command": "gap:scan:metrics",
-        "documentation": "docs/COMMAND_GUIDE.md"
-      }
-    },
-    {
-      "id": "cli-doc-gap:config",
-      "checkId": "cli-documentation",
-      "severity": "P1",
-      "category": "docs",
-      "title": "Undocumented CLI command: gap:config",
-      "description": "'gap:config' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
-      "autoFixable": false,
-      "details": {
-        "command": "gap:config",
-        "documentation": "docs/COMMAND_GUIDE.md"
-      }
-    },
-    {
-      "id": "cli-doc-gap:pr-bot",
-      "checkId": "cli-documentation",
-      "severity": "P1",
-      "category": "docs",
-      "title": "Undocumented CLI command: gap:pr-bot",
-      "description": "'gap:pr-bot' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
-      "autoFixable": false,
-      "details": {
-        "command": "gap:pr-bot",
-        "documentation": "docs/COMMAND_GUIDE.md"
-      }
-    },
-    {
-      "id": "cli-doc-doc:lifecycle",
-      "checkId": "cli-documentation",
-      "severity": "P1",
-      "category": "docs",
-      "title": "Undocumented CLI command: doc:lifecycle",
-      "description": "'doc:lifecycle' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
-      "autoFixable": false,
-      "details": {
-        "command": "doc:lifecycle",
-        "documentation": "docs/COMMAND_GUIDE.md"
-      }
-    },
-    {
       "id": "cli-doc-ship:safe",
       "checkId": "cli-documentation",
       "severity": "P1",
@@ -1357,19 +1279,16 @@
       }
     },
     {
-      "id": "pii-masking-missing",
-      "checkId": "pii-masking",
-      "severity": "P0",
-      "category": "security",
-      "title": "PII masking not implemented in logger.ts",
-      "description": "Missing functions: redactPII, sanitizePII",
+      "id": "test-coverage-doc-lifecycle-manager.ts",
+      "checkId": "test-coverage",
+      "severity": "P1",
+      "category": "testing",
+      "title": "Missing test: doc-lifecycle-manager.ts",
+      "description": "New file scripts/doc-lifecycle-manager.ts has no corresponding test",
       "autoFixable": false,
       "details": {
-        "file": "src/shared/logger.ts",
-        "missingFunctions": [
-          "redactPII",
-          "sanitizePII"
-        ]
+        "file": "scripts/doc-lifecycle-manager.ts",
+        "expectedTest": "tests/doc-lifecycle-manager.test.ts"
       }
     },
     {
@@ -1378,10 +1297,10 @@
       "severity": "P2",
       "category": "docs",
       "title": "Insufficient document cross-references",
-      "description": "Only 0 cross-references found (minimum: 10)",
+      "description": "Only 2 cross-references found (minimum: 10)",
       "autoFixable": false,
       "details": {
-        "found": 0,
+        "found": 2,
         "minimum": 10,
         "patterns": [
           "@file",
@@ -1407,10 +1326,10 @@
     }
   ],
   "summary": {
-    "P0": 1,
-    "P1": 105,
+    "P0": 0,
+    "P1": 100,
     "P2": 1,
-    "total": 107
+    "total": 101
   },
-  "executionTime": 118
+  "executionTime": 65
 }

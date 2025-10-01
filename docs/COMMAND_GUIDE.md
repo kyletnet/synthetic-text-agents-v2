@@ -237,6 +237,35 @@ npm run build            # 빌드
 
 ## 🔧 추가 명령어
 
+### GAP Scanner (Quality Assurance)
+
+```bash
+npm run gap:scan              # Run full GAP scan (shadow mode)
+npm run gap:scan:quick        # Quick scan (fast checks only)
+npm run gap:scan:metrics      # GAP metrics and trends
+npm run gap:config            # Manage GAP configuration
+npm run gap:pr-bot            # GAP PR validation bot
+```
+
+**Purpose**: Prevent quality gaps before they become issues
+**Checks**: CLI docs, governance sync, PII masking, test coverage, doc cross-refs, agent chain tests
+
+### Document Lifecycle Management
+
+```bash
+npm run doc:lifecycle -- --analyze              # Analyze all documents status
+npm run doc:lifecycle:analyze                   # Same as above (shorthand)
+npm run doc:lifecycle -- --find-stale           # Find stale documents (90+ days)
+npm run doc:lifecycle:stale                     # Same as above (shorthand)
+npm run doc:lifecycle -- --deprecate <path>     # Deprecate a document
+npm run doc:lifecycle -- --archive <path>       # Archive a document
+npm run doc:lifecycle -- --cleanup              # Clean up expired docs
+npm run doc:lifecycle:cleanup                   # Same as above (shorthand)
+```
+
+**Purpose**: Manage document lifecycle (active → deprecated → deleted)
+**Features**: Auto-detection, reference tracking, grace period (90 days)
+
 ### System Management
 
 ```bash

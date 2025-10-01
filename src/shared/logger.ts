@@ -129,6 +129,20 @@ export class Logger {
     return this.maskPII(data) as T;
   }
 
+  /**
+   * Redact PII from data (alias for maskPII for backward compatibility)
+   */
+  public redactPII<T>(data: T): T {
+    return this.maskPII(data) as T;
+  }
+
+  /**
+   * Sanitize PII from data (public method for external use)
+   */
+  public sanitizePII<T>(data: T): T {
+    return this.maskPII(data) as T;
+  }
+
   async initialize(): Promise<void> {
     try {
       await writeFile(this.traceFilePath, "");
