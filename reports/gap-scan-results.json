@@ -1,0 +1,1416 @@
+{
+  "timestamp": "2025-10-01T10:44:28.739Z",
+  "mode": "shadow",
+  "totalChecks": 8,
+  "enabledChecks": 8,
+  "gaps": [
+    {
+      "id": "cli-doc-sync:auto",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: sync:auto",
+      "description": "'sync:auto' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "sync:auto",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-/validate",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: /validate",
+      "description": "'/validate' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "/validate",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-/verify",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: /verify",
+      "description": "'/verify' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "/verify",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-/update",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: /update",
+      "description": "'/update' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "/update",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-smart:update",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: smart:update",
+      "description": "'smart:update' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "smart:update",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-status:quick",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: status:quick",
+      "description": "'status:quick' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "status:quick",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-routing:status",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: routing:status",
+      "description": "'routing:status' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "routing:status",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-metrics:report",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: metrics:report",
+      "description": "'metrics:report' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "metrics:report",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-metrics:export",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: metrics:export",
+      "description": "'metrics:export' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "metrics:export",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-metrics:auto",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: metrics:auto",
+      "description": "'metrics:auto' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "metrics:auto",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-snapshot:browser",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: snapshot:browser",
+      "description": "'snapshot:browser' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "snapshot:browser",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-snapshot:dashboard",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: snapshot:dashboard",
+      "description": "'snapshot:dashboard' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "snapshot:dashboard",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-snapshot:recent",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: snapshot:recent",
+      "description": "'snapshot:recent' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "snapshot:recent",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-snapshot:interactive",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: snapshot:interactive",
+      "description": "'snapshot:interactive' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "snapshot:interactive",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-improve:analyze",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: improve:analyze",
+      "description": "'improve:analyze' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "improve:analyze",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-improve:dry-run",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: improve:dry-run",
+      "description": "'improve:dry-run' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "improve:dry-run",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-improve:status",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: improve:status",
+      "description": "'improve:status' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "improve:status",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-improve:force-d",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: improve:force-d",
+      "description": "'improve:force-d' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "improve:force-d",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-approve",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: approve",
+      "description": "'approve' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "approve",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-approve:status",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: approve:status",
+      "description": "'approve:status' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "approve:status",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-approve:clear",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: approve:clear",
+      "description": "'approve:clear' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "approve:clear",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-queue:status",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: queue:status",
+      "description": "'queue:status' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "queue:status",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-queue:execute",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: queue:execute",
+      "description": "'queue:execute' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "queue:execute",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-queue:demo",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: queue:demo",
+      "description": "'queue:demo' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "queue:demo",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-fix:legacy",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: fix:legacy",
+      "description": "'fix:legacy' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "fix:legacy",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-ship:legacy",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: ship:legacy",
+      "description": "'ship:legacy' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "ship:legacy",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-confirm-sync",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: confirm-sync",
+      "description": "'confirm-sync' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "confirm-sync",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-deny-sync",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: deny-sync",
+      "description": "'deny-sync' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "deny-sync",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-prepare-release",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: prepare-release",
+      "description": "'prepare-release' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "prepare-release",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-confirm-release",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: confirm-release",
+      "description": "'confirm-release' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "confirm-release",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-deny-release",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: deny-release",
+      "description": "'deny-release' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "deny-release",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-review-sync",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: review-sync",
+      "description": "'review-sync' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "review-sync",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-recovery:rollback",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: recovery:rollback",
+      "description": "'recovery:rollback' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "recovery:rollback",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-recovery:status",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: recovery:status",
+      "description": "'recovery:status' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "recovery:status",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-advanced:improve",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: advanced:improve",
+      "description": "'advanced:improve' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "advanced:improve",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-lint:fix",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: lint:fix",
+      "description": "'lint:fix' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "lint:fix",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-ci:quality",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: ci:quality",
+      "description": "'ci:quality' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "ci:quality",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-ci:strict",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: ci:strict",
+      "description": "'ci:strict' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "ci:strict",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-fix:unused-vars",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: fix:unused-vars",
+      "description": "'fix:unused-vars' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "fix:unused-vars",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-test:approval",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: test:approval",
+      "description": "'test:approval' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "test:approval",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-build:export",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: build:export",
+      "description": "'build:export' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "build:export",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-design:rollback",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: design:rollback",
+      "description": "'design:rollback' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "design:rollback",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-design:status",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: design:status",
+      "description": "'design:status' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "design:status",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-docs:audit:full",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: docs:audit:full",
+      "description": "'docs:audit:full' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "docs:audit:full",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-docs:signals:validate",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: docs:signals:validate",
+      "description": "'docs:signals:validate' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "docs:signals:validate",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-docs:lint",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: docs:lint",
+      "description": "'docs:lint' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "docs:lint",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-docs:gate:ci",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: docs:gate:ci",
+      "description": "'docs:gate:ci' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "docs:gate:ci",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-docs:gate",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: docs:gate",
+      "description": "'docs:gate' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "docs:gate",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-integration:improve",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: integration:improve",
+      "description": "'integration:improve' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "integration:improve",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-reports:consolidate",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: reports:consolidate",
+      "description": "'reports:consolidate' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "reports:consolidate",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-design:analyze",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: design:analyze",
+      "description": "'design:analyze' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "design:analyze",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-design:audit",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: design:audit",
+      "description": "'design:audit' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "design:audit",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-integration:audit",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: integration:audit",
+      "description": "'integration:audit' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "integration:audit",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-integration:create",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: integration:create",
+      "description": "'integration:create' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "integration:create",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-system:design",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: system:design",
+      "description": "'system:design' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "system:design",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-registry:generate",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: registry:generate",
+      "description": "'registry:generate' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "registry:generate",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-registry:search",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: registry:search",
+      "description": "'registry:search' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "registry:search",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-registry:violations",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: registry:violations",
+      "description": "'registry:violations' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "registry:violations",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-registry:suggestions",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: registry:suggestions",
+      "description": "'registry:suggestions' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "registry:suggestions",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-registry:summary",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: registry:summary",
+      "description": "'registry:summary' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "registry:summary",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-evolution:analyze",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: evolution:analyze",
+      "description": "'evolution:analyze' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "evolution:analyze",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-evolution:evolve",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: evolution:evolve",
+      "description": "'evolution:evolve' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "evolution:evolve",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-system:evolve",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: system:evolve",
+      "description": "'system:evolve' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "system:evolve",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-generator:baselinereportgenerator",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: generator:baselinereportgenerator",
+      "description": "'generator:baselinereportgenerator' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "generator:baselinereportgenerator",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-policy:watch",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: policy:watch",
+      "description": "'policy:watch' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "policy:watch",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-policy:reflect",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: policy:reflect",
+      "description": "'policy:reflect' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "policy:reflect",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-alerts:show",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: alerts:show",
+      "description": "'alerts:show' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "alerts:show",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-alerts:approve",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: alerts:approve",
+      "description": "'alerts:approve' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "alerts:approve",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-alerts:test",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: alerts:test",
+      "description": "'alerts:test' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "alerts:test",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-docs:update",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: docs:update",
+      "description": "'docs:update' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "docs:update",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-maintain:legacy:safe",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: maintain:legacy:safe",
+      "description": "'maintain:legacy:safe' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "maintain:legacy:safe",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-maintain:legacy:quick",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: maintain:legacy:quick",
+      "description": "'maintain:legacy:quick' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "maintain:legacy:quick",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-system:clear-queue",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: system:clear-queue",
+      "description": "'system:clear-queue' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "system:clear-queue",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-pending:review",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: pending:review",
+      "description": "'pending:review' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "pending:review",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-approve:interactive",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: approve:interactive",
+      "description": "'approve:interactive' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "approve:interactive",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-workflow:gaps",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: workflow:gaps",
+      "description": "'workflow:gaps' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "workflow:gaps",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-workflow:optimize",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: workflow:optimize",
+      "description": "'workflow:optimize' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "workflow:optimize",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-triggers:start",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: triggers:start",
+      "description": "'triggers:start' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "triggers:start",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-triggers:add",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: triggers:add",
+      "description": "'triggers:add' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "triggers:add",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-maintain:legacy:snapshot",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: maintain:legacy:snapshot",
+      "description": "'maintain:legacy:snapshot' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "maintain:legacy:snapshot",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-optimize:trends",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: optimize:trends",
+      "description": "'optimize:trends' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "optimize:trends",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-communicate",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: communicate",
+      "description": "'communicate' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "communicate",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-communicate:manual",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: communicate:manual",
+      "description": "'communicate:manual' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "communicate:manual",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-handoff",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: handoff",
+      "description": "'handoff' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "handoff",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-report:maintain",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: report:maintain",
+      "description": "'report:maintain' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "report:maintain",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-report:maintain:smart",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: report:maintain:smart",
+      "description": "'report:maintain:smart' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "report:maintain:smart",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-check:typescript",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: check:typescript",
+      "description": "'check:typescript' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "check:typescript",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-check:signatures",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: check:signatures",
+      "description": "'check:signatures' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "check:signatures",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-check:P0-only",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: check:P0-only",
+      "description": "'check:P0-only' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "check:P0-only",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-check:node",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: check:node",
+      "description": "'check:node' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "check:node",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-check:quick",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: check:quick",
+      "description": "'check:quick' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "check:quick",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-check:all",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: check:all",
+      "description": "'check:all' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "check:all",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-/communicate",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: /communicate",
+      "description": "'/communicate' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "/communicate",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-ship:docs",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: ship:docs",
+      "description": "'ship:docs' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "ship:docs",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-gap:scan",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: gap:scan",
+      "description": "'gap:scan' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "gap:scan",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-gap:scan:quick",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: gap:scan:quick",
+      "description": "'gap:scan:quick' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "gap:scan:quick",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-gap:scan:metrics",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: gap:scan:metrics",
+      "description": "'gap:scan:metrics' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "gap:scan:metrics",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-gap:config",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: gap:config",
+      "description": "'gap:config' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "gap:config",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-gap:pr-bot",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: gap:pr-bot",
+      "description": "'gap:pr-bot' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "gap:pr-bot",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-doc:lifecycle",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: doc:lifecycle",
+      "description": "'doc:lifecycle' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "doc:lifecycle",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-ship:safe",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: ship:safe",
+      "description": "'ship:safe' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "ship:safe",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-system:designfirstsystemarchitect",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: system:designfirstsystemarchitect",
+      "description": "'system:designfirstsystemarchitect' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "system:designfirstsystemarchitect",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-general:newcomponent",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: general:newcomponent",
+      "description": "'general:newcomponent' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "general:newcomponent",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "cli-doc-system component:testcomponent",
+      "checkId": "cli-documentation",
+      "severity": "P1",
+      "category": "docs",
+      "title": "Undocumented CLI command: system component:testcomponent",
+      "description": "'system component:testcomponent' exists in package.json but not documented in docs/COMMAND_GUIDE.md",
+      "autoFixable": false,
+      "details": {
+        "command": "system component:testcomponent",
+        "documentation": "docs/COMMAND_GUIDE.md"
+      }
+    },
+    {
+      "id": "pii-masking-missing",
+      "checkId": "pii-masking",
+      "severity": "P0",
+      "category": "security",
+      "title": "PII masking not implemented in logger.ts",
+      "description": "Missing functions: redactPII, sanitizePII",
+      "autoFixable": false,
+      "details": {
+        "file": "src/shared/logger.ts",
+        "missingFunctions": [
+          "redactPII",
+          "sanitizePII"
+        ]
+      }
+    },
+    {
+      "id": "doc-cross-refs-insufficient",
+      "checkId": "doc-cross-refs",
+      "severity": "P2",
+      "category": "docs",
+      "title": "Insufficient document cross-references",
+      "description": "Only 0 cross-references found (minimum: 10)",
+      "autoFixable": false,
+      "details": {
+        "found": 0,
+        "minimum": 10,
+        "patterns": [
+          "@file",
+          "@docs/",
+          "See:"
+        ]
+      }
+    },
+    {
+      "id": "agent-e2e-missing",
+      "checkId": "agent-e2e",
+      "severity": "P1",
+      "category": "testing",
+      "title": "Agent chain E2E test missing",
+      "description": "No test covers: Evidence → Answer → Audit",
+      "autoFixable": false,
+      "details": {
+        "requiredChains": [
+          "Evidence → Answer → Audit"
+        ],
+        "testPattern": "tests/integration/**/*.test.ts"
+      }
+    }
+  ],
+  "summary": {
+    "P0": 1,
+    "P1": 105,
+    "P2": 1,
+    "total": 107
+  },
+  "executionTime": 118
+}
