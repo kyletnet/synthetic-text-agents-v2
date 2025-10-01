@@ -1,0 +1,1967 @@
+{
+  "id": "snapshot-2025-10-01T07-49-14-490Z",
+  "timestamp": "2025-10-01T07:49:14.490Z",
+  "gitCommit": "a959ccf5270de489eeccb3bb3981b377c56ee94b",
+  "gitBranch": "main",
+  "files": {
+    "src/utils/log.ts": {
+      "hash": "4bbafe56ac66ccc7f48ca08501f72e86a898346dd542e2f44a50b6bed7ffb033",
+      "size": 354,
+      "mtime": "2025-09-30T05:42:58.850Z",
+      "path": "src/utils/log.ts"
+    },
+    "src/utils/cost.ts": {
+      "hash": "6ff138fa11c04309165e6d634c378836be3f8bf93d22ab59a200c350455367f4",
+      "size": 611,
+      "mtime": "2025-09-30T05:42:58.845Z",
+      "path": "src/utils/cost.ts"
+    },
+    "src/shared/types.ts": {
+      "hash": "57b6cb609048099a8a780beed106849a4714d99c39f970a9ab228335982bc0d5",
+      "size": 3492,
+      "mtime": "2025-09-30T05:43:37.109Z",
+      "path": "src/shared/types.ts"
+    },
+    "src/shared/secretsManager.ts": {
+      "hash": "3677fe4f64f65637b65b0ed811e46971445f0260e6a8e9530c70ffd6ff2b0f51",
+      "size": 7649,
+      "mtime": "2025-09-30T05:43:37.160Z",
+      "path": "src/shared/secretsManager.ts"
+    },
+    "src/shared/rulesEngine.ts": {
+      "hash": "5b3efe6db970b50238a906845fd2ca1f28e959be6d314592c3366607fb330f9c",
+      "size": 3332,
+      "mtime": "2025-09-30T05:43:37.130Z",
+      "path": "src/shared/rulesEngine.ts"
+    },
+    "src/shared/registry.ts": {
+      "hash": "2d080ffa21e0919b87a8bf72c7f6b8ca4938955385fb032ae1a2d184993d696b",
+      "size": 1485,
+      "mtime": "2025-09-30T05:43:37.142Z",
+      "path": "src/shared/registry.ts"
+    },
+    "src/shared/rateLimiter.ts": {
+      "hash": "6e6c5a171ad6d90a5bac3f5eee08f0eda67e6317f15bcdb1fcbf3d987499aaf7",
+      "size": 13160,
+      "mtime": "2025-09-30T05:43:37.070Z",
+      "path": "src/shared/rateLimiter.ts"
+    },
+    "src/shared/pluginTypes.ts": {
+      "hash": "1912189bd07abc2c2c8dccdb2b97cfc1666793763a09eb20bbac4757ed05aad3",
+      "size": 2074,
+      "mtime": "2025-09-30T05:43:37.127Z",
+      "path": "src/shared/pluginTypes.ts"
+    },
+    "src/shared/pluginLoader.ts": {
+      "hash": "f186538248293fc26d19ce30c729fc19292fe51b6514e39e04a256a0ed403241",
+      "size": 7475,
+      "mtime": "2025-09-30T05:43:37.145Z",
+      "path": "src/shared/pluginLoader.ts"
+    },
+    "src/shared/performanceMonitoring.ts": {
+      "hash": "2466985af1deb2b52a445aa62f2bfd0e4dde59215a3fed42ed7d01ff44b91b9f",
+      "size": 17822,
+      "mtime": "2025-09-30T05:43:37.106Z",
+      "path": "src/shared/performanceMonitoring.ts"
+    },
+    "src/shared/performanceDashboard.ts": {
+      "hash": "53835045c3fa02c0d475ed0307414f25b492be509f7b2c50165a8cbe195dbfa1",
+      "size": 14355,
+      "mtime": "2025-09-30T05:51:12.617Z",
+      "path": "src/shared/performanceDashboard.ts"
+    },
+    "src/shared/metrics.ts": {
+      "hash": "ef87a5234a7e9dff90e02da0072dccdf6ff31de4aa96f702104e7c9a9d95de0b",
+      "size": 900,
+      "mtime": "2025-09-30T05:43:37.163Z",
+      "path": "src/shared/metrics.ts"
+    },
+    "src/shared/logger.ts": {
+      "hash": "ac4999e16ffb4b73dc543e0bea9efc29c3dcaf130bcc63a47acb51bceff637e1",
+      "size": 2189,
+      "mtime": "2025-09-30T05:43:37.112Z",
+      "path": "src/shared/logger.ts"
+    },
+    "src/shared/logMasking.ts": {
+      "hash": "c963ee2d1fdb3c77598da398abbd04b61980a69533834c3da7af54e2ebe36003",
+      "size": 7309,
+      "mtime": "2025-09-30T05:43:37.073Z",
+      "path": "src/shared/logMasking.ts"
+    },
+    "src/shared/logForwarder.ts": {
+      "hash": "9f37b215ba8c5b5baa1d2c43b01f88d547abdf577a4cc6d0bb8897a453e72032",
+      "size": 16455,
+      "mtime": "2025-09-30T05:43:37.134Z",
+      "path": "src/shared/logForwarder.ts"
+    },
+    "src/shared/logAggregation.ts": {
+      "hash": "bf5dc5b34cd45771cfae79cbe979ae44da888e69038e7d7dc26c2993299142b8",
+      "size": 22802,
+      "mtime": "2025-09-30T05:43:37.167Z",
+      "path": "src/shared/logAggregation.ts"
+    },
+    "src/shared/llmAdapter.ts": {
+      "hash": "62094961992c0f074688e4b5d757c63b0060c35bea787065d7e22fc0f7fd0c77",
+      "size": 3525,
+      "mtime": "2025-09-30T05:43:37.138Z",
+      "path": "src/shared/llmAdapter.ts"
+    },
+    "src/shared/llm.ts": {
+      "hash": "9df93c778aab50df1613cfd993085776d74a9da8b3edf06004d232f2c8d91fbf",
+      "size": 681,
+      "mtime": "2025-09-30T05:43:37.119Z",
+      "path": "src/shared/llm.ts"
+    },
+    "src/shared/jsonl.ts": {
+      "hash": "7bc67492dcb351739ebea92f500f97741dbeae90350d547de14ac239bb55f7bc",
+      "size": 304,
+      "mtime": "2025-09-30T05:43:37.091Z",
+      "path": "src/shared/jsonl.ts"
+    },
+    "src/shared/inputValidation.ts": {
+      "hash": "81d6c997997db260f85a728a047b5b96c8453d2d748f510e7949290943023604",
+      "size": 15694,
+      "mtime": "2025-09-30T05:43:37.102Z",
+      "path": "src/shared/inputValidation.ts"
+    },
+    "src/shared/hash.ts": {
+      "hash": "cedf210b5e3d93cd91dec14965de03fc23c5ee7fba782fa65750a2c057e6f610",
+      "size": 185,
+      "mtime": "2025-09-30T05:43:37.098Z",
+      "path": "src/shared/hash.ts"
+    },
+    "src/shared/errors.ts": {
+      "hash": "9678dabdf12e3b78e8315bf4b1a1003315f6a8c00caca10930bd7fa30e8b66e4",
+      "size": 3946,
+      "mtime": "2025-09-30T05:43:37.079Z",
+      "path": "src/shared/errors.ts"
+    },
+    "src/shared/errorTracking.ts": {
+      "hash": "68e1c648a268f314d705c7dc01bf119a443d6d08d9e7af65fddcd412d7cc855f",
+      "size": 13509,
+      "mtime": "2025-09-30T05:51:00.485Z",
+      "path": "src/shared/errorTracking.ts"
+    },
+    "src/shared/env.ts": {
+      "hash": "f02d425b557c90fec24ea953ebd6eb2843e8b2ff0b5092b4821957b0f4f82a6b",
+      "size": 748,
+      "mtime": "2025-09-30T05:43:37.149Z",
+      "path": "src/shared/env.ts"
+    },
+    "src/shared/deadLetterQueue.ts": {
+      "hash": "8d78eca76a1d2599534166e9684c2bc4e72e3c42fd1f8d896fa82350b733b18d",
+      "size": 14480,
+      "mtime": "2025-09-30T05:43:37.087Z",
+      "path": "src/shared/deadLetterQueue.ts"
+    },
+    "src/shared/config.ts": {
+      "hash": "6f17b4ec1e36dd8f21eebf55652695514974299d010a53adfc40fc8b33fcb0f5",
+      "size": 3137,
+      "mtime": "2025-09-30T05:43:37.153Z",
+      "path": "src/shared/config.ts"
+    },
+    "src/shared/circuitBreaker.ts": {
+      "hash": "50b5e6235a77314cff4446aec6cf09ac99481be907147eb1db0cf620d03318bc",
+      "size": 10524,
+      "mtime": "2025-09-30T05:43:37.123Z",
+      "path": "src/shared/circuitBreaker.ts"
+    },
+    "src/shared/bus.ts": {
+      "hash": "c34764443fccab256a708007aa35c8c415a059f61d3f7f0b690aadb8a14d4f97",
+      "size": 5063,
+      "mtime": "2025-09-30T05:43:37.095Z",
+      "path": "src/shared/bus.ts"
+    },
+    "src/shared/backupSystem.ts": {
+      "hash": "16c72c25e205f0b9223480c370a20af89668b8b746a459a44430913db72127cb",
+      "size": 27875,
+      "mtime": "2025-09-30T05:44:37.816Z",
+      "path": "src/shared/backupSystem.ts"
+    },
+    "src/shared/apmIntegration.ts": {
+      "hash": "bf1784899452385e4bb676447aa948d7b65b54c1010097fc30bf0bd6ac1be9df",
+      "size": 16311,
+      "mtime": "2025-09-30T05:44:23.045Z",
+      "path": "src/shared/apmIntegration.ts"
+    },
+    "src/scripts/preflight_pack.ts": {
+      "hash": "e96379c3aa097e756062658853eb8125adc35cf38f9876862db95cc956d50c53",
+      "size": 29943,
+      "mtime": "2025-09-30T05:42:59.046Z",
+      "path": "src/scripts/preflight_pack.ts"
+    },
+    "src/scripts/preflight_integration.ts": {
+      "hash": "103789f1cd59ad70987b600de872addca4bcb9105cbc5d755827afa3fdb709ee",
+      "size": 23153,
+      "mtime": "2025-09-30T05:42:59.070Z",
+      "path": "src/scripts/preflight_integration.ts"
+    },
+    "src/scripts/metrics/thresholdManager.ts": {
+      "hash": "2dcdddb0eff393384cb3961f8bb9639f434cd65832dfc8417b35892461019728",
+      "size": 33651,
+      "mtime": "2025-09-30T05:42:59.034Z",
+      "path": "src/scripts/metrics/thresholdManager.ts"
+    },
+    "src/scripts/metrics/qtypeDistribution.ts": {
+      "hash": "c3e62e63d3300d6f44b68c5f683e6d68c357d0a2dcd9acd7463f9e6c920c4f47",
+      "size": 8845,
+      "mtime": "2025-09-30T05:42:59.037Z",
+      "path": "src/scripts/metrics/qtypeDistribution.ts"
+    },
+    "src/scripts/metrics/piiLicenseScan.ts": {
+      "hash": "b550efe71037f449e9bc4da428758e48c7e5ac7f4278302d41ab17cc9beef4aa",
+      "size": 12465,
+      "mtime": "2025-09-30T05:42:59.040Z",
+      "path": "src/scripts/metrics/piiLicenseScan.ts"
+    },
+    "src/scripts/metrics/hallucinationRules.ts": {
+      "hash": "87185aed805f328b9927a7940671fd3ecbe0d7fc620655cf2b6cb821e244bb8f",
+      "size": 10682,
+      "mtime": "2025-09-30T05:42:59.016Z",
+      "path": "src/scripts/metrics/hallucinationRules.ts"
+    },
+    "src/scripts/metrics/evidenceQuality.ts": {
+      "hash": "d6738c40db05b1837a59b1903c50b97a6e22bec4e5736eb72ca6b5bcb9ae7fa8",
+      "size": 10612,
+      "mtime": "2025-09-30T05:42:59.030Z",
+      "path": "src/scripts/metrics/evidenceQuality.ts"
+    },
+    "src/scripts/metrics/duplicationMetrics.ts": {
+      "hash": "d43c131e91b4d02ac06e17ea6a3a0ddda0b8fae707ef862a356eff6eef2e3dd4",
+      "size": 8814,
+      "mtime": "2025-09-30T05:42:59.023Z",
+      "path": "src/scripts/metrics/duplicationMetrics.ts"
+    },
+    "src/scripts/metrics/coverageMetrics.ts": {
+      "hash": "36bad60d8c3cb6bfe960eeb6280b7540297605606aa8ccf582c33aca3fd18377",
+      "size": 11893,
+      "mtime": "2025-09-30T05:42:59.007Z",
+      "path": "src/scripts/metrics/coverageMetrics.ts"
+    },
+    "src/scripts/metrics/baselineReportGenerator.ts": {
+      "hash": "a7cea02e22b4af4132a51c47a5b4d376488b3515b0aa3bb2d87492b4497b6e82",
+      "size": 43673,
+      "mtime": "2025-09-30T05:45:28.360Z",
+      "path": "src/scripts/metrics/baselineReportGenerator.ts"
+    },
+    "src/scripts/metrics/baselineCli.ts": {
+      "hash": "4a38bf07752e35898cb475fcb0570fb0e0680d3307a149ab61f3d509ceb85f39",
+      "size": 8143,
+      "mtime": "2025-09-30T05:42:59.010Z",
+      "path": "src/scripts/metrics/baselineCli.ts"
+    },
+    "src/scripts/metrics/__all__.ts": {
+      "hash": "35e1272d0f50dc35422e4b21efbc01bac0db74e9bcd0f75e02a2e07904ae3d8b",
+      "size": 18654,
+      "mtime": "2025-09-30T05:45:28.075Z",
+      "path": "src/scripts/metrics/__all__.ts"
+    },
+    "src/scripts/lib/session_report_validator.ts": {
+      "hash": "2ecd7f4d94e043af0ced9b0b3e576f93efb8af2117dc283e48f85f27a5a6d399",
+      "size": 9696,
+      "mtime": "2025-09-30T05:42:59.125Z",
+      "path": "src/scripts/lib/session_report_validator.ts"
+    },
+    "src/scripts/lib/session_report.ts": {
+      "hash": "0273078831c461a1d4f0cc914b128a061769cbf31ebe2f76234e02e22929debc",
+      "size": 11865,
+      "mtime": "2025-09-30T05:42:59.088Z",
+      "path": "src/scripts/lib/session_report.ts"
+    },
+    "src/scripts/lib/seed_manager.ts": {
+      "hash": "d552cceaee840018b770fa44e8ba783ab05f50f2bd5161d21593860337196839",
+      "size": 12650,
+      "mtime": "2025-09-30T05:42:59.118Z",
+      "path": "src/scripts/lib/seed_manager.ts"
+    },
+    "src/scripts/lib/observability_exporter.ts": {
+      "hash": "3f51c22614f6f6ce95e5fd7d9468cc4767184195ea60167307f5ab75ff1ca416",
+      "size": 19156,
+      "mtime": "2025-09-30T05:42:59.099Z",
+      "path": "src/scripts/lib/observability_exporter.ts"
+    },
+    "src/scripts/lib/manifest_manager.ts": {
+      "hash": "815b6a0a3db877fa875d66914249786b7970c304d1e490f4166da7c8b4a89f97",
+      "size": 18397,
+      "mtime": "2025-09-30T05:42:59.111Z",
+      "path": "src/scripts/lib/manifest_manager.ts"
+    },
+    "src/scripts/lib/gating_integrator.ts": {
+      "hash": "3977caeb901c396917f752d6928fff22829a7346cce48cbea6d1a6658cca4e9a",
+      "size": 11222,
+      "mtime": "2025-09-30T05:42:59.091Z",
+      "path": "src/scripts/lib/gating_integrator.ts"
+    },
+    "src/scripts/lib/export_enhanced_cli.ts": {
+      "hash": "195d47d616c6b49503aff3a8e867dc20664920be8920b63609d0d76e4f361894",
+      "size": 4894,
+      "mtime": "2025-09-30T05:42:59.105Z",
+      "path": "src/scripts/lib/export_enhanced_cli.ts"
+    },
+    "src/scripts/lib/export_enhanced.ts": {
+      "hash": "26ac9a8d67a5d2b6c2885e08c95fd3f1fab5ce369eb6be663162745b7a6d7f4f",
+      "size": 15127,
+      "mtime": "2025-09-30T05:42:59.095Z",
+      "path": "src/scripts/lib/export_enhanced.ts"
+    },
+    "src/scripts/lib/dlq_manager.ts": {
+      "hash": "f26f500b9bf3fc4cecd378ff022c0ab8369332196eb07ab2d717696f29b0b102",
+      "size": 14234,
+      "mtime": "2025-09-30T05:42:59.102Z",
+      "path": "src/scripts/lib/dlq_manager.ts"
+    },
+    "src/scripts/lib/dlq.ts": {
+      "hash": "5bf3b065ad89880a737902b9f2137fbc6de72d65e9692fb9b41334c978ee6ed4",
+      "size": 11983,
+      "mtime": "2025-09-30T05:42:59.079Z",
+      "path": "src/scripts/lib/dlq.ts"
+    },
+    "src/scripts/lib/checkpoint_manager.ts": {
+      "hash": "84d2e580e2c3d4a9f2425e60b00e8b501568c68e7846c25bc90822bf3fd71184",
+      "size": 23132,
+      "mtime": "2025-09-30T05:42:59.084Z",
+      "path": "src/scripts/lib/checkpoint_manager.ts"
+    },
+    "src/scripts/lib/budget_guardian.ts": {
+      "hash": "e774948baf2fa1e9c4662366d5bc518f4135fa859a1a189365585208a51d6433",
+      "size": 18882,
+      "mtime": "2025-09-30T05:42:59.122Z",
+      "path": "src/scripts/lib/budget_guardian.ts"
+    },
+    "src/scripts/lib/agent_logger.ts": {
+      "hash": "917fbe71a132eacd264df8caea41082555ff91b8e59baaed04f13db2ef8d9658",
+      "size": 18030,
+      "mtime": "2025-09-30T05:42:59.115Z",
+      "path": "src/scripts/lib/agent_logger.ts"
+    },
+    "src/scripts/ci/verify_ops_brief.ts": {
+      "hash": "16cb9fa74056ffcbc0a8e80a5d9e97916869151a39b39821d036b1714754650f",
+      "size": 7535,
+      "mtime": "2025-09-30T05:42:59.060Z",
+      "path": "src/scripts/ci/verify_ops_brief.ts"
+    },
+    "src/scripts/ci/verify_bundle_contents.ts": {
+      "hash": "d76e5f8d7af9e537a9221a032ad2636945b40b270bd6b889fedccd7502fb75ce",
+      "size": 2995,
+      "mtime": "2025-09-30T05:42:59.053Z",
+      "path": "src/scripts/ci/verify_bundle_contents.ts"
+    },
+    "src/scripts/ci/check_observability_consistency.ts": {
+      "hash": "4af04c46c96410de9f19d727fe608951a65c64374b3d5784ba5b73086508bc48",
+      "size": 12210,
+      "mtime": "2025-09-30T05:42:59.065Z",
+      "path": "src/scripts/ci/check_observability_consistency.ts"
+    },
+    "src/rag/service.ts": {
+      "hash": "a7eaf8d4a30309983dafab4a063ad10591f4180c409858d6e30d3c8463050c8e",
+      "size": 8586,
+      "mtime": "2025-09-30T05:46:44.485Z",
+      "path": "src/rag/service.ts"
+    },
+    "src/rag/retrieve.ts": {
+      "hash": "d347e747bf4d88c03dcff44c9d1339b1b6ee1e67ed8ceebed30269a681ef23b5",
+      "size": 4266,
+      "mtime": "2025-09-30T05:46:44.476Z",
+      "path": "src/rag/retrieve.ts"
+    },
+    "src/rag/performance-monitor.ts": {
+      "hash": "b6b7c62b13a2715020f8e389c3b2fd86f273522b3be559df29c2205fb7745110",
+      "size": 10124,
+      "mtime": "2025-09-30T05:46:44.467Z",
+      "path": "src/rag/performance-monitor.ts"
+    },
+    "src/rag/index.ts": {
+      "hash": "dda67f39ef1bef89678cc658f1d652a24e54bee0ccaa6228c5b2257fa16a2c75",
+      "size": 152,
+      "mtime": "2025-09-30T05:42:58.980Z",
+      "path": "src/rag/index.ts"
+    },
+    "src/rag/factory.ts": {
+      "hash": "995bdda36c5d58ba722b1a8f319a6074a8dc5583c37cf576557606914296ebc6",
+      "size": 6982,
+      "mtime": "2025-09-30T05:46:44.458Z",
+      "path": "src/rag/factory.ts"
+    },
+    "src/rag/embeddings.ts": {
+      "hash": "d070e00ecc4ce6425612aea63a8132f2d722e2b012bfcd7144a5f9a853aff184",
+      "size": 10336,
+      "mtime": "2025-09-30T05:46:44.451Z",
+      "path": "src/rag/embeddings.ts"
+    },
+    "src/rag/chunk.ts": {
+      "hash": "3d8444f160de283b56448eaf51e10e4a5e2d5dd0757cf3f89952cd0a9e867ae1",
+      "size": 7058,
+      "mtime": "2025-09-30T05:46:44.437Z",
+      "path": "src/rag/chunk.ts"
+    },
+    "src/feedback/types.ts": {
+      "hash": "7457816c5f6febdabf749f05f9d197885c1934120c6184f253ef7c81c470820e",
+      "size": 753,
+      "mtime": "2025-09-30T05:42:58.993Z",
+      "path": "src/feedback/types.ts"
+    },
+    "src/feedback/selectors.ts": {
+      "hash": "9046266cb8e4daf48f85b9edf7c50f1cb9fabb0beaadc9fd2d6624b5d63c1325",
+      "size": 697,
+      "mtime": "2025-09-30T05:42:58.996Z",
+      "path": "src/feedback/selectors.ts"
+    },
+    "src/feedback/scorer.ts": {
+      "hash": "40bf80e8c82fb57a6b03c5e926c7416925401f65e1b8d186238b96817c0d79f3",
+      "size": 999,
+      "mtime": "2025-09-30T05:42:58.987Z",
+      "path": "src/feedback/scorer.ts"
+    },
+    "src/feedback/index.ts": {
+      "hash": "700f4a441dc5a2418f4ccb3b1e7c590fed17df1f2b7a152e92eccc96832b9c29",
+      "size": 107,
+      "mtime": "2025-09-30T05:42:58.999Z",
+      "path": "src/feedback/index.ts"
+    },
+    "src/feedback/applier.ts": {
+      "hash": "463eb9860c428f7e168858bb0054eda87ae28fb355793a0c918e17fd557cf505",
+      "size": 1011,
+      "mtime": "2025-09-30T05:42:58.990Z",
+      "path": "src/feedback/applier.ts"
+    },
+    "src/core/systemInitializer.ts": {
+      "hash": "4272d8184b279bf202670e4141c47bfab0ee02696916c30d79883bb1fb36e70e",
+      "size": 15917,
+      "mtime": "2025-09-30T05:42:58.794Z",
+      "path": "src/core/systemInitializer.ts"
+    },
+    "src/core/performanceGuardian.ts": {
+      "hash": "6689285cb071f5e0870064767406fce2235ed5e4924a76feaa9f55c785f1db77",
+      "size": 1303,
+      "mtime": "2025-09-30T05:42:58.790Z",
+      "path": "src/core/performanceGuardian.ts"
+    },
+    "src/core/orchestratorFactory.ts": {
+      "hash": "acca10c65b41b12af90030a9301843713652523199b9f7082cacd58e508afb8e",
+      "size": 2740,
+      "mtime": "2025-09-30T05:42:58.804Z",
+      "path": "src/core/orchestratorFactory.ts"
+    },
+    "src/core/orchestrator.ts": {
+      "hash": "abcfc96d073e2464c775818a15e36f83311e2f516317a6c56c089f6cced306da",
+      "size": 11994,
+      "mtime": "2025-09-30T05:42:58.798Z",
+      "path": "src/core/orchestrator.ts"
+    },
+    "src/core/metaController.ts": {
+      "hash": "8a28de86e9dbf0de9e7fc8e8af51aac34714307e8063851659274c25d24c3850",
+      "size": 13750,
+      "mtime": "2025-09-30T05:42:58.810Z",
+      "path": "src/core/metaController.ts"
+    },
+    "src/core/baseAgent.ts": {
+      "hash": "3d0b80ea5da0677b1b6f8e01194f81713c20cf91a3740041cb0ab407f2d66b5e",
+      "size": 5761,
+      "mtime": "2025-09-30T05:42:58.807Z",
+      "path": "src/core/baseAgent.ts"
+    },
+    "src/core/abTestManager.ts": {
+      "hash": "c7440d9bb9b945a6e24ebe0ce7aa8ae0afa679bbe5a8aa0d0807cba303bc1e4a",
+      "size": 11284,
+      "mtime": "2025-09-30T05:42:58.801Z",
+      "path": "src/core/abTestManager.ts"
+    },
+    "src/components/context-injector.ts": {
+      "hash": "9b644d119d16d61392d8589dd8001872d9176897cf54ccf82953a951a3e8db22",
+      "size": 11865,
+      "mtime": "2025-09-30T05:46:44.344Z",
+      "path": "src/components/context-injector.ts"
+    },
+    "src/clients/anthropicAdapter.ts": {
+      "hash": "0a6143674388c86ae0254597c4dc7f245af810c7d9b21e510c2671ec35e2cb57",
+      "size": 12914,
+      "mtime": "2025-09-30T05:42:58.782Z",
+      "path": "src/clients/anthropicAdapter.ts"
+    },
+    "src/cli/main.ts": {
+      "hash": "84411e1110d9ca85571e0f5413799f284950139e6652162584a00919cdc850cb",
+      "size": 2529,
+      "mtime": "2025-09-30T05:46:44.308Z",
+      "path": "src/cli/main.ts"
+    },
+    "src/cli/abTestRunner.ts": {
+      "hash": "3696b2e0a24208751420b6f8f73e833cdb2b040d219e68f8c56da46f7c81e29f",
+      "size": 9380,
+      "mtime": "2025-09-30T05:42:58.958Z",
+      "path": "src/cli/abTestRunner.ts"
+    },
+    "src/augmentation/index.ts": {
+      "hash": "23d6506f69a82b2e2cf736e1ef3315d76916dbe1c04ed7dc5bb379a9f1e8f68d",
+      "size": 140,
+      "mtime": "2025-09-30T05:42:58.786Z",
+      "path": "src/augmentation/index.ts"
+    },
+    "src/agents/qualityAuditor.ts": {
+      "hash": "9626be5f9772351505a447f732ed2f218687d779fcc56b09426cec4b07ffae4e",
+      "size": 1444,
+      "mtime": "2025-09-30T05:42:58.824Z",
+      "path": "src/agents/qualityAuditor.ts"
+    },
+    "src/agents/qaGenerator.ts": {
+      "hash": "ddbbc5c3897aa72e2952f2132a289a0637b88f4b409a5bd0b8c43d05a2d99efe",
+      "size": 9114,
+      "mtime": "2025-09-30T05:46:44.273Z",
+      "path": "src/agents/qaGenerator.ts"
+    },
+    "src/agents/psychologySpecialist.ts": {
+      "hash": "93644f1ef975ba99d560feb0875fb469a264ea753d25fcf2d5cfa3dba2f91d72",
+      "size": 44439,
+      "mtime": "2025-09-30T05:42:58.828Z",
+      "path": "src/agents/psychologySpecialist.ts"
+    },
+    "src/agents/promptArchitect.ts": {
+      "hash": "d3dcaef19ca17e044abce6acdc15cfa4c56fb8083baf790baad4be384833a509",
+      "size": 2072,
+      "mtime": "2025-09-30T05:42:58.814Z",
+      "path": "src/agents/promptArchitect.ts"
+    },
+    "src/agents/linguisticsEngineer.ts": {
+      "hash": "1065328d47dfe8928d33473c13e48e56d8b36cfc2998e121399bce03b893aa81",
+      "size": 32598,
+      "mtime": "2025-09-30T05:42:58.831Z",
+      "path": "src/agents/linguisticsEngineer.ts"
+    },
+    "src/agents/domainConsultant.ts": {
+      "hash": "9620985a94bb94269d22fccc82d0aee4146d09f745af4afeb898e2e1a389aae7",
+      "size": 41283,
+      "mtime": "2025-09-30T05:42:58.835Z",
+      "path": "src/agents/domainConsultant.ts"
+    },
+    "src/agents/domainConsultant.llm.ts": {
+      "hash": "fffb7368e6cdf278ae03aceada853ef2504748e7a2a837b4a2f2dc8cfdf9d2ab",
+      "size": 2599,
+      "mtime": "2025-09-30T05:42:58.838Z",
+      "path": "src/agents/domainConsultant.llm.ts"
+    },
+    "src/agents/cognitiveScientist.ts": {
+      "hash": "4676dac282cec461c609c32346d4a882b242ce381e6dfbafd496ad90e9c0f6f1",
+      "size": 42123,
+      "mtime": "2025-09-30T05:42:58.818Z",
+      "path": "src/agents/cognitiveScientist.ts"
+    },
+    "scripts/workflow-prevention-system.ts": {
+      "hash": "399646c11cb20efc06f3c0dfdfc0d6b1669c3f23318e99536e8787be1f274059",
+      "size": 14666,
+      "mtime": "2025-09-25T04:30:55.622Z",
+      "path": "scripts/workflow-prevention-system.ts"
+    },
+    "scripts/workflow-gap-detector.ts": {
+      "hash": "c48bcf68856402aab04aefbadbacbce03841305e822612e66fa56f07db68a746",
+      "size": 9688,
+      "mtime": "2025-09-30T05:46:44.120Z",
+      "path": "scripts/workflow-gap-detector.ts"
+    },
+    "scripts/workflow-completeness-auditor.ts": {
+      "hash": "76d9e0bc494628c3dfed37b800cf07fa66f26b1c9329dc20d158acb7a1b96521",
+      "size": 16828,
+      "mtime": "2025-09-25T04:30:55.608Z",
+      "path": "scripts/workflow-completeness-auditor.ts"
+    },
+    "scripts/workaround-detector.ts": {
+      "hash": "adb01970c151467327acbb6c1723e5d91f7aba99483e622ee94389b9e0288e20",
+      "size": 12990,
+      "mtime": "2025-09-25T07:48:32.466Z",
+      "path": "scripts/workaround-detector.ts"
+    },
+    "scripts/verify-engine.ts": {
+      "hash": "b0c234d6c3504efc158c9551f0d0103afcf822005312290e01c592c4ec67cf4e",
+      "size": 6601,
+      "mtime": "2025-10-01T04:14:34.999Z",
+      "path": "scripts/verify-engine.ts"
+    },
+    "scripts/validate-engine.ts": {
+      "hash": "dbb8e2ecdc1aa8c29ce39bb49f6929b80a557a6583ed23c3e4fed138c3ed0b3e",
+      "size": 8686,
+      "mtime": "2025-10-01T06:49:04.572Z",
+      "path": "scripts/validate-engine.ts"
+    },
+    "scripts/user-communication-system.ts": {
+      "hash": "c48f2e32ed96ca56d4dce24d7864575f4fd1806d80644822e5d0a35259148ebe",
+      "size": 23456,
+      "mtime": "2025-09-30T05:46:43.964Z",
+      "path": "scripts/user-communication-system.ts"
+    },
+    "scripts/unified-reporter.ts": {
+      "hash": "96c3d5a38c8941f63954f2af40330ead1301cb8c8d57320868cf3bbc3f7a8e59",
+      "size": 3616,
+      "mtime": "2025-09-25T07:48:32.376Z",
+      "path": "scripts/unified-reporter.ts"
+    },
+    "scripts/unified-dashboard.ts": {
+      "hash": "7afc823d7f7686591fc12231941f84bd593234b8fa865bbcdbe36fbf4aa7710a",
+      "size": 23221,
+      "mtime": "2025-10-01T03:59:08.554Z",
+      "path": "scripts/unified-dashboard.ts"
+    },
+    "scripts/ts-compile-checker.ts": {
+      "hash": "94a0d21eea8f901bd6052972a1a8853e14f5769344a38709b9e1384a0d0013b4",
+      "size": 15516,
+      "mtime": "2025-09-25T04:30:55.507Z",
+      "path": "scripts/ts-compile-checker.ts"
+    },
+    "scripts/test-readline-approval.ts": {
+      "hash": "73c66335e0bbe21f52559edc78aeb30da0bccc2ba8541d10e5ab7e6a92051dfd",
+      "size": 2235,
+      "mtime": "2025-09-30T08:35:52.151Z",
+      "path": "scripts/test-readline-approval.ts"
+    },
+    "scripts/test-approval.ts": {
+      "hash": "33dc9944b9597bf0b077791a693cea34e6c215200503794588871f70793c38be",
+      "size": 3208,
+      "mtime": "2025-09-30T05:46:43.913Z",
+      "path": "scripts/test-approval.ts"
+    },
+    "scripts/system-integration-analyzer.ts": {
+      "hash": "ff86f95c7734bcd058d3cbedd012961b3a0e6fc4f09922accf49baf9e6f51f65",
+      "size": 20893,
+      "mtime": "2025-09-25T04:34:12.331Z",
+      "path": "scripts/system-integration-analyzer.ts"
+    },
+    "scripts/sync-transaction-system.ts": {
+      "hash": "35270f7622c53cc930da55d4fe20543577f8eaf6cd043fb2d328e9815952349b",
+      "size": 12791,
+      "mtime": "2025-09-25T04:30:55.469Z",
+      "path": "scripts/sync-transaction-system.ts"
+    },
+    "scripts/sync-health-reporter.ts": {
+      "hash": "489372a72dd3d05430a9b33b56bddc1eb254c6fe1044df791f46cd66a55afb9a",
+      "size": 12514,
+      "mtime": "2025-09-25T04:30:55.454Z",
+      "path": "scripts/sync-health-reporter.ts"
+    },
+    "scripts/snapshot-browser.ts": {
+      "hash": "a64dd7bd0bb4f5bb05d23318630cc17d8584f0791b4648caf1e2fc9258148a1b",
+      "size": 12803,
+      "mtime": "2025-09-30T05:46:43.863Z",
+      "path": "scripts/snapshot-browser.ts"
+    },
+    "scripts/smart-status.ts": {
+      "hash": "3fecb87f3af0ff96280f13f13579159a3d41ec3a926fc4697001420d771d7a0c",
+      "size": 6984,
+      "mtime": "2025-09-25T04:30:55.437Z",
+      "path": "scripts/smart-status.ts"
+    },
+    "scripts/smart-refactor-state.ts": {
+      "hash": "eeb1d8d47c6e78827ba79186e63720f2c28f7a328f7d2148b51f5051c5255e41",
+      "size": 12591,
+      "mtime": "2025-09-24T09:14:45.564Z",
+      "path": "scripts/smart-refactor-state.ts"
+    },
+    "scripts/smart-refactor-auditor.ts": {
+      "hash": "3875a5f37ebfc1f4fd06b6f249d01651f1b858fdbdfbd38f7b6f25aea9550477",
+      "size": 24372,
+      "mtime": "2025-09-30T05:46:43.824Z",
+      "path": "scripts/smart-refactor-auditor.ts"
+    },
+    "scripts/smart-maintenance-orchestrator.ts": {
+      "hash": "43088141cf0331a3f4f5ea1b87a0d93dcab57611f4e6c04272461efc918044c4",
+      "size": 75922,
+      "mtime": "2025-10-01T03:59:42.744Z",
+      "path": "scripts/smart-maintenance-orchestrator.ts"
+    },
+    "scripts/smart-approval-system.ts": {
+      "hash": "cc400d01a21b4ebabe0e7b452d693fbb7752f665503504397e44459d8500ab76",
+      "size": 5021,
+      "mtime": "2025-09-25T04:30:55.393Z",
+      "path": "scripts/smart-approval-system.ts"
+    },
+    "scripts/security-audit-checker.ts": {
+      "hash": "237eb60ee188f25cac4c71cf5f41d59854e8de9236f1daa770e18987198ebe37",
+      "size": 10831,
+      "mtime": "2025-09-30T05:46:43.714Z",
+      "path": "scripts/security-audit-checker.ts"
+    },
+    "scripts/safety-analyzer.ts": {
+      "hash": "70d5dd87039358ebf3e09d1d7a7ed61a98695feff12eff2bcbead4ebd324b364",
+      "size": 9533,
+      "mtime": "2025-09-24T09:14:45.492Z",
+      "path": "scripts/safety-analyzer.ts"
+    },
+    "scripts/routing-status.ts": {
+      "hash": "2c494a5cbe6b067d01403ac1ef64c85ceefa8337d998d03a207b2cee31d5c425",
+      "size": 7613,
+      "mtime": "2025-09-30T05:46:43.684Z",
+      "path": "scripts/routing-status.ts"
+    },
+    "scripts/resolve-workarounds.ts": {
+      "hash": "87a1a9ec2aa3e6af77fde1eb93e8f2370bffbcf05d36d179bd44c0c96888d6a0",
+      "size": 23094,
+      "mtime": "2025-09-30T05:46:43.674Z",
+      "path": "scripts/resolve-workarounds.ts"
+    },
+    "scripts/reference-tracker.ts": {
+      "hash": "26dbf70f7981f3c2edfb703cfbc2411623d7feb5d6110da2e559b1e75fe8578f",
+      "size": 14007,
+      "mtime": "2025-09-25T07:48:32.185Z",
+      "path": "scripts/reference-tracker.ts"
+    },
+    "scripts/refactor-auditor.ts": {
+      "hash": "7c144176143e2e246c0c87cc35c970e5887ac6f75450d755a009f565a0831e17",
+      "size": 56294,
+      "mtime": "2025-09-30T05:46:43.629Z",
+      "path": "scripts/refactor-auditor.ts"
+    },
+    "scripts/refactor-advisor.ts": {
+      "hash": "9e4e89066b8f16e1068feb092bf1126d50b4c8c2d9ef63c3b3a85046126fb9c2",
+      "size": 18505,
+      "mtime": "2025-09-25T04:30:55.305Z",
+      "path": "scripts/refactor-advisor.ts"
+    },
+    "scripts/real-time-policy-reflector.ts": {
+      "hash": "5b3fa4e47a36fe41f994f0e776d142ead76f9216d73f75dc0b1e1016a8f8f400",
+      "size": 4712,
+      "mtime": "2025-09-25T07:48:32.122Z",
+      "path": "scripts/real-time-policy-reflector.ts"
+    },
+    "scripts/quick-doc-updater.ts": {
+      "hash": "308cfa88f4616a1663132fd97614fa4e309364ace0d796feb4c4970107047624",
+      "size": 6919,
+      "mtime": "2025-09-25T04:30:55.288Z",
+      "path": "scripts/quick-doc-updater.ts"
+    },
+    "scripts/quick-check.ts": {
+      "hash": "560dca75e05625ad1d02e5c650286cbe73847862c7e5e3bd80ddb91efdb5b00d",
+      "size": 11700,
+      "mtime": "2025-09-30T05:46:43.547Z",
+      "path": "scripts/quick-check.ts"
+    },
+    "scripts/performance-metrics-reporter.ts": {
+      "hash": "39fdddb91efc62dbfb3cd7f28bc3f7ee226a183014e3fe4ee36aa7c2a9739084",
+      "size": 16465,
+      "mtime": "2025-09-30T05:46:43.528Z",
+      "path": "scripts/performance-metrics-reporter.ts"
+    },
+    "scripts/performance-auto-improver.ts": {
+      "hash": "672329707beb9df5a48c28b814df9248245b78a9dfd5c6a63bcfba6f60008733",
+      "size": 13927,
+      "mtime": "2025-09-30T05:46:43.506Z",
+      "path": "scripts/performance-auto-improver.ts"
+    },
+    "scripts/optimization-engine.ts": {
+      "hash": "41998a89a00fe36b3d91c112894c5bf344a13195d9ba69c74f02452efec357b9",
+      "size": 13116,
+      "mtime": "2025-10-01T06:49:04.072Z",
+      "path": "scripts/optimization-engine.ts"
+    },
+    "scripts/maintain-report-generator.ts": {
+      "hash": "0dc8be95613ad57b329a7c9416f810597a89e10ba956a26fa6afee85ecb94a07",
+      "size": 15430,
+      "mtime": "2025-09-30T05:46:43.091Z",
+      "path": "scripts/maintain-report-generator.ts"
+    },
+    "scripts/maintain-engine.ts": {
+      "hash": "2a4115b36ddee5613d9430c89a28007ecd3436852543ff4cf2aad1b0dd285849",
+      "size": 9139,
+      "mtime": "2025-10-01T06:49:03.862Z",
+      "path": "scripts/maintain-engine.ts"
+    },
+    "scripts/issue-tracker.ts": {
+      "hash": "f2b6415804eeecaca2f426d79d7bd5b583b24eae8063941ece230fed7c691772",
+      "size": 12625,
+      "mtime": "2025-09-25T04:30:54.954Z",
+      "path": "scripts/issue-tracker.ts"
+    },
+    "scripts/interactive-maintenance-handler.ts": {
+      "hash": "6266bff0700b042dea614d0173190741da277a6864ef7118010538ea135820c5",
+      "size": 15142,
+      "mtime": "2025-09-30T05:46:42.320Z",
+      "path": "scripts/interactive-maintenance-handler.ts"
+    },
+    "scripts/interactive-approval-handler.ts": {
+      "hash": "dc74e6c43a5a1e5525b37d8d21df27c9ee22d2b59a2cd92920ff5d0540410035",
+      "size": 10779,
+      "mtime": "2025-09-30T05:46:42.305Z",
+      "path": "scripts/interactive-approval-handler.ts"
+    },
+    "scripts/integration-improvement-engine.ts": {
+      "hash": "58fb3f49db5ded595665d36e13ba22ea8985c6c77c9d7dfb43b93cece79d399d",
+      "size": 15284,
+      "mtime": "2025-10-01T06:49:02.978Z",
+      "path": "scripts/integration-improvement-engine.ts"
+    },
+    "scripts/integration-enforcement-system.ts": {
+      "hash": "8b12034bdf47ce4802094d8ae683f3e1f430720db77fe9dc00f1e9cd9578f22c",
+      "size": 20971,
+      "mtime": "2025-09-30T05:46:42.275Z",
+      "path": "scripts/integration-enforcement-system.ts"
+    },
+    "scripts/inspection-engine.ts": {
+      "hash": "8db5022ec1cd7e9efedf1021c41c1937af61e17945ce5b8a85352712a7a4a174",
+      "size": 17989,
+      "mtime": "2025-10-01T06:49:02.943Z",
+      "path": "scripts/inspection-engine.ts"
+    },
+    "scripts/handoff-generator.ts": {
+      "hash": "26b71cab4daded65c28352d61b7465296aabfa24b4dfe7c9bd8e48fd21c4c89b",
+      "size": 9354,
+      "mtime": "2025-10-01T04:00:17.335Z",
+      "path": "scripts/handoff-generator.ts"
+    },
+    "scripts/generate_system_map.ts": {
+      "hash": "d9e387be03c7cc05398f8f0a3c7d57065e7da81438fe76a62d1d27cd8c370d40",
+      "size": 2526,
+      "mtime": "2025-09-23T08:53:35.072Z",
+      "path": "scripts/generate_system_map.ts"
+    },
+    "scripts/fix-unused-vars-batch.ts": {
+      "hash": "88a3852f3309ac42f7e6f90c01722f7416317109fc8bb5b65a0a7230285343bf",
+      "size": 3694,
+      "mtime": "2025-09-30T05:46:42.213Z",
+      "path": "scripts/fix-unused-vars-batch.ts"
+    },
+    "scripts/fix-orchestrator.ts": {
+      "hash": "1bd3bec024b0059769044ac9466d45e3666d7427088815c1a38b4c136ec9e339",
+      "size": 18852,
+      "mtime": "2025-10-01T03:59:25.930Z",
+      "path": "scripts/fix-orchestrator.ts"
+    },
+    "scripts/fix-eslint-issues.ts": {
+      "hash": "9d9d0b958b8571fbcc302489250d5ffcca82f6eabf089bb6b62079747d5167dc",
+      "size": 6841,
+      "mtime": "2025-09-23T08:53:35.048Z",
+      "path": "scripts/fix-eslint-issues.ts"
+    },
+    "scripts/fix-engine.ts": {
+      "hash": "4b01011ed12ad4d7e8a36db827aa9b513cf7238fd4d7f53363f6a4738359bf4c",
+      "size": 10412,
+      "mtime": "2025-10-01T06:49:02.852Z",
+      "path": "scripts/fix-engine.ts"
+    },
+    "scripts/export_cli.ts": {
+      "hash": "c8fcc9e99e4db7c2cd8f3fa5f38fc14d7673e6cc23a9ec186d9aa92886f976c5",
+      "size": 9393,
+      "mtime": "2025-09-23T08:53:35.022Z",
+      "path": "scripts/export_cli.ts"
+    },
+    "scripts/dry-run-approval-queue.ts": {
+      "hash": "efa87f735e87b71ef4fe49db4372bfbe74dea74392ed45fd2d0db3c4328bf592",
+      "size": 16239,
+      "mtime": "2025-09-30T05:46:41.827Z",
+      "path": "scripts/dry-run-approval-queue.ts"
+    },
+    "scripts/document-optimizer.ts": {
+      "hash": "2bafe29b29019c1e4c2a251b5162ed835e3ebae039a39da351d67f32750e2b31",
+      "size": 10108,
+      "mtime": "2025-09-25T07:48:31.563Z",
+      "path": "scripts/document-optimizer.ts"
+    },
+    "scripts/dlq_reprocess.ts": {
+      "hash": "1283fe32a1cab4c77ef20b0ba572ebeb6408341b80940822dcf036ea5766d714",
+      "size": 9934,
+      "mtime": "2025-09-23T08:53:34.814Z",
+      "path": "scripts/dlq_reprocess.ts"
+    },
+    "scripts/design-validator.ts": {
+      "hash": "8ca1fcce937a6bdbe504c2a0ad5ae10343f055f8d7db35a7a417d8b76b188a0d",
+      "size": 11167,
+      "mtime": "2025-09-30T05:46:41.683Z",
+      "path": "scripts/design-validator.ts"
+    },
+    "scripts/design-rollback-system.ts": {
+      "hash": "079a7cebb430ebed95b7d9860d52135fd58e1911bf42a1d1ae63ba692c1cb3d7",
+      "size": 9706,
+      "mtime": "2025-09-25T04:30:54.671Z",
+      "path": "scripts/design-rollback-system.ts"
+    },
+    "scripts/design-principle-engine.ts": {
+      "hash": "76e6d5586f2b8ae54478cb2ac06ac71915e4fe2a9cde07fc5ce0bf646cd8805f",
+      "size": 15545,
+      "mtime": "2025-10-01T06:49:02.498Z",
+      "path": "scripts/design-principle-engine.ts"
+    },
+    "scripts/design-metadata-manager.ts": {
+      "hash": "b275e7a45566260432c509686fb47a77f17f16d93d2ddc9dd09d44a02f62e491",
+      "size": 17701,
+      "mtime": "2025-09-25T04:30:54.651Z",
+      "path": "scripts/design-metadata-manager.ts"
+    },
+    "scripts/design-first-system-architect.ts": {
+      "hash": "6a512932d8f07e33fde51dde4cf2661aa6ba3443d58356a50bada778f5938747",
+      "size": 31268,
+      "mtime": "2025-09-25T04:30:54.642Z",
+      "path": "scripts/design-first-system-architect.ts"
+    },
+    "scripts/comprehensive-doc-updater.ts": {
+      "hash": "fb160bbf0e50ab3b34611f91897bf8442b85b3d312472de52113f0f611b17e1b",
+      "size": 14538,
+      "mtime": "2025-10-01T04:00:11.160Z",
+      "path": "scripts/comprehensive-doc-updater.ts"
+    },
+    "scripts/component-registry-system.ts": {
+      "hash": "269e85d0199662c9becb4ce6ded9c66965689c28749b886c33262a928a9e5d7e",
+      "size": 20210,
+      "mtime": "2025-09-30T05:46:41.559Z",
+      "path": "scripts/component-registry-system.ts"
+    },
+    "scripts/command-wrapper.ts": {
+      "hash": "d45653b39d3fa620f4833de980ae4fc74111c92d737b31b51e3173f2e8dc6bb3",
+      "size": 4609,
+      "mtime": "2025-09-25T04:30:54.605Z",
+      "path": "scripts/command-wrapper.ts"
+    },
+    "scripts/command-optimizer.ts": {
+      "hash": "08fa2384f2a681dcd47c206974568517594c2410fb02dc882f777a93c21d4e88",
+      "size": 9648,
+      "mtime": "2025-09-25T04:30:54.600Z",
+      "path": "scripts/command-optimizer.ts"
+    },
+    "scripts/build_docs_indexes.ts": {
+      "hash": "0923af49457cf84fbf24edfe2f9a74d3873163ea3aa2ec42a219dc5da95d2b6c",
+      "size": 1352,
+      "mtime": "2025-09-23T08:53:34.681Z",
+      "path": "scripts/build_docs_indexes.ts"
+    },
+    "scripts/auto-integration-guard.ts": {
+      "hash": "d3597f369f5fbb434fb9b9220c69498b0999b53be118b965a059fe7887fd7f87",
+      "size": 12015,
+      "mtime": "2025-09-25T04:30:54.527Z",
+      "path": "scripts/auto-integration-guard.ts"
+    },
+    "scripts/audit-trigger.ts": {
+      "hash": "44c1312c874e6f07713ac0cf0197dc843fc95c50b16627ef04f4f621c9f674e9",
+      "size": 11932,
+      "mtime": "2025-09-24T09:14:44.502Z",
+      "path": "scripts/audit-trigger.ts"
+    },
+    "scripts/architectural-evolution-engine.ts": {
+      "hash": "f11db4513e357d70c943e43ebad154b94189bf4250d8944b29cac371575fa98c",
+      "size": 30906,
+      "mtime": "2025-10-01T06:49:02.266Z",
+      "path": "scripts/architectural-evolution-engine.ts"
+    },
+    "scripts/approve-queue.ts": {
+      "hash": "17587481ee133183dd136cf5409d49210072e92f092e44a0fa3ac9231ea48402",
+      "size": 6422,
+      "mtime": "2025-09-30T05:46:41.331Z",
+      "path": "scripts/approve-queue.ts"
+    },
+    "scripts/approval-workflow.ts": {
+      "hash": "a779f1aa4fc5c480d6faaf5ba48a22b74f9ee6a952091f944b44065e945bebdb",
+      "size": 2991,
+      "mtime": "2025-09-25T04:30:54.504Z",
+      "path": "scripts/approval-workflow.ts"
+    },
+    "scripts/approval-alert-system.ts": {
+      "hash": "d3af5e977f9b9890fbbb9a192cba125a0e1c0d53fb49cd9f69449b76814bcc66",
+      "size": 6202,
+      "mtime": "2025-09-25T09:46:06.498Z",
+      "path": "scripts/approval-alert-system.ts"
+    },
+    "scripts/ai-fix-engine.ts": {
+      "hash": "b05db54444a373c0b5e1973fa19eecf830a77362d8d4092799a61b50a5b6939f",
+      "size": 23433,
+      "mtime": "2025-10-01T06:49:02.198Z",
+      "path": "scripts/ai-fix-engine.ts"
+    },
+    "scripts/utils/threshold_gating.ts": {
+      "hash": "cbe5eab35a6fa1db78a37f69e7da0bc05984d97f1d30a4f2e5a85ad20d6e6e63",
+      "size": 13325,
+      "mtime": "2025-09-23T08:53:35.671Z",
+      "path": "scripts/utils/threshold_gating.ts"
+    },
+    "scripts/utils/stability_integration.ts": {
+      "hash": "a982600a38376d18c39f7a6cb923f65a4c17edc6440d027ea86cea754aa09466",
+      "size": 18236,
+      "mtime": "2025-09-23T08:53:35.657Z",
+      "path": "scripts/utils/stability_integration.ts"
+    },
+    "scripts/utils/dlq_handler.ts": {
+      "hash": "cf8126f4c43aac7b65cc835e661f86ca57be69ba85ac2a9dcb6fa30559cc94d3",
+      "size": 14372,
+      "mtime": "2025-09-23T08:53:35.640Z",
+      "path": "scripts/utils/dlq_handler.ts"
+    },
+    "scripts/utils/checkpoint_manager.ts": {
+      "hash": "d2698114724b181b679a088422bb000c3570e993fe8fc07713dc417295b19274",
+      "size": 18473,
+      "mtime": "2025-09-23T08:53:35.624Z",
+      "path": "scripts/utils/checkpoint_manager.ts"
+    },
+    "scripts/utils/budget_guard.ts": {
+      "hash": "bf32e2fdc3c629f4e3ae850fad1813b24d9abfc9db2f9b8c1017155eeb2ca46b",
+      "size": 16406,
+      "mtime": "2025-09-23T08:53:35.602Z",
+      "path": "scripts/utils/budget_guard.ts"
+    },
+    "scripts/metrics/threshold_manager.ts": {
+      "hash": "ca30df078c862e00dea74c6a9a361bb5ee6031a7bd983441e77e696c00b92aaa",
+      "size": 33284,
+      "mtime": "2025-09-26T09:29:46.255Z",
+      "path": "scripts/metrics/threshold_manager.ts"
+    },
+    "scripts/metrics/taxonomy.ts": {
+      "hash": "e93d855ffe628a4ecb3eef18beb8707d943746a3813226d438066fee27d279e3",
+      "size": 4928,
+      "mtime": "2025-09-26T09:29:46.259Z",
+      "path": "scripts/metrics/taxonomy.ts"
+    },
+    "scripts/metrics/qtype_distribution.ts": {
+      "hash": "cf35299090fb2ab7808d34a31d25d5e510bfb64ffc3434418af45b11b36c53c2",
+      "size": 8832,
+      "mtime": "2025-09-26T09:29:46.279Z",
+      "path": "scripts/metrics/qtype_distribution.ts"
+    },
+    "scripts/metrics/pii_license_scan.ts": {
+      "hash": "85d6de44b25a57d3cfe5fb647012f3a609ba29b2bb142d66e38a035514a66683",
+      "size": 12458,
+      "mtime": "2025-09-26T09:29:46.268Z",
+      "path": "scripts/metrics/pii_license_scan.ts"
+    },
+    "scripts/metrics/hallucination_rules.ts": {
+      "hash": "eea723d5f66c1d2db2e3e642cdfb05e4b4320186db6216e5e61968ce3e6daad3",
+      "size": 10669,
+      "mtime": "2025-09-26T09:29:46.275Z",
+      "path": "scripts/metrics/hallucination_rules.ts"
+    },
+    "scripts/metrics/evidence_quality.ts": {
+      "hash": "1614ce76441073061a998c4fedeb52f7f40685dcea7065f2384706cf648ce7c4",
+      "size": 10599,
+      "mtime": "2025-09-26T09:29:46.288Z",
+      "path": "scripts/metrics/evidence_quality.ts"
+    },
+    "scripts/metrics/duplication_metrics.ts": {
+      "hash": "266873a06b2f5daaf1125f323d5f618e7370879aa268d0dc8e110f7152ae602e",
+      "size": 8655,
+      "mtime": "2025-09-26T09:29:46.264Z",
+      "path": "scripts/metrics/duplication_metrics.ts"
+    },
+    "scripts/metrics/coverage_metrics.ts": {
+      "hash": "fa5f701a3f732415e986abcc578cb8e550e644bb2077ae324c22eac5daf60ea5",
+      "size": 14380,
+      "mtime": "2025-09-26T09:29:46.293Z",
+      "path": "scripts/metrics/coverage_metrics.ts"
+    },
+    "scripts/metrics/baseline_report_generator.ts": {
+      "hash": "8ee40d0410fed396a2b9af7a7335f398dbfaec6b82656fbb206658efa0c1d794",
+      "size": 42811,
+      "mtime": "2025-09-30T05:46:43.180Z",
+      "path": "scripts/metrics/baseline_report_generator.ts"
+    },
+    "scripts/metrics/baseline_cli.ts": {
+      "hash": "83f43f3efb11f3bd7b9cfeef6ec66a0d547c1a37b2b90e262d3d5d0514e7910c",
+      "size": 8164,
+      "mtime": "2025-09-26T09:29:46.248Z",
+      "path": "scripts/metrics/baseline_cli.ts"
+    },
+    "scripts/metrics/__all__.ts": {
+      "hash": "00793042357762ebcb6b37b9b3bc19744b72f03a80682f4083f0db07041dc2f6",
+      "size": 18816,
+      "mtime": "2025-09-26T09:38:08.692Z",
+      "path": "scripts/metrics/__all__.ts"
+    },
+    "scripts/lib/workaround-resolution-engine.ts": {
+      "hash": "f5f5904eadd805d6b82a5a239b174d64de54da134195e34044dc664f462a3cb2",
+      "size": 26371,
+      "mtime": "2025-10-01T06:49:03.848Z",
+      "path": "scripts/lib/workaround-resolution-engine.ts"
+    },
+    "scripts/lib/system-integration-orchestrator.ts": {
+      "hash": "88f2b8424e0a7dd5746e3aa988abd1ecbae23d1d27bfa94389c8f8d77e21d489",
+      "size": 23977,
+      "mtime": "2025-09-30T05:46:43.038Z",
+      "path": "scripts/lib/system-integration-orchestrator.ts"
+    },
+    "scripts/lib/smart-decision-matrix.ts": {
+      "hash": "1117586d3be7f0e0ee90dca96f6df6400ad00d131959ce9130deebe196187e76",
+      "size": 27556,
+      "mtime": "2025-09-30T05:46:43.018Z",
+      "path": "scripts/lib/smart-decision-matrix.ts"
+    },
+    "scripts/lib/simplified-approval-system.ts": {
+      "hash": "6a6b9dea119daf3d79fcba552b878e926513598f532b1a7e87771089f354892e",
+      "size": 18443,
+      "mtime": "2025-09-30T08:35:51.889Z",
+      "path": "scripts/lib/simplified-approval-system.ts"
+    },
+    "scripts/lib/session_report.ts": {
+      "hash": "0500af94f0b6ce7855e6ca436eb6def1a820653aa67696a3861fdc651c04f026",
+      "size": 11775,
+      "mtime": "2025-09-23T08:53:35.355Z",
+      "path": "scripts/lib/session_report.ts"
+    },
+    "scripts/lib/self-management-tracker.ts": {
+      "hash": "9d23d975138301be13b30327922fa10b1bc551c97256cbc0b2f15ef2d5241709",
+      "size": 16020,
+      "mtime": "2025-09-30T05:46:42.928Z",
+      "path": "scripts/lib/self-management-tracker.ts"
+    },
+    "scripts/lib/seed_manager.ts": {
+      "hash": "14e23980f29054bc3e927a11249133f999543d52c84362023eee48f1be90673c",
+      "size": 12537,
+      "mtime": "2025-09-23T08:53:35.328Z",
+      "path": "scripts/lib/seed_manager.ts"
+    },
+    "scripts/lib/safe-automation-guard.ts": {
+      "hash": "9b02b08db6412c289bb6272bb03384f2a4aa558e9c59ee1f024c1ab5fb816c22",
+      "size": 6689,
+      "mtime": "2025-09-30T05:46:42.890Z",
+      "path": "scripts/lib/safe-automation-guard.ts"
+    },
+    "scripts/lib/progress-indicator.ts": {
+      "hash": "d9589d89b30bd46251df23abbf86bcc82ad96e00f1b356bbfec1781348fc0f1d",
+      "size": 5178,
+      "mtime": "2025-09-30T05:46:42.880Z",
+      "path": "scripts/lib/progress-indicator.ts"
+    },
+    "scripts/lib/process-lifecycle-manager.ts": {
+      "hash": "d1187f98fd1d72cf5361f997c5671e2289804ef3a526d4d1c1a6e3493799b464",
+      "size": 7332,
+      "mtime": "2025-09-30T05:46:42.870Z",
+      "path": "scripts/lib/process-lifecycle-manager.ts"
+    },
+    "scripts/lib/performance-cache.ts": {
+      "hash": "a74bbeab1f760bb74d1b2532a8116adacce9047afc4ee0717c3a94a17d8439f5",
+      "size": 3831,
+      "mtime": "2025-09-30T05:46:42.860Z",
+      "path": "scripts/lib/performance-cache.ts"
+    },
+    "scripts/lib/manifest_manager.ts": {
+      "hash": "e251da092c4965a64c09d5378ddd5a248b7f4d018c8d8a0738cd0a5b14abec9f",
+      "size": 18353,
+      "mtime": "2025-09-23T08:53:35.310Z",
+      "path": "scripts/lib/manifest_manager.ts"
+    },
+    "scripts/lib/interactive-recommendation-handler.ts": {
+      "hash": "b8ce93d4565bcb146376a2e4cd4e1c1bab813d7b4641dace1f57ccc80df5d852",
+      "size": 10649,
+      "mtime": "2025-09-30T05:46:42.833Z",
+      "path": "scripts/lib/interactive-recommendation-handler.ts"
+    },
+    "scripts/lib/interactive-approval-system.ts": {
+      "hash": "8778def1426fcca4a126fa464ef320ee0964f4fa6fd4ba6e02232e35dc81a807",
+      "size": 10922,
+      "mtime": "2025-09-30T05:46:42.819Z",
+      "path": "scripts/lib/interactive-approval-system.ts"
+    },
+    "scripts/lib/integration-strategy-handler.ts": {
+      "hash": "e440de9f573eb7d70b7337be139e43ac4a50a9df34ae1ee7464c37fb761cb5d6",
+      "size": 25806,
+      "mtime": "2025-09-30T05:46:42.804Z",
+      "path": "scripts/lib/integration-strategy-handler.ts"
+    },
+    "scripts/lib/integration-history-tracker.ts": {
+      "hash": "88f40e65a25ab9cb135fc7e8258482e33eeddfd50346c44d6f17143e0e8f3020",
+      "size": 20473,
+      "mtime": "2025-09-30T05:46:42.772Z",
+      "path": "scripts/lib/integration-history-tracker.ts"
+    },
+    "scripts/lib/integrated-maintenance-orchestrator.ts": {
+      "hash": "0955aa179417374498e532e13025976b6c72e9386199af5e4b573c7cc241e335",
+      "size": 14672,
+      "mtime": "2025-09-30T05:46:42.742Z",
+      "path": "scripts/lib/integrated-maintenance-orchestrator.ts"
+    },
+    "scripts/lib/inspection-schema.ts": {
+      "hash": "3e9f82fa0cc813792ab0fbbb525e8bb3246b09181db0cdb2a2152336cf1d3c2d",
+      "size": 2524,
+      "mtime": "2025-10-01T00:54:32.240Z",
+      "path": "scripts/lib/inspection-schema.ts"
+    },
+    "scripts/lib/inspection-cache.ts": {
+      "hash": "8c8d2ddeff067f911be4ee59f26200629c2d5bc0b928b237a725bdbdab660c7b",
+      "size": 5098,
+      "mtime": "2025-10-01T06:49:03.482Z",
+      "path": "scripts/lib/inspection-cache.ts"
+    },
+    "scripts/lib/gating_integrator.ts": {
+      "hash": "aa8861d3eff9bf56ff5bebeaa3e7f4534056bae8b036dd667052d76751f5201c",
+      "size": 16791,
+      "mtime": "2025-09-23T08:53:35.287Z",
+      "path": "scripts/lib/gating_integrator.ts"
+    },
+    "scripts/lib/externalized-decision-matrix.ts": {
+      "hash": "a1870081b1213ecb53204a02c7c89b84bf4aa2e2f9ebc6c308c0adac66070ac3",
+      "size": 17443,
+      "mtime": "2025-09-30T05:46:42.712Z",
+      "path": "scripts/lib/externalized-decision-matrix.ts"
+    },
+    "scripts/lib/export_enhanced_cli.ts": {
+      "hash": "463c6ebeb45b3c7579ee825dbc2908f48e18fb60f6fc8917171ce27467b77dd5",
+      "size": 4874,
+      "mtime": "2025-09-23T08:53:35.251Z",
+      "path": "scripts/lib/export_enhanced_cli.ts"
+    },
+    "scripts/lib/export_enhanced.ts": {
+      "hash": "dbac70f13467d428862c663744f8fb0e32c10804abf69cda1a725aa75cdffd1c",
+      "size": 15098,
+      "mtime": "2025-09-23T08:53:35.272Z",
+      "path": "scripts/lib/export_enhanced.ts"
+    },
+    "scripts/lib/dlq_manager.ts": {
+      "hash": "3235354409556b6000a60a3456eaad5b27e2b14e8c78878fb4c55a8e938e6229",
+      "size": 14252,
+      "mtime": "2025-09-23T08:53:35.206Z",
+      "path": "scripts/lib/dlq_manager.ts"
+    },
+    "scripts/lib/dlq.ts": {
+      "hash": "c4393f46c7f0b028fa713a7263ee8412abbae49a29b0dceadfbe30b230683bd3",
+      "size": 11781,
+      "mtime": "2025-09-23T08:53:35.242Z",
+      "path": "scripts/lib/dlq.ts"
+    },
+    "scripts/lib/diagnostic-timeouts.ts": {
+      "hash": "7c7df9c0602fe85d4568a1fb98c9d7f51edd9ee0bdaacca61ff0c619b1cf5978",
+      "size": 2047,
+      "mtime": "2025-10-01T06:49:03.261Z",
+      "path": "scripts/lib/diagnostic-timeouts.ts"
+    },
+    "scripts/lib/design-principle-mapper.ts": {
+      "hash": "7832afb588f66d75ebca16c50784efa72d0b6277ffe857b5a7fcdd60634139f8",
+      "size": 13308,
+      "mtime": "2025-09-30T05:46:42.631Z",
+      "path": "scripts/lib/design-principle-mapper.ts"
+    },
+    "scripts/lib/core-system-hub.ts": {
+      "hash": "10b3bfcb16d21894a11906a1c7ba742eb3c510640016ea0c3b31833dcba78ed1",
+      "size": 34106,
+      "mtime": "2025-09-30T05:46:42.620Z",
+      "path": "scripts/lib/core-system-hub.ts"
+    },
+    "scripts/lib/contextual-trigger-system.ts": {
+      "hash": "c4b8df502d76dfcace939a33bc05120b516e5ff6ded96bcc468227cd56e84949",
+      "size": 17495,
+      "mtime": "2025-09-30T05:46:42.569Z",
+      "path": "scripts/lib/contextual-trigger-system.ts"
+    },
+    "scripts/lib/component-integration-adapter.ts": {
+      "hash": "e8a7138d78a648227a9aa83638855e70cc7f10e3c55a412cb18dc7a2e71eb9ad",
+      "size": 9146,
+      "mtime": "2025-09-30T05:46:42.546Z",
+      "path": "scripts/lib/component-integration-adapter.ts"
+    },
+    "scripts/lib/component-harmony-analyzer.ts": {
+      "hash": "9faf7ce883dc7cc41dcc38b202c72f848577e5b3fc4306fb20e513730fd30ddf",
+      "size": 21932,
+      "mtime": "2025-09-30T05:46:42.535Z",
+      "path": "scripts/lib/component-harmony-analyzer.ts"
+    },
+    "scripts/lib/checkpoint_manager.ts": {
+      "hash": "57fd59eb25b5deb789a6a033dfe5976c1e558a1c3bac330996994ed5a9d51b08",
+      "size": 23120,
+      "mtime": "2025-09-23T08:53:35.177Z",
+      "path": "scripts/lib/checkpoint_manager.ts"
+    },
+    "scripts/lib/budget_guardian.ts": {
+      "hash": "48c6a361ad856e725ce2209b52a4866bbcd9ae63de475f31a3225e9cac46b0c0",
+      "size": 18439,
+      "mtime": "2025-09-23T08:53:35.121Z",
+      "path": "scripts/lib/budget_guardian.ts"
+    },
+    "scripts/lib/auto-fix-manager.ts": {
+      "hash": "135a4986256fc87e1b57fb6ae8dbde114fdd673e1874508a3087603245e8a4c5",
+      "size": 43708,
+      "mtime": "2025-09-30T05:46:42.471Z",
+      "path": "scripts/lib/auto-fix-manager.ts"
+    },
+    "scripts/lib/approval-queue.ts": {
+      "hash": "00204a9601660c04b728f5a76d0f25102dc24cadf9e21d575c42028722a1b1f1",
+      "size": 4786,
+      "mtime": "2025-09-30T05:46:42.424Z",
+      "path": "scripts/lib/approval-queue.ts"
+    },
+    "scripts/lib/approval-criteria.ts": {
+      "hash": "db79cf270e36d6dfad20386e9a14a24f790ac46db5eac37e3055f13b6e53a367",
+      "size": 10003,
+      "mtime": "2025-09-30T05:46:42.417Z",
+      "path": "scripts/lib/approval-criteria.ts"
+    },
+    "scripts/lib/agent_logger.ts": {
+      "hash": "a5dd61bae27263da3063ec03e155643b57ff5c1b62e41565852f51acbad42ff4",
+      "size": 16714,
+      "mtime": "2025-09-23T08:53:35.101Z",
+      "path": "scripts/lib/agent_logger.ts"
+    },
+    "scripts/lib/advanced-system-diagnostics.ts": {
+      "hash": "17dc0e166c0f7e5fb3cc332890d60438a05748bce8137607c7c4baedf82c0be8",
+      "size": 28412,
+      "mtime": "2025-09-30T05:46:42.393Z",
+      "path": "scripts/lib/advanced-system-diagnostics.ts"
+    },
+    "scripts/lib/adaptive-execution-engine.ts": {
+      "hash": "55e43d779cc4a6d38d47bb25b038efd37ee04b3a6f9fb4c0b534b44aab9b06ad",
+      "size": 27873,
+      "mtime": "2025-10-01T06:49:03.035Z",
+      "path": "scripts/lib/adaptive-execution-engine.ts"
+    },
+    "scripts/lib/governance/snapshot.schema.ts": {
+      "hash": "7a38344a11d1612f595639be66b01d9dea2bfb5753c9cd030ab18dc1ac949526",
+      "size": 2902,
+      "mtime": "2025-10-01T06:49:03.472Z",
+      "path": "scripts/lib/governance/snapshot.schema.ts"
+    },
+    "scripts/lib/governance/snapshot-manager.ts": {
+      "hash": "5168bbaf781d5565fb584a71096ea03242c9ebb888df29735495035d43b19424",
+      "size": 11440,
+      "mtime": "2025-10-01T06:49:03.467Z",
+      "path": "scripts/lib/governance/snapshot-manager.ts"
+    },
+    "scripts/lib/governance/safe-executor.ts": {
+      "hash": "a8afe07481b3a43555e819c9cfecea08244c823d082209a170695e485652dc46",
+      "size": 5922,
+      "mtime": "2025-10-01T06:49:03.453Z",
+      "path": "scripts/lib/governance/safe-executor.ts"
+    },
+    "scripts/lib/governance/risk-domain-registry.ts": {
+      "hash": "a19593e0b55ad20cf63b3885aa2cedfa9b3399d68c2d9bb57e9b2e9644badd20",
+      "size": 6876,
+      "mtime": "2025-10-01T06:49:03.438Z",
+      "path": "scripts/lib/governance/risk-domain-registry.ts"
+    },
+    "scripts/lib/governance/preflight-checker.ts": {
+      "hash": "92ca5ae91c08bd719ee7474b8a183ccd32f30b0dc7ae80686a6f52c842ec2ae5",
+      "size": 6516,
+      "mtime": "2025-10-01T06:49:03.429Z",
+      "path": "scripts/lib/governance/preflight-checker.ts"
+    },
+    "scripts/lib/governance/post-execution-verifier.ts": {
+      "hash": "5d8591eb54dce7bc2ec64c44d244fd8f2df492b116f60cdf7b7a59af928940d2",
+      "size": 6724,
+      "mtime": "2025-10-01T06:49:03.423Z",
+      "path": "scripts/lib/governance/post-execution-verifier.ts"
+    },
+    "scripts/lib/governance/operation-logger.ts": {
+      "hash": "a27fd7c1ad782de38984ee05e9f328e4ba71777ae474aef960106eb54b9468e6",
+      "size": 10285,
+      "mtime": "2025-10-01T06:49:03.415Z",
+      "path": "scripts/lib/governance/operation-logger.ts"
+    },
+    "scripts/lib/governance/operation-log.schema.ts": {
+      "hash": "333c39e8dc55abac7649dc33f527c5d30d72f15ac1ee8fe0d1ae01aafec0eea2",
+      "size": 4700,
+      "mtime": "2025-10-01T06:49:03.406Z",
+      "path": "scripts/lib/governance/operation-log.schema.ts"
+    },
+    "scripts/lib/governance/notification-system.ts": {
+      "hash": "eb9ff842ba63279cedeb2fc0f6a6fd5ceb3d0f90a195b0bdb1f716bad5bd6fe4",
+      "size": 10034,
+      "mtime": "2025-10-01T06:49:03.401Z",
+      "path": "scripts/lib/governance/notification-system.ts"
+    },
+    "scripts/lib/governance/loop-detector.ts": {
+      "hash": "fb60ef16acb6c3ae219802e58b4ea6e2308141146b7b0533731f930e69f867c2",
+      "size": 7709,
+      "mtime": "2025-10-01T06:49:03.390Z",
+      "path": "scripts/lib/governance/loop-detector.ts"
+    },
+    "scripts/lib/governance/governance-types.ts": {
+      "hash": "cb3f00be142e97558626cfca22c25181bef9d625d014b95f3ad7aaba3b35b570",
+      "size": 4682,
+      "mtime": "2025-10-01T06:49:03.381Z",
+      "path": "scripts/lib/governance/governance-types.ts"
+    },
+    "scripts/lib/governance/governance-runner.ts": {
+      "hash": "0ee019494d000d9074a15061cfadb8703016d8025702d8cc7804c6947b65ffda",
+      "size": 6548,
+      "mtime": "2025-10-01T06:49:03.374Z",
+      "path": "scripts/lib/governance/governance-runner.ts"
+    },
+    "scripts/lib/governance/governance-enforcer.ts": {
+      "hash": "7cbb8200dfa9d659174424c2af917c4bedf4648b453dd2448359038113f312fb",
+      "size": 5939,
+      "mtime": "2025-10-01T06:49:03.363Z",
+      "path": "scripts/lib/governance/governance-enforcer.ts"
+    },
+    "scripts/lib/governance/engine-governance-template.ts": {
+      "hash": "ab4340ebf286ec7f4dd80eed3fac300c6b8fe9ab560570990d6c55b14056f669",
+      "size": 3938,
+      "mtime": "2025-10-01T06:49:03.356Z",
+      "path": "scripts/lib/governance/engine-governance-template.ts"
+    },
+    "scripts/lib/governance/check-legacy-imports.ts": {
+      "hash": "336551737585c5c44855a62de47322d11d296e41e25c7d82b970f8eb36c14d9c",
+      "size": 6149,
+      "mtime": "2025-10-01T06:49:03.351Z",
+      "path": "scripts/lib/governance/check-legacy-imports.ts"
+    },
+    "scripts/dx/types.ts": {
+      "hash": "f956b14b8d32297a710b643ee31a7b954f313176b765c006eb427c463d83ed08",
+      "size": 5240,
+      "mtime": "2025-09-23T08:53:35.002Z",
+      "path": "scripts/dx/types.ts"
+    },
+    "scripts/dx/recommend_actions.ts": {
+      "hash": "0ebe299ea13699d6f2c15e52777f181c1b4351ce6991c8d6e3a2ca7ba21e00c0",
+      "size": 16803,
+      "mtime": "2025-09-23T08:53:34.990Z",
+      "path": "scripts/dx/recommend_actions.ts"
+    },
+    "scripts/dx/persist_reports.ts": {
+      "hash": "d9009f8975b058db674ab4afcff38b6343550ed02eb7235623441c250fca0051",
+      "size": 16145,
+      "mtime": "2025-09-23T08:53:34.972Z",
+      "path": "scripts/dx/persist_reports.ts"
+    },
+    "scripts/dx/load_thresholds.ts": {
+      "hash": "c12d78546988f198aec2a654c2179a24bfe5ca329374dd7b15cd9001c30aaa4f",
+      "size": 8913,
+      "mtime": "2025-09-23T08:53:34.953Z",
+      "path": "scripts/dx/load_thresholds.ts"
+    },
+    "scripts/dx/gating.ts": {
+      "hash": "c6c1b91c0cb9adc74c7b5693f0cee7eadea08b741bf5cf4f62e44319e268b848",
+      "size": 16003,
+      "mtime": "2025-09-23T08:53:34.940Z",
+      "path": "scripts/dx/gating.ts"
+    },
+    "scripts/dx/detect_anomalies.ts": {
+      "hash": "ce59c717785ad279031ac752ed9e6b19e13b1b84d1edf6138ee02e2d8f93d58a",
+      "size": 16071,
+      "mtime": "2025-09-23T08:53:34.923Z",
+      "path": "scripts/dx/detect_anomalies.ts"
+    },
+    "scripts/dx/collect_session.ts": {
+      "hash": "fe6778be5a00ac8cdbe62482afe7299f5ff1d8f1a7ae0a4de8c1d0e35bbdc529",
+      "size": 7882,
+      "mtime": "2025-09-23T08:53:34.903Z",
+      "path": "scripts/dx/collect_session.ts"
+    },
+    "scripts/dx/cli.ts": {
+      "hash": "a0257a3e966dba339cb6c5b9de2e61a2188cf5cdbb547dc0c2312cc3321b28a3",
+      "size": 12596,
+      "mtime": "2025-09-23T08:53:34.889Z",
+      "path": "scripts/dx/cli.ts"
+    },
+    "scripts/dx/check_consistency.ts": {
+      "hash": "1f15a675d91a2617a22e1ec3a0e6041c7c0c1b486a6b81f2bb6c7b50e8fb9bbb",
+      "size": 7048,
+      "mtime": "2025-09-23T08:53:34.870Z",
+      "path": "scripts/dx/check_consistency.ts"
+    },
+    "scripts/dx/autocalibrate.ts": {
+      "hash": "24b104b1645c9906139c8e97c9193ee5e431490ad1fc922e90c8126508d0a657",
+      "size": 19968,
+      "mtime": "2025-09-23T08:53:34.860Z",
+      "path": "scripts/dx/autocalibrate.ts"
+    },
+    "scripts/dx/analyze_metrics.ts": {
+      "hash": "a6e56f88f6d32976c369c0dcd9e01103ee660a92c9fb48ac0702dd8ca564a63e",
+      "size": 10456,
+      "mtime": "2025-09-23T08:53:34.830Z",
+      "path": "scripts/dx/analyze_metrics.ts"
+    },
+    "scripts/docs/llm-signal-injector.ts": {
+      "hash": "d208a88e73fe8be519cc58c6c7a14a1ba89a5549eb6b5c5dba55e2688bc8bf15",
+      "size": 10318,
+      "mtime": "2025-09-25T04:30:54.742Z",
+      "path": "scripts/docs/llm-signal-injector.ts"
+    },
+    "scripts/docs/doc-signals-validator.ts": {
+      "hash": "d5c552666fc1dd47bb91bcdd04f5c0f21b68904d308c3f31163c9741cf451f48",
+      "size": 8079,
+      "mtime": "2025-09-30T06:10:43.306Z",
+      "path": "scripts/docs/doc-signals-validator.ts"
+    },
+    "scripts/docs/doc-quality-auditor.ts": {
+      "hash": "f02190dc22b94eb2d986b653a64ef3a7cda716708ada2bd317e27e48d6194fca",
+      "size": 15146,
+      "mtime": "2025-09-25T04:30:54.729Z",
+      "path": "scripts/docs/doc-quality-auditor.ts"
+    },
+    "scripts/docs/doc-linter.ts": {
+      "hash": "207c4660ff7599d1595b89cbf52e3c9f188044b39a3bb36a7c053fc75d55a62b",
+      "size": 7839,
+      "mtime": "2025-09-30T05:58:15.886Z",
+      "path": "scripts/docs/doc-linter.ts"
+    },
+    "scripts/docs/doc-gate.ts": {
+      "hash": "75a4950039fdcb33f4f4d20563e7980db8fce0a7fc29d63213120fd75744fc10",
+      "size": 11175,
+      "mtime": "2025-09-25T04:30:54.697Z",
+      "path": "scripts/docs/doc-gate.ts"
+    },
+    "scripts/docs/doc-gate-ci.ts": {
+      "hash": "b32b0889c401a9c8cc6e968cd92a02e77b817e8266969a25283aa4519a8ecf28",
+      "size": 6030,
+      "mtime": "2025-09-30T05:58:31.792Z",
+      "path": "scripts/docs/doc-gate-ci.ts"
+    },
+    "scripts/docs/doc-audit.ts": {
+      "hash": "c5d624e73588a862249e1d299c596bfd31d8cb5a3758d32963eb9b1b93a04da9",
+      "size": 8045,
+      "mtime": "2025-09-30T05:58:31.704Z",
+      "path": "scripts/docs/doc-audit.ts"
+    },
+    "scripts/clients/anthropic_adapter.d.ts": {
+      "hash": "65276700fdec9be07cb448eab5b15665c5d043de7459ef77ace5b18b0e5e81d7",
+      "size": 2327,
+      "mtime": "2025-09-23T08:53:34.780Z",
+      "path": "scripts/clients/anthropic_adapter.d.ts"
+    },
+    "scripts/ci/verify_bundle_contents.ts": {
+      "hash": "9839e40f3c272b67a44560934bd22be14b379ad49a5e6ef1cfab6b77715f21ae",
+      "size": 3020,
+      "mtime": "2025-09-23T08:53:34.772Z",
+      "path": "scripts/ci/verify_bundle_contents.ts"
+    },
+    "scripts/ci/fix_taxonomy_labels.ts": {
+      "hash": "ca2fdc260676d9369928e52972009e49b8b33ba1851e587de641d73506b61603",
+      "size": 5461,
+      "mtime": "2025-09-23T08:53:34.746Z",
+      "path": "scripts/ci/fix_taxonomy_labels.ts"
+    },
+    "scripts/ci/check_taxonomy_consistency.ts": {
+      "hash": "f25ccb9b784254a0793a1f2ee2b6dc359548bb03d74c87ab35070809292b4ca6",
+      "size": 9159,
+      "mtime": "2025-09-23T08:53:34.722Z",
+      "path": "scripts/ci/check_taxonomy_consistency.ts"
+    },
+    "scripts/ci/check_observability_consistency.ts": {
+      "hash": "6e93693e3a6249f1a7c34bf42cebb706c570ff8b11c39274b0c8b4bc54335b80",
+      "size": 9100,
+      "mtime": "2025-09-23T08:53:34.707Z",
+      "path": "scripts/ci/check_observability_consistency.ts"
+    },
+    "scripts/agents/orchestrator.ts": {
+      "hash": "0dc665109a6d0f96e2e38f1b397184a5019a96113b52f5a35c321d04e5a59cd1",
+      "size": 19448,
+      "mtime": "2025-09-23T08:53:34.541Z",
+      "path": "scripts/agents/orchestrator.ts"
+    },
+    "scripts/agents/evidence_agent.ts": {
+      "hash": "995df90de380797daa5ad4b4f9b269be1f7e3886f0263c9c91a687e5fc3b38ee",
+      "size": 12512,
+      "mtime": "2025-09-23T08:53:34.466Z",
+      "path": "scripts/agents/evidence_agent.ts"
+    },
+    "scripts/agents/base_agent.ts": {
+      "hash": "3360d9ffe19a4947017de32d966562790b2ad2520b39000b235ee031c777448a",
+      "size": 11534,
+      "mtime": "2025-09-23T08:53:34.431Z",
+      "path": "scripts/agents/base_agent.ts"
+    },
+    "scripts/agents/audit_agent.ts": {
+      "hash": "dbea9220de8b4036d2118cdc659f775720951bb20c4873579181fc59751f4774",
+      "size": 19828,
+      "mtime": "2025-09-23T08:53:34.391Z",
+      "path": "scripts/agents/audit_agent.ts"
+    },
+    "scripts/agents/answer_agent.ts": {
+      "hash": "3368cc3b0eb12358a18d6294d2d1b8685a46c6b41ebeff40c0ec5d1f2ebd0637",
+      "size": 16322,
+      "mtime": "2025-09-23T08:53:34.205Z",
+      "path": "scripts/agents/answer_agent.ts"
+    },
+    "package.json": {
+      "hash": "3cdd8703ee23b2c3dbe25b0f8efc59b6bb36bf9948859a6bdbf94689a5515384",
+      "size": 13954,
+      "mtime": "2025-10-01T06:12:56.778Z",
+      "path": "package.json"
+    },
+    "tsconfig.json": {
+      "hash": "6f33a5bf365fd2d7d9174d728e30533017b65e2c160ee9d55da73ee6a43e7a54",
+      "size": 1069,
+      "mtime": "2025-09-24T05:47:11.413Z",
+      "path": "tsconfig.json"
+    },
+    "reports/workflow-prevention.json": {
+      "hash": "e9cb0f3e4c3488d90d5be806bf25e45adc165e4f2e5eeb1d2611d47609c04f6b",
+      "size": 391,
+      "mtime": "2025-09-25T04:30:54.402Z",
+      "path": "reports/workflow-prevention.json"
+    },
+    "reports/workflow-gap-report.json": {
+      "hash": "3955fe8437e82b7b52b2b790a7901d205ce32361177acdec6d1885d8d6fa9ea3",
+      "size": 22848,
+      "mtime": "2025-09-30T03:27:49.032Z",
+      "path": "reports/workflow-gap-report.json"
+    },
+    "reports/workflow-completeness-audit.json": {
+      "hash": "84a7637096da61058a3e96a7f909c11dafacb3b573ba7b7a37f8bcf5ac6794ee",
+      "size": 5352,
+      "mtime": "2025-09-25T04:30:54.401Z",
+      "path": "reports/workflow-completeness-audit.json"
+    },
+    "reports/user-communication.json": {
+      "hash": "11d44f2af0257946eeb05691def6de61d0ff62c06c29d15d130034c241abf297",
+      "size": 2976,
+      "mtime": "2025-10-01T00:28:35.538Z",
+      "path": "reports/user-communication.json"
+    },
+    "reports/unified-system-report.json": {
+      "hash": "7d744ba9d5d36e5df8fdbbccf9b268c79793a673846bfffeb375cd4149538c61",
+      "size": 7423,
+      "mtime": "2025-10-01T00:24:37.124Z",
+      "path": "reports/unified-system-report.json"
+    },
+    "reports/ts-compile-report.json": {
+      "hash": "4aa467144abb62bda61f0fd54322abb6c7035b77665dccd066176b889d63a853",
+      "size": 223,
+      "mtime": "2025-09-25T04:30:54.399Z",
+      "path": "reports/ts-compile-report.json"
+    },
+    "reports/tracked-issues.json": {
+      "hash": "97f7905912cf1c620f32180d6a83d18aba222d7fcdffff803e09593948bfe845",
+      "size": 555,
+      "mtime": "2025-09-25T04:30:54.398Z",
+      "path": "reports/tracked-issues.json"
+    },
+    "reports/system-integration-analysis.json": {
+      "hash": "82c6b216f9b7a9b9b8e410452b70f9faffba329cd6993db56eb284c30c795b65",
+      "size": 5908,
+      "mtime": "2025-09-30T09:52:30.707Z",
+      "path": "reports/system-integration-analysis.json"
+    },
+    "reports/system-consolidation-plan.json": {
+      "hash": "bb9176c3edd95db750efb2f8b7c8f079a30ee663233327e027a02cf3d8b81e89",
+      "size": 2649,
+      "mtime": "2025-09-25T04:30:54.394Z",
+      "path": "reports/system-consolidation-plan.json"
+    },
+    "reports/sync-health-report.json": {
+      "hash": "83bd1b5fd826a1e79125f4b948391d4b6fc92ecb64c2779ab004c5c81281073b",
+      "size": 6302,
+      "mtime": "2025-09-25T04:30:54.393Z",
+      "path": "reports/sync-health-report.json"
+    },
+    "reports/status-v4-comprehensive.json": {
+      "hash": "ee6acd64432da05ae73f8b8e5d260c0886e2df866ea6040b1c8f2bd96da536e2",
+      "size": 110285,
+      "mtime": "2025-10-01T00:24:39.267Z",
+      "path": "reports/status-v4-comprehensive.json"
+    },
+    "reports/self-designing-system-status.json": {
+      "hash": "fdeabd0b835e6224cf9e6cd4d937884a2212e30d7ae0b9071b583e6bdd3b5538",
+      "size": 722,
+      "mtime": "2025-10-01T00:24:39.297Z",
+      "path": "reports/self-designing-system-status.json"
+    },
+    "reports/security-audit.json": {
+      "hash": "2360d3c4123b550ec593322c003a7f54c1b17272ae4a5b38c2da1f211afc2b7b",
+      "size": 223,
+      "mtime": "2025-10-01T00:24:37.118Z",
+      "path": "reports/security-audit.json"
+    },
+    "reports/refactor-learning.json": {
+      "hash": "e50a8fa963ddaca4050d486b30ad8bd3b3cac945fee154e88cddebcd09cf0ee8",
+      "size": 2765,
+      "mtime": "2025-09-25T04:30:54.388Z",
+      "path": "reports/refactor-learning.json"
+    },
+    "reports/optimization-plan.json": {
+      "hash": "2bc2df476de2d41c0f97556deddcc9e42ddd085519202e995c6e8da8955f59fa",
+      "size": 3740,
+      "mtime": "2025-09-25T08:20:00.541Z",
+      "path": "reports/optimization-plan.json"
+    },
+    "reports/maintenance-sessions.json": {
+      "hash": "e06be87d6cd66ec4101252f8f2ff16553bed0f1be66791e374e0fbd6d63bdada",
+      "size": 28971,
+      "mtime": "2025-10-01T00:26:50.003Z",
+      "path": "reports/maintenance-sessions.json"
+    },
+    "reports/maintenance-schedule.json": {
+      "hash": "7d3c45b28492afdca9c80bc95f79f914e8e775d59f467fe9225ae359ecbf064a",
+      "size": 6060,
+      "mtime": "2025-10-01T00:26:50.002Z",
+      "path": "reports/maintenance-schedule.json"
+    },
+    "reports/integration-improvement-plan.json": {
+      "hash": "13bcad19eaabf097ec76a35a219155057785d58c3356d33423bd213adeff32b9",
+      "size": 1033,
+      "mtime": "2025-09-26T03:08:49.243Z",
+      "path": "reports/integration-improvement-plan.json"
+    },
+    "reports/inspection-results.json": {
+      "hash": "b2255b0a811899cdec1bc86894744a01b376df4cc904b46bb45a9ac17bedc970",
+      "size": 1406,
+      "mtime": "2025-10-01T07:44:28.591Z",
+      "path": "reports/inspection-results.json"
+    },
+    "reports/improvement-queue.json": {
+      "hash": "14aa76c65ea4e2b37967702481ed0ebff863989d8fd86561cb7c2803de174969",
+      "size": 4999,
+      "mtime": "2025-10-01T00:28:27.462Z",
+      "path": "reports/improvement-queue.json"
+    },
+    "reports/hub-routing-metrics.json": {
+      "hash": "0253a968fefbc375b2937fa89ba79a116514e2693a10a25313affaf9c8751ef2",
+      "size": 1088,
+      "mtime": "2025-09-30T06:34:29.862Z",
+      "path": "reports/hub-routing-metrics.json"
+    },
+    "reports/feature-impact-analysis.json": {
+      "hash": "5a8eb8f9cb771029340f85ce0de138931a529d25874210d2bcea5faa980147d6",
+      "size": 1087,
+      "mtime": "2025-09-30T09:52:30.377Z",
+      "path": "reports/feature-impact-analysis.json"
+    },
+    "reports/evolution-report.json": {
+      "hash": "d9c528471198795ccf9e3cabf40a1241386f940fbbd60956d472d111367b4077",
+      "size": 93240,
+      "mtime": "2025-09-30T08:15:10.600Z",
+      "path": "reports/evolution-report.json"
+    },
+    "reports/evolution-history.json": {
+      "hash": "500c0fb8a4b60f4f55005774046576feabb9fc86b8f3d70af0e2a14844af1c4e",
+      "size": 25813,
+      "mtime": "2025-09-30T08:15:10.576Z",
+      "path": "reports/evolution-history.json"
+    },
+    "reports/doc-signals-report.json": {
+      "hash": "d8481f0ddd887fd54ed5b39266e1a61a43534a8fe2e7edd02348fb5947b329cf",
+      "size": 1135,
+      "mtime": "2025-09-30T05:57:55.124Z",
+      "path": "reports/doc-signals-report.json"
+    },
+    "reports/doc-lint-report.json": {
+      "hash": "27c920b61fe48f55a42ee02458723d6de64469c7f4616b32ce5dee8d64ef56c8",
+      "size": 7845,
+      "mtime": "2025-09-30T05:57:55.163Z",
+      "path": "reports/doc-lint-report.json"
+    },
+    "reports/doc-gate-report.json": {
+      "hash": "57e70d5e63f9cfd99afa2a6b770e43e256ba7964571dad344431c8136680ce6c",
+      "size": 13141,
+      "mtime": "2025-09-30T05:57:55.164Z",
+      "path": "reports/doc-gate-report.json"
+    },
+    "reports/doc-audit-report.json": {
+      "hash": "579a9b790ad2807552d521ab644a5ea611fd7a79ca7d6baf87950725d4941a5a",
+      "size": 1306,
+      "mtime": "2025-09-30T05:57:55.123Z",
+      "path": "reports/doc-audit-report.json"
+    },
+    "reports/comprehensive-doc-update-report.json": {
+      "hash": "d29f4d71d54bd6c7fc52ee078c178efee28cf936b5bfcfc6c88d88de4b164283",
+      "size": 14258,
+      "mtime": "2025-10-01T00:28:34.918Z",
+      "path": "reports/comprehensive-doc-update-report.json"
+    },
+    "reports/component-registry.json": {
+      "hash": "dbc8820f5b1cc06cb2c9af0190ad7d39286844d8887fe6cffb4c90aeafc4d675",
+      "size": 343326,
+      "mtime": "2025-10-01T00:28:35.492Z",
+      "path": "reports/component-registry.json"
+    },
+    "reports/communication-sessions.json": {
+      "hash": "f7f1cb8f0a8508bf1b96cbb21ef8e20986acef99b25b3a9e8953c7e7f249dd87",
+      "size": 50977,
+      "mtime": "2025-10-01T00:28:35.543Z",
+      "path": "reports/communication-sessions.json"
+    },
+    "reports/command-optimization.json": {
+      "hash": "a42ac8352e13438864d9b4d9b86e798d422f690b06f768a048f4cf6f06c21f71",
+      "size": 66439,
+      "mtime": "2025-09-25T04:30:54.377Z",
+      "path": "reports/command-optimization.json"
+    },
+    "reports/approval-queue.json": {
+      "hash": "8df7f6a2f5811b3127ab0ecf6923adc928dce3da472cc5ab242ff1260af5e78a",
+      "size": 1384,
+      "mtime": "2025-10-01T00:28:26.861Z",
+      "path": "reports/approval-queue.json"
+    },
+    "reports/history/maintain-report-2025-10-01T00-26-50.json": {
+      "hash": "abfb603669144b69052be4300d45fc1728a8b39d269221b0e364c54b011913de",
+      "size": 441,
+      "mtime": "2025-10-01T00:26:50.077Z",
+      "path": "reports/history/maintain-report-2025-10-01T00-26-50.json"
+    },
+    "reports/history/maintain-report-2025-09-30T09-37-31.json": {
+      "hash": "ebf74f9b27b3a26eba67c858fc80f9d1d9347aabc12e47159d823f3ebd91c8e7",
+      "size": 441,
+      "mtime": "2025-09-30T09:37:31.713Z",
+      "path": "reports/history/maintain-report-2025-09-30T09-37-31.json"
+    },
+    "reports/history/maintain-report-2025-09-30T08-15-04.json": {
+      "hash": "b0dff39ef5ddff6031278087376e57d12a3e30fe36c1c45148bfbe78136f2d1d",
+      "size": 441,
+      "mtime": "2025-09-30T08:15:04.300Z",
+      "path": "reports/history/maintain-report-2025-09-30T08-15-04.json"
+    },
+    "reports/history/maintain-report-2025-09-30T06-38-36.json": {
+      "hash": "644c3265308d64eeec0bf10c6999bd13940860aa64e8b4b71b329ceab0cf235f",
+      "size": 441,
+      "mtime": "2025-09-30T06:38:36.507Z",
+      "path": "reports/history/maintain-report-2025-09-30T06-38-36.json"
+    },
+    "reports/history/maintain-report-2025-09-30T04-57-01.json": {
+      "hash": "316d905c0bf20ecbb67508442c8dd1b09ec7d028387f471630c51643fe147b4b",
+      "size": 441,
+      "mtime": "2025-09-30T04:57:01.515Z",
+      "path": "reports/history/maintain-report-2025-09-30T04-57-01.json"
+    },
+    "reports/history/maintain-report-2025-09-30T03-27-53.json": {
+      "hash": "b72694ff46f7d9a605bca6115e95b0ef8622634ac2788bf714cc561a45404f51",
+      "size": 441,
+      "mtime": "2025-09-30T03:27:54.018Z",
+      "path": "reports/history/maintain-report-2025-09-30T03-27-53.json"
+    },
+    "reports/history/maintain-report-2025-09-30T03-12-19.json": {
+      "hash": "c0ef4ea0749762ec3be96722d35b3f50377f5e7b2dc5bc801c8c315fe5bfd2af",
+      "size": 441,
+      "mtime": "2025-09-30T03:12:19.666Z",
+      "path": "reports/history/maintain-report-2025-09-30T03-12-19.json"
+    },
+    "reports/history/maintain-report-2025-09-26T07-44-33.json": {
+      "hash": "938105b9a39915ef89799cfac87a4d7841d2570fdc913fd03d8bf664c473042e",
+      "size": 441,
+      "mtime": "2025-09-26T07:44:33.479Z",
+      "path": "reports/history/maintain-report-2025-09-26T07-44-33.json"
+    },
+    "reports/history/maintain-report-2025-09-26T07-03-11.json": {
+      "hash": "17fee1df49acadd3c9ab7546889317cd6291a63940a69c029ba9b1a10d224d2d",
+      "size": 440,
+      "mtime": "2025-09-26T07:03:12.011Z",
+      "path": "reports/history/maintain-report-2025-09-26T07-03-11.json"
+    },
+    "reports/history/maintain-report-2025-09-26T07-01-45.json": {
+      "hash": "94efbcae262b92f52664784f4051e7479ff36fea87cb080f679abaf6d297f4e1",
+      "size": 439,
+      "mtime": "2025-09-26T07:01:45.473Z",
+      "path": "reports/history/maintain-report-2025-09-26T07-01-45.json"
+    },
+    "reports/history/maintain-report-2025-09-26T06-45-57.json": {
+      "hash": "f93bc9c654d357cb35a662512f2f89f7c5cd17aa69d89fdb180f04679b93bb33",
+      "size": 440,
+      "mtime": "2025-09-26T06:45:57.190Z",
+      "path": "reports/history/maintain-report-2025-09-26T06-45-57.json"
+    },
+    "reports/history/maintain-report-2025-09-26T06-35-08.json": {
+      "hash": "b9aafcf7bac253c1a977a6590694853613b54ab33b13737e3169cef97f0588fd",
+      "size": 440,
+      "mtime": "2025-09-26T06:35:08.294Z",
+      "path": "reports/history/maintain-report-2025-09-26T06-35-08.json"
+    },
+    "reports/history/maintain-report-2025-09-26T06-20-03.json": {
+      "hash": "f9d0e8b32d556f451c1f02b180138b92a4536279079a95722b72951190d0b415",
+      "size": 440,
+      "mtime": "2025-09-26T06:20:03.607Z",
+      "path": "reports/history/maintain-report-2025-09-26T06-20-03.json"
+    },
+    "reports/history/maintain-report-2025-09-26T06-02-10.json": {
+      "hash": "320d6b6f34e49b805cf9a75f687dc7754fd7aa51945b255639fe8d771fdac502",
+      "size": 440,
+      "mtime": "2025-09-26T06:02:10.972Z",
+      "path": "reports/history/maintain-report-2025-09-26T06-02-10.json"
+    },
+    "reports/history/maintain-report-2025-09-26T05-56-15.json": {
+      "hash": "1680f07781e98911be4f31a1c87ea4b574d483e25bc5b2d768decc3b399e8b8a",
+      "size": 440,
+      "mtime": "2025-09-26T05:56:15.549Z",
+      "path": "reports/history/maintain-report-2025-09-26T05-56-15.json"
+    },
+    "reports/history/maintain-report-2025-09-26T04-17-15.json": {
+      "hash": "9747b406869e0d0e8f220daf7e6b86ef74d372c83e145c7d351b56c3e60bc388",
+      "size": 440,
+      "mtime": "2025-09-26T04:17:15.989Z",
+      "path": "reports/history/maintain-report-2025-09-26T04-17-15.json"
+    },
+    "reports/history/maintain-report-2025-09-26T04-14-39.json": {
+      "hash": "c85bc790b1122fd443435144a584072efed76cf5056d66ceaf8a29e265759691",
+      "size": 440,
+      "mtime": "2025-09-26T04:14:39.622Z",
+      "path": "reports/history/maintain-report-2025-09-26T04-14-39.json"
+    },
+    "reports/history/maintain-report-2025-09-26T04-13-04.json": {
+      "hash": "585dde6e5f51ba8825053d811fab4f04fb0e8dd92086aa49a3b403628a5d3d9c",
+      "size": 440,
+      "mtime": "2025-09-26T04:13:04.429Z",
+      "path": "reports/history/maintain-report-2025-09-26T04-13-04.json"
+    },
+    "reports/history/maintain-report-2025-09-26T04-12-22.json": {
+      "hash": "4214d734c84fa9aa17bad037104573d45fd34d3f72e5908a279a399f76452a3f",
+      "size": 440,
+      "mtime": "2025-09-26T04:12:22.355Z",
+      "path": "reports/history/maintain-report-2025-09-26T04-12-22.json"
+    },
+    "reports/history/maintain-report-2025-09-26T03-09-18.json": {
+      "hash": "3ab645d15abd23d836ee052b3bde172c323ad75ab0cb71f68af583bfcae0e2d5",
+      "size": 440,
+      "mtime": "2025-09-26T03:09:18.398Z",
+      "path": "reports/history/maintain-report-2025-09-26T03-09-18.json"
+    },
+    "reports/history/maintain-report-2025-09-26T03-01-23.json": {
+      "hash": "0dd8b868b793e5c83e278e196f7b6967175fdde96b4b3632db898f42a97bebc1",
+      "size": 440,
+      "mtime": "2025-09-26T03:01:23.928Z",
+      "path": "reports/history/maintain-report-2025-09-26T03-01-23.json"
+    },
+    "reports/alerts/unexpectedChange-1759301355242.json": {
+      "hash": "369ed79f5d622a5e6bb2d30098bbbd6c43a03156abaae6fc7795071f8bdc5772",
+      "size": 466,
+      "mtime": "2025-10-01T06:49:15.243Z",
+      "path": "reports/alerts/unexpectedChange-1759301355242.json"
+    },
+    "reports/alerts/unexpectedChange-1759301355241.json": {
+      "hash": "286c4a3f2f913dc2b62c7bbe11597eb8a2b91689abd405c5f631c39e05c22a1a",
+      "size": 460,
+      "mtime": "2025-10-01T06:49:15.242Z",
+      "path": "reports/alerts/unexpectedChange-1759301355241.json"
+    },
+    "reports/alerts/unexpectedChange-1759301355240.json": {
+      "hash": "8157bb0a728b8d4ead81e0efe68e73347763e763a31cffe1e5c86f5d3ed41184",
+      "size": 466,
+      "mtime": "2025-10-01T06:49:15.241Z",
+      "path": "reports/alerts/unexpectedChange-1759301355240.json"
+    },
+    "reports/alerts/unexpectedChange-1759301355239.json": {
+      "hash": "729dfa2786720bc4f04f1b745d30f11969e416773293d40e7650bdbdb0fc5e4d",
+      "size": 466,
+      "mtime": "2025-10-01T06:49:15.240Z",
+      "path": "reports/alerts/unexpectedChange-1759301355239.json"
+    },
+    "reports/alerts/unexpectedChange-1759301355238.json": {
+      "hash": "76fae3501bfe1415158c5b69d9378d1b4d0635144594e2d15cac1ace8b74d6ab",
+      "size": 440,
+      "mtime": "2025-10-01T06:49:15.239Z",
+      "path": "reports/alerts/unexpectedChange-1759301355238.json"
+    }
+  },
+  "packageJson": {
+    "version": "1.1.0",
+    "name": "meta-adaptive-expert-orchestration",
+    "dependencies": {
+      "@anthropic-ai/sdk": "0.61.0",
+      "@types/js-yaml": "^4.0.9",
+      "ai": "^5.0.37",
+      "ajv-formats": "^3.0.1",
+      "commander": "^11.1.0",
+      "dd-trace": "^5.28.0",
+      "glob": "^10.4.5",
+      "js-yaml": "^4.1.0",
+      "newrelic": "^12.0.0",
+      "pino": "^8.21.0",
+      "pino-pretty": "^13.1.1",
+      "prom-client": "^15.1.3",
+      "undici": "^6.0.0",
+      "uuid": "^9.0.0",
+      "yaml": "^2.8.1",
+      "yargs": "^17.0.0",
+      "zod": "3.25.76"
+    },
+    "devDependencies": {
+      "@ai-sdk/openai": "^2.0.27",
+      "@eslint/js": "^9.36.0",
+      "@types/node": "^20.19.11",
+      "@types/uuid": "^9.0.0",
+      "@types/yargs": "^17.0.33",
+      "@typescript-eslint/eslint-plugin": "^8.44.0",
+      "@typescript-eslint/parser": "^8.44.0",
+      "@vitest/coverage-v8": "^1.6.1",
+      "@vitest/ui": "^1.6.1",
+      "ajv": "^8.17.1",
+      "dotenv": "17.2.2",
+      "esbuild": "^0.23.0",
+      "eslint": "^9.0.0",
+      "husky": "^8.0.3",
+      "prettier": "^3.0.0",
+      "ts-node": "^10.9.2",
+      "tsx": "4.20.5",
+      "typescript": "^5.0.0",
+      "vitest": "^1.6.1"
+    },
+    "engines": {
+      "node": ">=18.18.0 <19.0.0",
+      "npm": ">=8.19.0"
+    }
+  },
+  "environmentVariables": [
+    "npm_package_version"
+  ]
+}

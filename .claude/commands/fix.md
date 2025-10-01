@@ -43,6 +43,7 @@ npm run fix       # Via npm (same command)
 ## Interactive Mode
 
 For each issue:
+
 - Shows context and impact
 - Prompts for approval (y/n)
 - Applies fix if approved

@@ -1,10 +1,10 @@
 /**
  * Inspection Cache Manager
- * Enforces 5-minute TTL and validates cache integrity
+ * Enforces 30-minute TTL and validates cache integrity
  *
  * Design:
  * - Single Source of Truth: reports/inspection-results.json
- * - TTL: 5 minutes (300 seconds)
+ * - TTL: 30 minutes (1800 seconds) - long enough for /inspect → /maintain → /fix workflow
  * - Strict validation before use
  */
 
@@ -22,7 +22,7 @@ import type {
 } from "./inspection-schema.js";
 
 const CACHE_FILE = "reports/inspection-results.json";
-const TTL_SECONDS = 300; // 5 minutes
+const TTL_SECONDS = 1800; // 30 minutes (was 5 min, too short for slow /inspect)
 
 export class InspectionCache {
   private cachePath: string;
@@ -33,7 +33,7 @@ export class InspectionCache {
 
   /**
    * Validate cache and return results if valid
-   * GPT Advice: "Respect TTL (5 min) for inspection cache"
+   * GPT Advice: "Respect TTL (30 min) for inspection cache"
    */
   validateCache(): CacheValidation {
     // 1. Check file existence

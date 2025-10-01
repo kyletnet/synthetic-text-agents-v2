@@ -1,7 +1,7 @@
 #!/usr/bin/env tsx
 
 /**
- * Fix Engine - Interactive manual approval
+ * Fix Engine - Interactive or non-interactive manual approval
  *
  * GPT Advice:
  * "fix must reuse the cached inspection results for consistency"
@@ -10,8 +10,12 @@
  * Design:
  * 1. Enforce /inspect must run first
  * 2. Read manualApprovalNeeded items from cache
- * 3. Interactive approval (y/n/m/a/i)
+ * 3. Interactive approval (y/n/m/a/i) OR non-interactive list mode
  * 4. Display results
+ *
+ * Usage:
+ *   npm run fix                     # Interactive mode (for humans)
+ *   npm run fix -- --non-interactive # List-only mode (for AI assistants)
  *
  * This file NEVER diagnoses. It only reads from inspection-results.json.
  */
@@ -30,19 +34,22 @@ class FixEngine {
   private fixed = 0;
   private skipped = 0;
   private manual = 0;
+  private nonInteractive: boolean;
 
   constructor() {
     this.projectRoot = process.cwd();
     this.cache = new InspectionCache(this.projectRoot);
     this.governance = new GovernanceRunner(this.projectRoot);
     this.safeExecutor = new SafeExecutor(this.projectRoot);
+    this.nonInteractive = process.argv.includes("--non-interactive");
   }
 
   /**
    * Main entry point
    */
   async run(): Promise<void> {
-    console.log("⚠️  Fix Engine - Interactive Manual Approval");
+    const mode = this.nonInteractive ? "Non-Interactive List" : "Interactive Manual Approval";
+    console.log(`⚠️  Fix Engine - ${mode}`);
     console.log("═".repeat(60));
 
     try {
@@ -77,16 +84,20 @@ class FixEngine {
             `\n⚠️  Found ${results.manualApprovalNeeded.length} items needing approval\n`,
           );
 
-          // 4. Interactive approval (user-input = infinite wait)
-          await this.interactiveApproval(results.manualApprovalNeeded);
+          // 4. Interactive or non-interactive mode
+          if (this.nonInteractive) {
+            this.listApprovalItems(results.manualApprovalNeeded);
+          } else {
+            await this.interactiveApproval(results.manualApprovalNeeded);
+          }
 
           // 5. Show summary
           this.showSummary();
         },
         {
           name: "fix",
-          type: "user-input", // 무한 대기 허용
-          description: "Interactive manual approval",
+          type: "user-input" as const, // Allow infinite wait for both modes
+          description: this.nonInteractive ? "List manual approval items" : "Interactive manual approval",
           skipSnapshot: false,
           skipVerification: false,
         },
@@ -97,6 +108,38 @@ class FixEngine {
       console.error("\n💡 Please report this error to the development team");
       process.exit(1);
     }
+  }
+
+  /**
+   * Non-interactive list mode (for AI assistants)
+   */
+  private listApprovalItems(items: ManualApprovalItem[]): void {
+    console.log("\n📋 Manual Approval Items (Non-Interactive Mode)");
+    console.log("═".repeat(60));
+
+    items.forEach((item, idx) => {
+      const icon = item.severity === "critical" ? "🔴" : "🟡";
+      console.log(`\n${idx + 1}. ${icon} ${item.description}`);
+      console.log(`   • Severity: ${item.severity.toUpperCase()}`);
+      console.log(`   • Count: ${item.count || 1}`);
+      console.log(`   • Impact: ${item.impact}`);
+      console.log(`   • Action: ${item.suggestedAction}`);
+
+      if (item.files && item.files.length > 0) {
+        console.log(`   • Files (top 3):`);
+        item.files.slice(0, 3).forEach((file) => {
+          console.log(`     - ${file}`);
+        });
+        if (item.files.length > 3) {
+          console.log(`     ... and ${item.files.length - 3} more`);
+        }
+      }
+    });
+
+    console.log("\n" + "═".repeat(60));
+    console.log("💡 These items require human decision or implementation");
+    console.log("   Run without --non-interactive for interactive mode");
+    console.log("\n✅ /fix analysis complete - no changes made");
   }
 
   /**
