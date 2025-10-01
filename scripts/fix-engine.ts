@@ -48,7 +48,9 @@ class FixEngine {
    * Main entry point
    */
   async run(): Promise<void> {
-    const mode = this.nonInteractive ? "Non-Interactive List" : "Interactive Manual Approval";
+    const mode = this.nonInteractive
+      ? "Non-Interactive List"
+      : "Interactive Manual Approval";
     console.log(`⚠️  Fix Engine - ${mode}`);
     console.log("═".repeat(60));
 
@@ -97,7 +99,9 @@ class FixEngine {
         {
           name: "fix",
           type: "user-input" as const, // Allow infinite wait for both modes
-          description: this.nonInteractive ? "List manual approval items" : "Interactive manual approval",
+          description: this.nonInteractive
+            ? "List manual approval items"
+            : "Interactive manual approval",
           skipSnapshot: false,
           skipVerification: false,
         },
