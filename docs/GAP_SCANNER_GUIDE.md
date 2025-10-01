@@ -495,6 +495,24 @@ git commit --no-verify -m "emergency fix"
 
 ---
 
+## 📖 Related Documentation
+
+**Core Guides:**
+- See: [@file docs/COMMAND_GUIDE.md](COMMAND_GUIDE.md) - Complete command reference
+- See: [@file CLAUDE.md](../CLAUDE.md) - System philosophy and architecture
+- See: [@file docs/DEVELOPMENT_STANDARDS.md](DEVELOPMENT_STANDARDS.md) - Development standards
+- See: [@file docs/TYPESCRIPT_GUIDELINES.md](TYPESCRIPT_GUIDELINES.md) - TypeScript guidelines
+
+**Workflow:**
+- See: [@file docs/COMMAND_WORKFLOW_GUIDE.md](COMMAND_WORKFLOW_GUIDE.md) - 4-step workflow guide
+- See: [@file docs/ROLLOUT_PLAN.md](ROLLOUT_PLAN.md) - Rollout and rollback strategy
+- See: [@file docs/TEST_PLAN.md](TEST_PLAN.md) - Testing strategy
+
+**Configuration:**
+- See: [@file .gaprc.json](../.gaprc.json) - GAP Scanner configuration
+- See: [@file .gapignore](../.gapignore) - GAP ignore patterns
+- See: [@file governance-rules.json](../governance-rules.json) - Governance rules
+
 ## 📖 Related Commands
 
 ```bash

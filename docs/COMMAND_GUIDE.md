@@ -266,28 +266,195 @@ npm run doc:lifecycle:cleanup                   # Same as above (shorthand)
 **Purpose**: Manage document lifecycle (active → deprecated → deleted)
 **Features**: Auto-detection, reference tracking, grace period (90 days)
 
+### Validation & Verification
+
+```bash
+/validate                 # Validate system configuration
+npm run /validate         # Same as above
+/verify                   # Verify system integrity
+npm run /verify           # Same as above
+check:all                 # Run all checks
+check:quick               # Quick validation checks
+check:typescript          # TypeScript-only check
+check:P0-only             # P0 critical checks only
+check:node                # Node.js environment check
+check:signatures          # Verify file signatures
+```
+
 ### System Management
 
 ```bash
-/sync   # Complete system update (docs, cleanup, commit, push)
-/clean  # Cleanup old files
+/sync                     # Complete system update (docs, cleanup, commit, push)
+sync:auto                 # Automated sync workflow
+/clean                    # Cleanup old files
+/communicate              # Communication management
+communicate               # Communication tools
+communicate:manual        # Manual communication mode
+/update                   # Smart update system
+smart:update              # Intelligent system update
+system:clear-queue        # Clear processing queue
+system:design             # System design tools
+system:evolve             # Evolve system architecture
+system:designfirstsystemarchitect  # Design-first architecture
 ```
 
-### Development
+### Approval & Workflow
 
 ```bash
-/map    # Generate system architecture map
-/build  # Build TypeScript project
-/test   # Run test suite
-/lint   # Fix linting issues
+approve                   # Approve pending changes
+approve:status            # Check approval status
+approve:clear             # Clear approval queue
+approve:interactive       # Interactive approval mode
+confirm-sync              # Confirm sync operation
+confirm-release           # Confirm release
+deny-sync                 # Deny sync operation
+deny-release              # Deny release
+review-sync               # Review sync changes
+prepare-release           # Prepare for release
+queue:status              # Check queue status
+queue:execute             # Execute queued items
+queue:demo                # Demo queue functionality
 ```
 
-### Recovery
+### Design & Architecture
 
 ```bash
-npm run sync:tx:rollback  # Rollback failed sync
-npm run sync:tx:status    # Show last sync status
+design:analyze            # Analyze design principles
+design:audit              # Audit design compliance
+design:rollback           # Rollback design changes
+design:status             # Check design status
+evolution:analyze         # Analyze architectural evolution
+evolution:evolve          # Evolve architecture
+registry:generate         # Generate component registry
+registry:search           # Search component registry
+registry:violations       # Find registry violations
+registry:suggestions      # Get registry suggestions
+registry:summary          # Registry summary
 ```
+
+### Documentation
+
+```bash
+docs:audit:full           # Full documentation audit
+docs:gate                 # Documentation quality gate
+docs:gate:ci              # CI documentation gate
+docs:lint                 # Lint documentation
+docs:signals:validate     # Validate documentation signals
+docs:update               # Update documentation
+```
+
+### Testing & Quality
+
+```bash
+test:approval             # Test approval mechanism
+ci:quality                # CI quality checks
+ci:strict                 # Strict CI validation
+fix:unused-vars           # Fix unused variables
+fix:legacy                # Fix legacy code issues
+lint:fix                  # Auto-fix linting issues
+```
+
+### Integration & Advanced
+
+```bash
+integration:audit         # Audit integrations
+integration:create        # Create new integration
+integration:improve       # Improve integrations
+advanced:improve          # Advanced improvement engine
+reports:consolidate       # Consolidate reports
+```
+
+### Metrics & Monitoring
+
+```bash
+metrics:report            # Generate metrics report
+metrics:export            # Export metrics
+metrics:auto              # Automated metrics collection
+routing:status            # Check routing status
+snapshot:browser          # Browse snapshots
+snapshot:dashboard        # Snapshot dashboard
+snapshot:recent           # Recent snapshots
+snapshot:interactive      # Interactive snapshot mode
+status:quick              # Quick status check
+optimize:trends           # Analyze optimization trends
+```
+
+### Improvement & Analysis
+
+```bash
+improve:analyze           # Analyze improvements
+improve:dry-run           # Dry-run improvement
+improve:force-d           # Force D-grade improvement
+improve:status            # Check improvement status
+workflow:gaps             # Identify workflow gaps
+workflow:optimize         # Optimize workflows
+policy:reflect            # Reflect policy changes
+policy:watch              # Watch policy compliance
+```
+
+### Maintenance & Reports
+
+```bash
+maintain:legacy:quick     # Quick legacy maintenance
+maintain:legacy:safe      # Safe legacy maintenance
+maintain:legacy:snapshot  # Legacy maintenance snapshot
+report:maintain           # Maintenance report
+report:maintain:smart     # Smart maintenance report
+pending:review            # Review pending items
+```
+
+### Build & Ship
+
+```bash
+build:export              # Export build artifacts
+ship:docs                 # Ship documentation
+ship:legacy               # Ship legacy code
+ship:safe                 # Safe ship with backup
+```
+
+### Alerts & Triggers
+
+```bash
+alerts:approve            # Approve alerts
+alerts:show               # Show alerts
+alerts:test               # Test alert system
+triggers:add              # Add new trigger
+triggers:start            # Start triggers
+```
+
+### Recovery & Rollback
+
+```bash
+recovery:rollback         # Rollback system changes
+recovery:status           # Check recovery status
+```
+
+### Generators & Utilities
+
+```bash
+general:newcomponent      # Generate new component
+generator:baselinereportgenerator  # Generate baseline report
+handoff                   # Generate handoff documentation
+system component:testcomponent     # Test component system
+```
+
+---
+
+## 📖 Related Documentation
+
+**Quality & Prevention:**
+- See: [@file docs/GAP_SCANNER_GUIDE.md](GAP_SCANNER_GUIDE.md) - GAP Scanner user guide
+- See: [@file docs/DEVELOPMENT_STANDARDS.md](DEVELOPMENT_STANDARDS.md) - Development standards
+- See: [@file docs/TYPESCRIPT_GUIDELINES.md](TYPESCRIPT_GUIDELINES.md) - TypeScript guidelines
+
+**Workflow & Planning:**
+- See: [@file docs/ROLLOUT_PLAN.md](ROLLOUT_PLAN.md) - Rollout and rollback strategy
+- See: [@file docs/TEST_PLAN.md](TEST_PLAN.md) - Testing strategy
+- See: [@file docs/PLAN_super.md](PLAN_super.md) - UX 4-step release plan
+
+**System & Architecture:**
+- See: [@file CLAUDE.md](../CLAUDE.md) - System philosophy and architecture
+- See: [@file docs/SYSTEM_ARCHITECTURE_MAP.md](SYSTEM_ARCHITECTURE_MAP.md) - Architecture map
 
 ---
 
