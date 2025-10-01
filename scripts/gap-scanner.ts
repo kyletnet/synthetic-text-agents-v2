@@ -18,6 +18,7 @@ import { existsSync } from "fs";
 import { execSync } from "child_process";
 import { glob } from "glob";
 import * as path from "path";
+import { runGovernedScript } from "./lib/governance/governed-script.js";
 
 // ============================================================================
 // Types
@@ -102,9 +103,7 @@ class GapConfigManager {
     if (this.config) return this.config;
 
     if (!existsSync(this.configPath)) {
-      throw new Error(
-        `.gaprc.json not found. Run: npm run init:gap-system`
-      );
+      throw new Error(`.gaprc.json not found. Run: npm run init:gap-system`);
     }
 
     const content = await readFile(this.configPath, "utf-8");
@@ -133,7 +132,27 @@ class GapConfigManager {
 
     // ENV override (highest priority)
     if (process.env.GAP_SCAN_MODE) {
+      const originalMode = settings.mode;
       settings.mode = process.env.GAP_SCAN_MODE as typeof settings.mode;
+
+      // Log override for audit trail
+      if (settings.mode !== originalMode) {
+        console.log(`⚠️  GAP_SCAN_MODE override detected:`);
+        console.log(
+          `   Original: ${originalMode} → Override: ${settings.mode}`,
+        );
+        console.log(`   User: ${currentUser}`);
+        console.log(`   Timestamp: ${new Date().toISOString()}`);
+
+        // Write to override log
+        await this.logOverride({
+          user: currentUser,
+          originalMode,
+          overrideMode: settings.mode,
+          timestamp: new Date(),
+          ci: process.env.CI === "true",
+        });
+      }
     }
 
     // CI always uses shadow (unless explicitly enforce)
@@ -147,6 +166,37 @@ class GapConfigManager {
   async getEnabledChecks(): Promise<GapCheck[]> {
     const config = await this.load();
     return config.checks.filter((check) => check.enabled);
+  }
+
+  private async logOverride(override: {
+    user: string;
+    originalMode: string;
+    overrideMode: string;
+    timestamp: Date;
+    ci: boolean;
+  }): Promise<void> {
+    try {
+      const { appendFile, mkdir } = await import("fs/promises");
+      const { existsSync } = await import("fs");
+
+      // Ensure reports directory exists
+      if (!existsSync("reports")) {
+        await mkdir("reports", { recursive: true });
+      }
+
+      const logEntry = {
+        ...override,
+        timestamp: override.timestamp.toISOString(),
+      };
+
+      await appendFile(
+        "reports/gap-override.log",
+        JSON.stringify(logEntry) + "\n",
+      );
+    } catch (error) {
+      // Log to console if file logging fails
+      console.warn("Warning: Could not log override to file");
+    }
   }
 }
 
@@ -178,7 +228,9 @@ class GapChecker {
           console.log(`   ✅ PASS`);
         }
       } catch (error) {
-        console.error(`   ⚠️  Check failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        console.error(
+          `   ⚠️  Check failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+        );
       }
     }
 
@@ -199,16 +251,22 @@ class GapChecker {
         return this.checkDocCrossRefs(check);
       case "agent-e2e":
         return this.checkAgentE2E(check);
+      case "archived-docs-reactivation":
+        return this.checkArchivedDocsReactivation(check);
+      case "doc-lifecycle":
+        return this.checkDocLifecycle(check);
+      case "deprecated-reference-enforcement":
+        return this.checkDeprecatedReferenceEnforcement(check);
       default:
         return [];
     }
   }
 
   // Check 1: CLI Documentation Coverage
-  private async checkCLIDocumentation(check: GapCheck): Promise<GapScanResult[]> {
-    const packageJson = JSON.parse(
-      await readFile("package.json", "utf-8")
-    );
+  private async checkCLIDocumentation(
+    check: GapCheck,
+  ): Promise<GapScanResult[]> {
+    const packageJson = JSON.parse(await readFile("package.json", "utf-8"));
 
     const scripts = Object.keys(packageJson.scripts);
     const excludePatterns = (check.config?.excludePatterns as string[]) || [];
@@ -258,15 +316,13 @@ class GapChecker {
       return [];
     }
 
-    const governanceRules = JSON.parse(
-      await readFile(governanceFile, "utf-8")
-    );
+    const governanceRules = JSON.parse(await readFile(governanceFile, "utf-8"));
 
     const gaps: GapScanResult[] = [];
 
     // Check CACHE_TTL consistency
     const cacheTtlRule = governanceRules.rules?.find(
-      (r: { id: string }) => r.id === "CACHE_TTL"
+      (r: { id: string }) => r.id === "CACHE_TTL",
     );
 
     if (cacheTtlRule && codeFiles.length > 0) {
@@ -300,7 +356,7 @@ class GapChecker {
                 cacheTtlRule.description = `${codeTtl / 60}분 TTL 엄수`;
                 await writeFile(
                   governanceFile,
-                  JSON.stringify(governanceRules, null, 2) + "\n"
+                  JSON.stringify(governanceRules, null, 2) + "\n",
                 );
               },
             });
@@ -314,7 +370,8 @@ class GapChecker {
 
   // Check 3: PII Masking Implementation
   private async checkPIIMasking(check: GapCheck): Promise<GapScanResult[]> {
-    const requiredFunctions = (check.config?.requiredFunctions as string[]) || [];
+    const requiredFunctions =
+      (check.config?.requiredFunctions as string[]) || [];
     const targetFiles = (check.config?.targetFiles as string[]) || [];
 
     const gaps: GapScanResult[] = [];
@@ -325,7 +382,7 @@ class GapChecker {
       const content = await readFile(targetFile, "utf-8");
 
       const missingFunctions = requiredFunctions.filter(
-        (fn) => !content.includes(fn)
+        (fn) => !content.includes(fn),
       );
 
       if (missingFunctions.length > 0) {
@@ -356,7 +413,7 @@ class GapChecker {
       // Get recently added files (last commit)
       const newFiles = execSync(
         "git diff --name-only --diff-filter=A HEAD~1 HEAD scripts/",
-        { encoding: "utf-8" }
+        { encoding: "utf-8" },
       )
         .trim()
         .split("\n")
@@ -435,7 +492,8 @@ class GapChecker {
   // Check 6: Agent Chain E2E Tests
   private async checkAgentE2E(check: GapCheck): Promise<GapScanResult[]> {
     const requiredChains = (check.config?.requiredChains as string[]) || [];
-    const testPattern = (check.config?.testPattern as string) || "tests/**/*.test.ts";
+    const testPattern =
+      (check.config?.testPattern as string) || "tests/**/*.test.ts";
 
     const testFiles = await glob(testPattern);
     let hasE2E = false;
@@ -475,6 +533,254 @@ class GapChecker {
 
     return [];
   }
+
+  // Check 9: Archived Docs Reactivation Detection
+  private async checkArchivedDocsReactivation(
+    check: GapCheck,
+  ): Promise<GapScanResult[]> {
+    const archivedPath =
+      (check.config?.archivedPath as string) || "docs/archived/**";
+    const archivedDocs = await glob(archivedPath);
+
+    const gaps: GapScanResult[] = [];
+
+    for (const archivedDoc of archivedDocs) {
+      // Check if archived doc is referenced in active code/docs
+      const references: string[] = [];
+
+      // Search in active docs
+      const activeDocs = await glob("docs/active/**/*.md");
+      for (const activeDoc of activeDocs) {
+        const content = await readFile(activeDoc, "utf-8");
+        const docName = path.basename(archivedDoc);
+
+        if (content.includes(docName) || content.includes(archivedDoc)) {
+          references.push(activeDoc);
+        }
+      }
+
+      // Search in source code
+      const sourceFiles = await glob("src/**/*.ts");
+      for (const sourceFile of sourceFiles) {
+        const content = await readFile(sourceFile, "utf-8");
+        const docName = path.basename(archivedDoc);
+
+        if (content.includes(docName) || content.includes(archivedDoc)) {
+          references.push(sourceFile);
+        }
+      }
+
+      if (references.length > 0) {
+        gaps.push({
+          id: `archived-reactivation-${path.basename(archivedDoc)}`,
+          checkId: check.id,
+          severity: check.severity,
+          category: check.category,
+          title: `Archived document referenced: ${path.basename(archivedDoc)}`,
+          description: `${references.length} reference(s) to archived document. Consider reactivating or updating references.`,
+          autoFixable: false,
+          details: {
+            archivedDoc,
+            references,
+            action:
+              "Move back to docs/active/ if still needed, or remove references",
+          },
+        });
+      }
+    }
+
+    return gaps;
+  }
+
+  // Check 7: Document Lifecycle Compliance
+  private async checkDocLifecycle(check: GapCheck): Promise<GapScanResult[]> {
+    const maxDeprecatedAge = (check.config?.maxDeprecatedAge as number) || 90;
+    const requireReplacement =
+      (check.config?.requireReplacement as boolean) ?? true;
+
+    const deprecatedDocs = await glob("docs/deprecated/**/*.md");
+    const gaps: GapScanResult[] = [];
+
+    for (const doc of deprecatedDocs) {
+      try {
+        // Check frontmatter for deprecation date
+        const content = await readFile(doc, "utf-8");
+        const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
+
+        if (!frontmatterMatch) {
+          gaps.push({
+            id: `lifecycle-no-metadata-${path.basename(doc)}`,
+            checkId: check.id,
+            severity: check.severity,
+            category: check.category,
+            title: `Deprecated doc missing metadata: ${path.basename(doc)}`,
+            description: `Deprecated document has no frontmatter with deprecation date`,
+            autoFixable: false,
+            details: {
+              doc,
+              action: "Add frontmatter with deprecatedDate and replacedBy",
+            },
+          });
+          continue;
+        }
+
+        // Parse deprecation date
+        const deprecatedDateMatch = frontmatterMatch[1].match(
+          /deprecatedDate:\s*(\d{4}-\d{2}-\d{2})/,
+        );
+        const replacedByMatch = frontmatterMatch[1].match(/replacedBy:\s*(.+)/);
+
+        if (!deprecatedDateMatch) {
+          gaps.push({
+            id: `lifecycle-no-date-${path.basename(doc)}`,
+            checkId: check.id,
+            severity: check.severity,
+            category: check.category,
+            title: `Deprecated doc missing date: ${path.basename(doc)}`,
+            description: `No deprecatedDate field in frontmatter`,
+            autoFixable: false,
+            details: { doc },
+          });
+          continue;
+        }
+
+        // Check age
+        const deprecatedDate = new Date(deprecatedDateMatch[1]);
+        const ageInDays = Math.floor(
+          (Date.now() - deprecatedDate.getTime()) / (1000 * 60 * 60 * 24),
+        );
+
+        if (ageInDays > maxDeprecatedAge) {
+          gaps.push({
+            id: `lifecycle-too-old-${path.basename(doc)}`,
+            checkId: check.id,
+            severity: check.severity,
+            category: check.category,
+            title: `Deprecated doc too old: ${path.basename(doc)}`,
+            description: `Deprecated ${ageInDays} days ago (max: ${maxDeprecatedAge} days)`,
+            autoFixable: false,
+            details: {
+              doc,
+              ageInDays,
+              maxAge: maxDeprecatedAge,
+              action: "Archive or delete this document",
+            },
+          });
+        }
+
+        // Check replacement
+        if (requireReplacement && !replacedByMatch) {
+          gaps.push({
+            id: `lifecycle-no-replacement-${path.basename(doc)}`,
+            checkId: check.id,
+            severity: check.severity,
+            category: check.category,
+            title: `Deprecated doc missing replacement: ${path.basename(doc)}`,
+            description: `No replacedBy field specified`,
+            autoFixable: false,
+            details: {
+              doc,
+              action: "Add replacedBy field with new document path",
+            },
+          });
+        }
+      } catch {
+        // Skip files that can't be read
+      }
+    }
+
+    return gaps;
+  }
+
+  // Check 8: Deprecated Reference Enforcement (with Grace Period)
+  private async checkDeprecatedReferenceEnforcement(
+    check: GapCheck,
+  ): Promise<GapScanResult[]> {
+    const gracePeriod = (check.config?.allowGracePeriod as number) || 7;
+    const exemptions = (check.config?.exemptions as string[]) || [];
+
+    const deprecatedDocs = await glob("docs/deprecated/**/*.md");
+    const gaps: GapScanResult[] = [];
+
+    for (const deprecatedDoc of deprecatedDocs) {
+      try {
+        // Get deprecation date from frontmatter
+        const content = await readFile(deprecatedDoc, "utf-8");
+        const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
+        const deprecatedDateMatch = frontmatterMatch?.[1].match(
+          /deprecatedDate:\s*(\d{4}-\d{2}-\d{2})/,
+        );
+
+        let daysSinceDeprecation = 0;
+        if (deprecatedDateMatch) {
+          const deprecatedDate = new Date(deprecatedDateMatch[1]);
+          daysSinceDeprecation = Math.floor(
+            (Date.now() - deprecatedDate.getTime()) / (1000 * 60 * 60 * 24),
+          );
+        }
+
+        // Find references
+        const references: string[] = [];
+
+        // Search in all source files
+        const sourceFiles = await glob("**/*.{ts,md,tsx,js}", {
+          ignore: [
+            "node_modules/**",
+            "dist/**",
+            "docs/deprecated/**",
+            ...exemptions,
+          ],
+        });
+
+        const docName = path.basename(deprecatedDoc);
+        const docPath = deprecatedDoc;
+
+        for (const sourceFile of sourceFiles) {
+          const fileContent = await readFile(sourceFile, "utf-8");
+
+          if (fileContent.includes(docName) || fileContent.includes(docPath)) {
+            references.push(sourceFile);
+          }
+        }
+
+        if (references.length === 0) continue;
+
+        // Check grace period
+        const inGracePeriod = daysSinceDeprecation < gracePeriod;
+        const severity = inGracePeriod
+          ? "P2"
+          : (check.severity as "P0" | "P1" | "P2");
+
+        gaps.push({
+          id: `deprecated-ref-${path.basename(deprecatedDoc)}`,
+          checkId: check.id,
+          severity,
+          category: check.category,
+          title: `Deprecated doc referenced: ${path.basename(deprecatedDoc)}`,
+          description: inGracePeriod
+            ? `${references.length} reference(s) found. Grace period ends in ${gracePeriod - daysSinceDeprecation} day(s)`
+            : `${references.length} reference(s) to deprecated doc. Grace period expired.`,
+          autoFixable: false,
+          details: {
+            deprecatedDoc,
+            references,
+            daysSinceDeprecation,
+            gracePeriodRemaining: Math.max(
+              0,
+              gracePeriod - daysSinceDeprecation,
+            ),
+            action: inGracePeriod
+              ? "Update references before grace period expires"
+              : "URGENT: Update all references immediately",
+          },
+        });
+      } catch {
+        // Skip files that can't be processed
+      }
+    }
+
+    return gaps;
+  }
 }
 
 // ============================================================================
@@ -490,11 +796,13 @@ class GapScanner {
     this.checker = new GapChecker(this.configManager);
   }
 
-  async scan(options: {
-    quick?: boolean;
-    dryRun?: boolean;
-    autoFix?: boolean;
-  } = {}): Promise<GapScanReport> {
+  async scan(
+    options: {
+      quick?: boolean;
+      dryRun?: boolean;
+      autoFix?: boolean;
+    } = {},
+  ): Promise<GapScanReport> {
     const startTime = Date.now();
     const settings = await this.configManager.getResolvedConfig();
 
@@ -556,7 +864,7 @@ class GapScanner {
       console.log("");
       console.log("❌ GAP scan failed: blocking gaps detected");
       console.log(`   Run: npm run gap:scan -- --help for more info`);
-      process.exit(1);
+      throw new Error("GAP scan failed: blocking gaps detected");
     } else if (shouldFail && settings.mode === "shadow") {
       console.log("");
       console.log("⚠️  GAP scan found issues (shadow mode, not blocking)");
@@ -573,7 +881,7 @@ class GapScanner {
 
   private async autoFix(
     gaps: GapScanResult[],
-    _maxSeverity: "P0" | "P1" | "P2"
+    _maxSeverity: "P0" | "P1" | "P2",
   ): Promise<void> {
     const fixable = gaps.filter((g) => g.autoFixable && g.fix);
 
@@ -599,7 +907,7 @@ class GapScanner {
 
   private shouldFail(
     gaps: GapScanResult[],
-    settings: GaprcConfig["globalSettings"]
+    settings: GaprcConfig["globalSettings"],
   ): boolean {
     if (settings.failOn.length === 0) return false;
 
@@ -608,7 +916,7 @@ class GapScanner {
 
   private async saveReport(
     report: GapScanReport,
-    reportPath: string
+    reportPath: string,
   ): Promise<void> {
     await writeFile(reportPath, JSON.stringify(report, null, 2));
     console.log(`\n💾 Report saved: ${reportPath}`);
@@ -671,11 +979,23 @@ Examples:
 
 More info: docs/GAP_SCANNER_GUIDE.md
     `);
-    process.exit(0);
+    return; // Don't exit, let governance handle it
   }
 
-  const scanner = new GapScanner();
-  await scanner.scan(options);
+  // Run GAP scan with governance enforcement
+  await runGovernedScript(
+    {
+      name: "gap-scan",
+      type: "system-command",
+      description: "GAP Scanner - System consistency validation",
+      skipSnapshot: false, // Capture snapshots for GAP scan tracking
+      skipVerification: true, // Skip verification (read-only operation)
+    },
+    async () => {
+      const scanner = new GapScanner();
+      await scanner.scan(options);
+    },
+  );
 }
 
 // Run if executed directly

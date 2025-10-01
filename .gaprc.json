@@ -90,6 +90,19 @@
       "autoFixable": false
     },
     {
+      "id": "governance-integration",
+      "name": "CLI Scripts Governance Integration",
+      "enabled": true,
+      "severity": "P1",
+      "category": "governance",
+      "config": {
+        "requiredPattern": "runGovernedScript|GovernanceRunner",
+        "scriptPattern": "scripts/*.ts",
+        "exemptions": ["build.ts", "dev.ts", "test-helper.ts"]
+      },
+      "autoFixable": false
+    },
+    {
       "id": "doc-lifecycle",
       "name": "Document Lifecycle Compliance",
       "enabled": true,
@@ -111,10 +124,20 @@
       "config": {
         "failOnDeprecatedReference": true,
         "allowGracePeriod": 7,
-        "exemptions": [
-          "tests/legacy/**",
-          "docs/migration/**"
-        ]
+        "exemptions": ["tests/legacy/**", "docs/migration/**"]
+      },
+      "autoFixable": false
+    },
+    {
+      "id": "archived-docs-reactivation",
+      "name": "Archived Document Reactivation Detection",
+      "enabled": true,
+      "severity": "P2",
+      "category": "docs",
+      "config": {
+        "archivedPath": "docs/archived/**",
+        "warnOnReference": true,
+        "requireJustification": true
       },
       "autoFixable": false
     }
@@ -124,8 +147,6 @@
 
   "metrics": {
     "enabled": true,
-    "collectInterval": "daily",
-    "reportRecipients": [],
-    "slackWebhook": ""
+    "collectInterval": "daily"
   }
 }

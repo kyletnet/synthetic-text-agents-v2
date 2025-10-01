@@ -10,6 +10,7 @@
 import { existsSync, readFileSync } from "fs";
 import { join } from "path";
 import * as glob from "glob";
+import { runGovernedScript } from "./lib/governance/governed-script.js";
 
 interface DesignViolation {
   file: string;
@@ -344,10 +345,21 @@ class DesignValidator {
 
 // CLI execution
 async function main() {
-  const validator = new DesignValidator();
-  const result = await validator.validate();
+  await runGovernedScript(
+    {
+      name: "design-validate",
+      description: "Design principle validation",
+      skipSnapshot: true, // Lightweight validation
+    },
+    async () => {
+      const validator = new DesignValidator();
+      const result = await validator.validate();
 
-  process.exit(result.success ? 0 : 1);
+      if (!result.success) {
+        throw new Error("Design validation failed");
+      }
+    },
+  );
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {

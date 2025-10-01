@@ -22,6 +22,7 @@ import { InspectionCache } from "./lib/inspection-cache.js";
 import { RiskDomainRegistry } from "./lib/governance/risk-domain-registry.js";
 import { LoopDetector } from "./lib/governance/loop-detector.js";
 import { GovernanceEnforcer } from "./lib/governance/governance-enforcer.js";
+import { runGovernedScript } from "./lib/governance/governed-script.js";
 import type { GovernanceRulesConfig } from "./lib/governance/governance-types.js";
 
 class ValidateEngine {
@@ -69,7 +70,7 @@ class ValidateEngine {
       console.log("\n" + "═".repeat(60));
       if (hasErrors) {
         console.error("❌ Validation failed with errors");
-        process.exit(1);
+        throw new Error("Validation failed with errors");
       } else {
         console.log("✅ All validations passed");
         console.log("\n💡 Governance system is healthy");
@@ -77,7 +78,7 @@ class ValidateEngine {
     } catch (error) {
       console.error("\n❌ Validation failed with critical error:");
       console.error(error);
-      process.exit(1);
+      throw error;
     }
   }
 
@@ -281,6 +282,17 @@ class ValidateEngine {
   }
 }
 
-// Main execution
-const engine = new ValidateEngine();
-await engine.run();
+// Main execution with governance
+await runGovernedScript(
+  {
+    name: "validate",
+    type: "system-command",
+    description: "Governance system validation",
+    skipSnapshot: false, // Capture snapshots for validation tracking
+    skipVerification: true, // Skip verification (read-only validation)
+  },
+  async () => {
+    const engine = new ValidateEngine();
+    await engine.run();
+  },
+);
