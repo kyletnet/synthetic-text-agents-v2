@@ -27,7 +27,7 @@ npm run status
 
 **출력**:
 
-- `reports/inspection-results.json` (5분 TTL)
+- `reports/inspection-results.json` (30분 TTL)
 - 건강도 점수 (0-100)
 - Auto-fixable 항목 목록
 - Manual approval 항목 목록
@@ -58,7 +58,7 @@ npm run maintain
 
 **전제조건**:
 
-- ⚠️ **반드시 `/inspect` 먼저 실행** (5분 이내)
+- ⚠️ **반드시 `/inspect` 먼저 실행** (30분 이내)
 - ❌ 진단 안 함 - 캐시만 읽음
 
 **자동 수정 항목** (캐시에서 읽음):
@@ -74,7 +74,7 @@ npm run maintain
 ✅ 올바른 순서: /inspect → /maintain
 ```
 
-**사용 시점**: `/inspect` 직후 (5분 이내)
+**사용 시점**: `/inspect` 직후 (30분 이내)
 
 ---
 
@@ -90,7 +90,7 @@ npm run fix
 
 **전제조건**:
 
-- ⚠️ **반드시 `/inspect` 먼저 실행** (5분 이내)
+- ⚠️ **반드시 `/inspect` 먼저 실행** (30분 이내)
 - ❌ 진단 안 함 - 캐시만 읽음
 
 **수정 항목** (캐시에서 읽음):

@@ -21,7 +21,7 @@ npm run fix          # 3. 대화형 수정 (상황에 따라)
 - 코드 변경 후
 - Claude 개발 완료 후
 - 커밋 전
-- 5분 이상 지났을 때 (캐시 만료)
+- 30분 이상 지났을 때 (캐시 만료)
 
 **결과:**
 
@@ -42,7 +42,7 @@ npm run fix          # 3. 대화형 수정 (상황에 따라)
 
 - 개발 시작할 때
 - 코드 변경 후
-- 5분 경과 후
+- 30분 경과 후
 - maintain/fix 실행 전 (필수)
 
 **출력:**
@@ -78,7 +78,7 @@ npm run fix          # 3. 대화형 수정 (상황에 따라)
 
 💾 Saving inspection results...
 ✅ Results saved to: reports/inspection-results.json
-⏰ Valid for: 5 minutes
+⏰ Valid for: 30 minutes
 
 🚀 Next Steps:
 1️⃣  Auto-fix 2 items: npm run maintain
@@ -401,12 +401,12 @@ jobs:
 ### Tip 1: 캐시 활용
 
 ```bash
-# 5분 내에 재실행
+# 30분 내에 재실행
 npm run status       # 캐시 생성
 npm run maintain     # 캐시 사용 ✅
 npm run fix          # 캐시 사용 ✅
 
-# 5분 후
+# 30분 후
 npm run maintain     # ❌ Error: 캐시 만료
 npm run status       # 캐시 재생성
 npm run maintain     # ✅ OK

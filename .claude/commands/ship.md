@@ -29,6 +29,17 @@ npm run ship      # Via npm (validation + docs only, no deploy)
 
 ### Phase 2: Ship Pipeline (npm run ship)
 
+**Now with real-time progress tracking!**
+
+```
+⏳ [1/8] Design Validation... ✅ Complete (3s)
+⏳ [2/8] System Validation... ✅ Complete (2s)
+⏳ [3/8] Verification Checks... ✅ Complete (5s)
+...
+🚢 Ready for deployment (45s total)
+```
+
+**8 Steps:**
 1. Design principles validation (`design:validate`)
 2. System validation (`validate`)
 3. Verification checks (`verify`)

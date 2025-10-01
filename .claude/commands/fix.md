@@ -13,8 +13,9 @@ Review and fix items that require manual approval (TypeScript errors, workaround
 ## Usage
 
 ```bash
-/fix              # Via bash script
-npm run fix       # Via npm (same command)
+/fix                              # Interactive mode (default)
+npm run fix                       # Same as above
+npm run fix -- --non-interactive  # Non-interactive list mode (for AI)
 ```
 
 ## What it does
@@ -40,14 +41,31 @@ npm run fix       # Via npm (same command)
    - Missing component docs
    - Outdated documentation
 
-## Interactive Mode
+## Modes
+
+### Interactive Mode (Default)
 
 For each issue:
-
 - Shows context and impact
 - Prompts for approval (y/n)
 - Applies fix if approved
 - Skips if declined
+
+**Use when:** Human review needed
+
+### Non-Interactive Mode
+
+Lists all issues without prompting:
+- Shows all manual approval items
+- No user input required
+- Read-only analysis
+- AI assistant compatible
+
+**Use when:** Claude Code, automated reports
+
+```bash
+npm run fix -- --non-interactive
+```
 
 ## Prerequisites
 
