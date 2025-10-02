@@ -1,5 +1,59 @@
 # Changelog
 
+## [1.1.2] - 2025-10-02
+
+- a19497f chore: Update reports and configuration files
+- 49a665b feat(quality): Complete Citation Quality System Integration
+- 7b04bbf feat(quality): OpenAI embedding API 통합 (자동 fallback 지원)
+- 543453e feat(quality): Contrastive embedding 기반 Evidence-Answer 정렬 시스템 구현
+- f8d1608 feat(workflow): 통합 워크플로우 관리 시스템 구축 및 통합 가드 개선
+- 7e0e264 feat(governance): Integrate governance into all CLI scripts (GAP #1, #2, #3)
+- f365db1 fix(governance): Add withTimeout pattern for timer cleanup (P0 hang fix)
+- 14beda8 docs: Complete CLI documentation and cross-references (0 gaps achieved)
+- ba206a6 test: Add E2E and lifecycle tests (P1 gap resolution)
+- e144557 feat: Integrate GAP Scanner into pre-commit hook (Shadow Mode)
+- 8b10ee3 fix: Fix P0 PII masking gap + Document GAP/Doc lifecycle commands
+- 72d3814 docs: Add GAP Scanner guide and document lifecycle manager
+- c80429a feat: Implement GAP Scanner core (6 checks functional)
+- d285a7a feat: Initialize GAP Prevention System + Fix P0 Gaps
+- ceee476 docs: Phase 13 변경사항 문서 업데이트
+- 8ed421e fix: Prettier 포맷팅 수정 (CI/CD 오류 해결)
+- 6eb916c chore: 테스트 결과 업데이트
+- f7aba4c fix: 4단계 워크플로우 설계 개선 - TTL 증가 및 진행률 표시 추가
+- a959ccf docs: /fix 슬래시 명령어 문서 추가
+- c3e1214 chore: Prettier 자동 포맷팅 적용
+- a742823 docs: Phase 12 완료 - 다음 세션 핸드오프 문서
+- 5906738 feat: Phase 12 - /ship 명령어 강화 및 중복 제거
+- c104add feat: Phase 11 - 6개 엔진 governance 통합 완료
+
+
+## [1.1.1] - 2025-10-02
+
+- a19497f chore: Update reports and configuration files
+- 49a665b feat(quality): Complete Citation Quality System Integration
+- 7b04bbf feat(quality): OpenAI embedding API 통합 (자동 fallback 지원)
+- 543453e feat(quality): Contrastive embedding 기반 Evidence-Answer 정렬 시스템 구현
+- f8d1608 feat(workflow): 통합 워크플로우 관리 시스템 구축 및 통합 가드 개선
+- 7e0e264 feat(governance): Integrate governance into all CLI scripts (GAP #1, #2, #3)
+- f365db1 fix(governance): Add withTimeout pattern for timer cleanup (P0 hang fix)
+- 14beda8 docs: Complete CLI documentation and cross-references (0 gaps achieved)
+- ba206a6 test: Add E2E and lifecycle tests (P1 gap resolution)
+- e144557 feat: Integrate GAP Scanner into pre-commit hook (Shadow Mode)
+- 8b10ee3 fix: Fix P0 PII masking gap + Document GAP/Doc lifecycle commands
+- 72d3814 docs: Add GAP Scanner guide and document lifecycle manager
+- c80429a feat: Implement GAP Scanner core (6 checks functional)
+- d285a7a feat: Initialize GAP Prevention System + Fix P0 Gaps
+- ceee476 docs: Phase 13 변경사항 문서 업데이트
+- 8ed421e fix: Prettier 포맷팅 수정 (CI/CD 오류 해결)
+- 6eb916c chore: 테스트 결과 업데이트
+- f7aba4c fix: 4단계 워크플로우 설계 개선 - TTL 증가 및 진행률 표시 추가
+- a959ccf docs: /fix 슬래시 명령어 문서 추가
+- c3e1214 chore: Prettier 자동 포맷팅 적용
+- a742823 docs: Phase 12 완료 - 다음 세션 핸드오프 문서
+- 5906738 feat: Phase 12 - /ship 명령어 강화 및 중복 제거
+- c104add feat: Phase 11 - 6개 엔진 governance 통합 완료
+
+
 ## [2025-09-25] - System Sync
 
 ### Added
