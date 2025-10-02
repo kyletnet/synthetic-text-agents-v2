@@ -83,7 +83,7 @@ export async function calculateAlignment(
 
 /**
  * Get text embedding (with caching)
- * Uses OpenAI text-embedding-3-small model
+ * Uses OpenAI text-embedding-3-small model (or mock for testing)
  */
 async function getEmbedding(text: string): Promise<number[]> {
   const cacheKey = text.substring(0, 200); // Cache by first 200 chars
@@ -92,13 +92,24 @@ async function getEmbedding(text: string): Promise<number[]> {
     return embeddingCache.get(cacheKey)!;
   }
 
-  // TODO: Replace with actual OpenAI embedding call
-  // For now, using mock implementation
-  // In production: Use openai.embeddings.create({ model: "text-embedding-3-small", input: text })
+  let embedding: number[];
 
-  const mockEmbedding = await getMockEmbedding(text);
+  // Use real OpenAI API if available, otherwise use mock
+  if (process.env.OPENAI_API_KEY && process.env.OPENAI_API_KEY !== "sk-your-openai-key-here") {
+    try {
+      embedding = await getOpenAIEmbedding(text);
+    } catch (error) {
+      console.warn(
+        `[contrastive-alignment] OpenAI API failed, using mock: ${error}`,
+      );
+      embedding = await getMockEmbedding(text);
+    }
+  } else {
+    // No API key, use mock
+    embedding = await getMockEmbedding(text);
+  }
 
-  embeddingCache.set(cacheKey, mockEmbedding);
+  embeddingCache.set(cacheKey, embedding);
 
   // Cache cleanup: Keep only last 100 entries
   if (embeddingCache.size > 100) {
@@ -108,7 +119,25 @@ async function getEmbedding(text: string): Promise<number[]> {
     }
   }
 
-  return mockEmbedding;
+  return embedding;
+}
+
+/**
+ * Get embedding from OpenAI API
+ */
+async function getOpenAIEmbedding(text: string): Promise<number[]> {
+  const { openai } = await import("@ai-sdk/openai");
+  const { embed } = await import("ai");
+
+  // Truncate text to avoid token limits (8191 tokens for text-embedding-3-small)
+  const truncatedText = text.substring(0, 8000);
+
+  const { embedding } = await embed({
+    model: openai.embedding("text-embedding-3-small"),
+    value: truncatedText,
+  });
+
+  return embedding;
 }
 
 /**
