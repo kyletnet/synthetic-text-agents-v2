@@ -12,10 +12,21 @@
 5. /ship       # 배포 준비 + 실제 배포
 ```
 
+**추가 명령어**:
+
+```bash
+/audit         # 심층 진단 (주 1회 또는 큰 변경 전)
+               # - 테스트 커버리지 갭
+               # - 대형 파일 탐지
+               # - Dead code 분석
+               # - 보안 취약점
+```
+
 **핵심 원칙**:
 
 - `/inspect`가 모든 진단을 수행하고, 나머지 명령어는 그 결과를 사용합니다.
 - `/refactor`는 **선택적 단계**입니다. 구조 개선이 필요할 때만 실행하세요.
+- `/audit`는 정기 점검용으로 일반 워크플로우와 별개입니다.
 
 ---
 
@@ -564,3 +575,82 @@ system component:testcomponent     # Test component system
 **🎯 핵심**: `/inspect` → `/maintain` → `/fix` → `/ship` 순서 준수!
 
 _최종 업데이트: 2025-10-01_
+
+---
+
+## 🔬 `/audit` - 심층 시스템 진단
+
+```bash
+npm run audit
+# OR
+npm run /audit
+```
+
+**목적**: 숨겨진 치명적 이슈 발견 (정기 점검용)
+
+**사용 시점**:
+- 주 1회 정기 점검
+- 큰 기능 추가 전
+- 릴리즈 전 최종 검증
+
+**검사 항목**:
+
+1. **테스트되지 않은 Critical 파일** (P0)
+   - 핵심 파일(bus, config, errorTracking 등)의 커버리지 확인
+
+2. **대형 파일 탐지** (P1)
+   - 1000줄 이상 파일 리스트
+   - 모듈 분리 권장
+
+3. **Deprecated 파일 불일치** (P1)
+   - 문서에 deprecated로 표시되었지만 여전히 존재하는 파일
+
+4. **불필요한 백업 파일** (P2)
+   - .backup, .old, .deprecated 파일
+   - .system-backups 디렉토리
+
+5. **중복 의존성** (P2)
+   - 동일 패키지의 여러 버전 설치
+
+6. **Dead Code** (P2)
+   - 사용되지 않는 export (ts-prune 사용)
+
+7. **보안 취약점** (P0/P1)
+   - npm audit 결과
+
+8. **Git 이슈** (P2)
+   - 커밋되지 않은 큰 파일 (1MB+)
+
+**출력 예시**:
+
+```
+🎯 Health Score: 45/100
+
+📋 Summary:
+   Total Issues: 6
+   🔴 P0 Critical: 1
+   🟡 P1 High: 2
+   🟢 P2 Medium: 3
+
+🔍 Critical Issues:
+   [P0] Testing: 6개의 핵심 파일에 테스트 없음
+   [P1] Code Structure: 14개의 거대 파일 (1000줄+)
+   [P1] Documentation: 3개의 deprecated 파일이 여전히 존재
+
+🚀 Recommended Actions:
+   1. [HIGH] P0 이슈 즉시 해결
+   2. [MEDIUM] 불필요한 백업 파일 삭제
+```
+
+**일반 워크플로우와의 차이**:
+
+| 명령어 | 목적 | 빈도 | 캐시 |
+|--------|------|------|------|
+| `/inspect` | 일상 진단 | 매번 | 30분 |
+| `/audit` | 심층 진단 | 주 1회 | 없음 |
+
+**다음 단계**:
+- P0 이슈: 즉시 해결 필요
+- P1 이슈: 1주일 내 해결
+- P2 이슈: 점진적 개선
+
