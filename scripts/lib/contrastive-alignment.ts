@@ -97,6 +97,9 @@ async function getEmbedding(text: string): Promise<number[]> {
   // Use real OpenAI API if available, otherwise use mock
   if (process.env.OPENAI_API_KEY && process.env.OPENAI_API_KEY !== "sk-your-openai-key-here") {
     try {
+      if (!embeddingCache.has(cacheKey)) {
+        console.log(`[contrastive-alignment] Using OpenAI API for embedding (cache miss)`);
+      }
       embedding = await getOpenAIEmbedding(text);
     } catch (error) {
       console.warn(
@@ -106,6 +109,7 @@ async function getEmbedding(text: string): Promise<number[]> {
     }
   } else {
     // No API key, use mock
+    console.log(`[contrastive-alignment] No API key found, using mock embedding`);
     embedding = await getMockEmbedding(text);
   }
 

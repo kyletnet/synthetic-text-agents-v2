@@ -7,6 +7,7 @@
 import { BaseAgent, AgentContext, AgentResult } from "./base_agent";
 import { callAnthropic } from "../clients/anthropic_adapter";
 import { EvidenceOutput } from "./evidence_agent";
+import { calculateAlignment } from "../lib/contrastive-alignment.js";
 
 export interface AnswerInput {
   question: string;
@@ -25,6 +26,10 @@ export interface AnswerOutput {
       source: string;
       relevance: number;
       quote: string;
+      // NEW: Enhanced citation tracking
+      evidence_idx?: number; // Index in evidence array
+      alignment_score?: number; // Semantic similarity score
+      span_in_answer?: string; // Actual text span that uses this citation
     }>;
   };
   reasoning: {
@@ -38,6 +43,9 @@ export interface AnswerOutput {
     fallback_applied: boolean;
     answer_length: number;
     processing_notes: string[];
+    // NEW: Citation quality metrics
+    citation_coverage?: number; // % of answer backed by citations
+    avg_alignment_score?: number; // Average semantic alignment
   };
 }
 
@@ -242,7 +250,19 @@ export class AnswerAgent extends BaseAgent {
 Available Evidence:
 ${evidenceContext}
 
-Please provide a well-structured answer based on the evidence above. Include confidence assessment and cite your sources.`;
+CRITICAL REQUIREMENTS:
+1. You MUST reference at least 1-2 pieces of evidence in your answer
+2. Each major claim MUST be directly traceable to specific evidence
+3. You MUST indicate which evidence number supports each claim (e.g., "According to Evidence 1...")
+4. Use specific quotes or close paraphrases from the evidence
+
+QUALITY EXPECTATIONS:
+- Answers without clear evidence references will be rejected
+- Each evidence reference must be semantically aligned with your claim
+- If combining multiple evidence sources, make the connection explicit
+- Maintain high confidence only when evidence strongly supports your conclusions
+
+Provide a well-structured, evidence-based answer with clear citations.`;
 
     const result = await callAnthropic(
       {
@@ -318,7 +338,7 @@ Instructions:
   }
 
   private async enhanceAnswer(
-    question: string,
+    _question: string,
     answerResult: any,
     evidence: EvidenceOutput,
   ): Promise<{
@@ -326,11 +346,12 @@ Instructions:
     reasoning: AnswerOutput["reasoning"];
     enhancement_cost?: number;
   }> {
-    // Extract citations and confidence from the generated text
-    const citations = this.extractCitations(
+    // Extract citations using semantic alignment (async)
+    const citations = await this.extractCitations(
       answerResult.text,
       evidence.evidence_items,
     );
+
     const confidenceScore = this.calculateConfidenceScore(
       answerResult.raw_confidence,
       evidence,
@@ -340,12 +361,26 @@ Instructions:
       citations.length,
     );
 
+    // Calculate citation quality metrics
+    const citationCoverage = this.calculateCitationCoverage(
+      answerResult.text,
+      citations,
+    );
+    const avgAlignmentScore =
+      citations.length > 0
+        ? citations.reduce((sum, c) => sum + (c.alignment_score || 0), 0) /
+          citations.length
+        : 0;
+
     // Analyze reasoning chain
     const reasoning = await this.analyzeReasoning(
-      question,
       answerResult.text,
       evidence,
     );
+
+    // Store metrics in enhanced answer
+    (reasoning as any).citation_coverage = citationCoverage;
+    (reasoning as any).avg_alignment_score = avgAlignmentScore;
 
     return {
       answer: {
@@ -359,31 +394,99 @@ Instructions:
     };
   }
 
-  private extractCitations(
+  /**
+   * Calculate what % of answer is covered by citations
+   */
+  private calculateCitationCoverage(
+    answerText: string,
+    citations: AnswerOutput["answer"]["citations"],
+  ): number {
+    if (citations.length === 0) return 0;
+
+    const answerWords = new Set(
+      answerText
+        .toLowerCase()
+        .split(/\s+/)
+        .filter((w) => w.length > 3),
+    );
+
+    const citedWords = new Set<string>();
+    citations.forEach((citation) => {
+      if (citation.span_in_answer) {
+        const words = citation.span_in_answer
+          .toLowerCase()
+          .split(/\s+/)
+          .filter((w) => w.length > 3);
+        words.forEach((w) => citedWords.add(w));
+      }
+    });
+
+    return answerWords.size > 0 ? citedWords.size / answerWords.size : 0;
+  }
+
+  private async extractCitations(
     answerText: string,
     evidenceItems: EvidenceOutput["evidence_items"],
-  ): AnswerOutput["answer"]["citations"] {
+  ): Promise<AnswerOutput["answer"]["citations"]> {
     const citations: AnswerOutput["answer"]["citations"] = [];
 
-    // Simple citation extraction based on evidence matching
-    evidenceItems.forEach((evidence) => {
-      // Check if evidence is referenced in the answer
-      const isReferenced =
-        answerText.toLowerCase().includes(evidence.source.toLowerCase()) ||
-        this.findTextSimilarity(answerText, evidence.text) > 0.3;
+    // Use contrastive alignment for semantic citation matching
+    for (let idx = 0; idx < evidenceItems.length; idx++) {
+      const evidence = evidenceItems[idx];
 
-      if (isReferenced) {
+      // Calculate semantic similarity between answer and evidence
+      const alignmentResult = await calculateAlignment(
+        answerText,
+        evidence.text,
+      );
+
+      // Threshold: Include citation if alignment score > 0.3
+      if (alignmentResult.score > 0.3) {
         citations.push({
           source: evidence.source,
           relevance: evidence.relevance_score,
           quote:
             evidence.text.substring(0, 100) +
             (evidence.text.length > 100 ? "..." : ""),
+          // Enhanced fields
+          evidence_idx: idx,
+          alignment_score: alignmentResult.score,
+          span_in_answer: this.extractRelevantSpan(answerText, evidence.text),
         });
       }
-    });
+    }
+
+    // Sort by alignment score (best first)
+    citations.sort((a, b) => (b.alignment_score || 0) - (a.alignment_score || 0));
 
     return citations.slice(0, 5); // Limit to top 5 citations
+  }
+
+  /**
+   * Extract the most relevant span from answer that corresponds to evidence
+   */
+  private extractRelevantSpan(
+    answerText: string,
+    evidenceText: string,
+  ): string {
+    // Find sentences in answer that overlap most with evidence
+    const sentences = answerText
+      .split(/[.!?]+/)
+      .map((s) => s.trim())
+      .filter((s) => s.length > 10);
+
+    let bestSentence = "";
+    let bestSimilarity = 0;
+
+    for (const sentence of sentences) {
+      const similarity = this.findTextSimilarity(sentence, evidenceText);
+      if (similarity > bestSimilarity) {
+        bestSimilarity = similarity;
+        bestSentence = sentence;
+      }
+    }
+
+    return bestSentence || answerText.substring(0, 100);
   }
 
   private calculateConfidenceScore(
@@ -418,7 +521,6 @@ Instructions:
   }
 
   private async analyzeReasoning(
-    question: string,
     answer: string,
     evidence: EvidenceOutput,
   ): Promise<AnswerOutput["reasoning"]> {

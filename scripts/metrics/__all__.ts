@@ -6,6 +6,11 @@ import { calculateCoverageMetrics } from "./coverage_metrics";
 import { calculateEvidenceQuality } from "./evidence_quality";
 import { detectHallucinations } from "./hallucination_rules";
 import { scanPiiAndLicense } from "./pii_license_scan";
+import {
+  validateCitations,
+  type Citation,
+  type CitationQualityMetrics,
+} from "../lib/citation-validator.js";
 
 interface BaselineMetricsRecord {
   // Metadata
@@ -47,6 +52,15 @@ interface BaselineMetricsRecord {
     has_evidence: boolean;
     alignment_score: number;
     evidence_complete: boolean;
+  };
+
+  // Citation validation metrics
+  citations?: Citation[];
+  citation_quality?: CitationQualityMetrics;
+  citation_validation?: {
+    valid: boolean;
+    errors: string[];
+    warnings: string[];
   };
 
   hallucination: {
@@ -112,6 +126,19 @@ interface BaselineMetricsSummary {
     alert_triggered: boolean;
   };
 
+  // NEW: Citation quality metrics
+  citation_quality?: {
+    valid_rate: number; // % of QAs with valid citations
+    avg_alignment_score: number; // Average alignment across all QAs
+    avg_coverage: number; // Average citation coverage
+    total_citations: number;
+    alert_triggered: boolean;
+    // Evidence usage tracking
+    evidence_usage_rate: number; // % of evidences that are cited
+    unused_evidence_count: number; // Count of evidences never cited
+    total_evidence_count: number; // Total evidence items
+  };
+
   hallucination: {
     rate: number;
     high_risk_count: number;
@@ -151,6 +178,7 @@ interface QAItem {
   evidence?: string;
   evidence_text?: string;
   source_text?: string;
+  citations?: Citation[]; // Citations from Answer Agent
   index?: number;
   cost_usd?: number;
   latency_ms?: number;
@@ -185,6 +213,7 @@ function calculateMean(values: number[]): number {
 
 /**
  * Calculate overall quality score from component metrics
+ * UPDATED: Now includes citation quality (alignment & coverage)
  */
 function calculateOverallQualityScore(
   duplicateRate: number,
@@ -193,15 +222,18 @@ function calculateOverallQualityScore(
   piiViolations: number,
   qtypeBalance: number,
   coverageScore: number,
+  citationQuality: number = 0.5, // NEW: Citation quality score (0-1)
 ): number {
   // Weighted scoring (0-1 scale)
+  // UPDATED: Added citation quality weight
   const weights = {
-    duplication: 0.15, // Lower duplication is better
-    evidence: 0.25, // Higher evidence presence is better
-    hallucination: 0.25, // Lower hallucination is better
-    pii: 0.15, // No PII violations is better
-    qtype: 0.1, // Balanced question types is better
-    coverage: 0.1, // Higher coverage is better
+    duplication: 0.12, // Lower duplication is better
+    evidence: 0.20, // Higher evidence presence is better
+    hallucination: 0.20, // Lower hallucination is better
+    pii: 0.12, // No PII violations is better
+    qtype: 0.08, // Balanced question types is better
+    coverage: 0.08, // Higher coverage is better
+    citation: 0.20, // NEW: Citation quality is critical
   };
 
   const duplicationScore = Math.max(0, 1 - duplicateRate * 2); // Penalize >50% duplication heavily
@@ -217,7 +249,8 @@ function calculateOverallQualityScore(
     weights.hallucination * hallucinationScore +
     weights.pii * piiScore +
     weights.qtype * qtypeScore +
-    weights.coverage * coverageScoreNorm;
+    weights.coverage * coverageScoreNorm +
+    weights.citation * citationQuality; // NEW: Include citation quality
 
   return Math.max(0, Math.min(1, overallScore));
 }
@@ -345,6 +378,57 @@ export async function calculateAllBaselineMetrics(
   console.log("📊 Scanning for PII and license violations...");
   const piiLicenseMetrics = scanPiiAndLicense(qaItems, configPath);
 
+  console.log("📊 Validating citations...");
+  // Validate citations for each item
+  // Total evidence count = total QA items (each has its own evidence)
+  const totalEvidenceCount = qaItems.length;
+
+  const citationValidations = qaItems.map((item, index) => {
+    const citations = item.citations || [];
+
+    if (citations.length === 0) {
+      return {
+        valid: false,
+        metrics: {
+          total_citations: 0,
+          valid_citations: 0,
+          invalid_citations: 0,
+          avg_alignment_score: 0,
+          citation_coverage: 0,
+          has_evidence_idx: 0,
+          has_alignment_score: 0,
+          has_span: 0,
+        },
+        validation: {
+          valid: false,
+          errors: ["No citations provided"],
+          warnings: ["Answer generated without evidence citations"],
+        },
+      };
+    }
+
+    const validation = validateCitations(
+      citations,
+      item.qa.a,
+      totalEvidenceCount, // Use total evidence count
+      {
+        qaId: `qa-${index}`,
+        question: item.qa.q,
+        enableLogging: true, // Enable failure logging
+      },
+    );
+
+    return {
+      valid: validation.valid,
+      metrics: validation.metrics,
+      validation: {
+        valid: validation.valid,
+        errors: validation.results.flatMap((r) => r.errors),
+        warnings: validation.results.flatMap((r) => r.warnings),
+      },
+    };
+  });
+
   // Calculate cost and performance metrics
   const costs = qaItems.map((item) => item.cost_usd || 0);
   const latencies = qaItems.map((item) => item.latency_ms || 0);
@@ -369,6 +453,13 @@ export async function calculateAllBaselineMetrics(
       (match) => match.location.index === index,
     );
 
+    // Calculate citation quality score (combination of alignment & coverage)
+    const citationResult = citationValidations[index];
+    const citationQualityScore = citationResult.valid
+      ? (citationResult.metrics.avg_alignment_score * 0.6 +
+         citationResult.metrics.citation_coverage * 0.4)
+      : 0; // No citations = 0 quality
+
     // Calculate individual quality score
     const itemQualityScore = calculateOverallQualityScore(
       duplicateFlag ? 1 : 0,
@@ -377,6 +468,7 @@ export async function calculateAllBaselineMetrics(
       piiLicenseViolations.length,
       qtypeMetrics.imbalance_score,
       coverageMetrics.coverage_summary.overall_score,
+      citationQualityScore, // NEW: Pass citation quality
     );
 
     const alertFlags: string[] = [];
@@ -384,6 +476,12 @@ export async function calculateAllBaselineMetrics(
     if (hallucinationFlag) alertFlags.push("hallucination");
     if (piiLicenseViolations.length > 0) alertFlags.push("pii_license");
     if (!item.evidence) alertFlags.push("missing_evidence");
+
+    // Add citation alerts (using citationResult from above)
+    if (!citationResult.valid) alertFlags.push("citation_invalid");
+    if (citationResult.metrics.citation_coverage < 0.5) {
+      alertFlags.push("low_citation_coverage");
+    }
 
     return {
       timestamp: new Date().toISOString(),
@@ -395,6 +493,11 @@ export async function calculateAllBaselineMetrics(
       evidence: item.evidence,
       evidence_idx: index,
       source_text: item.source_text,
+
+      // Include citations and validation
+      citations: item.citations,
+      citation_quality: citationResult.metrics,
+      citation_validation: citationResult.validation,
 
       duplication: {
         is_duplicate: duplicateFlag,
@@ -467,6 +570,45 @@ export async function calculateAllBaselineMetrics(
     };
   });
 
+  // Calculate evidence usage tracking
+  const evidenceUsageMap = new Map<number, number>();
+  const totalEvidences = new Set<number>();
+
+  // Track all evidence indices
+  qaItems.forEach((item, idx) => {
+    if (item.evidence) {
+      const evidenceIdx = idx; // Assuming evidence_idx = item index for now
+      totalEvidences.add(evidenceIdx);
+    }
+  });
+
+  // Track which evidences are cited
+  qaItems.forEach((item) => {
+    const citations = item.citations || [];
+    citations.forEach((citation: any) => {
+      const evidenceIdx = citation.evidence_idx;
+      if (evidenceIdx !== undefined) {
+        evidenceUsageMap.set(evidenceIdx, (evidenceUsageMap.get(evidenceIdx) || 0) + 1);
+      }
+    });
+  });
+
+  const unusedEvidences = Array.from(totalEvidences).filter(
+    (idx) => !evidenceUsageMap.has(idx)
+  );
+  const evidenceUsageRate = totalEvidences.size > 0
+    ? (totalEvidences.size - unusedEvidences.length) / totalEvidences.size
+    : 1;
+
+  // Calculate aggregate citation quality
+  const avgAlignmentScore = citationValidations.length > 0
+    ? citationValidations.reduce((sum, v) => sum + v.metrics.avg_alignment_score, 0) / citationValidations.length
+    : 0;
+  const avgCitationCoverage = citationValidations.length > 0
+    ? citationValidations.reduce((sum, v) => sum + v.metrics.citation_coverage, 0) / citationValidations.length
+    : 0;
+  const aggregateCitationQuality = (avgAlignmentScore * 0.6 + avgCitationCoverage * 0.4);
+
   // Calculate overall quality score
   const overallQualityScore = calculateOverallQualityScore(
     duplicationMetrics.duplication_rate,
@@ -475,6 +617,7 @@ export async function calculateAllBaselineMetrics(
     piiLicenseMetrics.pii_hits,
     qtypeMetrics.imbalance_score,
     coverageMetrics.coverage_summary.overall_score,
+    aggregateCitationQuality, // NEW: Include aggregate citation quality
   );
 
   // Create summary
@@ -519,6 +662,19 @@ export async function calculateAllBaselineMetrics(
       alert_triggered: evidenceMetrics.alert_triggered,
     },
 
+    // NEW: Citation quality summary
+    citation_quality: {
+      valid_rate: citationValidations.filter((v) => v.valid).length / citationValidations.length,
+      avg_alignment_score: avgAlignmentScore,
+      avg_coverage: avgCitationCoverage,
+      total_citations: citationValidations.reduce((sum, v) => sum + v.metrics.total_citations, 0),
+      alert_triggered: avgAlignmentScore < 0.4 || avgCitationCoverage < 0.5,
+      // NEW: Evidence usage tracking
+      evidence_usage_rate: evidenceUsageRate,
+      unused_evidence_count: unusedEvidences.length,
+      total_evidence_count: totalEvidences.size,
+    },
+
     hallucination: {
       rate: hallucinationMetrics.hallucination_rate,
       high_risk_count: hallucinationMetrics.high_risk_count,
@@ -548,6 +704,7 @@ export async function calculateAllBaselineMetrics(
       evidenceMetrics.alert_triggered,
       hallucinationMetrics.alert_triggered,
       piiLicenseMetrics.alert_triggered,
+      avgAlignmentScore < 0.4 || avgCitationCoverage < 0.5, // NEW: Citation quality alert
     ].filter(Boolean).length,
     recommendation_level:
       overallQualityScore > 0.8

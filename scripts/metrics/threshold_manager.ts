@@ -16,6 +16,8 @@ export interface P0Thresholds {
   license_violations_max: number; // Fixed: 2 max
   evidence_missing_rate_max: number; // Fixed: 20% max
   hallucination_rate_max: number; // Fixed: 5% max
+  citation_invalid_rate_max: number; // NEW: Fixed: 20% max invalid citations
+  citation_coverage_min: number; // NEW: Fixed: 0.4 min average coverage
 }
 
 export interface P1Thresholds {
@@ -73,6 +75,11 @@ export interface HistoricalMetrics {
   hallucination_rate: number;
   pii_hits: number;
   license_violations: number;
+  // NEW: Citation quality tracking
+  citation_invalid_rate?: number;
+  citation_avg_coverage?: number;
+  citation_valid_rate?: number;
+  citation_avg_alignment?: number;
 }
 
 export interface CalibrationResult {
@@ -141,6 +148,8 @@ export class ThresholdManager {
       license_violations_max: p0.license_violations_max ?? 2, // Fixed: max 2 violations
       evidence_missing_rate_max: p0.evidence_missing_rate_max ?? 0.2, // Fixed: 20% max
       hallucination_rate_max: p0.hallucination_rate_max ?? 0.05, // Fixed: 5% max
+      citation_invalid_rate_max: p0.citation_invalid_rate_max ?? 0.2, // NEW: Fixed: 20% max invalid
+      citation_coverage_min: p0.citation_coverage_min ?? 0.3, // NEW: Fixed: 30% min coverage (adjusted)
     };
   }
 
@@ -724,6 +733,41 @@ export class ThresholdManager {
         threshold_type: "fail",
         actual_value: currentMetrics.hallucination_rate,
         threshold_value: p0Thresholds.hallucination_rate_max,
+        severity: "critical",
+        message: violation,
+      });
+    }
+
+    // NEW: Citation Quality Gate (P0 Critical)
+    if (
+      currentMetrics.citation_invalid_rate !== undefined &&
+      currentMetrics.citation_invalid_rate > p0Thresholds.citation_invalid_rate_max
+    ) {
+      const violation = `Citation invalid rate: ${(currentMetrics.citation_invalid_rate * 100).toFixed(1)}% > ${(p0Thresholds.citation_invalid_rate_max * 100).toFixed(1)}%`;
+      p0Violations.push(violation);
+      violations.push({
+        level: "P0",
+        metric: "citation_invalid_rate",
+        threshold_type: "fail",
+        actual_value: currentMetrics.citation_invalid_rate,
+        threshold_value: p0Thresholds.citation_invalid_rate_max,
+        severity: "critical",
+        message: violation,
+      });
+    }
+
+    if (
+      currentMetrics.citation_avg_coverage !== undefined &&
+      currentMetrics.citation_avg_coverage < p0Thresholds.citation_coverage_min
+    ) {
+      const violation = `Citation coverage: ${(currentMetrics.citation_avg_coverage * 100).toFixed(1)}% < ${(p0Thresholds.citation_coverage_min * 100).toFixed(1)}%`;
+      p0Violations.push(violation);
+      violations.push({
+        level: "P0",
+        metric: "citation_avg_coverage",
+        threshold_type: "fail",
+        actual_value: currentMetrics.citation_avg_coverage,
+        threshold_value: p0Thresholds.citation_coverage_min,
         severity: "critical",
         message: violation,
       });

@@ -3,6 +3,9 @@
  * CLI wrapper for baseline report generator with threshold autocalibration support
  */
 
+// Load environment variables from .env file
+import "dotenv/config";
+
 // Support both ts-node (direct .ts) and bundled .mjs execution.
 // Prefer ESM-friendly import that works in ts-node and esbuild bundle.
 import {
@@ -98,6 +101,7 @@ function loadQAItems(dataPath: string): any[] {
           return {
             qa: item.qa || { q: item.question || "", a: item.answer || "" },
             evidence: item.evidence || item.evidence_text || "",
+            citations: item.citations || [], // Include citations from Answer Agent
             cost_usd: item.cost_usd || 0,
             latency_ms: item.latency_ms || 0,
             index: index,
