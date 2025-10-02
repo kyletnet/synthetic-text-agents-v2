@@ -19,6 +19,7 @@
     "refactor:preview": "tsx scripts/refactor-preview-engine.ts",
     "/validate": "tsx scripts/validate-engine.ts",
     "validate": "tsx scripts/validate-engine.ts",
+    "validate:llm-io": "tsx scripts/validate-llm-io.ts",
     "/verify": "tsx scripts/verify-engine.ts",
     "verify": "tsx scripts/verify-engine.ts",
     "/update": "npm run smart:update",

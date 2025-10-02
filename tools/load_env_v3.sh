@@ -9,11 +9,11 @@ set -Eeuo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# Standard logging
-step() { printf "\033[36m[STEP]\033[0m %s\n" "$*"; }
-ok()   { printf "\033[32m[OK]\033[0m %s\n" "$*"; }
-warn() { printf "\033[33m[WARN]\033[0m %s\n" "$*"; }
-fail() { printf "\033[31m[FAIL]\033[0m %s\n" "$*"; }
+# Standard logging - CRITICAL: All logs go to stderr to avoid polluting JSON stdout
+step() { printf "\033[36m[STEP]\033[0m %s\n" "$*" >&2; }
+ok()   { printf "\033[32m[OK]\033[0m %s\n" "$*" >&2; }
+warn() { printf "\033[33m[WARN]\033[0m %s\n" "$*" >&2; }
+fail() { printf "\033[31m[FAIL]\033[0m %s\n" "$*" >&2; }
 
 # Enhanced secret masking for multiple patterns
 mask_secret() {
