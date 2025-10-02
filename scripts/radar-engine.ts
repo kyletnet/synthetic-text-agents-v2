@@ -1,7 +1,7 @@
 #!/usr/bin/env tsx
 
 /**
- * Deep Inspection Engine
+ * Radar Engine - System Issue Detection
  *
  * Purpose: 정밀 시스템 진단 - 치명적 이슈 발견에 집중
  *
@@ -93,30 +93,66 @@ function execCommand(command: string, silent = true): string {
 function findUntestedCriticalFiles(): CriticalIssue[] {
   log("\n🔍 Scanning untested critical files...", "cyan");
 
-  const criticalPaths = [
+  // Critical: 핵심 인프라 파일들 (반드시 테스트 필요)
+  const criticalPatterns = [
     "src/shared/bus.ts",
     "src/shared/config.ts",
     "src/shared/errorTracking.ts",
     "src/shared/backupSystem.ts",
     "src/shared/rateLimiter.ts",
     "src/shared/logForwarder.ts",
+    "src/shared/registry.ts",
+    "src/shared/pluginLoader.ts",
+    "src/shared/metrics.ts",
   ];
 
   const coverageReport = join(REPO_ROOT, "coverage/coverage-summary.json");
   let untestedFiles: string[] = [];
 
   if (existsSync(coverageReport)) {
+    // Use actual coverage report
     const coverage = JSON.parse(readFileSync(coverageReport, "utf-8"));
-    untestedFiles = criticalPaths.filter((path) => {
+
+    // Check critical files
+    untestedFiles = criticalPatterns.filter((path) => {
       const fullPath = join(REPO_ROOT, path);
       const cov = coverage[fullPath];
       return !cov || cov.lines.pct === 0;
     });
+
+    // Also scan for ANY file in src/shared with 0% coverage
+    Object.keys(coverage).forEach((filePath) => {
+      const cov = coverage[filePath];
+      if (
+        filePath.includes("/src/shared/") &&
+        filePath.endsWith(".ts") &&
+        !filePath.includes(".test.") &&
+        cov.lines.pct === 0 &&
+        !untestedFiles.some((f) => filePath.includes(f))
+      ) {
+        const relativePath = filePath.replace(REPO_ROOT + "/", "");
+        untestedFiles.push(relativePath);
+      }
+    });
   } else {
-    // No coverage report, assume all are untested
-    untestedFiles = criticalPaths.filter((path) =>
-      existsSync(join(REPO_ROOT, path))
-    );
+    // No coverage report - generate it first
+    log("⚠️  No coverage report found. Generating...", "yellow");
+    execCommand("npm run test:coverage", false);
+
+    // Retry after generation
+    if (existsSync(coverageReport)) {
+      const coverage = JSON.parse(readFileSync(coverageReport, "utf-8"));
+      untestedFiles = criticalPatterns.filter((path) => {
+        const fullPath = join(REPO_ROOT, path);
+        const cov = coverage[fullPath];
+        return !cov || cov.lines.pct === 0;
+      });
+    } else {
+      // Fallback: assume all critical files are untested
+      untestedFiles = criticalPatterns.filter((path) =>
+        existsSync(join(REPO_ROOT, path))
+      );
+    }
   }
 
   if (untestedFiles.length > 0) {
@@ -456,9 +492,9 @@ async function runDeepInspection(): Promise<DeepInspectionResult> {
   const startTime = Date.now();
 
   log("\n" + "=".repeat(60), "magenta");
-  log("🔬 Deep Inspection Engine v1.0", "magenta");
+  log("📡 Radar Engine v1.0 - System Issue Detection", "magenta");
   log("=".repeat(60) + "\n", "magenta");
-  log("정밀 시스템 진단 시작...\n", "cyan");
+  log("정밀 시스템 스캔 시작...\n", "cyan");
 
   const allIssues: CriticalIssue[] = [];
 
@@ -609,7 +645,7 @@ function printResults(result: DeepInspectionResult): void {
   }
 
   log("=".repeat(60), "magenta");
-  log("✅ Deep Inspection Complete", "green");
+  log("✅ Radar Scan Complete", "green");
   log("=".repeat(60) + "\n", "magenta");
 }
 
