@@ -147,8 +147,8 @@ Copy this after running checks:
 ### Decision
 
 - [ ] ✅ APPROVED for shipping
-- [ ] ⚠️ APPROVED with conditions: ******\_\_\_******
-- [ ] 🔴 BLOCKED - Reason: ******\_\_\_******
+- [ ] ⚠️ APPROVED with conditions: **\*\***\_\_\_**\*\***
+- [ ] 🔴 BLOCKED - Reason: **\*\***\_\_\_**\*\***
 
 **Approved by**: [Your Name]
 **Next Review**: [Date if blocked]

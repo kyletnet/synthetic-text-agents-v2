@@ -1,4 +1,5 @@
 import { readFileSync } from "fs";
+import { calculateAlignment } from "../lib/contrastive-alignment.js";
 
 interface EvidenceConfig {
   hit_rate: {
@@ -153,28 +154,37 @@ function calculateCosineSimilarity(text1: string, text2: string): number {
 
 /**
  * Calculate snippet alignment score between answer and evidence
+ *
+ * IMPROVEMENT: Now uses contrastive embeddings for semantic similarity
+ * Falls back to n-gram overlap if FEATURE_CONTRASTIVE_ALIGNMENT=false
  */
-function calculateSnippetAlignment(
+async function calculateSnippetAlignment(
   answer: string,
   evidence: string,
   config: EvidenceConfig,
-): number {
+): Promise<number> {
   if (!evidence || evidence.trim().length === 0) {
     return 0;
   }
 
-  // Calculate n-gram overlap
-  const ngramOverlap = calculateNgramOverlap(answer, evidence, 3);
+  // Use contrastive alignment (with automatic fallback)
+  const alignmentResult = await calculateAlignment(answer, evidence);
 
-  // Calculate character-level similarity (proxy for embedding similarity)
-  const cosineSim = calculateCosineSimilarity(answer, evidence);
+  // Log method used for observability
+  if (alignmentResult.method === "contrastive") {
+    // Contrastive method already provides optimal score
+    return Math.min(alignmentResult.score, 1.0);
+  } else {
+    // Fallback: use weighted combination as before
+    const ngramOverlap = calculateNgramOverlap(answer, evidence, 3);
+    const cosineSim = calculateCosineSimilarity(answer, evidence);
 
-  // Weighted combination
-  const alignmentScore =
-    ngramOverlap * config.snippet_alignment.ngram_overlap_weight +
-    cosineSim * config.snippet_alignment.embedding_weight;
+    const alignmentScore =
+      ngramOverlap * config.snippet_alignment.ngram_overlap_weight +
+      cosineSim * config.snippet_alignment.embedding_weight;
 
-  return Math.min(alignmentScore, 1.0); // Cap at 1.0
+    return Math.min(alignmentScore, 1.0);
+  }
 }
 
 /**
@@ -198,11 +208,13 @@ function calculateMean(values: number[]): number {
 
 /**
  * Calculate evidence quality metrics
+ *
+ * IMPROVEMENT: Now async to support contrastive embedding alignment
  */
-export function calculateEvidenceQuality(
+export async function calculateEvidenceQuality(
   qaItems: QAItem[],
   configPath: string = "baseline_config.json",
-): EvidenceQualityMetrics {
+): Promise<EvidenceQualityMetrics> {
   // Load configuration
   const configText = readFileSync(configPath, "utf-8");
   const fullConfig = JSON.parse(configText);
@@ -229,9 +241,9 @@ export function calculateEvidenceQuality(
     if (hasEvidenceFields) {
       itemsWithEvidence++;
 
-      // Calculate snippet alignment
+      // Calculate snippet alignment (now async)
       const evidenceText = extractEvidenceText(item);
-      const alignmentScore = calculateSnippetAlignment(
+      const alignmentScore = await calculateSnippetAlignment(
         item.qa.a,
         evidenceText,
         config,
@@ -373,7 +385,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   ];
 
   try {
-    const metrics = calculateEvidenceQuality(sampleQA);
+    const metrics = await calculateEvidenceQuality(sampleQA);
     console.log("Evidence Quality Metrics:");
     console.log(JSON.stringify(metrics, null, 2));
     console.log("\nReport:");

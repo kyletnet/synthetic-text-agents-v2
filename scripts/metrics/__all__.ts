@@ -337,7 +337,7 @@ export async function calculateAllBaselineMetrics(
   );
 
   console.log("📊 Calculating evidence quality...");
-  const evidenceMetrics = calculateEvidenceQuality(qaItems, configPath);
+  const evidenceMetrics = await calculateEvidenceQuality(qaItems, configPath);
 
   console.log("📊 Detecting hallucinations...");
   const hallucinationMetrics = detectHallucinations(qaItems, configPath);
