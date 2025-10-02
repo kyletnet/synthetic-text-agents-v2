@@ -741,7 +741,8 @@ export class ThresholdManager {
     // NEW: Citation Quality Gate (P0 Critical)
     if (
       currentMetrics.citation_invalid_rate !== undefined &&
-      currentMetrics.citation_invalid_rate > p0Thresholds.citation_invalid_rate_max
+      currentMetrics.citation_invalid_rate >
+        p0Thresholds.citation_invalid_rate_max
     ) {
       const violation = `Citation invalid rate: ${(currentMetrics.citation_invalid_rate * 100).toFixed(1)}% > ${(p0Thresholds.citation_invalid_rate_max * 100).toFixed(1)}%`;
       p0Violations.push(violation);

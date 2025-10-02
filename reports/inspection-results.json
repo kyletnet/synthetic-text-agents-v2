@@ -14,8 +14,8 @@
     {
       "id": "workarounds",
       "severity": "critical",
-      "description": "워크어라운드/TODO 마커 146개",
-      "count": 146,
+      "description": "워크어라운드/TODO 마커 147개",
+      "count": 147,
       "files": [
         "src/rag/embeddings.ts",
         "src/rag/factory.ts",
@@ -43,6 +43,6 @@
     "security": "pass",
     "integrationScore": 55
   },
-  "timestamp": "2025-10-02T00:48:51.790Z",
+  "timestamp": "2025-10-02T03:05:16.425Z",
   "ttl": 1800
 }

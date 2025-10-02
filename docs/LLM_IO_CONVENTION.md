@@ -16,10 +16,10 @@ This document establishes strict conventions for all scripts that interact with 
 
 ### 1. Stream Separation
 
-| Stream | Purpose | Content |
-|--------|---------|---------|
+| Stream     | Purpose             | Content                           |
+| ---------- | ------------------- | --------------------------------- |
 | **stdout** | JSON responses ONLY | `{"id": "...", "content": [...]}` |
-| **stderr** | All logging | `[OK] API call successful` |
+| **stderr** | All logging         | `[OK] API call successful`        |
 
 ### 2. Bash Wrapper Scripts
 
@@ -43,11 +43,11 @@ All TypeScript adapters that spawn bash wrappers MUST:
 ```typescript
 // ✅ CORRECT: Parse stdout for JSON, stderr for diagnostics
 child.stdout.on("data", (data) => {
-  stdout += data.toString();  // JSON only
+  stdout += data.toString(); // JSON only
 });
 
 child.stderr.on("data", (data) => {
-  stderr += data.toString();  // Logs, errors
+  stderr += data.toString(); // Logs, errors
 });
 
 // Extract JSON from stdout
@@ -58,6 +58,7 @@ const response = JSON.parse(stdout.substring(jsonStart, jsonEnd));
 ### 4. Response Format
 
 LLM responses on stdout MUST be:
+
 - Valid JSON
 - No ANSI color codes
 - No log prefixes

@@ -26,7 +26,6 @@
 - 5906738 feat: Phase 12 - /ship 명령어 강화 및 중복 제거
 - c104add feat: Phase 11 - 6개 엔진 governance 통합 완료
 
-
 ## [1.1.1] - 2025-10-02
 
 - a19497f chore: Update reports and configuration files
@@ -52,7 +51,6 @@
 - a742823 docs: Phase 12 완료 - 다음 세션 핸드오프 문서
 - 5906738 feat: Phase 12 - /ship 명령어 강화 및 중복 제거
 - c104add feat: Phase 11 - 6개 엔진 governance 통합 완료
-
 
 ## [2025-09-25] - System Sync
 

@@ -60,11 +60,7 @@ export function calculateCitationMetrics(
     };
   }
 
-  const validation = validateCitations(
-    citations,
-    qaItem.qa.a,
-    evidenceCount,
-  );
+  const validation = validateCitations(citations, qaItem.qa.a, evidenceCount);
 
   const qualityGate = getCitationQualityGate(validation.metrics);
 
@@ -82,9 +78,7 @@ export function calculateCitationMetrics(
 /**
  * Calculate aggregate citation metrics for all QA items
  */
-export function calculateAggregateCitationMetrics(
-  qaItems: QAWithCitations[],
-): {
+export function calculateAggregateCitationMetrics(qaItems: QAWithCitations[]): {
   total_qa: number;
   valid_qa: number;
   invalid_qa: number;
@@ -107,9 +101,7 @@ export function calculateAggregateCitationMetrics(
     })),
   );
 
-  const qualityGate = getCitationQualityGate(
-    batchValidation.aggregate_metrics,
-  );
+  const qualityGate = getCitationQualityGate(batchValidation.aggregate_metrics);
 
   const perQaIssues = batchValidation.per_qa_results
     .filter((r) => r.errors.length > 0 || r.warnings.length > 0)
@@ -146,8 +138,10 @@ export function formatCitationMetricsForReport(
   lines.push("|--------|-------|--------|");
 
   const totalCitations = metrics.total_citations;
-  const validPct = totalCitations > 0 ? (metrics.valid_citations / totalCitations) * 100 : 0;
-  const invalidPct = totalCitations > 0 ? (metrics.invalid_citations / totalCitations) * 100 : 0;
+  const validPct =
+    totalCitations > 0 ? (metrics.valid_citations / totalCitations) * 100 : 0;
+  const invalidPct =
+    totalCitations > 0 ? (metrics.invalid_citations / totalCitations) * 100 : 0;
 
   lines.push(`| **Total Citations** | **${totalCitations}** | - |`);
   lines.push(
@@ -184,7 +178,12 @@ export function formatCitationMetricsForReport(
   lines.push("");
 
   // Quality gate
-  const gateEmoji = qualityGate.status === "PASS" ? "✅" : qualityGate.status === "WARN" ? "⚠️" : "❌";
+  const gateEmoji =
+    qualityGate.status === "PASS"
+      ? "✅"
+      : qualityGate.status === "WARN"
+        ? "⚠️"
+        : "❌";
   lines.push(`**Quality Gate**: ${gateEmoji} ${qualityGate.status}`);
   lines.push(`**Reason**: ${qualityGate.reason}`);
   lines.push("");

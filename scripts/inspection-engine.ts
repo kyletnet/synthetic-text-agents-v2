@@ -78,6 +78,16 @@ class InspectionEngine {
 
           // 4. Show next steps
           this.showNextSteps();
+
+          // 5. Completion notification
+          console.log("\n" + "═".repeat(60));
+          console.log("✅ INSPECTION COMPLETE");
+          console.log("═".repeat(60));
+          console.log(`📊 Health Score: ${summary.healthScore}/100`);
+          console.log(
+            `⏱️  Completed at: ${new Date().toLocaleTimeString("ko-KR")}`,
+          );
+          console.log("═".repeat(60) + "\n");
         },
         {
           name: "inspect",
@@ -122,7 +132,21 @@ class InspectionEngine {
     console.log(`   📊 Checking: ${checks.join(", ")}`);
     console.log("   ⏳ This may take 30-60 seconds...\n");
 
-    // Execute all checks in parallel
+    // Progress tracker
+    const progress = { completed: 0, total: checks.length };
+    const updateProgress = (name: string) => {
+      progress.completed++;
+      const percent = Math.round((progress.completed / progress.total) * 100);
+      const bar =
+        "█".repeat(Math.floor(percent / 5)) +
+        "░".repeat(20 - Math.floor(percent / 5));
+      process.stdout.write(`\r   [${bar}] ${percent}% - ${name} complete`);
+      if (progress.completed === progress.total) {
+        console.log("\n");
+      }
+    };
+
+    // Execute all checks in parallel with progress tracking
     const [
       prettierResult,
       eslintResult,
@@ -134,15 +158,42 @@ class InspectionEngine {
       docResult,
       refactorResult,
     ] = await Promise.allSettled([
-      Promise.resolve(this.checkPrettier()),
-      Promise.resolve(this.checkESLint()),
-      Promise.resolve(this.checkTypeScript()),
-      Promise.resolve(this.checkTests()),
-      this.checkSecurity(),
-      Promise.resolve(this.checkArchitecture()),
-      Promise.resolve(this.detectWorkarounds()),
-      Promise.resolve(this.checkComponentDocumentation()),
-      Promise.resolve(this.checkRefactoringQueue()),
+      Promise.resolve(this.checkPrettier()).then((r) => {
+        updateProgress("Prettier");
+        return r;
+      }),
+      Promise.resolve(this.checkESLint()).then((r) => {
+        updateProgress("ESLint");
+        return r;
+      }),
+      Promise.resolve(this.checkTypeScript()).then((r) => {
+        updateProgress("TypeScript");
+        return r;
+      }),
+      Promise.resolve(this.checkTests()).then((r) => {
+        updateProgress("Tests");
+        return r;
+      }),
+      this.checkSecurity().then((r) => {
+        updateProgress("Security");
+        return r;
+      }),
+      Promise.resolve(this.checkArchitecture()).then((r) => {
+        updateProgress("Architecture");
+        return r;
+      }),
+      Promise.resolve(this.detectWorkarounds()).then((r) => {
+        updateProgress("Workarounds");
+        return r;
+      }),
+      Promise.resolve(this.checkComponentDocumentation()).then((r) => {
+        updateProgress("Documentation");
+        return r;
+      }),
+      Promise.resolve(this.checkRefactoringQueue()).then((r) => {
+        updateProgress("Refactoring");
+        return r;
+      }),
     ]);
 
     console.log("   ✅ All checks complete!\n");

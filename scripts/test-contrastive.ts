@@ -14,8 +14,7 @@ async function main() {
 
   // Test case 1: High similarity
   const answer1 = "The capital of France is Paris, a major European city.";
-  const evidence1 =
-    "Paris is the capital and most populous city of France.";
+  const evidence1 = "Paris is the capital and most populous city of France.";
 
   console.log("Test 1: High Similarity");
   console.log(`Answer: ${answer1}`);

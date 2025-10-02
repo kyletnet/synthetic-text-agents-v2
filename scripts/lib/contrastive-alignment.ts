@@ -26,8 +26,7 @@ interface AlignmentScore {
 /**
  * Feature flag: Enable/disable contrastive alignment
  */
-const FEATURE_ENABLED =
-  process.env.FEATURE_CONTRASTIVE_ALIGNMENT !== "false";
+const FEATURE_ENABLED = process.env.FEATURE_CONTRASTIVE_ALIGNMENT !== "false";
 
 /**
  * Cache for embeddings to reduce API calls
@@ -95,10 +94,15 @@ async function getEmbedding(text: string): Promise<number[]> {
   let embedding: number[];
 
   // Use real OpenAI API if available, otherwise use mock
-  if (process.env.OPENAI_API_KEY && process.env.OPENAI_API_KEY !== "sk-your-openai-key-here") {
+  if (
+    process.env.OPENAI_API_KEY &&
+    process.env.OPENAI_API_KEY !== "sk-your-openai-key-here"
+  ) {
     try {
       if (!embeddingCache.has(cacheKey)) {
-        console.log(`[contrastive-alignment] Using OpenAI API for embedding (cache miss)`);
+        console.log(
+          `[contrastive-alignment] Using OpenAI API for embedding (cache miss)`,
+        );
       }
       embedding = await getOpenAIEmbedding(text);
     } catch (error) {
@@ -109,7 +113,9 @@ async function getEmbedding(text: string): Promise<number[]> {
     }
   } else {
     // No API key, use mock
-    console.log(`[contrastive-alignment] No API key found, using mock embedding`);
+    console.log(
+      `[contrastive-alignment] No API key found, using mock embedding`,
+    );
     embedding = await getMockEmbedding(text);
   }
 

@@ -126,18 +126,32 @@ function getQAQualitySnapshot() {
     const content = readFileSync(reportPath, "utf8");
 
     // Parse key metrics from the report
-    const validCitationsMatch = content.match(/\*\*Valid Citations Rate\*\*[^\d]*([\d.]+)%/);
-    const evidenceCoverageMatch = content.match(/\*\*Avg Citation Coverage\*\*[^\d]*([\d.]+)%/);
-    const gateStatusMatch = content.match(/\*\*Gate Status\*\*:\s*(✅|❌)\s*(\w+)/);
-    const qualityGateMatch = content.match(/\*\*Quality Gate\*\*:\s*(✅|❌)\s*(\w+)/);
-    const qualityScoreMatch = content.match(/\*\*Overall Quality Score\*\*:\s*[^0-9]*([\d.]+)%/);
+    const validCitationsMatch = content.match(
+      /\*\*Valid Citations Rate\*\*[^\d]*([\d.]+)%/,
+    );
+    const evidenceCoverageMatch = content.match(
+      /\*\*Avg Citation Coverage\*\*[^\d]*([\d.]+)%/,
+    );
+    const gateStatusMatch = content.match(
+      /\*\*Gate Status\*\*:\s*(✅|❌)\s*(\w+)/,
+    );
+    const qualityGateMatch = content.match(
+      /\*\*Quality Gate\*\*:\s*(✅|❌)\s*(\w+)/,
+    );
+    const qualityScoreMatch = content.match(
+      /\*\*Overall Quality Score\*\*:\s*[^0-9]*([\d.]+)%/,
+    );
 
     // Use threshold gate status if available, otherwise citation quality gate
     const primaryGate = gateStatusMatch || qualityGateMatch;
 
     return {
-      validCitations: validCitationsMatch ? parseFloat(validCitationsMatch[1]) : null,
-      evidenceCoverage: evidenceCoverageMatch ? parseFloat(evidenceCoverageMatch[1]) : null,
+      validCitations: validCitationsMatch
+        ? parseFloat(validCitationsMatch[1])
+        : null,
+      evidenceCoverage: evidenceCoverageMatch
+        ? parseFloat(evidenceCoverageMatch[1])
+        : null,
       gateStatus: primaryGate ? primaryGate[2] : null,
       gateIcon: primaryGate ? primaryGate[1] : null,
       qualityScore: qualityScoreMatch ? parseFloat(qualityScoreMatch[1]) : null,
@@ -163,17 +177,33 @@ function displayQAQualitySnapshot() {
   }
 
   if (snapshot.validCitations !== null) {
-    const citationIcon = snapshot.validCitations >= 95 ? "✅" : snapshot.validCitations >= 85 ? "⚠️" : "❌";
-    console.log(`  - Valid Citations: ${citationIcon} ${snapshot.validCitations.toFixed(1)}%`);
+    const citationIcon =
+      snapshot.validCitations >= 95
+        ? "✅"
+        : snapshot.validCitations >= 85
+          ? "⚠️"
+          : "❌";
+    console.log(
+      `  - Valid Citations: ${citationIcon} ${snapshot.validCitations.toFixed(1)}%`,
+    );
   }
 
   if (snapshot.evidenceCoverage !== null) {
-    const coverageIcon = snapshot.evidenceCoverage >= 70 ? "✅" : snapshot.evidenceCoverage >= 50 ? "⚠️" : "❌";
-    console.log(`  - Evidence Coverage: ${coverageIcon} ${snapshot.evidenceCoverage.toFixed(1)}%`);
+    const coverageIcon =
+      snapshot.evidenceCoverage >= 70
+        ? "✅"
+        : snapshot.evidenceCoverage >= 50
+          ? "⚠️"
+          : "❌";
+    console.log(
+      `  - Evidence Coverage: ${coverageIcon} ${snapshot.evidenceCoverage.toFixed(1)}%`,
+    );
   }
 
   if (snapshot.gateStatus !== null) {
-    console.log(`  - Gate Status: ${snapshot.gateIcon} ${snapshot.gateStatus} (${snapshot.gateStatus === "PASS" ? "no P0 violations" : "violations detected"})`);
+    console.log(
+      `  - Gate Status: ${snapshot.gateIcon} ${snapshot.gateStatus} (${snapshot.gateStatus === "PASS" ? "no P0 violations" : "violations detected"})`,
+    );
   }
 }
 

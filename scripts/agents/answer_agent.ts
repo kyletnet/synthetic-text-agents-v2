@@ -373,10 +373,7 @@ Instructions:
         : 0;
 
     // Analyze reasoning chain
-    const reasoning = await this.analyzeReasoning(
-      answerResult.text,
-      evidence,
-    );
+    const reasoning = await this.analyzeReasoning(answerResult.text, evidence);
 
     // Store metrics in enhanced answer
     (reasoning as any).citation_coverage = citationCoverage;
@@ -457,7 +454,9 @@ Instructions:
     }
 
     // Sort by alignment score (best first)
-    citations.sort((a, b) => (b.alignment_score || 0) - (a.alignment_score || 0));
+    citations.sort(
+      (a, b) => (b.alignment_score || 0) - (a.alignment_score || 0),
+    );
 
     return citations.slice(0, 5); // Limit to top 5 citations
   }

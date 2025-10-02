@@ -1,8 +1,8 @@
 {
-  "timestamp": "2025-10-01T15:11:03.080Z",
+  "timestamp": "2025-10-02T03:12:53.732Z",
   "totalDocs": 40,
-  "autoUpdated": 0,
-  "semiAutoUpdated": 6,
+  "autoUpdated": 16,
+  "semiAutoUpdated": 5,
   "manualRequired": 1,
   "updates": [
     {
@@ -101,7 +101,7 @@
       "priority": "MEDIUM",
       "description": "README file auto-update with system info",
       "lastModified": "2025-09-30T03:10:39.916Z",
-      "needsUpdate": false,
+      "needsUpdate": true,
       "autoUpdateMethod": "Auto-inject system stats and last update timestamp"
     },
     {
@@ -110,7 +110,7 @@
       "priority": "MEDIUM",
       "description": "README file auto-update with system info",
       "lastModified": "2025-09-30T03:10:44.067Z",
-      "needsUpdate": false,
+      "needsUpdate": true,
       "autoUpdateMethod": "Auto-inject system stats and last update timestamp"
     },
     {
@@ -119,7 +119,7 @@
       "priority": "MEDIUM",
       "description": "README file auto-update with system info",
       "lastModified": "2025-09-30T03:10:49.558Z",
-      "needsUpdate": false,
+      "needsUpdate": true,
       "autoUpdateMethod": "Auto-inject system stats and last update timestamp"
     },
     {
@@ -128,7 +128,7 @@
       "priority": "MEDIUM",
       "description": "README file auto-update with system info",
       "lastModified": "2025-09-30T03:10:54.679Z",
-      "needsUpdate": false,
+      "needsUpdate": true,
       "autoUpdateMethod": "Auto-inject system stats and last update timestamp"
     },
     {
@@ -137,7 +137,7 @@
       "priority": "MEDIUM",
       "description": "README file auto-update with system info",
       "lastModified": "2025-09-30T03:10:59.384Z",
-      "needsUpdate": false,
+      "needsUpdate": true,
       "autoUpdateMethod": "Auto-inject system stats and last update timestamp"
     },
     {
@@ -146,7 +146,7 @@
       "priority": "MEDIUM",
       "description": "README file auto-update with system info",
       "lastModified": "2025-09-30T03:11:03.675Z",
-      "needsUpdate": false,
+      "needsUpdate": true,
       "autoUpdateMethod": "Auto-inject system stats and last update timestamp"
     },
     {
@@ -155,7 +155,7 @@
       "priority": "MEDIUM",
       "description": "README file auto-update with system info",
       "lastModified": "2025-09-30T03:11:08.430Z",
-      "needsUpdate": false,
+      "needsUpdate": true,
       "autoUpdateMethod": "Auto-inject system stats and last update timestamp"
     },
     {
@@ -164,7 +164,7 @@
       "priority": "MEDIUM",
       "description": "README file auto-update with system info",
       "lastModified": "2025-09-30T03:11:12.862Z",
-      "needsUpdate": false,
+      "needsUpdate": true,
       "autoUpdateMethod": "Auto-inject system stats and last update timestamp"
     },
     {
@@ -173,7 +173,7 @@
       "priority": "MEDIUM",
       "description": "README file auto-update with system info",
       "lastModified": "2025-09-30T03:11:18.911Z",
-      "needsUpdate": false,
+      "needsUpdate": true,
       "autoUpdateMethod": "Auto-inject system stats and last update timestamp"
     },
     {
@@ -182,7 +182,7 @@
       "priority": "MEDIUM",
       "description": "README file auto-update with system info",
       "lastModified": "2025-09-30T03:11:29.323Z",
-      "needsUpdate": false,
+      "needsUpdate": true,
       "autoUpdateMethod": "Auto-inject system stats and last update timestamp"
     },
     {
@@ -191,7 +191,7 @@
       "priority": "MEDIUM",
       "description": "README file auto-update with system info",
       "lastModified": "2025-09-30T03:11:36.107Z",
-      "needsUpdate": false,
+      "needsUpdate": true,
       "autoUpdateMethod": "Auto-inject system stats and last update timestamp"
     },
     {
@@ -218,7 +218,7 @@
       "priority": "MEDIUM",
       "description": "README file auto-update with system info",
       "lastModified": "2025-09-30T03:11:51.016Z",
-      "needsUpdate": false,
+      "needsUpdate": true,
       "autoUpdateMethod": "Auto-inject system stats and last update timestamp"
     },
     {
@@ -227,7 +227,7 @@
       "priority": "MEDIUM",
       "description": "README file auto-update with system info",
       "lastModified": "2025-09-30T03:11:55.018Z",
-      "needsUpdate": false,
+      "needsUpdate": true,
       "autoUpdateMethod": "Auto-inject system stats and last update timestamp"
     },
     {
@@ -236,7 +236,7 @@
       "priority": "MEDIUM",
       "description": "README file auto-update with system info",
       "lastModified": "2025-09-30T03:11:58.919Z",
-      "needsUpdate": false,
+      "needsUpdate": true,
       "autoUpdateMethod": "Auto-inject system stats and last update timestamp"
     },
     {
@@ -245,7 +245,7 @@
       "priority": "MEDIUM",
       "description": "README file auto-update with system info",
       "lastModified": "2025-09-30T03:12:03.476Z",
-      "needsUpdate": false,
+      "needsUpdate": true,
       "autoUpdateMethod": "Auto-inject system stats and last update timestamp"
     },
     {
@@ -254,7 +254,7 @@
       "priority": "MEDIUM",
       "description": "README file auto-update with system info",
       "lastModified": "2025-09-30T03:12:08.239Z",
-      "needsUpdate": false,
+      "needsUpdate": true,
       "autoUpdateMethod": "Auto-inject system stats and last update timestamp"
     },
     {
@@ -298,8 +298,8 @@
       "updateType": "SEMI_AUTO",
       "priority": "HIGH",
       "description": "Changelog - needs latest changes entry",
-      "lastModified": "2025-09-25T04:30:52.232Z",
-      "needsUpdate": true,
+      "lastModified": "2025-10-02T03:06:50.280Z",
+      "needsUpdate": false,
       "autoUpdateMethod": "Auto-generate entry from git log and health report"
     },
     {

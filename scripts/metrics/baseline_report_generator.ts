@@ -510,7 +510,7 @@ function extractThresholdMetrics(
     license_violations: summary.pii_license?.license_hits || 0,
     // NEW: Citation quality metrics for P0 gate
     citation_invalid_rate: summary.citation_quality
-      ? (1 - summary.citation_quality.valid_rate)
+      ? 1 - summary.citation_quality.valid_rate
       : 0,
     citation_avg_coverage: summary.citation_quality?.avg_coverage || 0,
   };
@@ -1038,12 +1038,24 @@ function generateMarkdownReport(
     lines.push("## 4.5 Citation Quality Assessment");
     lines.push("");
 
-    const validRateIcon = summary.citation_quality.valid_rate >= 0.8 ? "✅" :
-                          summary.citation_quality.valid_rate >= 0.6 ? "⚠️" : "❌";
-    const alignmentIcon = summary.citation_quality.avg_alignment_score >= 0.6 ? "✅" :
-                          summary.citation_quality.avg_alignment_score >= 0.4 ? "⚠️" : "❌";
-    const coverageIcon = summary.citation_quality.avg_coverage >= 0.5 ? "✅" :
-                         summary.citation_quality.avg_coverage >= 0.3 ? "⚠️" : "❌";
+    const validRateIcon =
+      summary.citation_quality.valid_rate >= 0.8
+        ? "✅"
+        : summary.citation_quality.valid_rate >= 0.6
+          ? "⚠️"
+          : "❌";
+    const alignmentIcon =
+      summary.citation_quality.avg_alignment_score >= 0.6
+        ? "✅"
+        : summary.citation_quality.avg_alignment_score >= 0.4
+          ? "⚠️"
+          : "❌";
+    const coverageIcon =
+      summary.citation_quality.avg_coverage >= 0.5
+        ? "✅"
+        : summary.citation_quality.avg_coverage >= 0.3
+          ? "⚠️"
+          : "❌";
 
     lines.push("### 📚 Citation Validation Metrics");
     lines.push("");
@@ -1066,8 +1078,12 @@ function generateMarkdownReport(
     // Evidence Usage Tracking
     lines.push("### 📊 Evidence Usage");
     lines.push("");
-    const usageIcon = summary.citation_quality.evidence_usage_rate >= 0.8 ? "✅" :
-                      summary.citation_quality.evidence_usage_rate >= 0.5 ? "⚠️" : "❌";
+    const usageIcon =
+      summary.citation_quality.evidence_usage_rate >= 0.8
+        ? "✅"
+        : summary.citation_quality.evidence_usage_rate >= 0.5
+          ? "⚠️"
+          : "❌";
     lines.push(
       `- **Evidence Usage Rate**: ${(summary.citation_quality.evidence_usage_rate * 100).toFixed(1)}% ${usageIcon}`,
     );

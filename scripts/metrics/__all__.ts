@@ -228,12 +228,12 @@ function calculateOverallQualityScore(
   // UPDATED: Added citation quality weight
   const weights = {
     duplication: 0.12, // Lower duplication is better
-    evidence: 0.20, // Higher evidence presence is better
-    hallucination: 0.20, // Lower hallucination is better
+    evidence: 0.2, // Higher evidence presence is better
+    hallucination: 0.2, // Lower hallucination is better
     pii: 0.12, // No PII violations is better
     qtype: 0.08, // Balanced question types is better
     coverage: 0.08, // Higher coverage is better
-    citation: 0.20, // NEW: Citation quality is critical
+    citation: 0.2, // NEW: Citation quality is critical
   };
 
   const duplicationScore = Math.max(0, 1 - duplicateRate * 2); // Penalize >50% duplication heavily
@@ -456,8 +456,8 @@ export async function calculateAllBaselineMetrics(
     // Calculate citation quality score (combination of alignment & coverage)
     const citationResult = citationValidations[index];
     const citationQualityScore = citationResult.valid
-      ? (citationResult.metrics.avg_alignment_score * 0.6 +
-         citationResult.metrics.citation_coverage * 0.4)
+      ? citationResult.metrics.avg_alignment_score * 0.6 +
+        citationResult.metrics.citation_coverage * 0.4
       : 0; // No citations = 0 quality
 
     // Calculate individual quality score
@@ -588,26 +588,39 @@ export async function calculateAllBaselineMetrics(
     citations.forEach((citation: any) => {
       const evidenceIdx = citation.evidence_idx;
       if (evidenceIdx !== undefined) {
-        evidenceUsageMap.set(evidenceIdx, (evidenceUsageMap.get(evidenceIdx) || 0) + 1);
+        evidenceUsageMap.set(
+          evidenceIdx,
+          (evidenceUsageMap.get(evidenceIdx) || 0) + 1,
+        );
       }
     });
   });
 
   const unusedEvidences = Array.from(totalEvidences).filter(
-    (idx) => !evidenceUsageMap.has(idx)
+    (idx) => !evidenceUsageMap.has(idx),
   );
-  const evidenceUsageRate = totalEvidences.size > 0
-    ? (totalEvidences.size - unusedEvidences.length) / totalEvidences.size
-    : 1;
+  const evidenceUsageRate =
+    totalEvidences.size > 0
+      ? (totalEvidences.size - unusedEvidences.length) / totalEvidences.size
+      : 1;
 
   // Calculate aggregate citation quality
-  const avgAlignmentScore = citationValidations.length > 0
-    ? citationValidations.reduce((sum, v) => sum + v.metrics.avg_alignment_score, 0) / citationValidations.length
-    : 0;
-  const avgCitationCoverage = citationValidations.length > 0
-    ? citationValidations.reduce((sum, v) => sum + v.metrics.citation_coverage, 0) / citationValidations.length
-    : 0;
-  const aggregateCitationQuality = (avgAlignmentScore * 0.6 + avgCitationCoverage * 0.4);
+  const avgAlignmentScore =
+    citationValidations.length > 0
+      ? citationValidations.reduce(
+          (sum, v) => sum + v.metrics.avg_alignment_score,
+          0,
+        ) / citationValidations.length
+      : 0;
+  const avgCitationCoverage =
+    citationValidations.length > 0
+      ? citationValidations.reduce(
+          (sum, v) => sum + v.metrics.citation_coverage,
+          0,
+        ) / citationValidations.length
+      : 0;
+  const aggregateCitationQuality =
+    avgAlignmentScore * 0.6 + avgCitationCoverage * 0.4;
 
   // Calculate overall quality score
   const overallQualityScore = calculateOverallQualityScore(
@@ -664,10 +677,15 @@ export async function calculateAllBaselineMetrics(
 
     // NEW: Citation quality summary
     citation_quality: {
-      valid_rate: citationValidations.filter((v) => v.valid).length / citationValidations.length,
+      valid_rate:
+        citationValidations.filter((v) => v.valid).length /
+        citationValidations.length,
       avg_alignment_score: avgAlignmentScore,
       avg_coverage: avgCitationCoverage,
-      total_citations: citationValidations.reduce((sum, v) => sum + v.metrics.total_citations, 0),
+      total_citations: citationValidations.reduce(
+        (sum, v) => sum + v.metrics.total_citations,
+        0,
+      ),
       alert_triggered: avgAlignmentScore < 0.4 || avgCitationCoverage < 0.5,
       // NEW: Evidence usage tracking
       evidence_usage_rate: evidenceUsageRate,

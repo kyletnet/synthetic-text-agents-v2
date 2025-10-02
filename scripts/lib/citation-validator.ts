@@ -98,10 +98,7 @@ export function validateCitation(
     if (typeof citation.alignment_score !== "number") {
       errors.push("Invalid 'alignment_score' type (expected number)");
       qualityScore -= 0.1;
-    } else if (
-      citation.alignment_score < 0 ||
-      citation.alignment_score > 1
-    ) {
+    } else if (citation.alignment_score < 0 || citation.alignment_score > 1) {
       errors.push(
         `alignment_score out of range: ${citation.alignment_score} (expected 0-1)`,
       );
@@ -172,7 +169,11 @@ export function validateCitations(
   metrics: CitationQualityMetrics;
   overall_quality: number;
 } {
-  const { qaId = "unknown", question = "", enableLogging = true } = options || {};
+  const {
+    qaId = "unknown",
+    question = "",
+    enableLogging = true,
+  } = options || {};
   if (!citations || citations.length === 0) {
     // CRITICAL: Empty citations are a FAILURE
     // This enforces the policy that all answers MUST have citations
@@ -307,11 +308,7 @@ export function validateQABatch(
     const citations = item.citations || [];
     const evidenceCount = item.evidence_count || 0;
 
-    const validation = validateCitations(
-      citations,
-      item.qa.a,
-      evidenceCount,
-    );
+    const validation = validateCitations(citations, item.qa.a, evidenceCount);
 
     // Collect all errors and warnings
     const allErrors = validation.results.flatMap((r) => r.errors);
@@ -342,7 +339,8 @@ export function validateQABatch(
 
   const avgAlignmentScore =
     perQaResults.reduce(
-      (sum, r) => sum + r.metrics.avg_alignment_score * r.metrics.total_citations,
+      (sum, r) =>
+        sum + r.metrics.avg_alignment_score * r.metrics.total_citations,
       0,
     ) / totalCitations;
 
@@ -379,9 +377,7 @@ export function validateQABatch(
 /**
  * Get quality gate status based on metrics
  */
-export function getCitationQualityGate(
-  metrics: CitationQualityMetrics,
-): {
+export function getCitationQualityGate(metrics: CitationQualityMetrics): {
   status: "PASS" | "WARN" | "FAIL";
   reason: string;
 } {

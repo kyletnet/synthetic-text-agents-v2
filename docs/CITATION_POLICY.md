@@ -19,27 +19,27 @@ No exceptions. Empty citations = **FAIL**.
 
 ### Minimum Requirements (P0)
 
-| Requirement | Threshold | Enforcement |
-|-------------|-----------|-------------|
-| **Citations per answer** | ≥ 1 | ❌ FAIL if 0 |
-| **Evidence referenced** | ≥ 1 | ❌ FAIL if 0 |
-| **Valid structure** | 100% | ❌ FAIL if invalid |
+| Requirement              | Threshold | Enforcement        |
+| ------------------------ | --------- | ------------------ |
+| **Citations per answer** | ≥ 1       | ❌ FAIL if 0       |
+| **Evidence referenced**  | ≥ 1       | ❌ FAIL if 0       |
+| **Valid structure**      | 100%      | ❌ FAIL if invalid |
 
 ### Quality Requirements (P1)
 
-| Requirement | Threshold | Enforcement |
-|-------------|-----------|-------------|
-| **Avg alignment score** | ≥ 0.4 | ⚠️ WARN if < 0.4 |
-| **Citation coverage** | ≥ 50% | ⚠️ WARN if < 50% |
-| **Evidence traceability** | ≥ 80% | ⚠️ WARN if < 80% |
+| Requirement               | Threshold | Enforcement      |
+| ------------------------- | --------- | ---------------- |
+| **Avg alignment score**   | ≥ 0.4     | ⚠️ WARN if < 0.4 |
+| **Citation coverage**     | ≥ 50%     | ⚠️ WARN if < 50% |
+| **Evidence traceability** | ≥ 80%     | ⚠️ WARN if < 80% |
 
 ### Enhanced Fields (P2)
 
-| Field | Requirement | Penalty |
-|-------|-------------|---------|
-| `evidence_idx` | Present | -5% quality |
-| `alignment_score` | Present | -5% quality |
-| `span_in_answer` | Present | -5% quality |
+| Field             | Requirement | Penalty     |
+| ----------------- | ----------- | ----------- |
+| `evidence_idx`    | Present     | -5% quality |
+| `alignment_score` | Present     | -5% quality |
+| `span_in_answer`  | Present     | -5% quality |
 
 ---
 
@@ -68,6 +68,7 @@ No exceptions. Empty citations = **FAIL**.
 ### 1. Answer Agent Prompt
 
 **CRITICAL REQUIREMENTS** section:
+
 - MUST reference at least 1-2 pieces of evidence
 - Each major claim MUST be traceable
 - MUST indicate evidence numbers
@@ -99,7 +100,7 @@ All violations logged to `logs/citation-failures/citation-failures.jsonl`:
 
 ```typescript
 if (citationGate.status === "FAIL") {
-  process.exit(1);  // Block deployment
+  process.exit(1); // Block deployment
 }
 ```
 
@@ -125,11 +126,11 @@ npx tsx scripts/lib/citation-failure-logger.ts summary
 
 ### Common Failure Patterns
 
-| Pattern | Cause | Fix |
-|---------|-------|-----|
-| >30% no citations | Weak prompt | Strengthen requirements |
-| >10% hallucinations | LLM fabrication | Add validation penalty |
-| >40% low quality | Poor evidence | Improve evidence selection |
+| Pattern             | Cause           | Fix                        |
+| ------------------- | --------------- | -------------------------- |
+| >30% no citations   | Weak prompt     | Strengthen requirements    |
+| >10% hallucinations | LLM fabrication | Add validation penalty     |
+| >40% low quality    | Poor evidence   | Improve evidence selection |
 
 ---
 
@@ -139,10 +140,10 @@ npx tsx scripts/lib/citation-failure-logger.ts summary
 
 ```typescript
 // ❌ WRONG: Optional language
-"Please cite your sources if possible"
+"Please cite your sources if possible";
 
 // ✅ CORRECT: Mandatory language
-"You MUST reference at least 1-2 pieces of evidence"
+"You MUST reference at least 1-2 pieces of evidence";
 ```
 
 ### When Validating QA
@@ -152,7 +153,7 @@ npx tsx scripts/lib/citation-failure-logger.ts summary
 validateCitations(citations, answer, evidenceCount, {
   qaId: "qa-123",
   question: "What is...",
-  enableLogging: true  // Log failures
+  enableLogging: true, // Log failures
 });
 ```
 
@@ -172,16 +173,17 @@ if (citationGate.status === "FAIL") {
 
 ### Target Metrics (Production)
 
-| Metric | Target | Current | Status |
-|--------|--------|---------|--------|
-| Citation presence rate | 100% | TBD | 🔄 |
-| Avg alignment score | ≥0.6 | TBD | 🔄 |
-| Citation coverage | ≥60% | TBD | 🔄 |
-| Hallucination rate | <1% | 0% | ✅ |
+| Metric                 | Target | Current | Status |
+| ---------------------- | ------ | ------- | ------ |
+| Citation presence rate | 100%   | TBD     | 🔄     |
+| Avg alignment score    | ≥0.6   | TBD     | 🔄     |
+| Citation coverage      | ≥60%   | TBD     | 🔄     |
+| Hallucination rate     | <1%    | 0%      | ✅     |
 
 ### Baseline Quality Gate
 
 Before allowing baseline to pass:
+
 - ✅ Zero empty citations
 - ✅ <10% invalid citations
 - ✅ Avg alignment ≥ 0.4

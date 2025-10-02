@@ -13,7 +13,11 @@ export interface CitationFailureLog {
   qa_id: string;
   question: string;
   answer: string;
-  failure_reason: "no_citations" | "invalid_structure" | "hallucination" | "low_quality";
+  failure_reason:
+    | "no_citations"
+    | "invalid_structure"
+    | "hallucination"
+    | "low_quality";
   details: {
     error_messages: string[];
     warning_messages: string[];
@@ -71,8 +75,12 @@ export function logNoCitations(
     answer: answer.substring(0, 500),
     failure_reason: "no_citations",
     details: {
-      error_messages: ["No citations generated despite evidence being provided"],
-      warning_messages: ["LLM may have ignored citation requirements in prompt"],
+      error_messages: [
+        "No citations generated despite evidence being provided",
+      ],
+      warning_messages: [
+        "LLM may have ignored citation requirements in prompt",
+      ],
       citation_count: 0,
     },
     evidence_provided: evidenceCount,
@@ -96,7 +104,9 @@ export function logHallucinatedCitation(
     answer: answer.substring(0, 500),
     failure_reason: "hallucination",
     details: {
-      error_messages: [`Hallucinated span: "${hallucinatedSpan.substring(0, 100)}"`],
+      error_messages: [
+        `Hallucinated span: "${hallucinatedSpan.substring(0, 100)}"`,
+      ],
       warning_messages: ["Citation span does not exist in answer text"],
       citation_count: 1,
     },
@@ -156,9 +166,14 @@ export function generateFailureSummary(): {
 
   const { readFileSync } = require("fs");
   const content = readFileSync(LOG_FILE, "utf-8");
-  const lines = content.trim().split("\n").filter((l: string) => l.length > 0);
+  const lines = content
+    .trim()
+    .split("\n")
+    .filter((l: string) => l.length > 0);
 
-  const failures = lines.map((line: string) => JSON.parse(line) as CitationFailureLog);
+  const failures = lines.map(
+    (line: string) => JSON.parse(line) as CitationFailureLog,
+  );
 
   const byReason: Record<string, number> = {};
   failures.forEach((f: CitationFailureLog) => {
