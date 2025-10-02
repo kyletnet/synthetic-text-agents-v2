@@ -296,6 +296,15 @@ case "${1:-}" in
         print_success "Auto-fixes complete"
         ;;
 
+    "radar"|"/radar")
+        print_header "📡 Radar - Deep System Scan"
+        print_status "Scanning for hidden critical issues..."
+        echo ""
+        npm run radar || print_error "Radar scan failed"
+        echo ""
+        print_success "Radar scan complete - check output above for details"
+        ;;
+
     "fix"|"/fix")
         print_header "System Fix - Interactive Approval"
         print_status "Running interactive fixes (approval required)..."
@@ -423,6 +432,9 @@ Updates on $timestamp
         echo "  /maintain - 자동 수정 (Prettier, ESLint --fix)"
         echo "  /fix      - 대화형 수정 (TypeScript errors, Workarounds)"
         echo "  /ship     - 배포 준비 + 실제 배포 (검증 + 문서화 + commit + push)"
+        echo ""
+        echo -e "${BLUE}Deep Analysis (주 1회 권장):${NC}"
+        echo "  /radar    - 📡 심층 시스템 스캔 (커버리지 갭, 대형 파일, Dead code)"
         echo ""
         echo -e "${BLUE}System Management:${NC}"
         echo "  /sync   - Complete system update (docs, cleanup, commit, push)"
