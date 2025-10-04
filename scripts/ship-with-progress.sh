@@ -6,7 +6,7 @@ set -e
 
 STEPS=(
   "design:validate|Design Validation"
-  "validate|System Validation"
+  "validate:unified|System Validation"
   "verify|Verification Checks"
   "_hidden:integration-guard|Integration Guard"
   "_hidden:system-integration|System Integration"

@@ -26,6 +26,7 @@
     "/validate": "tsx scripts/validate-engine.ts",
     "validate": "tsx scripts/validate-engine.ts",
     "validate:llm-io": "tsx scripts/validate-llm-io.ts",
+    "validate:unified": "tsx scripts/validate-unified.ts",
     "/verify": "tsx scripts/verify-engine.ts",
     "verify": "tsx scripts/verify-engine.ts",
     "/update": "npm run smart:update",
