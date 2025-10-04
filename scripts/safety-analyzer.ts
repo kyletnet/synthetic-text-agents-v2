@@ -3,11 +3,16 @@
 /**
  * Safety Analyzer for Smart Refactor System
  * Determines what can be auto-fixed vs needs confirmation
+ *
+ * CRITICAL: Includes quality-essential file protection
+ * - Prevents refactoring of QA generation core logic
+ * - Integrated with quality-policy.json and governance-rules.json
  */
 
 import { readFileSync, existsSync } from "fs";
 import { glob } from "glob";
 import { SmartRefactorStateManager } from "./smart-refactor-state.js";
+import { getQualityPolicyManager } from "./lib/quality-policy.js";
 
 interface FixItem {
   id: string;
@@ -26,6 +31,7 @@ interface SafetyScore {
   buildImpact: boolean;
   testCoverage: number;
   rollbackDifficulty: number;
+  isQualityEssential: boolean; // 🆕 Quality protection
   autoSafe: boolean;
 }
 
@@ -40,14 +46,31 @@ interface ImpactScore {
 export class SafetyAnalyzer {
   private stateManager: SmartRefactorStateManager;
   private rootDir: string;
+  private policyManager: ReturnType<typeof getQualityPolicyManager>; // 🆕
 
   constructor(rootDir: string = process.cwd()) {
     this.rootDir = rootDir;
     this.stateManager = new SmartRefactorStateManager(rootDir);
+    this.policyManager = getQualityPolicyManager(rootDir); // 🆕
   }
 
   analyzeItem(item: FixItem): { safety: SafetyScore; criteria: string[] } {
     const criteria: string[] = [];
+
+    // 🆕 CRITICAL: Quality-essential check (최우선!)
+    const qualityImpact = this.analyzeQualityImpact(item);
+    criteria.push(
+      `quality-essential: ${qualityImpact.isEssential ? "YES (PROTECTED)" : "no"}`,
+    );
+    if (qualityImpact.isEssential) {
+      criteria.push(`  → reason: ${qualityImpact.reason}`);
+    }
+
+    // 🆕 Policy-based protection check
+    const policyProtected = this.checkPolicyProtection(item);
+    criteria.push(
+      `policy-protected: ${policyProtected ? "YES (PROTECTED)" : "no"}`,
+    );
 
     // File count analysis
     const fileCount = item.files.length;
@@ -81,12 +104,15 @@ export class SafetyAnalyzer {
     const criticalPath = this.touchesCriticalPath(item);
     criteria.push(`critical-path: ${criticalPath ? "yes" : "no"}`);
 
+    const isQualityEssential = qualityImpact.isEssential || policyProtected; // 🆕
+
     const safety: SafetyScore = {
       fileCount,
       crossModule,
       buildImpact,
       testCoverage,
       rollbackDifficulty,
+      isQualityEssential, // 🆕
       autoSafe: this.isAutoSafe({
         fileCountOk,
         crossModule,
@@ -96,6 +122,7 @@ export class SafetyAnalyzer {
         externalInterface: item.externalInterface,
         rollbackSupported: item.rollbackSupported,
         criticalPath,
+        isQualityEssential, // 🆕 Pass to isAutoSafe
       }),
     };
 
@@ -116,7 +143,16 @@ export class SafetyAnalyzer {
     externalInterface: boolean;
     rollbackSupported: boolean;
     criticalPath: boolean;
+    isQualityEssential: boolean; // 🆕
   }): boolean {
+    // 🚨 CRITICAL: Quality-essential files are NEVER auto-refactored!
+    if (factors.isQualityEssential) {
+      console.warn(
+        "⚠️  Quality-essential file detected - manual review required",
+      );
+      return false;
+    }
+
     // Hard requirements for auto-fix
     if (!factors.fileCountOk) return false;
     if (factors.crossModule) return false;
@@ -130,6 +166,107 @@ export class SafetyAnalyzer {
     if (factors.rollbackDifficulty > 0.5) return false;
 
     return true;
+  }
+
+  /**
+   * 🆕 Analyze quality impact using Radar engine logic
+   */
+  private analyzeQualityImpact(item: FixItem): {
+    isEssential: boolean;
+    reason: string;
+  } {
+    for (const file of item.files) {
+      try {
+        // Check if file exists
+        if (!existsSync(file)) {
+          continue;
+        }
+
+        const content = readFileSync(file, "utf-8");
+
+        // Reuse logic from radar-engine.ts
+        const impact = this.analyzeFileQualityImpactLocal(file, content);
+
+        if (impact.isQualityEssential) {
+          return {
+            isEssential: true,
+            reason: impact.reason,
+          };
+        }
+      } catch (error) {
+        console.warn(`Failed to analyze ${file}:`, error);
+      }
+    }
+
+    return { isEssential: false, reason: "No quality impact detected" };
+  }
+
+  /**
+   * 🆕 Local implementation of quality impact analysis
+   * (mirrors scripts/radar-engine.ts::analyzeFileQualityImpact)
+   */
+  private analyzeFileQualityImpactLocal(
+    filePath: string,
+    content: string,
+  ): {
+    isQualityEssential: boolean;
+    reason: string;
+  } {
+    // Quality patterns (domain knowledge, business logic)
+    const qualityPatterns = [
+      /const\s+\w+:\s*Record<string,\s*string\[\]>\s*=\s*\{/g,
+      /knowledgeBase\.set\(/g,
+      /marketDynamics:|keyStakeholders:|bestPractices:/g,
+      /DOMAIN_\w+:\s*Record/g,
+      /private\s+\w+Emotions|Motivations|Stressors/g,
+    ];
+
+    let qualitySignals = 0;
+    for (const pattern of qualityPatterns) {
+      const matches = content.match(pattern);
+      if (matches) qualitySignals += matches.length;
+    }
+
+    // Agent files with domain knowledge
+    if (filePath.includes("/agents/") && qualitySignals > 5) {
+      return {
+        isQualityEssential: true,
+        reason: "도메인 전문 지식 데이터 포함 (QA 품질에 필수)",
+      };
+    }
+
+    // Shared infrastructure
+    if (filePath.includes("/shared/") && qualitySignals > 3) {
+      return {
+        isQualityEssential: true,
+        reason: "핵심 인프라 로직 (시스템 안정성에 필수)",
+      };
+    }
+
+    // High quality signal concentration
+    if (qualitySignals > 10) {
+      return {
+        isQualityEssential: true,
+        reason: "도메인 지식/비즈니스 로직 집약 (품질 유지 필요)",
+      };
+    }
+
+    return {
+      isQualityEssential: false,
+      reason: "구조 개선 가능 (모듈 분리 고려)",
+    };
+  }
+
+  /**
+   * 🆕 Check policy-based protection
+   */
+  private checkPolicyProtection(item: FixItem): boolean {
+    for (const file of item.files) {
+      if (this.policyManager.isProtectedFile(file)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   private detectCrossModuleImpact(item: FixItem): boolean {

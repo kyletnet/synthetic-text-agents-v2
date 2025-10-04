@@ -1,7 +1,0 @@
-#!/usr/bin/env bash
-set -euo pipefail
-cd "$(dirname "$0")/.."
-# 기본값: 승계만(무API/무ZIP) 실행
-export RUN_PREFLIGHT="${RUN_PREFLIGHT:-0}"   # 0=엄격모드 끔(권장)
-export HANDOFF_ZIP="${HANDOFF_ZIP:-0}"       # 0=zip 미생성(권장)
-bash ./handoff_one.sh "$@"

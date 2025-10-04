@@ -75,6 +75,31 @@ jobs:
         env:
           CI: true
 
+      - name: 🛡️ Quality Protection Check
+        run: |
+          echo "🔍 Checking quality-essential files..."
+          if [ -f "quality-policy.json" ]; then
+            echo "✓ Quality policy found"
+            # Verify protected files exist
+            node -e "
+              const policy = require('./quality-policy.json');
+              const fs = require('fs');
+              let missing = [];
+              for (const p of policy.agentProtection.static) {
+                if (!fs.existsSync(p.file)) {
+                  missing.push(p.file);
+                }
+              }
+              if (missing.length > 0) {
+                console.error('❌ Protected files missing:', missing);
+                process.exit(1);
+              }
+              console.log('✓ All protected files present');
+            "
+          else
+            echo "⚠️ quality-policy.json not found - skipping check"
+          fi
+
       - name: 🎨 Design Principles
         run: npm run design:validate
         env:

@@ -156,7 +156,50 @@
       "maxFiles": 10
     }
   },
+  "qualityProtection": {
+    "enabled": true,
+    "policySource": "quality-policy.json",
+    "description": "Quality-essential files protection (QA generation quality core)",
+    "protectedFiles": [
+      {
+        "path": "src/agents/domainConsultant.ts",
+        "reason": "도메인 지식 데이터 (QA 품질 핵심)",
+        "severity": "critical",
+        "autoRefactor": false,
+        "requireApproval": true,
+        "qualityImpact": "high"
+      },
+      {
+        "path": "src/agents/psychologySpecialist.ts",
+        "reason": "심리 분석 로직 (QA 품질 핵심)",
+        "severity": "critical",
+        "autoRefactor": false,
+        "requireApproval": true,
+        "qualityImpact": "high"
+      },
+      {
+        "path": "src/agents/linguisticsEngineer.ts",
+        "reason": "언어 최적화 로직 (QA 품질 핵심)",
+        "severity": "high",
+        "autoRefactor": false,
+        "requireApproval": true,
+        "qualityImpact": "high"
+      }
+    ],
+    "autoCheck": {
+      "enabled": true,
+      "analyzer": "scripts/radar-engine.ts::analyzeFileQualityImpact",
+      "onViolation": "block-refactor"
+    }
+  },
   "riskDomains": [
+    {
+      "path": "src/agents/**",
+      "reason": "Agent 변경은 QA 품질에 직접 영향",
+      "severity": "high",
+      "requiresApproval": true,
+      "autoCheck": "quality-impact-analysis"
+    },
     {
       "path": "src/rag/**",
       "reason": "RAG 시스템 변경은 신중히",

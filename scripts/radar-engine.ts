@@ -106,28 +106,26 @@ function findUntestedCriticalFiles(): CriticalIssue[] {
     "src/shared/metrics.ts",
   ];
 
-  const coverageReport = join(REPO_ROOT, "coverage/coverage-summary.json");
+  const coverageReport = join(REPO_ROOT, "coverage/coverage-final.json");
   let untestedFiles: string[] = [];
 
   if (existsSync(coverageReport)) {
-    // Use actual coverage report
+    // Use actual coverage report (coverage-final.json from vitest)
     const coverage = JSON.parse(readFileSync(coverageReport, "utf-8"));
-
-    // Check critical files
-    untestedFiles = criticalPatterns.filter((path) => {
-      const fullPath = join(REPO_ROOT, path);
-      const cov = coverage[fullPath];
-      return !cov || cov.lines.pct === 0;
-    });
 
     // Also scan for ANY file in src/shared with 0% coverage
     Object.keys(coverage).forEach((filePath) => {
       const cov = coverage[filePath];
+
+      // Check if file has 0% coverage (all statement counts are 0)
+      const hasZeroCoverage =
+        cov.s && Object.values(cov.s).every((v) => v === 0);
+
       if (
         filePath.includes("/src/shared/") &&
         filePath.endsWith(".ts") &&
         !filePath.includes(".test.") &&
-        cov.lines.pct === 0 &&
+        hasZeroCoverage &&
         !untestedFiles.some((f) => filePath.includes(f))
       ) {
         const relativePath = filePath.replace(REPO_ROOT + "/", "");
@@ -142,15 +140,26 @@ function findUntestedCriticalFiles(): CriticalIssue[] {
     // Retry after generation
     if (existsSync(coverageReport)) {
       const coverage = JSON.parse(readFileSync(coverageReport, "utf-8"));
-      untestedFiles = criticalPatterns.filter((path) => {
-        const fullPath = join(REPO_ROOT, path);
-        const cov = coverage[fullPath];
-        return !cov || cov.lines.pct === 0;
+
+      Object.keys(coverage).forEach((filePath) => {
+        const cov = coverage[filePath];
+        const hasZeroCoverage =
+          cov.s && Object.values(cov.s).every((v) => v === 0);
+
+        if (
+          filePath.includes("/src/shared/") &&
+          filePath.endsWith(".ts") &&
+          !filePath.includes(".test.") &&
+          hasZeroCoverage
+        ) {
+          const relativePath = filePath.replace(REPO_ROOT + "/", "");
+          untestedFiles.push(relativePath);
+        }
       });
     } else {
       // Fallback: assume all critical files are untested
       untestedFiles = criticalPatterns.filter((path) =>
-        existsSync(join(REPO_ROOT, path))
+        existsSync(join(REPO_ROOT, path)),
       );
     }
   }
@@ -173,12 +182,96 @@ function findUntestedCriticalFiles(): CriticalIssue[] {
 }
 
 /**
- * 2. 대형 파일 (1000줄 이상) 탐지
+ * 품질 영향 분석: 파일이 품질을 위해 큰 것인지 구조 문제인지 판단
+ */
+function analyzeFileQualityImpact(
+  filePath: string,
+  content: string,
+): {
+  isQualityEssential: boolean;
+  reason: string;
+} {
+  // 도메인 데이터 패턴 (품질에 필수적인 내용)
+  const qualityPatterns = [
+    /const\s+\w+:\s*Record<string,\s*string\[\]>\s*=\s*\{/g, // 도메인 매핑 데이터
+    /knowledgeBase\.set\(/g, // 지식 베이스 데이터
+    /marketDynamics:|keyStakeholders:|bestPractices:/g, // 도메인 지식
+    /DOMAIN_\w+:\s*Record/g, // 도메인 상수
+    /private\s+\w+Emotions|Motivations|Stressors/g, // 심리/동기 데이터
+  ];
+
+  // 중복 boilerplate 패턴 (리팩토링 가능)
+  const boilerplatePatterns = [
+    /\/\/\s*TODO|\/\/\s*FIXME/g, // TODO/FIXME 코멘트
+    /console\.log\(/g, // 디버그 로그
+    /import\s+.*from\s+["'].*["'];?\s*$/gm, // import 문
+  ];
+
+  let qualitySignals = 0;
+  let boilerplateSignals = 0;
+
+  // 품질 신호 카운트
+  for (const pattern of qualityPatterns) {
+    const matches = content.match(pattern);
+    if (matches) qualitySignals += matches.length;
+  }
+
+  // Boilerplate 신호 카운트
+  for (const pattern of boilerplatePatterns) {
+    const matches = content.match(pattern);
+    if (matches) boilerplateSignals += matches.length;
+  }
+
+  // Agent 파일들은 도메인 지식 포함 가능성 높음
+  if (filePath.includes("/agents/") && qualitySignals > 5) {
+    return {
+      isQualityEssential: true,
+      reason: "도메인 전문 지식 데이터 포함 (QA 품질에 필수)",
+    };
+  }
+
+  // shared/ 파일들도 핵심 인프라
+  if (filePath.includes("/shared/") && qualitySignals > 3) {
+    return {
+      isQualityEssential: true,
+      reason: "핵심 인프라 로직 (시스템 안정성에 필수)",
+    };
+  }
+
+  // Boilerplate가 많으면 구조 문제
+  if (boilerplateSignals > qualitySignals * 2) {
+    return {
+      isQualityEssential: false,
+      reason: "중복 코드/boilerplate 다수 (리팩토링 권장)",
+    };
+  }
+
+  // 기본: 신호 비율로 판단
+  if (qualitySignals > 10) {
+    return {
+      isQualityEssential: true,
+      reason: "도메인 지식/비즈니스 로직 집약 (품질 유지 필요)",
+    };
+  }
+
+  return {
+    isQualityEssential: false,
+    reason: "구조 개선 가능 (모듈 분리 고려)",
+  };
+}
+
+/**
+ * 2. 대형 파일 (1000줄 이상) 탐지 + 품질 영향 분석
  */
 function findLargeFiles(): CriticalIssue[] {
   log("\n🔍 Scanning large files (1000+ lines)...", "cyan");
 
-  const largeFiles: { path: string; lines: number }[] = [];
+  const largeFiles: {
+    path: string;
+    lines: number;
+    isQualityEssential: boolean;
+    reason: string;
+  }[] = [];
   const searchDirs = ["src", "scripts"];
 
   for (const dir of searchDirs) {
@@ -186,7 +279,7 @@ function findLargeFiles(): CriticalIssue[] {
     if (!existsSync(dirPath)) continue;
 
     const files = execCommand(
-      `find ${dirPath} -name "*.ts" -type f ! -path "*/node_modules/*"`
+      `find ${dirPath} -name "*.ts" -type f ! -path "*/node_modules/*"`,
     )
       .split("\n")
       .filter(Boolean);
@@ -195,26 +288,59 @@ function findLargeFiles(): CriticalIssue[] {
       const content = readFileSync(file, "utf-8");
       const lines = content.split("\n").length;
       if (lines >= 1000) {
-        largeFiles.push({ path: file.replace(REPO_ROOT + "/", ""), lines });
+        const relativePath = file.replace(REPO_ROOT + "/", "");
+        const { isQualityEssential, reason } = analyzeFileQualityImpact(
+          relativePath,
+          content,
+        );
+
+        largeFiles.push({
+          path: relativePath,
+          lines,
+          isQualityEssential,
+          reason,
+        });
       }
     }
   }
 
-  if (largeFiles.length > 0) {
-    return [
-      {
-        id: "large-files",
-        severity: "P1",
-        category: "Code Structure",
-        description: `${largeFiles.length}개의 거대 파일 (1000줄+)`,
-        impact: "유지보수성 저하, 코드 리뷰 어려움",
-        files: largeFiles.map((f) => `${f.path} (${f.lines} lines)`),
-        suggestedFix: "모듈 분리 또는 리팩토링",
-      },
-    ];
+  // 품질 필수 파일과 구조 문제 파일 분리
+  const qualityEssential = largeFiles.filter((f) => f.isQualityEssential);
+  const structureIssues = largeFiles.filter((f) => !f.isQualityEssential);
+
+  const issues: CriticalIssue[] = [];
+
+  // 구조 문제 파일만 P1으로 보고
+  if (structureIssues.length > 0) {
+    issues.push({
+      id: "large-files-structure",
+      severity: "P1",
+      category: "Code Structure",
+      description: `${structureIssues.length}개의 거대 파일 (리팩토링 권장)`,
+      impact: "유지보수성 저하, 코드 리뷰 어려움",
+      files: structureIssues.map(
+        (f) => `${f.path} (${f.lines} lines) - ${f.reason}`,
+      ),
+      suggestedFix: "모듈 분리 또는 중복 제거",
+    });
   }
 
-  return [];
+  // 품질 필수 파일은 P2 정보성으로만 보고
+  if (qualityEssential.length > 0) {
+    issues.push({
+      id: "large-files-quality",
+      severity: "P2",
+      category: "Code Structure",
+      description: `${qualityEssential.length}개의 거대 파일 (품질 유지 필요)`,
+      impact: "크지만 도메인 지식/품질을 위해 필요한 크기",
+      files: qualityEssential.map(
+        (f) => `${f.path} (${f.lines} lines) - ${f.reason}`,
+      ),
+      suggestedFix: "신중한 검토 후에만 리팩토링 (품질 영향 확인 필수)",
+    });
+  }
+
+  return issues;
 }
 
 /**
@@ -233,7 +359,7 @@ function findDeprecatedMismatches(): CriticalIssue[] {
   ];
 
   const existingDeprecated = deprecatedInDocs.filter((path) =>
-    existsSync(join(REPO_ROOT, path))
+    existsSync(join(REPO_ROOT, path)),
   );
 
   if (existingDeprecated.length > 0) {
@@ -268,7 +394,7 @@ function findUnnecessaryFiles(): CriticalIssue[] {
 
   for (const pattern of patterns) {
     const result = execCommand(
-      `find . -name "${pattern}" ! -path "*/node_modules/*" ! -path "*/.git/*" 2>/dev/null || true`
+      `find . -name "${pattern}" ! -path "*/node_modules/*" ! -path "*/.git/*" 2>/dev/null || true`,
     );
     foundFiles = foundFiles.concat(result.split("\n").filter(Boolean));
   }
@@ -292,7 +418,8 @@ function findUnnecessaryFiles(): CriticalIssue[] {
         impact: "저장소 크기 증가, 혼란 유발",
         files: foundFiles.slice(0, 10), // 최대 10개만 표시
         count: foundFiles.length,
-        suggestedFix: "rm -rf .system-backups && find . -name '*.backup' -delete",
+        suggestedFix:
+          "rm -rf .system-backups && find . -name '*.backup' -delete",
       },
     ];
   }
@@ -384,7 +511,7 @@ function findDeadCode(): CriticalIssue[] {
 
   // ts-prune 같은 도구가 있으면 사용, 없으면 간단한 휴리스틱
   const result = execCommand(
-    "npx ts-prune --error 2>/dev/null || echo 'ts-prune not available'"
+    "npx ts-prune --error 2>/dev/null || echo 'ts-prune not available'",
   );
 
   if (result.includes("used in module")) {
@@ -515,7 +642,7 @@ async function runDeepInspection(): Promise<DeepInspectionResult> {
   // Calculate health score
   const healthScore = Math.max(
     0,
-    100 - p0Issues.length * 20 - p1Issues.length * 10 - p2Issues.length * 5
+    100 - p0Issues.length * 20 - p1Issues.length * 10 - p2Issues.length * 5,
   );
 
   // Generate recommendations
@@ -585,7 +712,7 @@ function printResults(result: DeepInspectionResult): void {
         : "red";
   log(
     `🎯 Health Score: ${result.healthScore}/100\n`,
-    scoreColor as keyof typeof colors
+    scoreColor as keyof typeof colors,
   );
 
   // Summary
@@ -609,7 +736,7 @@ function printResults(result: DeepInspectionResult): void {
             : "cyan";
       log(
         `   [${issue.severity}] ${issue.category}: ${issue.description}`,
-        severityColor as keyof typeof colors
+        severityColor as keyof typeof colors,
       );
       log(`   Impact: ${issue.impact}`);
 
@@ -647,6 +774,18 @@ function printResults(result: DeepInspectionResult): void {
   log("=".repeat(60), "magenta");
   log("✅ Radar Scan Complete", "green");
   log("=".repeat(60) + "\n", "magenta");
+
+  // Final one-line summary
+  const summaryText = `Health: ${result.healthScore}/100 | Issues: ${result.summary.totalIssues} (P0: ${result.summary.p0Count}, P1: ${result.summary.p1Count}, P2: ${result.summary.p2Count}) | Time: ${result.summary.timeElapsed}`;
+  log(`\n📊 ${summaryText}\n`, "cyan");
+
+  if (result.summary.p0Count > 0) {
+    log("⚠️  CRITICAL: Run `/fix` to address P0 issues immediately!\n", "red");
+  } else if (result.summary.p1Count > 0) {
+    log("ℹ️  Run `/fix` to address P1 issues within 1 week.\n", "yellow");
+  } else {
+    log("✨ System is healthy! No critical issues detected.\n", "green");
+  }
 }
 
 // Run

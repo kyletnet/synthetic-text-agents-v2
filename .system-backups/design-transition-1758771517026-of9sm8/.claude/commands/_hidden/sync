@@ -1,6 +1,0 @@
-#!/bin/bash
-# /sync - Sync project changes to git
-
-git add . && git commit -m "sync: update with latest changes - 🤖 Generated with Claude Code
-
-Co-Authored-By: Claude <noreply@anthropic.com>" && git push && echo "✅ 프로젝트 동기화 완료"

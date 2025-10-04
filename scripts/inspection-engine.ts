@@ -31,6 +31,7 @@ import {
   validateInvariants,
   ALL_INVARIANTS,
 } from "./lib/patterns/architecture-invariants.js";
+import { getQualityPolicyManager } from "./lib/quality-policy.js";
 import type {
   InspectionResults,
   AutoFixableItem,
@@ -44,6 +45,7 @@ class InspectionEngine {
   private autoFixable: AutoFixableItem[] = [];
   private manualApprovalNeeded: ManualApprovalItem[] = [];
   private governance: GovernanceRunner;
+  private qualityPolicy = getQualityPolicyManager();
 
   constructor() {
     this.projectRoot = process.cwd();
@@ -516,12 +518,30 @@ class InspectionEngine {
 
   /**
    * Check architecture invariants (P0 violations are critical)
+   * Includes quality-essential file protection check
    */
   private checkArchitecture(): ManualApprovalItem | null {
     try {
       console.log("   🏛️  Validating architecture invariants...");
       const snapshot = createCodebaseSnapshot(this.projectRoot);
       const violations = validateInvariants(snapshot, ALL_INVARIANTS);
+
+      // Check quality-essential files
+      const protectedFiles: string[] = [];
+      const policy = this.qualityPolicy.exportPolicy();
+      for (const protection of policy.agentProtection.static) {
+        if (existsSync(join(this.projectRoot, protection.file))) {
+          protectedFiles.push(protection.file);
+        }
+      }
+
+      if (violations.length === 0 && protectedFiles.length > 0) {
+        console.log(`      ✓ Architecture validated`);
+        console.log(
+          `      🛡️  ${protectedFiles.length} quality-essential files protected`,
+        );
+        return null;
+      }
 
       if (violations.length === 0) {
         console.log("      ✓ Architecture validated");
@@ -536,6 +556,11 @@ class InspectionEngine {
       console.log(
         `      ⚠️  Found ${p0.length} P0, ${p1.length} P1, ${p2.length} P2 violations`,
       );
+      if (protectedFiles.length > 0) {
+        console.log(
+          `      🛡️  ${protectedFiles.length} quality-essential files protected`,
+        );
+      }
 
       // Create description with severity breakdown
       const description = `Architecture violations: ${p0.length} P0 (Critical), ${p1.length} P1 (High), ${p2.length} P2 (Medium)`;
@@ -705,6 +730,18 @@ class InspectionEngine {
     const hasRefactoring = this.manualApprovalNeeded.some(
       (item) => item.id === "refactor-pending",
     );
+
+    // Display quality protection info
+    const policy = this.qualityPolicy.exportPolicy();
+    const protectedCount = policy.agentProtection.static.length;
+    if (protectedCount > 0) {
+      console.log(
+        `\n🛡️  Quality Protection: ${protectedCount} essential files protected`,
+      );
+      console.log(
+        "   (Auto-refactoring disabled for quality-critical components)",
+      );
+    }
 
     // Scenario 1: Clean system
     if (

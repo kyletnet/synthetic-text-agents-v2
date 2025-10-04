@@ -1,0 +1,114 @@
+{
+  "schemaVersion": "2025-10-quality-v1",
+  "metadata": {
+    "description": "Quality Governance Policy - Central source of truth for all quality criteria",
+    "lastUpdated": "2025-10-04T00:00:00.000Z",
+    "maintainer": "Quality Team",
+    "documentationUrl": "docs/QUALITY_GOVERNANCE.md"
+  },
+
+  "citationThresholds": {
+    "minAlignment": 0.5,
+    "minCoverage": 0.4,
+    "maxInvalidRate": 0.2,
+    "minQualityScore": 0.8,
+    "description": "Citation quality thresholds for baseline_report validation"
+  },
+
+  "agentProtection": {
+    "static": [
+      {
+        "file": "src/agents/domainConsultant.ts",
+        "reason": "도메인 지식 데이터 (QA 품질 핵심)",
+        "severity": "critical",
+        "autoRefactor": false,
+        "requireApproval": true
+      },
+      {
+        "file": "src/agents/psychologySpecialist.ts",
+        "reason": "심리 분석 로직 (QA 품질 핵심)",
+        "severity": "critical",
+        "autoRefactor": false,
+        "requireApproval": true
+      },
+      {
+        "file": "src/agents/linguisticsEngineer.ts",
+        "reason": "언어 최적화 로직 (QA 품질 핵심)",
+        "severity": "high",
+        "autoRefactor": false,
+        "requireApproval": true
+      }
+    ],
+    "dynamic": {
+      "enabled": false,
+      "minUsagePercent": 5,
+      "minQualityImpact": 0.1,
+      "updateFrequency": "weekly",
+      "description": "Dynamic protection based on RUN_LOGS analysis (future)"
+    }
+  },
+
+  "refactoringCriteria": {
+    "fileSize": {
+      "warnThreshold": 500,
+      "refactorThreshold": 1000,
+      "exemptIfQualityEssential": true,
+      "description": "File size thresholds in lines"
+    },
+    "cyclomaticComplexity": {
+      "warnThreshold": 10,
+      "refactorThreshold": 20,
+      "description": "Cyclomatic complexity per function"
+    },
+    "duplicationPercent": {
+      "warnThreshold": 15,
+      "refactorThreshold": 30,
+      "description": "Code duplication percentage"
+    }
+  },
+
+  "qualityRegression": {
+    "enabled": true,
+    "checkWindow": 7,
+    "degradationThreshold": 0.1,
+    "alertChannels": ["console", "github"],
+    "description": "Quality regression detection settings"
+  },
+
+  "plugins": {
+    "contrastive-embedding": {
+      "enabled": false,
+      "version": "1.0.0",
+      "config": {},
+      "description": "Contrastive learning for better embeddings"
+    },
+    "lexical-booster": {
+      "enabled": false,
+      "version": "1.0.0",
+      "config": {},
+      "description": "BM25/TF-IDF hybrid lexical retrieval"
+    },
+    "semantic-evidence-detector": {
+      "enabled": false,
+      "version": "1.0.0",
+      "config": {},
+      "description": "NLP-based core evidence detection"
+    }
+  },
+
+  "guidelines": {
+    "source": "guidelines/",
+    "format": "markdown",
+    "autoReload": true,
+    "refreshInterval": 3600,
+    "description": "Expert-written quality guidelines directory"
+  },
+
+  "security": {
+    "checkForSecrets": true,
+    "blockConsoleLog": true,
+    "enforceTypeScript": true,
+    "checkCircularDeps": true,
+    "description": "Developer mistake prevention"
+  }
+}

@@ -14,17 +14,17 @@
     {
       "id": "workarounds",
       "severity": "critical",
-      "description": "워크어라운드/TODO 마커 147개",
-      "count": 147,
+      "description": "워크어라운드/TODO 마커 138개",
+      "count": 138,
       "files": [
         "src/rag/embeddings.ts",
         "src/rag/factory.ts",
         "src/scripts/metrics/baselineReportGenerator.ts",
         "src/scripts/metrics/__all__.ts",
-        "scripts/fix-orchestrator.ts",
         "scripts/resolve-workarounds.ts",
         "scripts/refactor-engine.ts",
         "scripts/ai-fix-engine.ts",
+        "scripts/radar-engine.ts",
         "scripts/comprehensive-doc-updater.ts",
         "scripts/handoff-generator.ts"
       ],
@@ -40,9 +40,9 @@
     "typescript": "pass",
     "codeStyle": "fail",
     "tests": "pass",
-    "security": "pass",
+    "security": "fail",
     "integrationScore": 55
   },
-  "timestamp": "2025-10-02T13:49:48.308Z",
+  "timestamp": "2025-10-04T15:22:30.326Z",
   "ttl": 1800
 }
