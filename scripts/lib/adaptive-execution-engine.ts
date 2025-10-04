@@ -1,5 +1,8 @@
 #!/usr/bin/env tsx
 
+// @tool-mode: transform
+// @tool-description: Adaptive execution - Smart Decision Matrix for performance-safety-usability balance
+
 /**
  * Adaptive Execution Engine
  * Executes operations using Smart Decision Matrix for optimal performance-safety-usability balance

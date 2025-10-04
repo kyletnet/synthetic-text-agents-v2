@@ -1,5 +1,8 @@
 #!/usr/bin/env tsx
 
+// @tool-mode: transform
+// @tool-description: Performance optimization - bundle analysis, code splitting, tree-shaking
+
 import { execSync } from "child_process";
 import { existsSync, readFileSync, writeFileSync } from "fs";
 import { join } from "path";

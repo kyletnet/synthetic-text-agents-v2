@@ -1,5 +1,8 @@
 #!/usr/bin/env node
 
+// @tool-mode: transform
+// @tool-description: Integration improvements - impact analysis and enhancement suggestions
+
 /**
  * Integration Improvement Engine
  * 새 기능 추가 시 자동으로 통합 영향을 분석하고 개선방안 제시

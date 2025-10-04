@@ -1,5 +1,8 @@
 #!/usr/bin/env tsx
 
+// @tool-mode: transform
+// @tool-description: Interactive fix engine - TypeScript errors, workarounds, documentation gaps
+
 /**
  * Fix Engine - Interactive or non-interactive manual approval
  *

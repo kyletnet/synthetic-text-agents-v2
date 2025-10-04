@@ -1,5 +1,8 @@
 #!/usr/bin/env tsx
 
+// @tool-mode: transform
+// @tool-description: Architecture evolution - self-evolving system structure improvements
+
 /**
  * Architectural Evolution Engine
  * 시스템이 스스로 더 나은 구조로 진화하는 엔진

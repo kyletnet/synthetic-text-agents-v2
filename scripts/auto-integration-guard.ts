@@ -167,6 +167,7 @@ class AutoIntegrationGuard {
       "reports/gaps",
       "reports/historical",
       "reports/quality-history",
+      "reports/governance",
       ".refactor/",
       ".gaprc/",
       ".migration/",

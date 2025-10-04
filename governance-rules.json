@@ -2,8 +2,30 @@
   "schemaVersion": "2025-10-governance-v1",
   "metadata": {
     "description": "System Governance Rules - Single Source of Truth for all governance policies",
-    "lastUpdated": "2025-10-01T00:00:00.000Z",
+    "lastUpdated": "2025-10-05T00:00:00.000Z",
     "maintainer": "System Governance Team"
+  },
+  "toolModePolicy": {
+    "enabled": true,
+    "description": "Type-based governance enforcement - analyze vs transform",
+    "modes": {
+      "analyze": {
+        "requiresGovernance": false,
+        "description": "Read-only operations (reports, scans, validation)",
+        "examples": ["radar-engine", "gaps-engine", "validate-engine", "verify-engine", "inspection-engine"]
+      },
+      "transform": {
+        "requiresGovernance": true,
+        "description": "Write operations (fixes, refactors, builds)",
+        "examples": ["maintain-engine", "fix-engine", "refactor-engine", "optimization-engine"]
+      }
+    },
+    "enforcement": {
+      "strategy": "type-based",
+      "noExemptionList": true,
+      "autoDetect": true,
+      "marker": "@tool-mode:"
+    }
   },
   "rules": [
     {

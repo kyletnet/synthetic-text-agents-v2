@@ -1,5 +1,8 @@
 #!/usr/bin/env tsx
 
+// @tool-mode: analyze
+// @tool-description: Governance rules validation - schema, legacy imports, cache consistency
+
 /**
  * Validate Engine - Governance rules validation
  *

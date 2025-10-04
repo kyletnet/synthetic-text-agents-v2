@@ -1,5 +1,8 @@
 #!/usr/bin/env tsx
 
+// @tool-mode: transform
+// @tool-description: Design principle enforcement - automated design-based decisions
+
 /**
  * Design Principle Engine
  * 모든 시스템 결정을 설계 원칙에 기반해서 자동으로 내리는 엔진

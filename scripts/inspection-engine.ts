@@ -1,5 +1,8 @@
 #!/usr/bin/env tsx
 
+// @tool-mode: analyze
+// @tool-description: System diagnostics - TypeScript, ESLint, Prettier, Tests, Security analysis
+
 /**
  * Inspection Engine - Single Source of Truth
  *

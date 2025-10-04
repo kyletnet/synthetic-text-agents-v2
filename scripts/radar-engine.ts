@@ -1,5 +1,8 @@
 #!/usr/bin/env tsx
 
+// @tool-mode: analyze
+// @tool-description: Deep system inspection - detects technical debt, coverage gaps, and security issues
+
 /**
  * Radar Engine - System Issue Detection
  *

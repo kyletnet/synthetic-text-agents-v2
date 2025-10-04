@@ -1,0 +1,952 @@
+{
+  "generated": "2025-10-04T18:09:19.431Z",
+  "metadata": {
+    "totalCommands": 215,
+    "totalEngines": 30,
+    "analyzeEngines": 12,
+    "transformEngines": 18
+  },
+  "commands": {
+    "sync": {
+      "script": "tsx scripts/approval-workflow.ts request SYNC && echo \"승인 대기 중... /confirm-sync로 승인하세요\""
+    },
+    "sync:auto": {
+      "script": "tsx scripts/approval-workflow.ts request SYNC && npm run review-sync && npm run confirm-sync"
+    },
+    "/inspect": {
+      "script": "tsx scripts/inspection-engine.ts",
+      "engine": "inspection-engine",
+      "mode": "analyze",
+      "description": "System diagnostics - TypeScript, ESLint, Prettier, Tests, Security analysis"
+    },
+    "status": {
+      "script": "tsx scripts/inspection-engine.ts",
+      "engine": "inspection-engine",
+      "mode": "analyze",
+      "description": "System diagnostics - TypeScript, ESLint, Prettier, Tests, Security analysis"
+    },
+    "/radar": {
+      "script": "tsx scripts/radar-engine.ts",
+      "engine": "radar-engine",
+      "mode": "analyze",
+      "description": "Deep system inspection - detects technical debt, coverage gaps, and security issues"
+    },
+    "radar": {
+      "script": "tsx scripts/radar-engine.ts",
+      "engine": "radar-engine",
+      "mode": "analyze",
+      "description": "Deep system inspection - detects technical debt, coverage gaps, and security issues"
+    },
+    "guard": {
+      "script": "tsx scripts/guard.ts"
+    },
+    "/guard": {
+      "script": "tsx scripts/guard.ts"
+    },
+    "guard:quick": {
+      "script": "tsx scripts/guard.ts --quick"
+    },
+    "guard:report": {
+      "script": "tsx scripts/guard.ts --report"
+    },
+    "maintain": {
+      "script": "tsx scripts/maintain-engine.ts",
+      "engine": "maintain-engine",
+      "mode": "transform",
+      "description": "Automated maintenance - Prettier, ESLint auto-fix, self-validation"
+    },
+    "/maintain": {
+      "script": "tsx scripts/maintain-engine.ts",
+      "engine": "maintain-engine",
+      "mode": "transform",
+      "description": "Automated maintenance - Prettier, ESLint auto-fix, self-validation"
+    },
+    "/fix": {
+      "script": "tsx scripts/fix-engine.ts",
+      "engine": "fix-engine",
+      "mode": "transform",
+      "description": "Interactive fix engine - TypeScript errors, workarounds, documentation gaps"
+    },
+    "fix": {
+      "script": "tsx scripts/fix-engine.ts",
+      "engine": "fix-engine",
+      "mode": "transform",
+      "description": "Interactive fix engine - TypeScript errors, workarounds, documentation gaps"
+    },
+    "/refactor": {
+      "script": "tsx scripts/refactor-engine.ts",
+      "engine": "refactor-engine",
+      "mode": "transform",
+      "description": "Structural refactoring - architecture-level cross-module improvements"
+    },
+    "refactor": {
+      "script": "tsx scripts/refactor-engine.ts",
+      "engine": "refactor-engine",
+      "mode": "transform",
+      "description": "Structural refactoring - architecture-level cross-module improvements"
+    },
+    "/refactor-preview": {
+      "script": "tsx scripts/refactor-preview-engine.ts",
+      "engine": "refactor-preview-engine",
+      "mode": "analyze",
+      "description": "Refactor preview - shows changes without applying them"
+    },
+    "refactor:preview": {
+      "script": "tsx scripts/refactor-preview-engine.ts",
+      "engine": "refactor-preview-engine",
+      "mode": "analyze",
+      "description": "Refactor preview - shows changes without applying them"
+    },
+    "/validate": {
+      "script": "tsx scripts/validate-engine.ts",
+      "engine": "validate-engine",
+      "mode": "analyze",
+      "description": "Governance rules validation - schema, legacy imports, cache consistency"
+    },
+    "validate": {
+      "script": "tsx scripts/validate-engine.ts",
+      "engine": "validate-engine",
+      "mode": "analyze",
+      "description": "Governance rules validation - schema, legacy imports, cache consistency"
+    },
+    "validate:llm-io": {
+      "script": "tsx scripts/validate-llm-io.ts"
+    },
+    "validate:unified": {
+      "script": "tsx scripts/validate-unified.ts"
+    },
+    "/verify": {
+      "script": "tsx scripts/verify-engine.ts",
+      "engine": "verify-engine",
+      "mode": "analyze",
+      "description": "System integrity verification - TypeScript, ESLint, Tests, governance checks"
+    },
+    "verify": {
+      "script": "tsx scripts/verify-engine.ts",
+      "engine": "verify-engine",
+      "mode": "analyze",
+      "description": "System integrity verification - TypeScript, ESLint, Tests, governance checks"
+    },
+    "/update": {
+      "script": "npm run smart:update"
+    },
+    "smart:update": {
+      "script": "tsx scripts/smart-approval-system.ts && npm run _hidden:sync-execute"
+    },
+    "/ship": {
+      "script": "npm run prepare-release"
+    },
+    "status:quick": {
+      "script": "tsx scripts/unified-dashboard.ts --quick"
+    },
+    "routing:status": {
+      "script": "tsx scripts/routing-status.ts"
+    },
+    "metrics:report": {
+      "script": "tsx scripts/performance-metrics-reporter.ts"
+    },
+    "metrics:export": {
+      "script": "tsx scripts/performance-metrics-reporter.ts --export"
+    },
+    "metrics:auto": {
+      "script": "tsx scripts/performance-metrics-reporter.ts --auto"
+    },
+    "snapshot:browser": {
+      "script": "tsx scripts/snapshot-browser.ts"
+    },
+    "snapshot:dashboard": {
+      "script": "tsx scripts/snapshot-browser.ts --detailed"
+    },
+    "snapshot:recent": {
+      "script": "tsx scripts/snapshot-browser.ts --recent"
+    },
+    "snapshot:interactive": {
+      "script": "tsx scripts/snapshot-browser.ts --interactive"
+    },
+    "improve:analyze": {
+      "script": "tsx scripts/performance-auto-improver.ts analyze"
+    },
+    "improve:dry-run": {
+      "script": "tsx scripts/performance-auto-improver.ts analyze --dry-run"
+    },
+    "improve:status": {
+      "script": "tsx scripts/performance-auto-improver.ts status"
+    },
+    "improve:force-d": {
+      "script": "tsx scripts/performance-auto-improver.ts analyze --grade=D"
+    },
+    "approve": {
+      "script": "tsx scripts/approve-queue.ts"
+    },
+    "approve:status": {
+      "script": "tsx scripts/approve-queue.ts --status"
+    },
+    "approve:clear": {
+      "script": "tsx scripts/approve-queue.ts --clear"
+    },
+    "queue:status": {
+      "script": "tsx scripts/dry-run-approval-queue.ts status"
+    },
+    "queue:execute": {
+      "script": "tsx scripts/dry-run-approval-queue.ts execute"
+    },
+    "queue:demo": {
+      "script": "tsx scripts/dry-run-approval-queue.ts demo"
+    },
+    "fix:legacy": {
+      "script": "tsx scripts/ai-fix-engine.ts",
+      "engine": "fix-engine",
+      "mode": "transform",
+      "description": "Interactive fix engine - TypeScript errors, workarounds, documentation gaps"
+    },
+    "ship": {
+      "script": "bash scripts/ship-with-progress.sh"
+    },
+    "ship:legacy": {
+      "script": "npm run design:validate && npm run validate && npm run verify && npm run _hidden:integration-guard && npm run _hidden:system-integration && npm run advanced:audit && npm run docs:refresh && npm run optimize:analyze && echo '🚢 Ready for deployment'"
+    },
+    "confirm-sync": {
+      "script": "tsx scripts/approval-workflow.ts confirm && npm run _hidden:sync-execute"
+    },
+    "deny-sync": {
+      "script": "tsx scripts/approval-workflow.ts deny"
+    },
+    "prepare-release": {
+      "script": "tsx scripts/approval-workflow.ts request RELEASE && echo \"릴리즈 준비 완료. /confirm-release로 승인하세요\""
+    },
+    "confirm-release": {
+      "script": "tsx scripts/approval-workflow.ts confirm && npm run ship"
+    },
+    "deny-release": {
+      "script": "tsx scripts/approval-workflow.ts deny"
+    },
+    "review-sync": {
+      "script": "npm run _hidden:integration-guard && npm run _hidden:system-integration && npm run advanced:audit"
+    },
+    "_hidden:sync-execute": {
+      "script": "bash scripts/slash-commands.sh sync"
+    },
+    "_hidden:integration-guard": {
+      "script": "tsx scripts/auto-integration-guard.ts analyze"
+    },
+    "_hidden:system-integration": {
+      "script": "tsx scripts/system-integration-analyzer.ts"
+    },
+    "_hidden:issues-report": {
+      "script": "tsx scripts/issue-tracker.ts report"
+    },
+    "_hidden:security-audit": {
+      "script": "tsx scripts/security-audit-checker.ts"
+    },
+    "_hidden:workflow-check": {
+      "script": "tsx scripts/workflow-prevention-system.ts check"
+    },
+    "recovery:rollback": {
+      "script": "tsx scripts/sync-transaction-system.ts rollback"
+    },
+    "recovery:status": {
+      "script": "tsx scripts/sync-transaction-system.ts status"
+    },
+    "advanced:audit": {
+      "script": "tsx scripts/smart-refactor-auditor.ts audit"
+    },
+    "advanced:improve": {
+      "script": "tsx scripts/integration-improvement-engine.ts plan",
+      "engine": "integration-improvement-engine",
+      "mode": "transform",
+      "description": "Integration improvements - impact analysis and enhancement suggestions"
+    },
+    "typecheck": {
+      "script": "tsc -p tsconfig.build.json --noEmit"
+    },
+    "dev:typecheck": {
+      "script": "tsc -p tsconfig.build.json --noEmit"
+    },
+    "lint": {
+      "script": "eslint 'src/**/*.ts'"
+    },
+    "dev:lint": {
+      "script": "eslint 'src/**/*.ts'"
+    },
+    "lint:fix": {
+      "script": "eslint 'src/**/*.ts' --fix"
+    },
+    "ci:quality": {
+      "script": "npm run design:validate && npm run dev:typecheck"
+    },
+    "ci:strict": {
+      "script": "npm run design:validate && npm run dev:typecheck && npm run build"
+    },
+    "fix:unused-vars": {
+      "script": "tsx scripts/fix-unused-vars-batch.ts"
+    },
+    "test:approval": {
+      "script": "tsx scripts/test-approval.ts"
+    },
+    "dev:test": {
+      "script": "vitest --run"
+    },
+    "test": {
+      "script": "vitest --run"
+    },
+    "test:coverage": {
+      "script": "vitest --run --coverage"
+    },
+    "build": {
+      "script": "tsc"
+    },
+    "build:export": {
+      "script": "tsx scripts/export_cli.ts"
+    },
+    "dev:build": {
+      "script": "tsc"
+    },
+    "design:rollback": {
+      "script": "tsx scripts/design-rollback-system.ts rollback"
+    },
+    "design:status": {
+      "script": "tsx scripts/design-metadata-manager.ts status"
+    },
+    "_arch:validate": {
+      "script": "tsx scripts/validate-architecture.ts"
+    },
+    "_arch:validate:quick": {
+      "script": "tsx scripts/validate-architecture.ts --quick"
+    },
+    "_arch:fix": {
+      "script": "tsx scripts/validate-architecture.ts --fix"
+    },
+    "_migration:status": {
+      "script": "cat .migration/progress.json | jq '.statistics'"
+    },
+    "_migration:list": {
+      "script": "cat .migration/progress.json | jq '.migrations'"
+    },
+    "docs:drift-scan": {
+      "script": "tsx scripts/drift-scan.ts"
+    },
+    "docs:drift-scan:fix": {
+      "script": "tsx scripts/drift-scan.ts --fix"
+    },
+    "docs:drift-scan:report": {
+      "script": "tsx scripts/drift-scan.ts --report"
+    },
+    "docs:audit:full": {
+      "script": "tsx scripts/docs/doc-audit.ts"
+    },
+    "docs:signals:validate": {
+      "script": "tsx scripts/docs/doc-signals-validator.ts"
+    },
+    "docs:lint": {
+      "script": "tsx scripts/docs/doc-linter.ts"
+    },
+    "docs:gate:ci": {
+      "script": "tsx scripts/docs/doc-gate-ci.ts"
+    },
+    "docs:gate": {
+      "script": "tsx scripts/docs/doc-gate-ci.ts"
+    },
+    "integration:improve": {
+      "script": "tsx scripts/unified-reporter.ts"
+    },
+    "reports:consolidate": {
+      "script": "tsx scripts/unified-reporter.ts"
+    },
+    "design:analyze": {
+      "script": "tsx scripts/design-principle-engine.ts analyze",
+      "engine": "design-principle-engine",
+      "mode": "transform",
+      "description": "Design principle enforcement - automated design-based decisions"
+    },
+    "design:audit": {
+      "script": "tsx scripts/design-principle-engine.ts",
+      "engine": "design-principle-engine",
+      "mode": "transform",
+      "description": "Design principle enforcement - automated design-based decisions"
+    },
+    "integration:audit": {
+      "script": "tsx scripts/integration-enforcement-system.ts audit"
+    },
+    "integration:create": {
+      "script": "tsx scripts/integration-enforcement-system.ts create"
+    },
+    "system:design": {
+      "script": "npm run design:audit && npm run integration:audit"
+    },
+    "registry:generate": {
+      "script": "tsx scripts/component-registry-system.ts generate"
+    },
+    "registry:search": {
+      "script": "tsx scripts/component-registry-system.ts search"
+    },
+    "registry:violations": {
+      "script": "tsx scripts/component-registry-system.ts violations"
+    },
+    "registry:suggestions": {
+      "script": "tsx scripts/component-registry-system.ts suggestions"
+    },
+    "registry:summary": {
+      "script": "tsx scripts/component-registry-system.ts summary"
+    },
+    "evolution:analyze": {
+      "script": "tsx scripts/architectural-evolution-engine.ts analyze",
+      "engine": "architectural-evolution-engine",
+      "mode": "transform",
+      "description": "Architecture evolution - self-evolving system structure improvements"
+    },
+    "evolution:evolve": {
+      "script": "tsx scripts/architectural-evolution-engine.ts evolve",
+      "engine": "architectural-evolution-engine",
+      "mode": "transform",
+      "description": "Architecture evolution - self-evolving system structure improvements"
+    },
+    "system:evolve": {
+      "script": "npm run evolution:evolve && npm run registry:generate"
+    },
+    "utility:all": {
+      "script": "tsx scripts/metrics/__all__.ts"
+    },
+    "utility:agentlogger": {
+      "script": "tsx scripts/lib/agent_logger.ts"
+    },
+    "utility:analyzemetrics": {
+      "script": "tsx scripts/dx/analyze_metrics.ts"
+    },
+    "utility:answeragent": {
+      "script": "tsx scripts/agents/answer_agent.ts"
+    },
+    "utility:anthropicadapter": {
+      "script": "tsx scripts/clients/anthropic_adapter.js"
+    },
+    "utility:anthropicadapterd": {
+      "script": "tsx scripts/clients/anthropic_adapter.d.ts"
+    },
+    "utility:anthropicsmoke": {
+      "script": "tsx scripts/anthropic_smoke.sh"
+    },
+    "utility:auditagent": {
+      "script": "tsx scripts/agents/audit_agent.ts"
+    },
+    "utility:audittrigger": {
+      "script": "tsx scripts/audit-trigger.ts"
+    },
+    "utility:autoupdatecommands": {
+      "script": "tsx scripts/auto-update-commands.sh"
+    },
+    "utility:autocalibrate": {
+      "script": "tsx scripts/dx/autocalibrate.ts"
+    },
+    "utility:baseagent": {
+      "script": "tsx scripts/agents/base_agent.ts"
+    },
+    "utility:baselinecli": {
+      "script": "tsx scripts/metrics/baseline_cli.ts"
+    },
+    "generator:baselinereportgenerator": {
+      "script": "tsx scripts/metrics/baseline_report_generator.ts"
+    },
+    "utility:budgetguard": {
+      "script": "tsx scripts/utils/budget_guard.ts"
+    },
+    "utility:budgetguardian": {
+      "script": "tsx scripts/lib/budget_guardian.ts"
+    },
+    "utility:builddocsindexes": {
+      "script": "tsx scripts/build_docs_indexes.ts"
+    },
+    "utility:checkconsistency": {
+      "script": "tsx scripts/dx/check_consistency.ts"
+    },
+    "utility:checkobservabilityconsistency": {
+      "script": "tsx scripts/ci/check_observability_consistency.ts"
+    },
+    "policy:watch": {
+      "script": "tsx scripts/real-time-policy-reflector.ts start"
+    },
+    "policy:reflect": {
+      "script": "npm run design:analyze && npm run integration:audit && npm run registry:generate"
+    },
+    "alerts:show": {
+      "script": "tsx scripts/approval-alert-system.ts show"
+    },
+    "alerts:approve": {
+      "script": "tsx scripts/approval-alert-system.ts approve"
+    },
+    "alerts:test": {
+      "script": "tsx scripts/approval-alert-system.ts test"
+    },
+    "docs:update": {
+      "script": "tsx scripts/comprehensive-doc-updater.ts"
+    },
+    "docs:refresh": {
+      "script": "tsx scripts/comprehensive-doc-updater.ts && tsx scripts/build_docs_indexes.ts"
+    },
+    "design:validate": {
+      "script": "tsx scripts/design-validator.ts"
+    },
+    "maintain:legacy:safe": {
+      "script": "tsx scripts/smart-maintenance-orchestrator.ts safe"
+    },
+    "maintain:legacy:quick": {
+      "script": "tsx scripts/smart-maintenance-orchestrator.ts quick"
+    },
+    "system:clear-queue": {
+      "script": "echo '🔄 Emergency queue cleared'"
+    },
+    "pending:review": {
+      "script": "tsx scripts/smart-maintenance-orchestrator.ts pending"
+    },
+    "approve:interactive": {
+      "script": "tsx scripts/interactive-approval-handler.ts"
+    },
+    "workflow:gaps": {
+      "script": "tsx scripts/workflow-gap-detector.ts"
+    },
+    "workflow:optimize": {
+      "script": "tsx scripts/lib/interactive-recommendation-handler.ts"
+    },
+    "triggers:start": {
+      "script": "tsx scripts/lib/contextual-trigger-system.ts"
+    },
+    "triggers:add": {
+      "script": "tsx scripts/lib/contextual-trigger-system.ts add"
+    },
+    "maintain:legacy:snapshot": {
+      "script": "tsx scripts/smart-maintenance-orchestrator.ts smart --snapshot"
+    },
+    "optimize": {
+      "script": "tsx scripts/optimization-engine.ts",
+      "engine": "optimization-engine",
+      "mode": "transform",
+      "description": "Performance optimization - bundle analysis, code splitting, tree-shaking"
+    },
+    "optimize:analyze": {
+      "script": "tsx scripts/optimization-engine.ts analyze",
+      "engine": "optimization-engine",
+      "mode": "transform",
+      "description": "Performance optimization - bundle analysis, code splitting, tree-shaking"
+    },
+    "optimize:trends": {
+      "script": "tsx scripts/optimization-engine.ts trends",
+      "engine": "optimization-engine",
+      "mode": "transform",
+      "description": "Performance optimization - bundle analysis, code splitting, tree-shaking"
+    },
+    "communicate": {
+      "script": "tsx scripts/user-communication-system.ts auto"
+    },
+    "communicate:manual": {
+      "script": "tsx scripts/user-communication-system.ts session"
+    },
+    "handoff": {
+      "script": "tsx scripts/user-communication-system.ts handoff"
+    },
+    "report:maintain": {
+      "script": "tsx scripts/maintain-report-generator.ts"
+    },
+    "report:maintain:smart": {
+      "script": "tsx scripts/maintain-report-generator.ts smart"
+    },
+    "check:typescript": {
+      "script": "tsx scripts/quick-check.ts typescript"
+    },
+    "check:signatures": {
+      "script": "tsx scripts/quick-check.ts signatures"
+    },
+    "check:P0-only": {
+      "script": "tsx scripts/quick-check.ts P0-only"
+    },
+    "check:node": {
+      "script": "tsx scripts/quick-check.ts node"
+    },
+    "check:quick": {
+      "script": "tsx scripts/quick-check.ts quick"
+    },
+    "check:all": {
+      "script": "tsx scripts/quick-check.ts all"
+    },
+    "/communicate": {
+      "script": "npm run communicate:manual"
+    },
+    "ship:docs": {
+      "script": "npm run docs:refresh && echo '📚 Documentation synchronized'"
+    },
+    "gap:scan": {
+      "script": "tsx scripts/gap-scanner.ts"
+    },
+    "gap:scan:quick": {
+      "script": "tsx scripts/gap-scanner.ts --quick"
+    },
+    "gap:scan:metrics": {
+      "script": "tsx scripts/gap-scanner-metrics.ts"
+    },
+    "gap:config": {
+      "script": "tsx scripts/gap-config-manager.ts"
+    },
+    "gap:pr-bot": {
+      "script": "tsx scripts/gap-pr-bot.ts"
+    },
+    "gap:backup": {
+      "script": "tsx scripts/lib/backup-lifecycle-manager.ts"
+    },
+    "gap:dashboard": {
+      "script": "tsx scripts/gap-dashboard.ts"
+    },
+    "gap:watch": {
+      "script": "tsx scripts/gap-dashboard.ts --watch"
+    },
+    "init:gap-system": {
+      "script": "tsx scripts/init-gap-system.ts"
+    },
+    "doc:lifecycle": {
+      "script": "tsx scripts/doc-lifecycle-manager.ts"
+    },
+    "doc:lifecycle:analyze": {
+      "script": "tsx scripts/doc-lifecycle-manager.ts --analyze"
+    },
+    "doc:lifecycle:stale": {
+      "script": "tsx scripts/doc-lifecycle-manager.ts --find-stale"
+    },
+    "doc:lifecycle:cleanup": {
+      "script": "tsx scripts/doc-lifecycle-manager.ts --cleanup"
+    },
+    "ship:safe": {
+      "script": "echo '💾 Creating backup...' && npm run ship"
+    },
+    "utility:checktaxonomyconsistency": {
+      "script": "tsx scripts/ci/check_taxonomy_consistency.ts"
+    },
+    "utility:checkdocsfreshness": {
+      "script": "tsx scripts/check-docs-freshness.sh"
+    },
+    "utility:checkstandards": {
+      "script": "tsx scripts/check-standards.sh"
+    },
+    "utility:checkpointmanager": {
+      "script": "tsx scripts/utils/checkpoint_manager.ts"
+    },
+    "utility:cleanupbackups": {
+      "script": "tsx scripts/cleanup_backups.sh"
+    },
+    "utility:cli": {
+      "script": "tsx scripts/dx/cli.ts"
+    },
+    "utility:collectsession": {
+      "script": "tsx scripts/dx/collect_session.ts"
+    },
+    "utility:commandoptimizer": {
+      "script": "tsx scripts/command-optimizer.ts"
+    },
+    "utility:commandwrapper": {
+      "script": "tsx scripts/command-wrapper.ts"
+    },
+    "utility:convertevaluationdata": {
+      "script": "tsx scripts/convert_evaluation_data.js"
+    },
+    "utility:coveragemetrics": {
+      "script": "tsx scripts/metrics/coverage_metrics.ts"
+    },
+    "system:designfirstsystemarchitect": {
+      "script": "tsx scripts/design-first-system-architect.ts"
+    },
+    "utility:detectanomalies": {
+      "script": "tsx scripts/dx/detect_anomalies.ts"
+    },
+    "utility:dlq": {
+      "script": "tsx scripts/lib/dlq.ts"
+    },
+    "utility:dlqhandler": {
+      "script": "tsx scripts/utils/dlq_handler.ts"
+    },
+    "utility:dlqmanager": {
+      "script": "tsx scripts/dlq_manager.sh"
+    },
+    "utility:dlqreprocess": {
+      "script": "tsx scripts/dlq_reprocess.ts"
+    },
+    "utility:docgate": {
+      "script": "tsx scripts/docs/doc-gate.ts"
+    },
+    "utility:doclinter": {
+      "script": "tsx scripts/docs/doc-linter.ts"
+    },
+    "utility:docqualityauditor": {
+      "script": "tsx scripts/docs/doc-quality-auditor.ts"
+    },
+    "utility:documentoptimizer": {
+      "script": "tsx scripts/document-optimizer.ts"
+    },
+    "utility:duplicationmetrics": {
+      "script": "tsx scripts/metrics/duplication_metrics.ts"
+    },
+    "utility:emergencyrecovery": {
+      "script": "tsx scripts/emergency-recovery.sh"
+    },
+    "utility:evidenceagent": {
+      "script": "tsx scripts/agents/evidence_agent.ts"
+    },
+    "utility:evidencequality": {
+      "script": "tsx scripts/metrics/evidence_quality.ts"
+    },
+    "utility:exportenhanced": {
+      "script": "tsx scripts/lib/export_enhanced.ts"
+    },
+    "utility:exportenhancedcli": {
+      "script": "tsx scripts/lib/export_enhanced_cli.ts"
+    },
+    "utility:exportpack": {
+      "script": "tsx scripts/export_pack.sh"
+    },
+    "utility:exportpacksmart": {
+      "script": "tsx scripts/export_pack_smart.sh"
+    },
+    "utility:fixtaxonomylabels": {
+      "script": "tsx scripts/ci/fix_taxonomy_labels.ts"
+    },
+    "utility:fixconsolelogs": {
+      "script": "tsx scripts/fix-console-logs.sh"
+    },
+    "utility:fixeslintissues": {
+      "script": "tsx scripts/fix-eslint-issues.ts"
+    },
+    "utility:fixmockmode": {
+      "script": "tsx scripts/fix-mock-mode.sh"
+    },
+    "utility:fixunusedvars": {
+      "script": "tsx scripts/fix-unused-vars.sh"
+    },
+    "general:newcomponent": {
+      "script": "tsx scripts/new-component.ts"
+    },
+    "_hidden:general:newcomponent": {
+      "script": "tsx scripts/new-component.ts"
+    },
+    "system component:testcomponent": {
+      "script": "tsx scripts/test-component.ts"
+    },
+    "_hidden:system component:testcomponent": {
+      "script": "tsx scripts/test-component.ts"
+    }
+  },
+  "engines": {
+    "verify-engine": {
+      "path": "scripts/verify-engine.ts",
+      "mode": "analyze",
+      "description": "System integrity verification - TypeScript, ESLint, Tests, governance checks",
+      "requiresGovernance": false,
+      "usedByCommands": [
+        "/verify",
+        "verify"
+      ]
+    },
+    "validate-engine": {
+      "path": "scripts/validate-engine.ts",
+      "mode": "analyze",
+      "description": "Governance rules validation - schema, legacy imports, cache consistency",
+      "requiresGovernance": false,
+      "usedByCommands": [
+        "/validate",
+        "validate"
+      ]
+    },
+    "refactor-preview-engine": {
+      "path": "scripts/refactor-preview-engine.ts",
+      "mode": "analyze",
+      "description": "Refactor preview - shows changes without applying them",
+      "requiresGovernance": false,
+      "usedByCommands": [
+        "/refactor-preview",
+        "refactor:preview"
+      ]
+    },
+    "refactor-engine": {
+      "path": "scripts/refactor-engine.ts",
+      "mode": "transform",
+      "description": "Structural refactoring - architecture-level cross-module improvements",
+      "requiresGovernance": true,
+      "usedByCommands": [
+        "/refactor",
+        "refactor"
+      ]
+    },
+    "radar-engine": {
+      "path": "scripts/radar-engine.ts",
+      "mode": "analyze",
+      "description": "Deep system inspection - detects technical debt, coverage gaps, and security issues",
+      "requiresGovernance": false,
+      "usedByCommands": [
+        "/radar",
+        "radar"
+      ]
+    },
+    "optimization-engine": {
+      "path": "scripts/optimization-engine.ts",
+      "mode": "transform",
+      "description": "Performance optimization - bundle analysis, code splitting, tree-shaking",
+      "requiresGovernance": true,
+      "usedByCommands": [
+        "optimize",
+        "optimize:analyze",
+        "optimize:trends"
+      ]
+    },
+    "maintain-engine": {
+      "path": "scripts/maintain-engine.ts",
+      "mode": "transform",
+      "description": "Automated maintenance - Prettier, ESLint auto-fix, self-validation",
+      "requiresGovernance": true,
+      "usedByCommands": [
+        "maintain",
+        "/maintain"
+      ]
+    },
+    "integration-improvement-engine": {
+      "path": "scripts/integration-improvement-engine.ts",
+      "mode": "transform",
+      "description": "Integration improvements - impact analysis and enhancement suggestions",
+      "requiresGovernance": true,
+      "usedByCommands": [
+        "advanced:improve"
+      ]
+    },
+    "inspection-engine": {
+      "path": "scripts/inspection-engine.ts",
+      "mode": "analyze",
+      "description": "System diagnostics - TypeScript, ESLint, Prettier, Tests, Security analysis",
+      "requiresGovernance": false,
+      "usedByCommands": [
+        "/inspect",
+        "status"
+      ]
+    },
+    "gaps-engine": {
+      "path": "scripts/gaps-engine.ts",
+      "mode": "analyze",
+      "description": "Continuous gap detection - monitors implementation vs design promises",
+      "requiresGovernance": false,
+      "usedByCommands": []
+    },
+    "fix-engine": {
+      "path": "scripts/fix-engine.ts",
+      "mode": "transform",
+      "description": "Interactive fix engine - TypeScript errors, workarounds, documentation gaps",
+      "requiresGovernance": true,
+      "usedByCommands": [
+        "/fix",
+        "fix",
+        "fix:legacy"
+      ]
+    },
+    "design-principle-engine": {
+      "path": "scripts/design-principle-engine.ts",
+      "mode": "transform",
+      "description": "Design principle enforcement - automated design-based decisions",
+      "requiresGovernance": true,
+      "usedByCommands": [
+        "design:analyze",
+        "design:audit"
+      ]
+    },
+    "architectural-evolution-engine": {
+      "path": "scripts/architectural-evolution-engine.ts",
+      "mode": "transform",
+      "description": "Architecture evolution - self-evolving system structure improvements",
+      "requiresGovernance": true,
+      "usedByCommands": [
+        "evolution:analyze",
+        "evolution:evolve"
+      ]
+    },
+    "ai-fix-engine": {
+      "path": "scripts/ai-fix-engine.ts",
+      "mode": "transform",
+      "description": "AI-powered TypeScript error fixes",
+      "requiresGovernance": true,
+      "usedByCommands": []
+    },
+    "workaround-resolution-engine": {
+      "path": "scripts/lib/workaround-resolution-engine.ts",
+      "mode": "transform",
+      "description": "Workaround resolution - converts temporary fixes to permanent solutions",
+      "requiresGovernance": true,
+      "usedByCommands": []
+    },
+    "adaptive-execution-engine": {
+      "path": "scripts/lib/adaptive-execution-engine.ts",
+      "mode": "transform",
+      "description": "Adaptive execution - Smart Decision Matrix for performance-safety-usability balance",
+      "requiresGovernance": true,
+      "usedByCommands": []
+    }
+  },
+  "policies": {
+    "toolModePolicy": {
+      "analyze": [
+        "verify-engine",
+        "validate-engine",
+        "refactor-preview-engine",
+        "radar-engine",
+        "inspection-engine",
+        "gaps-engine",
+        "verify-engine",
+        "validate-engine",
+        "refactor-preview-engine",
+        "radar-engine",
+        "inspection-engine",
+        "gaps-engine"
+      ],
+      "transform": [
+        "refactor-engine",
+        "optimization-engine",
+        "maintain-engine",
+        "integration-improvement-engine",
+        "fix-engine",
+        "design-principle-engine",
+        "architectural-evolution-engine",
+        "ai-fix-engine",
+        "refactor-engine",
+        "optimization-engine",
+        "maintain-engine",
+        "integration-improvement-engine",
+        "fix-engine",
+        "design-principle-engine",
+        "architectural-evolution-engine",
+        "ai-fix-engine",
+        "workaround-resolution-engine",
+        "adaptive-execution-engine"
+      ]
+    },
+    "riskDomains": [
+      {
+        "path": "src/agents/**",
+        "reason": "Agent 변경은 QA 품질에 직접 영향",
+        "severity": "high"
+      },
+      {
+        "path": "src/rag/**",
+        "reason": "RAG 시스템 변경은 신중히",
+        "severity": "high"
+      },
+      {
+        "path": "src/clients/**",
+        "reason": "API 클라이언트 변경 위험",
+        "severity": "high"
+      },
+      {
+        "path": "package.json",
+        "reason": "의존성 변경 검토 필요",
+        "severity": "critical"
+      },
+      {
+        "path": "scripts/lib/inspection-*.ts",
+        "reason": "Inspection 코어 로직 변경 위험",
+        "severity": "critical"
+      },
+      {
+        "path": "scripts/lib/governance/**",
+        "reason": "거버넌스 시스템 자체 변경",
+        "severity": "critical"
+      }
+    ]
+  }
+}

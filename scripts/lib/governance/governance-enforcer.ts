@@ -1,10 +1,15 @@
 /**
- * Governance Enforcer - Ensure all engines use governance
+ * Governance Enforcer - Type-based governance enforcement
+ *
+ * Design Philosophy:
+ * - 'analyze' mode tools are exempt by design (read-only operations)
+ * - 'transform' mode tools require governance (write operations)
+ * - No hardcoded exemption lists - mode drives behavior
  *
  * Purpose:
  * - Scan all *-engine.ts files
- * - Verify they import GovernanceRunner
- * - Ensure executeWithGovernance is called
+ * - Extract @tool-mode declarations
+ * - Enforce governance on 'transform' tools only
  *
  * Usage:
  * - Pre-commit hook
@@ -14,6 +19,12 @@
 import { readFileSync, existsSync } from "fs";
 import { join } from "path";
 import { glob } from "glob";
+import {
+  extractToolMetadata,
+  validateToolMode,
+  type ToolMetadata,
+} from "./tool-mode.js";
+import { getGovernanceLogger } from "./governance-logger.js";
 
 export interface GovernanceEnforcementResult {
   compliant: string[];
@@ -31,6 +42,7 @@ export interface GovernanceEnforcementResult {
 
 export class GovernanceEnforcer {
   private projectRoot: string;
+  private logger = getGovernanceLogger();
 
   constructor(projectRoot: string = process.cwd()) {
     this.projectRoot = projectRoot;
@@ -85,7 +97,7 @@ export class GovernanceEnforcer {
   }
 
   /**
-   * Check if file is governance-compliant
+   * Check if file is governance-compliant (type-based)
    */
   private checkFile(filePath: string): {
     compliant: boolean;
@@ -93,54 +105,106 @@ export class GovernanceEnforcer {
   } {
     const content = readFileSync(filePath, "utf8");
     const relativePath = filePath.replace(this.projectRoot + "/", "");
+    const filename = filePath.split("/").pop() || "";
     const violations: GovernanceEnforcementResult["violations"] = [];
 
-    // Exemptions (files that don't need governance)
-    const exemptions = [
-      "validate-engine.ts", // Validation only
-      "verify-engine.ts", // Uses governance internally
-    ];
+    // Extract tool metadata from @tool-mode declaration
+    const metadata = extractToolMetadata(filename, content);
 
-    if (exemptions.some((exempt) => filePath.includes(exempt))) {
+    // Check 1: Tool mode must be declared
+    const modeValidation = validateToolMode(metadata);
+    if (!modeValidation.valid) {
+      const violation = {
+        file: relativePath,
+        reason: modeValidation.reason || "Missing @tool-mode declaration",
+        severity: "critical" as const,
+      };
+      violations.push(violation);
+
+      // Log blocked
+      this.logger.logBlocked(filename, "unknown", [
+        {
+          type: "mode-declaration",
+          severity: "critical",
+          message: violation.reason,
+        },
+      ]);
+
+      return { compliant: false, violations };
+    }
+
+    // Check 2: If mode is 'analyze', no governance required
+    if (metadata!.mode === "analyze") {
+      // Log allowed (analyze mode auto-exempt)
+      this.logger.logAllowed(
+        filename,
+        "analyze",
+        "Analysis tool - read-only operations, no governance required",
+      );
+
       return { compliant: true, violations: [] };
     }
 
-    // Check 1: Imports GovernanceRunner OR wrapWithGovernance (new pattern)
-    const hasGovernanceImport =
-      content.includes("GovernanceRunner") ||
-      content.includes("wrapWithGovernance");
-    if (!hasGovernanceImport) {
-      violations.push({
-        file: relativePath,
-        reason: "Missing import: GovernanceRunner or wrapWithGovernance",
-        severity: "critical",
-      });
+    // Check 3: Transform tools MUST have governance
+    if (metadata!.mode === "transform") {
+      // Check 3a: Imports GovernanceRunner OR wrapWithGovernance
+      const hasGovernanceImport =
+        content.includes("GovernanceRunner") ||
+        content.includes("wrapWithGovernance");
+      if (!hasGovernanceImport) {
+        violations.push({
+          file: relativePath,
+          reason: "Transform tool missing import: GovernanceRunner or wrapWithGovernance",
+          severity: "critical",
+        });
+      }
+
+      // Check 3b: Uses executeWithGovernance OR wrapWithGovernance
+      const hasGovernanceUsage =
+        content.includes("executeWithGovernance") ||
+        content.includes("wrapWithGovernance(");
+      if (!hasGovernanceUsage) {
+        violations.push({
+          file: relativePath,
+          reason: "Transform tool missing call: executeWithGovernance() or wrapWithGovernance()",
+          severity: "critical",
+        });
+      }
+
+      // Check 3c: Has governance property (skip for wrapper pattern)
+      const usesWrapperPattern = content.includes("wrapWithGovernance(");
+      if (
+        !usesWrapperPattern &&
+        !content.includes("private governance:") &&
+        !content.includes("private governance =")
+      ) {
+        violations.push({
+          file: relativePath,
+          reason: "Transform tool missing property: private governance",
+          severity: "high",
+        });
+      }
     }
 
-    // Check 2: Uses executeWithGovernance OR wrapWithGovernance
-    const hasGovernanceUsage =
-      content.includes("executeWithGovernance") ||
-      content.includes("wrapWithGovernance(");
-    if (!hasGovernanceUsage) {
-      violations.push({
-        file: relativePath,
-        reason: "Missing call: executeWithGovernance() or wrapWithGovernance()",
-        severity: "critical",
-      });
-    }
-
-    // Check 3: Has governance property (skip for wrapper pattern)
-    const usesWrapperPattern = content.includes("wrapWithGovernance(");
-    if (
-      !usesWrapperPattern &&
-      !content.includes("private governance:") &&
-      !content.includes("private governance =")
-    ) {
-      violations.push({
-        file: relativePath,
-        reason: "Missing property: private governance",
-        severity: "high",
-      });
+    // Log result for transform tools
+    if (violations.length === 0) {
+      // Transform tool is compliant
+      this.logger.logAllowed(
+        filename,
+        "transform",
+        "Transform tool with proper governance integration",
+      );
+    } else {
+      // Transform tool has violations
+      this.logger.logBlocked(
+        filename,
+        "transform",
+        violations.map((v) => ({
+          type: "governance-violation",
+          severity: v.severity,
+          message: v.reason,
+        })),
+      );
     }
 
     return {
@@ -179,9 +243,10 @@ export class GovernanceEnforcer {
       });
 
       console.log(`\n💡 Fix violations by:`);
-      console.log(`   1. Import GovernanceRunner`);
-      console.log(`   2. Add private governance: GovernanceRunner`);
-      console.log(`   3. Wrap operations with executeWithGovernance()`);
+      console.log(`   1. Add @tool-mode declaration (analyze or transform)`);
+      console.log(`   2. For transform tools: Import GovernanceRunner`);
+      console.log(`   3. For transform tools: Add private governance property`);
+      console.log(`   4. For transform tools: Wrap with executeWithGovernance()`);
     }
 
     console.log("\n" + "═".repeat(60));

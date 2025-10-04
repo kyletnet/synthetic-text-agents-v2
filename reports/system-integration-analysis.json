@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-10-02T03:11:25.930Z",
+  "timestamp": "2025-10-04T18:14:42.157Z",
   "components_analyzed": 52,
   "integration_score": 33,
   "recommendations": {
@@ -19,7 +19,7 @@
         "synergies": [],
         "conflicts": [
           {
-            "with": "approval-alert-system.ts, architectural-evolution-engine.ts, auto-integration-guard.ts, command-optimizer.ts, command-wrapper.ts, component-registry-system.ts, comprehensive-doc-updater.ts, design-first-system-architect.ts",
+            "with": "approval-alert-system.ts, architectural-evolution-engine.ts, auto-integration-guard.ts, check-protected-files.ts, command-optimizer.ts, command-wrapper.ts, component-registry-system.ts",
             "issue": "다중 보고서 생성으로 인한 성능 저하",
             "resolution": "보고서 생성 스케줄링 또는 통합"
           }
@@ -55,7 +55,7 @@
         "synergies": [],
         "conflicts": [
           {
-            "with": "ai-fix-engine.ts, architectural-evolution-engine.ts, auto-integration-guard.ts, command-optimizer.ts, command-wrapper.ts, component-registry-system.ts, comprehensive-doc-updater.ts, design-first-system-architect.ts",
+            "with": "ai-fix-engine.ts, architectural-evolution-engine.ts, auto-integration-guard.ts, check-protected-files.ts, command-optimizer.ts, command-wrapper.ts, component-registry-system.ts",
             "issue": "다중 보고서 생성으로 인한 성능 저하",
             "resolution": "보고서 생성 스케줄링 또는 통합"
           }
@@ -106,7 +106,7 @@
         "synergies": [],
         "conflicts": [
           {
-            "with": "ai-fix-engine.ts, approval-alert-system.ts, auto-integration-guard.ts, command-optimizer.ts, command-wrapper.ts, component-registry-system.ts, comprehensive-doc-updater.ts, design-first-system-architect.ts",
+            "with": "ai-fix-engine.ts, approval-alert-system.ts, auto-integration-guard.ts, check-protected-files.ts, command-optimizer.ts, command-wrapper.ts, component-registry-system.ts",
             "issue": "다중 보고서 생성으로 인한 성능 저하",
             "resolution": "보고서 생성 스케줄링 또는 통합"
           }
@@ -136,13 +136,28 @@
       }
     },
     {
+      "component": "audit-unified.ts",
+      "analysis": {
+        "duplications": [],
+        "synergies": [],
+        "conflicts": [],
+        "missing_integrations": [],
+        "user_experience_impact": {
+          "complexity_increase": 1,
+          "learning_curve": 3,
+          "efficiency_gain": 5,
+          "overall_score": 7
+        }
+      }
+    },
+    {
       "component": "auto-integration-guard.ts",
       "analysis": {
         "duplications": [],
         "synergies": [],
         "conflicts": [
           {
-            "with": "ai-fix-engine.ts, approval-alert-system.ts, architectural-evolution-engine.ts, command-optimizer.ts, command-wrapper.ts, component-registry-system.ts, comprehensive-doc-updater.ts, design-first-system-architect.ts",
+            "with": "ai-fix-engine.ts, approval-alert-system.ts, architectural-evolution-engine.ts, check-protected-files.ts, command-optimizer.ts, command-wrapper.ts, component-registry-system.ts",
             "issue": "다중 보고서 생성으로 인한 성능 저하",
             "resolution": "보고서 생성 스케줄링 또는 통합"
           }
@@ -170,27 +185,12 @@
           "overall_score": 8
         }
       }
-    },
-    {
-      "component": "build_docs_indexes.js",
-      "analysis": {
-        "duplications": [],
-        "synergies": [],
-        "conflicts": [],
-        "missing_integrations": [],
-        "user_experience_impact": {
-          "complexity_increase": 1,
-          "learning_curve": 3,
-          "efficiency_gain": 5,
-          "overall_score": 7
-        }
-      }
     }
   ],
   "system_health": {
-    "coherence": 10,
+    "coherence": 20,
     "redundancy": 100,
     "completeness": 85,
-    "maintainability": 78.46153846153847
+    "maintainability": 83.46153846153847
   }
 }

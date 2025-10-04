@@ -1,0 +1,104 @@
+name: 🔍 Weekly Gap Detection
+
+# Purpose: Detect design-implementation gaps weekly
+# Auto-create GitHub issues for P0 gaps
+
+on:
+  schedule:
+    - cron: "0 9 * * MON" # Every Monday at 9am UTC
+  workflow_dispatch: # Allow manual trigger
+
+env:
+  NODE_VERSION: "22"
+
+jobs:
+  gap-detection:
+    name: 🔍 Gap Detection & Issue Creation
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🏗️ Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🔍 Run gap detection
+        id: gaps
+        run: |
+          echo "Running gap detection..."
+          npm run gaps > gap-output.txt 2>&1
+          cat gap-output.txt
+
+      - name: 📋 Create GitHub issues for P0 gaps
+        if: success() || failure()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "Creating GitHub issues for P0 gaps..."
+          npm run gaps:issues || echo "No P0 gaps or issue creation failed"
+
+      - name: 📊 Upload gap report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gap-detection-report
+          path: |
+            gap-output.txt
+            reports/gaps/latest.json
+          retention-days: 30
+
+      - name: 💬 Comment on recent PRs (if gaps found)
+        if: failure()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Get the most recent merged PR
+          RECENT_PR=$(gh pr list --state merged --limit 1 --json number --jq '.[0].number')
+
+          if [ -n "$RECENT_PR" ]; then
+            echo "Commenting on PR #$RECENT_PR about gaps..."
+            gh pr comment $RECENT_PR --body "⚠️ **Gap Detection Alert**
+
+            The weekly gap scan detected issues. Please review:
+            - Check [Gap Detection Report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            - Review auto-created P0 issues
+
+            Run locally: \`npm run gaps\`"
+          fi
+
+  document-housekeeping:
+    name: 📚 Document Lifecycle Management
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: gap-detection
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🏗️ Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🔍 Find stale documents
+        run: |
+          echo "Checking for stale documents (90+ days)..."
+          npm run doc:lifecycle:stale || echo "No stale documents"
+
+      - name: 🔍 Scan documentation drift
+        run: |
+          echo "Scanning for documentation-code drift..."
+          npm run docs:drift-scan || echo "Drift scan completed with findings"

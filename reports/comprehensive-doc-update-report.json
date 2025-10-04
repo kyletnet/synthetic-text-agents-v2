@@ -1,8 +1,8 @@
 {
-  "timestamp": "2025-10-02T03:18:54.901Z",
-  "totalDocs": 40,
+  "timestamp": "2025-10-04T18:14:47.921Z",
+  "totalDocs": 30,
   "autoUpdated": 0,
-  "semiAutoUpdated": 5,
+  "semiAutoUpdated": 6,
   "manualRequired": 1,
   "updates": [
     {
@@ -10,7 +10,7 @@
       "updateType": "SEMI_AUTO",
       "priority": "HIGH",
       "description": "Project main README - needs system stats update",
-      "lastModified": "2025-09-30T05:46:41.118Z",
+      "lastModified": "2025-10-04T17:43:21.129Z",
       "needsUpdate": false,
       "autoUpdateMethod": "Auto-inject system stats and last update timestamp"
     },
@@ -19,7 +19,7 @@
       "updateType": "SEMI_AUTO",
       "priority": "HIGH",
       "description": "Claude system configuration - needs feature updates",
-      "lastModified": "2025-10-01T06:43:53.682Z",
+      "lastModified": "2025-10-04T17:43:21.125Z",
       "needsUpdate": false,
       "autoUpdateMethod": "Generic timestamp and system info update"
     },
@@ -37,7 +37,7 @@
       "updateType": "AUTO",
       "priority": "MEDIUM",
       "description": "README file auto-update with system info",
-      "lastModified": "2025-09-30T05:46:36.786Z",
+      "lastModified": "2025-10-04T17:43:21.094Z",
       "needsUpdate": false,
       "autoUpdateMethod": "Auto-inject system stats and last update timestamp"
     },
@@ -46,7 +46,7 @@
       "updateType": "AUTO",
       "priority": "MEDIUM",
       "description": "README file auto-update with system info",
-      "lastModified": "2025-09-30T05:46:38.803Z",
+      "lastModified": "2025-10-04T17:43:21.140Z",
       "needsUpdate": false,
       "autoUpdateMethod": "Auto-inject system stats and last update timestamp"
     },
@@ -55,7 +55,7 @@
       "updateType": "AUTO",
       "priority": "MEDIUM",
       "description": "README file auto-update with system info",
-      "lastModified": "2025-09-30T05:46:39.214Z",
+      "lastModified": "2025-10-04T17:43:21.149Z",
       "needsUpdate": false,
       "autoUpdateMethod": "Auto-inject system stats and last update timestamp"
     },
@@ -64,7 +64,7 @@
       "updateType": "AUTO",
       "priority": "MEDIUM",
       "description": "README file auto-update with system info",
-      "lastModified": "2025-09-30T05:46:39.204Z",
+      "lastModified": "2025-10-04T17:43:21.151Z",
       "needsUpdate": false,
       "autoUpdateMethod": "Auto-inject system stats and last update timestamp"
     },
@@ -73,7 +73,7 @@
       "updateType": "AUTO",
       "priority": "MEDIUM",
       "description": "README file auto-update with system info",
-      "lastModified": "2025-09-30T05:46:39.118Z",
+      "lastModified": "2025-10-04T17:43:21.147Z",
       "needsUpdate": false,
       "autoUpdateMethod": "Auto-inject system stats and last update timestamp"
     },
@@ -82,7 +82,7 @@
       "updateType": "AUTO",
       "priority": "MEDIUM",
       "description": "README file auto-update with system info",
-      "lastModified": "2025-09-30T05:46:39.075Z",
+      "lastModified": "2025-10-04T17:43:21.145Z",
       "needsUpdate": false,
       "autoUpdateMethod": "Auto-inject system stats and last update timestamp"
     },
@@ -91,106 +91,7 @@
       "updateType": "AUTO",
       "priority": "MEDIUM",
       "description": "README file auto-update with system info",
-      "lastModified": "2025-09-30T05:46:41.118Z",
-      "needsUpdate": false,
-      "autoUpdateMethod": "Auto-inject system stats and last update timestamp"
-    },
-    {
-      "filePath": ".system-backups/design-transition-1758771517026-of9sm8/.claude/commands/_hidden/README.md",
-      "updateType": "AUTO",
-      "priority": "MEDIUM",
-      "description": "README file auto-update with system info",
-      "lastModified": "2025-10-02T03:11:36.971Z",
-      "needsUpdate": false,
-      "autoUpdateMethod": "Auto-inject system stats and last update timestamp"
-    },
-    {
-      "filePath": ".system-backups/design-transition-1758771517026-of9sm8/docs/LEDGER/README.md",
-      "updateType": "AUTO",
-      "priority": "MEDIUM",
-      "description": "README file auto-update with system info",
-      "lastModified": "2025-10-02T03:11:42.308Z",
-      "needsUpdate": false,
-      "autoUpdateMethod": "Auto-inject system stats and last update timestamp"
-    },
-    {
-      "filePath": ".system-backups/design-transition-1758771517026-of9sm8/docs/SYSTEM_DOCS/README.md",
-      "updateType": "AUTO",
-      "priority": "MEDIUM",
-      "description": "README file auto-update with system info",
-      "lastModified": "2025-10-02T03:11:47.401Z",
-      "needsUpdate": false,
-      "autoUpdateMethod": "Auto-inject system stats and last update timestamp"
-    },
-    {
-      "filePath": ".system-backups/design-transition-1758771517026-of9sm8/docs/SYSTEM_DOCS/modules/README.md",
-      "updateType": "AUTO",
-      "priority": "MEDIUM",
-      "description": "README file auto-update with system info",
-      "lastModified": "2025-10-02T03:11:52.526Z",
-      "needsUpdate": false,
-      "autoUpdateMethod": "Auto-inject system stats and last update timestamp"
-    },
-    {
-      "filePath": ".system-backups/design-transition-1758771517026-of9sm8/docs/RUN_LOGS/README.md",
-      "updateType": "AUTO",
-      "priority": "MEDIUM",
-      "description": "README file auto-update with system info",
-      "lastModified": "2025-10-02T03:11:57.662Z",
-      "needsUpdate": false,
-      "autoUpdateMethod": "Auto-inject system stats and last update timestamp"
-    },
-    {
-      "filePath": ".system-backups/design-transition-1758771517026-of9sm8/docs/REFACTOR/README.md",
-      "updateType": "AUTO",
-      "priority": "MEDIUM",
-      "description": "README file auto-update with system info",
-      "lastModified": "2025-10-02T03:12:02.624Z",
-      "needsUpdate": false,
-      "autoUpdateMethod": "Auto-inject system stats and last update timestamp"
-    },
-    {
-      "filePath": ".system-backups/design-transition-1758771517026-of9sm8/reports/.sync-transactions/sync-1758770751487-luzkad-backup/docs/LEDGER/README.md",
-      "updateType": "AUTO",
-      "priority": "MEDIUM",
-      "description": "README file auto-update with system info",
-      "lastModified": "2025-10-02T03:12:07.710Z",
-      "needsUpdate": false,
-      "autoUpdateMethod": "Auto-inject system stats and last update timestamp"
-    },
-    {
-      "filePath": ".system-backups/design-transition-1758771517026-of9sm8/reports/.sync-transactions/sync-1758770751487-luzkad-backup/docs/SYSTEM_DOCS/README.md",
-      "updateType": "AUTO",
-      "priority": "MEDIUM",
-      "description": "README file auto-update with system info",
-      "lastModified": "2025-10-02T03:12:12.707Z",
-      "needsUpdate": false,
-      "autoUpdateMethod": "Auto-inject system stats and last update timestamp"
-    },
-    {
-      "filePath": ".system-backups/design-transition-1758771517026-of9sm8/reports/.sync-transactions/sync-1758770751487-luzkad-backup/docs/SYSTEM_DOCS/modules/README.md",
-      "updateType": "AUTO",
-      "priority": "MEDIUM",
-      "description": "README file auto-update with system info",
-      "lastModified": "2025-10-02T03:12:17.672Z",
-      "needsUpdate": false,
-      "autoUpdateMethod": "Auto-inject system stats and last update timestamp"
-    },
-    {
-      "filePath": ".system-backups/design-transition-1758771517026-of9sm8/reports/.sync-transactions/sync-1758770751487-luzkad-backup/docs/RUN_LOGS/README.md",
-      "updateType": "AUTO",
-      "priority": "MEDIUM",
-      "description": "README file auto-update with system info",
-      "lastModified": "2025-10-02T03:12:22.795Z",
-      "needsUpdate": false,
-      "autoUpdateMethod": "Auto-inject system stats and last update timestamp"
-    },
-    {
-      "filePath": ".system-backups/design-transition-1758771517026-of9sm8/reports/.sync-transactions/sync-1758770751487-luzkad-backup/docs/REFACTOR/README.md",
-      "updateType": "AUTO",
-      "priority": "MEDIUM",
-      "description": "README file auto-update with system info",
-      "lastModified": "2025-10-02T03:12:27.900Z",
+      "lastModified": "2025-10-04T17:43:21.129Z",
       "needsUpdate": false,
       "autoUpdateMethod": "Auto-inject system stats and last update timestamp"
     },
@@ -199,7 +100,7 @@
       "updateType": "AUTO",
       "priority": "MEDIUM",
       "description": "README file auto-update with system info",
-      "lastModified": "2025-09-30T05:46:37.736Z",
+      "lastModified": "2025-10-04T17:43:21.135Z",
       "needsUpdate": false,
       "autoUpdateMethod": "Auto-inject system stats and last update timestamp"
     },
@@ -208,7 +109,7 @@
       "updateType": "AUTO",
       "priority": "MEDIUM",
       "description": "README file auto-update with system info",
-      "lastModified": "2025-09-30T05:46:38.116Z",
+      "lastModified": "2025-10-04T17:43:21.131Z",
       "needsUpdate": false,
       "autoUpdateMethod": "Auto-inject system stats and last update timestamp"
     },
@@ -217,7 +118,7 @@
       "updateType": "AUTO",
       "priority": "MEDIUM",
       "description": "README file auto-update with system info",
-      "lastModified": "2025-10-02T03:12:32.994Z",
+      "lastModified": "2025-10-04T17:35:54.933Z",
       "needsUpdate": false,
       "autoUpdateMethod": "Auto-inject system stats and last update timestamp"
     },
@@ -226,7 +127,7 @@
       "updateType": "AUTO",
       "priority": "MEDIUM",
       "description": "README file auto-update with system info",
-      "lastModified": "2025-10-02T03:12:38.153Z",
+      "lastModified": "2025-10-04T17:35:59.910Z",
       "needsUpdate": false,
       "autoUpdateMethod": "Auto-inject system stats and last update timestamp"
     },
@@ -235,7 +136,7 @@
       "updateType": "AUTO",
       "priority": "MEDIUM",
       "description": "README file auto-update with system info",
-      "lastModified": "2025-10-02T03:12:43.231Z",
+      "lastModified": "2025-10-04T17:36:05.065Z",
       "needsUpdate": false,
       "autoUpdateMethod": "Auto-inject system stats and last update timestamp"
     },
@@ -244,7 +145,7 @@
       "updateType": "AUTO",
       "priority": "MEDIUM",
       "description": "README file auto-update with system info",
-      "lastModified": "2025-10-02T03:12:48.463Z",
+      "lastModified": "2025-10-04T17:36:10.025Z",
       "needsUpdate": false,
       "autoUpdateMethod": "Auto-inject system stats and last update timestamp"
     },
@@ -253,7 +154,7 @@
       "updateType": "AUTO",
       "priority": "MEDIUM",
       "description": "README file auto-update with system info",
-      "lastModified": "2025-10-02T03:12:53.722Z",
+      "lastModified": "2025-10-04T17:36:15.049Z",
       "needsUpdate": false,
       "autoUpdateMethod": "Auto-inject system stats and last update timestamp"
     },
@@ -262,7 +163,7 @@
       "updateType": "AUTO",
       "priority": "HIGH",
       "description": "Technical fixes handoff - already auto-updated",
-      "lastModified": "2025-09-30T05:46:41.025Z",
+      "lastModified": "2025-10-04T17:43:21.126Z",
       "needsUpdate": false,
       "autoUpdateMethod": "Auto-update with current system status and health metrics"
     },
@@ -299,7 +200,7 @@
       "priority": "HIGH",
       "description": "Changelog - needs latest changes entry",
       "lastModified": "2025-10-02T03:06:50.280Z",
-      "needsUpdate": false,
+      "needsUpdate": true,
       "autoUpdateMethod": "Auto-generate entry from git log and health report"
     },
     {
@@ -325,7 +226,7 @@
       "updateType": "AUTO",
       "priority": "LOW",
       "description": "Slash command documentation - auto-sync with npm scripts",
-      "lastModified": "2025-10-01T12:17:01.828Z",
+      "lastModified": "2025-10-04T17:43:21.095Z",
       "needsUpdate": false,
       "autoUpdateMethod": "Auto-sync with npm scripts and system capabilities"
     },
@@ -334,7 +235,7 @@
       "updateType": "AUTO",
       "priority": "LOW",
       "description": "Slash command documentation - auto-sync with npm scripts",
-      "lastModified": "2025-10-01T06:40:59.664Z",
+      "lastModified": "2025-10-04T17:43:21.097Z",
       "needsUpdate": false,
       "autoUpdateMethod": "Auto-sync with npm scripts and system capabilities"
     },
@@ -343,7 +244,7 @@
       "updateType": "AUTO",
       "priority": "LOW",
       "description": "Slash command documentation - auto-sync with npm scripts",
-      "lastModified": "2025-10-01T12:17:01.845Z",
+      "lastModified": "2025-10-04T17:43:21.102Z",
       "needsUpdate": false,
       "autoUpdateMethod": "Auto-sync with npm scripts and system capabilities"
     },
@@ -352,7 +253,7 @@
       "updateType": "AUTO",
       "priority": "LOW",
       "description": "Slash command documentation - auto-sync with npm scripts",
-      "lastModified": "2025-10-01T14:55:56.710Z",
+      "lastModified": "2025-10-04T17:43:21.100Z",
       "needsUpdate": false,
       "autoUpdateMethod": "Auto-sync with npm scripts and system capabilities"
     },
@@ -361,7 +262,16 @@
       "updateType": "AUTO",
       "priority": "LOW",
       "description": "Slash command documentation - auto-sync with npm scripts",
-      "lastModified": "2025-10-01T00:35:26.000Z",
+      "lastModified": "2025-10-04T17:43:21.098Z",
+      "needsUpdate": false,
+      "autoUpdateMethod": "Auto-sync with npm scripts and system capabilities"
+    },
+    {
+      "filePath": ".claude/commands/radar.md",
+      "updateType": "AUTO",
+      "priority": "LOW",
+      "description": "Slash command documentation - auto-sync with npm scripts",
+      "lastModified": "2025-10-04T15:22:37.653Z",
       "needsUpdate": false,
       "autoUpdateMethod": "Auto-sync with npm scripts and system capabilities"
     }

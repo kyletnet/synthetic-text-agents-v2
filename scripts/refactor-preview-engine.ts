@@ -1,5 +1,8 @@
 #!/usr/bin/env tsx
 
+// @tool-mode: analyze
+// @tool-description: Refactor preview - shows changes without applying them
+
 /**
  * Refactor Preview Engine - Safe preview before applying changes
  *

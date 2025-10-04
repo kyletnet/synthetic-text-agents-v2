@@ -1,5 +1,8 @@
 #!/usr/bin/env tsx
 
+// @tool-mode: analyze
+// @tool-description: System integrity verification - TypeScript, ESLint, Tests, governance checks
+
 /**
  * Verify Engine - Complete system integrity verification
  *

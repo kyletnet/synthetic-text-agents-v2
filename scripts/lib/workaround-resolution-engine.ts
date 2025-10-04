@@ -1,5 +1,8 @@
 #!/usr/bin/env tsx
 
+// @tool-mode: transform
+// @tool-description: Workaround resolution - converts temporary fixes to permanent solutions
+
 /**
  * Workaround Resolution Engine
  * Systematic conversion of temporary fixes to permanent solutions

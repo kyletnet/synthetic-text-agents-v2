@@ -1,5 +1,8 @@
 #!/usr/bin/env tsx
 
+// @tool-mode: transform
+// @tool-description: Structural refactoring - architecture-level cross-module improvements
+
 /**
  * Refactor Engine - Structural Improvement Handler
  *

@@ -1,5 +1,8 @@
 #!/usr/bin/env tsx
 
+// @tool-mode: transform
+// @tool-description: Automated maintenance - Prettier, ESLint auto-fix, self-validation
+
 /**
  * Maintain Engine - Auto-fix only (no user approval)
  *

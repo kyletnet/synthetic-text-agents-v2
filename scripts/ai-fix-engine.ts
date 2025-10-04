@@ -1,4 +1,8 @@
 #!/usr/bin/env tsx
+
+// @tool-mode: transform
+// @tool-description: AI-powered TypeScript error fixes
+
 /**
  * AI Fix Engine - TypeScript 오류 자동 수정 시스템
  * ts:check 결과를 기반으로 실제 코드 수정을 시도
