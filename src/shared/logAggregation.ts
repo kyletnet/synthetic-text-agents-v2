@@ -745,7 +745,9 @@ export class LogAggregator extends EventEmitter {
           type: "error_spike",
           severity: count > avgErrorsPerHour * 10 ? "critical" : "high",
           timestamp: new Date(hour + ":00:00.000Z"),
-          description: `Error spike detected: ${count} errors (${(count / avgErrorsPerHour).toFixed(1)}x average)`,
+          description: `Error spike detected: ${count} errors (${(
+            count / avgErrorsPerHour
+          ).toFixed(1)}x average)`,
           affectedServices: [],
           suggestion: "Review error logs and check for system issues",
         });

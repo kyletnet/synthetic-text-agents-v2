@@ -192,14 +192,18 @@ function detectDrift(
   if (relativeChange > maxDelta) {
     return {
       driftDetected: true,
-      reason: `Significant metric drift detected: ${(relativeChange * 100).toFixed(1)}% change`,
+      reason: `Significant metric drift detected: ${(
+        relativeChange * 100
+      ).toFixed(1)}% change`,
     };
   }
 
   if (thresholdChange > maxDelta * 2) {
     return {
       driftDetected: true,
-      reason: `Threshold misalignment: ${(thresholdChange * 100).toFixed(1)}% from current data`,
+      reason: `Threshold misalignment: ${(thresholdChange * 100).toFixed(
+        1,
+      )}% from current data`,
     };
   }
 
@@ -492,7 +496,11 @@ export function applyCalibrations(
 
       if (deltaWarn > config.autocalibration.drift_guard_max_delta) {
         console.warn(
-          `Skipping ${calibration.metric} calibration: drift exceeds guard limit (${(deltaWarn * 100).toFixed(1)}%)`,
+          `Skipping ${
+            calibration.metric
+          } calibration: drift exceeds guard limit (${(deltaWarn * 100).toFixed(
+            1,
+          )}%)`,
         );
         continue;
       }

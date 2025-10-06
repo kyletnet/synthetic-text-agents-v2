@@ -277,8 +277,8 @@ export class MetaController extends BaseAgent {
         score >= 7
           ? "requires full expert council"
           : score >= 5
-            ? "needs selective expert consultation"
-            : "can be handled with core agents"
+          ? "needs selective expert consultation"
+          : "can be handled with core agents"
       }.`;
 
     return reasoning;
@@ -392,9 +392,17 @@ export class MetaController extends BaseAgent {
     const complexity = analysis.score;
 
     if (strategy === "full-council") {
-      return `${collaborationApproach} execution: Meta-Controller analysis → Parallel expert consultation (${selection.expertCouncil.length} experts) → Sequential core processing → Quality validation. Expected ${Math.ceil(complexity * 0.5)} rounds of refinement.`;
+      return `${collaborationApproach} execution: Meta-Controller analysis → Parallel expert consultation (${
+        selection.expertCouncil.length
+      } experts) → Sequential core processing → Quality validation. Expected ${Math.ceil(
+        complexity * 0.5,
+      )} rounds of refinement.`;
     } else if (strategy === "standard") {
-      return `${collaborationApproach} execution: Meta-Controller planning → Expert consultation (${selection.expertCouncil.length} experts) → Core processing → Quality review. Expected ${Math.ceil(complexity * 0.3)} refinement cycles.`;
+      return `${collaborationApproach} execution: Meta-Controller planning → Expert consultation (${
+        selection.expertCouncil.length
+      } experts) → Core processing → Quality review. Expected ${Math.ceil(
+        complexity * 0.3,
+      )} refinement cycles.`;
     } else {
       return `${collaborationApproach} execution: Meta-Controller oversight → Parallel core processing with domain consultation → Quality check. Single-pass execution expected.`;
     }
@@ -454,7 +462,18 @@ export class MetaController extends BaseAgent {
     if (typeof output === "object" && output !== null) {
       const decision = output as MetaControllerDecision;
 
-      return `Meta-Controller analyzed task complexity (${decision.taskAnalysis.score}/10) and selected ${decision.agentSelection.strategy} strategy with ${decision.agentSelection.coreAgents.length + decision.agentSelection.expertCouncil.length} agents. Execution approach: ${decision.agentSelection.collaborationApproach}. Quality gates: ${decision.qualityGates.length} checkpoints. Expected quality: ${decision.expectedOutcome.qualityScore}/10 in ${decision.expectedOutcome.estimatedDuration} minutes.`;
+      return `Meta-Controller analyzed task complexity (${
+        decision.taskAnalysis.score
+      }/10) and selected ${decision.agentSelection.strategy} strategy with ${
+        decision.agentSelection.coreAgents.length +
+        decision.agentSelection.expertCouncil.length
+      } agents. Execution approach: ${
+        decision.agentSelection.collaborationApproach
+      }. Quality gates: ${
+        decision.qualityGates.length
+      } checkpoints. Expected quality: ${
+        decision.expectedOutcome.qualityScore
+      }/10 in ${decision.expectedOutcome.estimatedDuration} minutes.`;
     }
 
     return super.explainReasoning(input, output, context);

@@ -181,10 +181,12 @@ function displayQAQualitySnapshot() {
       snapshot.validCitations >= 95
         ? "✅"
         : snapshot.validCitations >= 85
-          ? "⚠️"
-          : "❌";
+        ? "⚠️"
+        : "❌";
     console.log(
-      `  - Valid Citations: ${citationIcon} ${snapshot.validCitations.toFixed(1)}%`,
+      `  - Valid Citations: ${citationIcon} ${snapshot.validCitations.toFixed(
+        1,
+      )}%`,
     );
   }
 
@@ -193,16 +195,22 @@ function displayQAQualitySnapshot() {
       snapshot.evidenceCoverage >= 70
         ? "✅"
         : snapshot.evidenceCoverage >= 50
-          ? "⚠️"
-          : "❌";
+        ? "⚠️"
+        : "❌";
     console.log(
-      `  - Evidence Coverage: ${coverageIcon} ${snapshot.evidenceCoverage.toFixed(1)}%`,
+      `  - Evidence Coverage: ${coverageIcon} ${snapshot.evidenceCoverage.toFixed(
+        1,
+      )}%`,
     );
   }
 
   if (snapshot.gateStatus !== null) {
     console.log(
-      `  - Gate Status: ${snapshot.gateIcon} ${snapshot.gateStatus} (${snapshot.gateStatus === "PASS" ? "no P0 violations" : "violations detected"})`,
+      `  - Gate Status: ${snapshot.gateIcon} ${snapshot.gateStatus} (${
+        snapshot.gateStatus === "PASS"
+          ? "no P0 violations"
+          : "violations detected"
+      })`,
     );
   }
 }

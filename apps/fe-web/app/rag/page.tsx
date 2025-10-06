@@ -123,7 +123,9 @@ export default function RAGPage() {
       }
     } catch (error) {
       setError(
-        `Search error: ${error instanceof Error ? error.message : "Unknown error"}`,
+        `Search error: ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`,
       );
     } finally {
       setLoading(false);
@@ -141,7 +143,9 @@ export default function RAGPage() {
 
     if (!allowedTypes.includes(fileExt)) {
       setError(
-        `File type ${fileExt} not supported. Allowed: ${allowedTypes.join(", ")}`,
+        `File type ${fileExt} not supported. Allowed: ${allowedTypes.join(
+          ", ",
+        )}`,
       );
       return;
     }
@@ -168,7 +172,9 @@ export default function RAGPage() {
       }
     } catch (error) {
       setError(
-        `Upload error: ${error instanceof Error ? error.message : "Network error"}`,
+        `Upload error: ${
+          error instanceof Error ? error.message : "Network error"
+        }`,
       );
     } finally {
       setUploading(false);
@@ -192,7 +198,9 @@ export default function RAGPage() {
       }
     } catch (error) {
       setError(
-        `Delete error: ${error instanceof Error ? error.message : "Network error"}`,
+        `Delete error: ${
+          error instanceof Error ? error.message : "Network error"
+        }`,
       );
     }
   };

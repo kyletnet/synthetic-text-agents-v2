@@ -542,7 +542,9 @@ export default ApprovalWorkflowSystem;`;
     console.log("   🆘 복구 (2개): recovery:*");
     console.log("   👨‍💻 개발 (4개): dev:*");
     console.log(
-      `   📉 총 명령어: ${Object.keys(packageJson.scripts).length} → ${Object.keys(coreCommands).length}`,
+      `   📉 총 명령어: ${Object.keys(packageJson.scripts).length} → ${
+        Object.keys(coreCommands).length
+      }`,
     );
 
     console.log("✅ 명령어 체계 재구성 계획 수립 완료");
@@ -601,10 +603,10 @@ export default ApprovalWorkflowSystem;`;
         action.action === "MERGE"
           ? "🔀"
           : action.action === "ELIMINATE"
-            ? "❌"
-            : action.action === "RESTRUCTURE"
-              ? "🔄"
-              : "📐";
+          ? "❌"
+          : action.action === "RESTRUCTURE"
+          ? "🔄"
+          : "📐";
       console.log(`   ${i + 1}. ${icon} ${action.target}`);
       console.log(`      💡 ${action.reason}`);
       console.log(`      🎯 ${action.impact}`);
@@ -727,7 +729,9 @@ export default ApprovalWorkflowSystem;`;
 
     console.log("✅ 명령어 체계 재구성 완료");
     console.log(
-      `📊 변경사항: ${Object.keys(currentScripts).length}개 → ${Object.keys(newScripts).length}개`,
+      `📊 변경사항: ${Object.keys(currentScripts).length}개 → ${
+        Object.keys(newScripts).length
+      }개`,
     );
     console.log("🔑 핵심 명령어: sync, status, fix, ship");
     console.log("🔧 고급 명령어: advanced:*, recovery:*");

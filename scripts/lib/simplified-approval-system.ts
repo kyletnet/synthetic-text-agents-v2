@@ -54,7 +54,9 @@ class SimplifiedApprovalSystem {
     console.log(`📝 설명: ${request.description}`);
     console.log(`📊 분석 결과: ${analysis.reason}`);
     console.log(
-      `🎯 위험도: ${this.getRiskEmoji(analysis.riskLevel)} ${analysis.riskLevel.toUpperCase()}`,
+      `🎯 위험도: ${this.getRiskEmoji(
+        analysis.riskLevel,
+      )} ${analysis.riskLevel.toUpperCase()}`,
     );
 
     // 2. safe 모드에서는 모든 것을 사용자에게 물어봄
@@ -63,7 +65,9 @@ class SimplifiedApprovalSystem {
     } else if (!analysis.requiresApproval) {
       // 3. 자동 승인 가능한 경우 바로 처리
       console.log(
-        `✅ 자동 승인: ${analysis.matchedCriteria?.description || "안전한 변경사항"}`,
+        `✅ 자동 승인: ${
+          analysis.matchedCriteria?.description || "안전한 변경사항"
+        }`,
       );
       console.log(`⚡ 자동 실행됩니다...`);
 
@@ -77,7 +81,9 @@ class SimplifiedApprovalSystem {
 
     // 4. 사용자 승인이 필요한 경우만 인터랙티브 처리
     console.log(
-      `\n⚠️  사용자 승인 필요: ${analysis.matchedCriteria?.description || "중요한 변경사항"}`,
+      `\n⚠️  사용자 승인 필요: ${
+        analysis.matchedCriteria?.description || "중요한 변경사항"
+      }`,
     );
 
     if (analysis.matchedCriteria) {
@@ -309,7 +315,9 @@ class SimplifiedApprovalSystem {
       console.log(`🏷️  변경 유형: ${criteria.changeType}`);
       console.log(`📝 설명: ${criteria.description}`);
       console.log(
-        `🎯 위험도: ${this.getRiskEmoji(criteria.riskLevel)} ${criteria.riskLevel}`,
+        `🎯 위험도: ${this.getRiskEmoji(criteria.riskLevel)} ${
+          criteria.riskLevel
+        }`,
       );
 
       console.log(`\n📚 유사한 변경사항 예시:`);

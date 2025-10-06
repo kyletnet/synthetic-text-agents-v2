@@ -115,10 +115,12 @@ jobs:
 #### ⚠️ 개선 필요 (P1 - 1주일 내):
 
 1. **Validate 명령어 통합**
+
    - 현재: 5개 분산 (`/validate`, `validate:llm-io`, `/verify`, `_arch:validate`, `design:validate`)
    - 제안: `/validate` 단일 진입점
 
 2. **Audit 명령어 통합**
+
    - 현재: 3개 분산 (`advanced:audit`, `integration:audit`, `docs:audit:full`)
    - 제안: `/audit` 단일 진입점
 
@@ -277,10 +279,12 @@ npm run gaps:issues    # P0 Gap → GitHub Issue 자동 생성
 ### P2 (1개월 내)
 
 4. **성능 회귀 탐지**
+
    - 빌드 시간, 테스트 실행 시간 추적
    - Baseline 대비 10% 이상 저하 시 알림
 
 5. **자동 Rollback**
+
    - Snapshot 기반 자동 복구
    - 실패 시 이전 상태로 자동 복원
 

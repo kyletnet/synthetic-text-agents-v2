@@ -12,16 +12,19 @@
 #### ✅ 작동하는 것
 
 1. **Pattern Registry**
+
    - 새 코드는 패턴 검증을 통과해야 함
    - `arch:validate`가 위반 자동 감지
    - 예: readline 사용 시 `detectEnvironment()` 필수
 
 2. **Architecture Invariants**
+
    - 코드 스캔으로 중복 로직 감지
    - 마이그레이션 불완전 상태 차단
    - AST 분석으로 구조적 일관성 검증
 
 3. **Pre-commit Hook**
+
    - 로컬에서 P0 위반 차단
    - TypeScript/ESLint 자동 실행
 

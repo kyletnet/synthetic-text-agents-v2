@@ -177,7 +177,9 @@ export class ProcessLifecycleManager {
       }
 
       console.log(
-        `⚠️ [ProcessLifecycle] Found ${orphans.length} orphan processes: ${orphans.join(", ")}`,
+        `⚠️ [ProcessLifecycle] Found ${
+          orphans.length
+        } orphan processes: ${orphans.join(", ")}`,
       );
 
       for (const pid of orphans) {

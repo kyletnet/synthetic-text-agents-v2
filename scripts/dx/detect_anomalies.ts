@@ -222,7 +222,9 @@ function detectMetricAnomalies(
         baseline: stats.mean,
         deviation: zScore,
         severity: "high" as const,
-        description: `Extreme statistical outlier (Z-score: ${zScore.toFixed(2)})`,
+        description: `Extreme statistical outlier (Z-score: ${zScore.toFixed(
+          2,
+        )})`,
       });
     } else if (zScore > 2) {
       anomalies.push({
@@ -257,7 +259,9 @@ function detectMetricAnomalies(
           Math.abs(currentValue - upperBound),
         ),
         severity,
-        description: `IQR outlier (outside ${lowerBound.toFixed(3)}-${upperBound.toFixed(3)} range)`,
+        description: `IQR outlier (outside ${lowerBound.toFixed(
+          3,
+        )}-${upperBound.toFixed(3)} range)`,
       });
     }
   }
@@ -283,7 +287,9 @@ function detectMetricAnomalies(
           baseline: historicalMean,
           deviation: trendChange,
           severity: trendChange > 1.0 ? ("high" as const) : ("medium" as const),
-          description: `Significant trend change: ${(trendChange * 100).toFixed(1)}% shift from historical baseline`,
+          description: `Significant trend change: ${(trendChange * 100).toFixed(
+            1,
+          )}% shift from historical baseline`,
         });
       }
     }
@@ -473,7 +479,9 @@ export function summarizeAnomalies(detection: AnomalyDetection): {
   // Add spikes
   for (const spike of spikes.slice(0, 2)) {
     top_concerns.push(
-      `${spike.type} spike: ${spike.value.toFixed(3)} (threshold: ${spike.threshold.toFixed(3)})`,
+      `${spike.type} spike: ${spike.value.toFixed(
+        3,
+      )} (threshold: ${spike.threshold.toFixed(3)})`,
     );
   }
 

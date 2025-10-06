@@ -95,7 +95,9 @@ function executeScript(
       } else {
         resolve({
           success: false,
-          error: `Script failed with exit code ${code}. Stderr: ${stderr || "No error details"}`,
+          error: `Script failed with exit code ${code}. Stderr: ${
+            stderr || "No error details"
+          }`,
         });
       }
     });

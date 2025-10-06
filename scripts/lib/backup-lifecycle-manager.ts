@@ -143,7 +143,9 @@ export class BackupLifecycleManager {
 
       console.log(`\n${icon} ${path.basename(backup.path)}`);
       console.log(
-        `   Created: ${new Date(backup.createdAt).toISOString().split("T")[0]} (${age} days ago)`,
+        `   Created: ${
+          new Date(backup.createdAt).toISOString().split("T")[0]
+        } (${age} days ago)`,
       );
       console.log(`   Expires: ${status}`);
       console.log(`   Reason: ${backup.reason}`);
@@ -181,7 +183,9 @@ export class BackupLifecycleManager {
           }
         } catch (error) {
           console.error(
-            `   ❌ Failed to delete: ${error instanceof Error ? error.message : "Unknown error"}`,
+            `   ❌ Failed to delete: ${
+              error instanceof Error ? error.message : "Unknown error"
+            }`,
           );
           remaining.push(backup);
         }

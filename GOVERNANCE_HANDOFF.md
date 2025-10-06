@@ -20,11 +20,13 @@
 #### P0: 긴급 버그 수정
 
 1. **governance-rules.json 타입 수정**
+
    - ❌ 문제: camelCase vs kebab-case 불일치
    - ✅ 해결: `userInput` → `user-input`, `systemCommand` → `system-command`, `fileOperation` → `file-operation`
    - 📍 파일: `/Users/kyle/synthetic-text-agents-v2/governance-rules.json`
 
 2. **verify-engine SafeExecutor 버그**
+
    - ❌ 문제: `Cannot read properties of undefined (reading 'timeout')`
    - ✅ 해결: governance-rules.json 타입명 수정으로 해결
    - 📍 파일: `/Users/kyle/synthetic-text-agents-v2/scripts/verify-engine.ts`
@@ -40,10 +42,12 @@
 #### P1: 핵심 통합 작업
 
 1. **optimization-engine governance 통합**
+
    - ✅ wrapWithGovernance() 패턴 적용
    - 📍 파일: `/Users/kyle/synthetic-text-agents-v2/scripts/optimization-engine.ts`
 
 2. **CI/CD에 validate 추가**
+
    - ✅ `.github/workflows/ci.yml` line 86-87에 추가됨
    - ✅ 자동 governance 검증 활성화
    - 📍 파일: `/Users/kyle/synthetic-text-agents-v2/.github/workflows/ci.yml`
@@ -248,9 +252,11 @@ npm run typecheck                  # TypeScript 상태 확인
    ```
 
 2. **design-principle-engine.ts** (345 lines)
+
    - 주요 메서드: `makeDecision()`, `analyzeScript()`, `generateSystemDesign()`
 
 3. **architectural-evolution-engine.ts** (924 lines) - **가장 복잡**
+
    - 주요 메서드: `identifyStructuralImprovements()`, `evolveArchitecture()`
 
 4. **ai-fix-engine.ts** (785 lines)

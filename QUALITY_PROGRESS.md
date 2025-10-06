@@ -25,6 +25,7 @@ Phase 4: Advanced Plugins       [░░░░░░░░░░░░░░░�
 **Status**: ✅ COMPLETE
 
 **Components**:
+
 - `models/quality-domain.ts` - Domain models & types
 - `checkers/rule-based-checker.ts` - 4가지 규칙 검증
   - Question Type Compliance (7 types)
@@ -35,6 +36,7 @@ Phase 4: Advanced Plugins       [░░░░░░░░░░░░░░░�
 - `orchestrator.ts` - Phase 1 orchestration
 
 **Test Results**:
+
 ```
 ✅ Score: 100.0% (threshold: 85.0%)
 ✅ Gate: PASS
@@ -43,6 +45,7 @@ Phase 4: Advanced Plugins       [░░░░░░░░░░░░░░░�
 ```
 
 **Key Metrics**:
+
 - guideline_compliance: 1.0
 - question_types: 1.0
 - answer_structure: 1.0
@@ -56,6 +59,7 @@ Phase 4: Advanced Plugins       [░░░░░░░░░░░░░░░�
 **Status**: ✅ ENHANCED & PRODUCTION READY (Option B 완료)
 
 **Components**:
+
 - `checkers/evidence-aligner.ts` - Evidence-Answer alignment
   - snippet_alignment: 문장 단위 매칭
   - citation_presence: 인용 존재 여부
@@ -64,10 +68,11 @@ Phase 4: Advanced Plugins       [░░░░░░░░░░░░░░░�
 - `checkers/hybrid-search-checker.ts` - BM25 + Vector (Shadow)
   - BM25 scoring (TF-IDF + document length normalization)
   - Vector similarity (keyword-based placeholder)
-  - Hybrid scoring (α * vector + (1-α) * bm25)
+  - Hybrid scoring (α _ vector + (1-α) _ bm25)
 - `orchestrator.ts` - Phase 2 support (combined checkers)
 
 **Final Test Results** (After Option B Improvements):
+
 ```
 ✅ retrieval_quality_score: 83.7% (threshold: 70%) ← PRIMARY GOAL EXCEEDED!
 ✅ citation_presence: 100% (threshold: 90%)
@@ -79,11 +84,13 @@ Phase 4: Advanced Plugins       [░░░░░░░░░░░░░░░�
 ```
 
 **Option B Improvements** (꼼꼼한 바닥부터 개선):
+
 - ✅ Critical bug fix: Set.length → Set.size
 - ✅ Template normalization (축약형 ↔ 완전형)
 - ✅ N-gram matching (unigram + bigram)
 - ✅ Overlap coefficient scoring
 - ✅ TDD test suite (5 test cases)
+
 ```
 
 **Algorithm Evolution** (4 iterations):
@@ -126,12 +133,14 @@ Phase 4: Advanced Plugins       [░░░░░░░░░░░░░░░�
 
 **Final Test Results** (After Bug Fixes):
 ```
+
 ✅ improvement_delta: 20.1% (threshold: 5%) ← PRIMARY GOAL 4x EXCEEDED!
 ✅ bm25_avg: 7.2% (threshold: > 0%)
 ✅ vector_avg: 60.0% (threshold: > 0%)
 ✅ hybrid_avg: 44.1% vs baseline 24.1%
 ✅ Gate C: FULL PASS (all requirements met!)
 ✅ Test pass rate: 92% (12/13 tests)
+
 ```
 
 **Critical Bugs Fixed** (TDD Approach):
@@ -148,10 +157,12 @@ Phase 4: Advanced Plugins       [░░░░░░░░░░░░░░░�
 
 **Improvements**:
 ```
+
 improvement_delta: -9.8% → +20.1% (+29.9% absolute!)
-bm25_avg:          0% → 7.2% (bug fixed)
-vector_avg:        0% → 60.0% (algorithm enhanced)
-hybrid_avg:        14.3% → 44.1% (+29.8%)
+bm25_avg: 0% → 7.2% (bug fixed)
+vector_avg: 0% → 60.0% (algorithm enhanced)
+hybrid_avg: 14.3% → 44.1% (+29.8%)
+
 ```
 
 **Gate C Decision**:
@@ -188,10 +199,12 @@ hybrid_avg:        14.3% → 44.1% (+29.8%)
 
 **Gate C Criteria**:
 ```
+
 ✅ Hybrid quality Δ ≥ +5%
 ✅ Cost increase ≤ +10%
 ✅ Latency increase ≤ +10%
 ✅ No regression in existing metrics
+
 ```
 
 ---
@@ -209,9 +222,11 @@ hybrid_avg:        14.3% → 44.1% (+29.8%)
 
 **Gate D Criteria**:
 ```
+
 ✅ Plugin effect size (Cohen's d) > 0.3
 ✅ ROI > 1.5
 ✅ Statistical significance (p-value < 0.05)
+
 ```
 
 ---
@@ -219,31 +234,33 @@ hybrid_avg:        14.3% → 44.1% (+29.8%)
 ## 📂 File Structure
 
 ```
+
 scripts/quality/
 ├── models/
-│   └── quality-domain.ts           ✅ Complete
+│ └── quality-domain.ts ✅ Complete
 ├── checkers/
-│   ├── rule-based-checker.ts       ✅ Complete (Phase 1)
-│   ├── evidence-aligner.ts         ✅ Complete (Phase 2)
-│   └── hybrid-search-checker.ts    ✅ Complete (Phase 2, Shadow)
+│ ├── rule-based-checker.ts ✅ Complete (Phase 1)
+│ ├── evidence-aligner.ts ✅ Complete (Phase 2)
+│ └── hybrid-search-checker.ts ✅ Complete (Phase 2, Shadow)
 ├── parsers/
-│   └── guideline-parser.ts         ✅ Complete
-├── orchestrator.ts                  ✅ Complete (Phase 1-2)
-├── compliance-score.ts              ✅ Complete
-├── phase-state-machine.ts           ✅ Complete
-├── quality-ledger.ts                ✅ Complete
-└── parse-guidelines.ts              ✅ Complete
+│ └── guideline-parser.ts ✅ Complete
+├── orchestrator.ts ✅ Complete (Phase 1-2)
+├── compliance-score.ts ✅ Complete
+├── phase-state-machine.ts ✅ Complete
+├── quality-ledger.ts ✅ Complete
+└── parse-guidelines.ts ✅ Complete
 
 data/
-├── qa-pairs-sample.json            ✅ Phase 1 test data
-└── qa-pairs-phase2-sample.json     ✅ Phase 2 test data
+├── qa-pairs-sample.json ✅ Phase 1 test data
+└── qa-pairs-phase2-sample.json ✅ Phase 2 test data
 
 reports/
 ├── quality/
-│   └── compliance-summary-*.json   ✅ Generated reports
+│ └── compliance-summary-_.json ✅ Generated reports
 └── quality-history/
-    └── ledger-*.jsonl              ✅ Audit trail
-```
+└── ledger-_.jsonl ✅ Audit trail
+
+````
 
 ---
 
@@ -261,7 +278,7 @@ npm run quality:gate                 # CI gate validation
 # Testing
 npm run quality:test                 # Test Phase 1
 npm run quality:test:phase2          # Test Phase 2
-```
+````
 
 ---
 
@@ -269,13 +286,13 @@ npm run quality:test:phase2          # Test Phase 2
 
 **Reference**: `docs/QUALITY_SYSTEM_ARCHITECTURE.md`
 
-| Phase | Architecture Plan | Implementation Status |
-|-------|-------------------|----------------------|
-| Phase 0 | RFC Structure | ✅ Complete |
-| Phase 1 | Rule-based Compliance | ✅ Complete |
-| Phase 2 | Evidence + Retrieval (Shadow) | ✅ Complete |
-| Phase 3 | Hybrid Activation (Canary) | ⏳ Pending |
-| Phase 4 | Advanced Plugins (A/B) | ⏳ Pending |
+| Phase   | Architecture Plan             | Implementation Status |
+| ------- | ----------------------------- | --------------------- |
+| Phase 0 | RFC Structure                 | ✅ Complete           |
+| Phase 1 | Rule-based Compliance         | ✅ Complete           |
+| Phase 2 | Evidence + Retrieval (Shadow) | ✅ Complete           |
+| Phase 3 | Hybrid Activation (Canary)    | ⏳ Pending            |
+| Phase 4 | Advanced Plugins (A/B)        | ⏳ Pending            |
 
 ---
 
@@ -284,19 +301,23 @@ npm run quality:test:phase2          # Test Phase 2
 **다음 세션 시작 시**:
 
 1. **Checkpoint 확인**:
+
    ```bash
    cat .quality-checkpoint.json
    ```
 
 2. **현재 상태 확인**:
+
    - Current Phase: Phase 2 (COMPLETE)
    - Next Phase: Phase 3
 
 3. **다음 작업 선택**:
+
    - Option 1: Phase 3 구현 (Hybrid Canary)
    - Option 2: Phase 2 개선 (Evidence alignment 향상)
 
 4. **테스트 실행**:
+
    ```bash
    npm run quality:test:phase2
    ```

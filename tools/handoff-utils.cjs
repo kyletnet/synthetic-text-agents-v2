@@ -85,7 +85,9 @@ function checkGuards() {
     status: apiOK ? "PASS" : provider ? "PARTIAL" : "FAIL",
     why: apiOK
       ? `LLM_PROVIDER=${provider}`
-      : `provider=${provider || "none"}, key=${hasAnth || hasOpen ? "present" : "missing"}`,
+      : `provider=${provider || "none"}, key=${
+          hasAnth || hasOpen ? "present" : "missing"
+        }`,
   });
   push("Network egress", true, "endpoint reachable (heuristic)");
   const nodeOk = process.version && process.versions && process.versions.node;
@@ -126,7 +128,9 @@ function renderChecklist(rows) {
     fail = rows.filter((x) => x.status === "FAIL").length;
   const lines = rows.map(
     (r, i) =>
-      `${r.status === "PASS" ? "✅" : r.status === "PARTIAL" ? "🟡" : "❌"} ${i + 1}. ${r.name} — ${r.why}`,
+      `${r.status === "PASS" ? "✅" : r.status === "PARTIAL" ? "🟡" : "❌"} ${
+        i + 1
+      }. ${r.name} — ${r.why}`,
   );
   return {
     score: `${pass}/10 PASS, ${partial} PARTIAL, ${fail} FAIL`,

@@ -127,16 +127,24 @@ export class WorkaroundResolutionEngine {
 
       console.log(`📋 Generated ${plans.length} resolution plans:`);
       console.log(
-        `   🔧 Auto-fixable: ${plans.filter((p) => p.strategy === "auto-fix").length}`,
+        `   🔧 Auto-fixable: ${
+          plans.filter((p) => p.strategy === "auto-fix").length
+        }`,
       );
       console.log(
-        `   🎯 Guided fixes: ${plans.filter((p) => p.strategy === "guided-fix").length}`,
+        `   🎯 Guided fixes: ${
+          plans.filter((p) => p.strategy === "guided-fix").length
+        }`,
       );
       console.log(
-        `   📝 Manual review: ${plans.filter((p) => p.strategy === "manual-review").length}`,
+        `   📝 Manual review: ${
+          plans.filter((p) => p.strategy === "manual-review").length
+        }`,
       );
       console.log(
-        `   🏗️ Architectural: ${plans.filter((p) => p.strategy === "architectural-change").length}`,
+        `   🏗️ Architectural: ${
+          plans.filter((p) => p.strategy === "architectural-change").length
+        }`,
       );
 
       return plans;
@@ -408,7 +416,9 @@ export class WorkaroundResolutionEngine {
     instructions += `Generated ${new Date().toISOString()}\n\n`;
 
     guidedPlans.forEach((plan, index) => {
-      instructions += `## ${index + 1}. ${plan.finding.type} in ${plan.finding.file}\n\n`;
+      instructions += `## ${index + 1}. ${plan.finding.type} in ${
+        plan.finding.file
+      }\n\n`;
       instructions += `**Location**: Line ${plan.finding.line}\n`;
       instructions += `**Current**: \`${plan.finding.content.trim()}\`\n`;
       instructions += `**Severity**: ${plan.finding.severity}\n`;
@@ -483,7 +493,9 @@ export class WorkaroundResolutionEngine {
 
     let report = `# 📊 Workaround Resolution Progress\n\n`;
     report += `**Total Processed**: ${totalResults}\n`;
-    report += `**Successfully Fixed**: ${successful} (${Math.round((successful / totalResults) * 100)}%)\n`;
+    report += `**Successfully Fixed**: ${successful} (${Math.round(
+      (successful / totalResults) * 100,
+    )}%)\n`;
     report += `**Failed Fixes**: ${failed}\n`;
     report += `**Skipped**: ${skipped}\n\n`;
 

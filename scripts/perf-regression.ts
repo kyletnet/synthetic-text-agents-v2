@@ -151,7 +151,9 @@ class PerfRegressionDetector {
     const diffStr = (Math.abs(diff) / 1000).toFixed(1);
 
     console.log(
-      `${icon} ${name.padEnd(10)} ${baselineStr}s → ${currentStr}s (${Number(diffPercent) >= 0 ? "+" : ""}${diffPercent}%, ${diff > 0 ? "+" : "-"}${diffStr}s)`,
+      `${icon} ${name.padEnd(10)} ${baselineStr}s → ${currentStr}s (${
+        Number(diffPercent) >= 0 ? "+" : ""
+      }${diffPercent}%, ${diff > 0 ? "+" : "-"}${diffStr}s)`,
     );
   }
 
@@ -210,7 +212,9 @@ class PerfRegressionDetector {
 ${regressions
   .map(
     (r) =>
-      `- **${r.name}**: ${(r.baseline / 1000).toFixed(1)}s → ${(r.current / 1000).toFixed(1)}s (+${r.percent.toFixed(1)}%)`,
+      `- **${r.name}**: ${(r.baseline / 1000).toFixed(1)}s → ${(
+        r.current / 1000
+      ).toFixed(1)}s (+${r.percent.toFixed(1)}%)`,
   )
   .join("\n")}
 
@@ -226,7 +230,11 @@ Investigate recent changes that may have degraded performance.
 
     try {
       execSync(
-        `gh issue create --title "[Performance] Regression detected in ${regressions.map((r) => r.name).join(", ")}" --body "${body}" --label "performance,P1,auto-generated"`,
+        `gh issue create --title "[Performance] Regression detected in ${regressions
+          .map((r) => r.name)
+          .join(
+            ", ",
+          )}" --body "${body}" --label "performance,P1,auto-generated"`,
         { cwd: this.projectRoot, stdio: "inherit" },
       );
     } catch (error) {

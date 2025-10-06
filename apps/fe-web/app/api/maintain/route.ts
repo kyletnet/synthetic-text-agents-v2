@@ -177,9 +177,9 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       llmDiagnostics.status === "critical"
         ? 503
         : mockContaminationRisk === "high" ||
-            llmDiagnostics.status === "warning"
-          ? 207 // Multi-Status (partial success)
-          : 200;
+          llmDiagnostics.status === "warning"
+        ? 207 // Multi-Status (partial success)
+        : 200;
 
     return NextResponse.json(maintenanceReport, { status: statusCode });
   } catch (error) {

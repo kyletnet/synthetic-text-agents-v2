@@ -83,7 +83,11 @@ export class MaintainReportGenerator {
       const trendIcon =
         trend === "improving" ? "📈" : trend === "degrading" ? "📉" : "➡️";
       console.log(
-        `${trendIcon} Trend: ${trend} (Health: ${reportData.comparison.healthDelta >= 0 ? "+" : ""}${reportData.comparison.healthDelta}, Issues: ${reportData.comparison.issuesDelta >= 0 ? "+" : ""}${reportData.comparison.issuesDelta})`,
+        `${trendIcon} Trend: ${trend} (Health: ${
+          reportData.comparison.healthDelta >= 0 ? "+" : ""
+        }${reportData.comparison.healthDelta}, Issues: ${
+          reportData.comparison.issuesDelta >= 0 ? "+" : ""
+        }${reportData.comparison.issuesDelta})`,
       );
     }
   }
@@ -222,36 +226,58 @@ export class MaintainReportGenerator {
       mode === "smart"
         ? "Smart Mode"
         : mode === "quick"
-          ? "Quick Mode"
-          : "Full Mode";
+        ? "Quick Mode"
+        : "Full Mode";
 
     const comparisonSection = data.comparison
       ? `
 
 ## 📈 Trend Comparison
 
-**Previous Report:** ${new Date(data.comparison.previousReport).toLocaleDateString()}
+**Previous Report:** ${new Date(
+          data.comparison.previousReport,
+        ).toLocaleDateString()}
 **Git:** ${data.gitBranch}@${data.gitCommit}
 
-${data.comparison.trendDirection === "improving" ? "📈" : data.comparison.trendDirection === "degrading" ? "📉" : "➡️"} **Trend:** ${data.comparison.trendDirection.toUpperCase()}
+${
+  data.comparison.trendDirection === "improving"
+    ? "📈"
+    : data.comparison.trendDirection === "degrading"
+    ? "📉"
+    : "➡️"
+} **Trend:** ${data.comparison.trendDirection.toUpperCase()}
 
 | Metric | Previous | Current | Change |
 |--------|----------|---------|--------|
-| Health Score | ${systemHealth.before - data.comparison.healthDelta}/100 | ${systemHealth.after}/100 | ${data.comparison.healthDelta >= 0 ? "+" : ""}${data.comparison.healthDelta} |
-| Total Issues | ${diagnostics.totalIssues - data.comparison.issuesDelta} | ${diagnostics.totalIssues} | ${data.comparison.issuesDelta >= 0 ? "+" : ""}${data.comparison.issuesDelta} |
+| Health Score | ${systemHealth.before - data.comparison.healthDelta}/100 | ${
+          systemHealth.after
+        }/100 | ${data.comparison.healthDelta >= 0 ? "+" : ""}${
+          data.comparison.healthDelta
+        } |
+| Total Issues | ${diagnostics.totalIssues - data.comparison.issuesDelta} | ${
+          diagnostics.totalIssues
+        } | ${data.comparison.issuesDelta >= 0 ? "+" : ""}${
+          data.comparison.issuesDelta
+        } |
 `
       : "";
 
     return `# 🔧 System Maintenance Report
 
-**Generated:** ${executedAt.toISOString().split("T")[0]} ${executedAt.toTimeString().split(" ")[0]}
+**Generated:** ${executedAt.toISOString().split("T")[0]} ${
+      executedAt.toTimeString().split(" ")[0]
+    }
 **Mode:** ${modeLabel}
 **Duration:** ${this.calculateTotalDuration(tasksExecuted)} seconds
 **Git:** ${data.gitBranch || "unknown"}@${data.gitCommit || "unknown"}
 ${comparisonSection}
 ## 📊 System Health Overview
 
-${healthIcon} **Health Score:** ${systemHealth.before}/100 → ${systemHealth.after}/100 (${systemHealth.improvement >= 0 ? "+" : ""}${systemHealth.improvement})
+${healthIcon} **Health Score:** ${systemHealth.before}/100 → ${
+      systemHealth.after
+    }/100 (${systemHealth.improvement >= 0 ? "+" : ""}${
+      systemHealth.improvement
+    })
 
 ${this.getHealthStatusMessage(systemHealth.after)}
 
@@ -259,8 +285,12 @@ ${this.getHealthStatusMessage(systemHealth.after)}
 
 | Category | Count | Status |
 |----------|-------|--------|
-| **Total Issues** | ${diagnostics.totalIssues} | ${diagnostics.totalIssues > 0 ? "⚠️ Needs attention" : "✅ Clean"} |
-| **Critical Issues** | ${diagnostics.criticalIssues} | ${diagnostics.criticalIssues > 0 ? "🚨 Urgent" : "✅ Safe"} |
+| **Total Issues** | ${diagnostics.totalIssues} | ${
+      diagnostics.totalIssues > 0 ? "⚠️ Needs attention" : "✅ Clean"
+    } |
+| **Critical Issues** | ${diagnostics.criticalIssues} | ${
+      diagnostics.criticalIssues > 0 ? "🚨 Urgent" : "✅ Safe"
+    } |
 | **Auto-Fixed** | ${diagnostics.autoFixed} | ✅ Resolved |
 | **Pending Approval** | ${diagnostics.pendingApproval} | 🔶 Review needed |
 
@@ -271,7 +301,13 @@ ${Object.entries(diagnostics.categories)
 
 ## 🛠️ Auto-Fix Results
 
-**Success Rate:** ${autoFixResults.attempted > 0 ? Math.round((autoFixResults.succeeded / autoFixResults.attempted) * 100) : 0}% (${autoFixResults.succeeded}/${autoFixResults.attempted})
+**Success Rate:** ${
+      autoFixResults.attempted > 0
+        ? Math.round(
+            (autoFixResults.succeeded / autoFixResults.attempted) * 100,
+          )
+        : 0
+    }% (${autoFixResults.succeeded}/${autoFixResults.attempted})
 
 ${
   autoFixResults.failed > 0
@@ -289,7 +325,13 @@ ${Object.entries(autoFixResults.failureReasons)
 ${tasksExecuted
   .map(
     (task) =>
-      `### ${task.status === "success" ? "✅" : task.status === "failed" ? "❌" : "⏭️"} ${task.name}
+      `### ${
+        task.status === "success"
+          ? "✅"
+          : task.status === "failed"
+          ? "❌"
+          : "⏭️"
+      } ${task.name}
 **Status:** ${task.status}
 **Duration:** ${task.duration}s
 ${task.error ? `**Error:** ${task.error.slice(0, 100)}...  ` : ""}

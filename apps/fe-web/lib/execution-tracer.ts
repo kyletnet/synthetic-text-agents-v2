@@ -111,7 +111,9 @@ export class ExecutionTracer {
     context: ExecutionTrace["context"];
     parentTraceId?: string;
   }): string {
-    const traceId = `trace_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+    const traceId = `trace_${Date.now()}_${Math.random()
+      .toString(36)
+      .slice(2, 8)}`;
 
     const trace: Partial<ExecutionTrace> = {
       traceId,
@@ -152,7 +154,9 @@ export class ExecutionTracer {
     trace.verification.guardPassed = passed;
 
     console.log(
-      `🛡️ [ExecutionTracer] Guard check (${guardType}): ${passed ? "PASSED" : "FAILED"} - ${traceId}`,
+      `🛡️ [ExecutionTracer] Guard check (${guardType}): ${
+        passed ? "PASSED" : "FAILED"
+      } - ${traceId}`,
     );
   }
 
@@ -166,7 +170,9 @@ export class ExecutionTracer {
     trace.verification.middlewarePassed = passed;
 
     console.log(
-      `🚪 [ExecutionTracer] Middleware check: ${passed ? "PASSED" : "FAILED"} - ${traceId}`,
+      `🚪 [ExecutionTracer] Middleware check: ${
+        passed ? "PASSED" : "FAILED"
+      } - ${traceId}`,
     );
   }
 
@@ -185,7 +191,9 @@ export class ExecutionTracer {
     trace.executionId = executionId;
 
     console.log(
-      `🔐 [ExecutionTracer] Authority grant: ${granted ? "GRANTED" : "DENIED"} - ${traceId} (exec: ${executionId})`,
+      `🔐 [ExecutionTracer] Authority grant: ${
+        granted ? "GRANTED" : "DENIED"
+      } - ${traceId} (exec: ${executionId})`,
     );
   }
 
@@ -206,7 +214,9 @@ export class ExecutionTracer {
       `🤖 [ExecutionTracer] LLM call recorded: ${llmCall.provider}/${llmCall.model} - ${traceId}`,
     );
     console.log(
-      `💰 [ExecutionTracer] Cost: $${cost.toFixed(4)}, Tokens: ${llmCall.tokensInput}+${llmCall.tokensOutput}, Latency: ${llmCall.latency}ms`,
+      `💰 [ExecutionTracer] Cost: $${cost.toFixed(4)}, Tokens: ${
+        llmCall.tokensInput
+      }+${llmCall.tokensOutput}, Latency: ${llmCall.latency}ms`,
     );
   }
 
@@ -220,7 +230,9 @@ export class ExecutionTracer {
     trace.verification.mockBlocked = blocked;
 
     console.log(
-      `🚫 [ExecutionTracer] Mock block: ${blocked ? "BLOCKED" : "ALLOWED"} - ${traceId} (${reason})`,
+      `🚫 [ExecutionTracer] Mock block: ${
+        blocked ? "BLOCKED" : "ALLOWED"
+      } - ${traceId} (${reason})`,
     );
   }
 

@@ -254,7 +254,9 @@ class LLMSignalInjector {
     );
 
     console.log(
-      `📋 Signal index saved: ${Object.keys(signalIndex).length}/${docFiles.length} docs with signals`,
+      `📋 Signal index saved: ${Object.keys(signalIndex).length}/${
+        docFiles.length
+      } docs with signals`,
     );
   }
 

@@ -20,6 +20,7 @@
 ### Phase 2: Request Processing
 
 1. **Meta-Controller Analysis**:
+
    - Analyze complexity (expect ~6/10)
    - Select agent combination (expect 7 agents: exclude cognitive-scientist for moderate complexity)
    - Determine collaboration strategy (expect: hybrid approach)

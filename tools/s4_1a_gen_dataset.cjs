@@ -159,7 +159,11 @@ function main() {
   md.push(`# Baseline Q/A Report (rule-based, LLM-free)`);
   md.push(`- **samples**: ${lines.length}`);
   md.push(
-    `- **score avg**: ${avg.toFixed(3)}  |  **p50**: ${(qtl.p50 ?? 0).toFixed(3)}  |  **p95**: ${(qtl.p95 ?? 0).toFixed(3)}  |  **p99**: ${(qtl.p99 ?? 0).toFixed(3)}`,
+    `- **score avg**: ${avg.toFixed(3)}  |  **p50**: ${(qtl.p50 ?? 0).toFixed(
+      3,
+    )}  |  **p95**: ${(qtl.p95 ?? 0).toFixed(3)}  |  **p99**: ${(
+      qtl.p99 ?? 0
+    ).toFixed(3)}`,
   );
   md.push(``);
   md.push(`## Score Distribution`);
@@ -174,7 +178,11 @@ function main() {
     const m = x.meta,
       s = m.scores;
     md.push(
-      `| ${i + 1} | ${x.q} | ${x.a} | ${m.score.toFixed(2)} | ${s.coverage.toFixed(2)} | ${s.length.toFixed(2)} | ${s.format.toFixed(2)} |`,
+      `| ${i + 1} | ${x.q} | ${x.a} | ${m.score.toFixed(
+        2,
+      )} | ${s.coverage.toFixed(2)} | ${s.length.toFixed(
+        2,
+      )} | ${s.format.toFixed(2)} |`,
     );
   });
   md.push(``);

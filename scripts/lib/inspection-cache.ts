@@ -231,7 +231,9 @@ export class InspectionCache {
         message += `\n📋 진단 결과가 없습니다.\n`;
       } else if (validation.reason === "expired") {
         const age = validation.ageSeconds || 0;
-        message += `\n⏰ 진단 결과가 오래되었습니다 (${Math.floor(age / 60)}분 전)\n`;
+        message += `\n⏰ 진단 결과가 오래되었습니다 (${Math.floor(
+          age / 60,
+        )}분 전)\n`;
       } else {
         message += `\n❌ 진단 결과가 손상되었습니다.\n`;
       }

@@ -201,10 +201,14 @@ function parseProductPlanHeader(txt) {
   lines.push("");
   lines.push("1) Build parity");
   lines.push(
-    `- src/scripts/preflight_pack.ts: ${exists(srcPreflight)} mtime=${report.src.mtime}`,
+    `- src/scripts/preflight_pack.ts: ${exists(srcPreflight)} mtime=${
+      report.src.mtime
+    }`,
   );
   lines.push(
-    `- dist/scripts/preflight_pack.js: ${exists(distPreflight)} mtime=${report.dist.mtime} hash=${report.dist.hash12}`,
+    `- dist/scripts/preflight_pack.js: ${exists(distPreflight)} mtime=${
+      report.dist.mtime
+    } hash=${report.dist.hash12}`,
   );
   lines.push(`- src newer than dist? ${srcNewer === null ? "n/a" : srcNewer}`);
   lines.push("");

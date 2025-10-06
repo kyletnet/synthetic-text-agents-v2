@@ -137,7 +137,9 @@ export class BudgetGuard {
           const latestUsage = JSON.parse(lines[lines.length - 1]);
           this.currentUsage = { ...this.currentUsage, ...latestUsage };
           console.log(
-            `[BUDGET] Loaded existing usage: $${this.currentUsage.total_spent_usd.toFixed(4)}`,
+            `[BUDGET] Loaded existing usage: $${this.currentUsage.total_spent_usd.toFixed(
+              4,
+            )}`,
           );
         }
       } catch (error) {
@@ -246,7 +248,9 @@ export class BudgetGuard {
         limit_value: this.budgetLimits.run_max_usd,
         severity: "critical",
         action: "abort",
-        message: `Run budget exceeded: $${this.currentUsage.total_spent_usd.toFixed(4)} >= $${this.budgetLimits.run_max_usd.toFixed(2)}`,
+        message: `Run budget exceeded: $${this.currentUsage.total_spent_usd.toFixed(
+          4,
+        )} >= $${this.budgetLimits.run_max_usd.toFixed(2)}`,
       });
     } else if (
       this.currentUsage.total_spent_usd >=
@@ -258,7 +262,9 @@ export class BudgetGuard {
         limit_value: this.budgetLimits.run_max_usd,
         severity: "warning",
         action: "continue",
-        message: `Run budget warning: $${this.currentUsage.total_spent_usd.toFixed(4)} approaching limit $${this.budgetLimits.run_max_usd.toFixed(2)}`,
+        message: `Run budget warning: $${this.currentUsage.total_spent_usd.toFixed(
+          4,
+        )} approaching limit $${this.budgetLimits.run_max_usd.toFixed(2)}`,
       });
     }
 
@@ -270,7 +276,11 @@ export class BudgetGuard {
         limit_value: this.budgetLimits.item_max_usd,
         severity: "warning",
         action: "fallback",
-        message: `Item cost exceeded: $${params.cost_usd.toFixed(4)} > $${this.budgetLimits.item_max_usd.toFixed(4)} for ${params.item_id}`,
+        message: `Item cost exceeded: $${params.cost_usd.toFixed(
+          4,
+        )} > $${this.budgetLimits.item_max_usd.toFixed(4)} for ${
+          params.item_id
+        }`,
       });
     }
 
@@ -287,7 +297,9 @@ export class BudgetGuard {
         agent_role: params.agent_role,
         severity: "warning",
         action: "fallback",
-        message: `Agent budget exceeded: ${params.agent_role} spent $${agentSpending.toFixed(4)} > $${agentLimit.toFixed(4)}`,
+        message: `Agent budget exceeded: ${
+          params.agent_role
+        } spent $${agentSpending.toFixed(4)} > $${agentLimit.toFixed(4)}`,
       });
     }
 
@@ -302,7 +314,9 @@ export class BudgetGuard {
         limit_value: this.budgetLimits.run_max_usd,
         severity: "warning",
         action: "continue",
-        message: `Projected final cost $${this.currentUsage.projected_final_cost.toFixed(4)} may exceed budget $${this.budgetLimits.run_max_usd.toFixed(2)}`,
+        message: `Projected final cost $${this.currentUsage.projected_final_cost.toFixed(
+          4,
+        )} may exceed budget $${this.budgetLimits.run_max_usd.toFixed(2)}`,
       });
     }
 
@@ -360,7 +374,9 @@ export class BudgetGuard {
 
     console.error(`🚨 [BUDGET] EMERGENCY STOP TRIGGERED: ${reason}`);
     console.error(
-      `🚨 [BUDGET] Current usage: $${this.currentUsage.total_spent_usd.toFixed(4)}`,
+      `🚨 [BUDGET] Current usage: $${this.currentUsage.total_spent_usd.toFixed(
+        4,
+      )}`,
     );
     console.error(
       `🚨 [BUDGET] Budget limit: $${this.budgetLimits.run_max_usd.toFixed(2)}`,
@@ -468,7 +484,9 @@ export class BudgetGuard {
     if (projectedTotal > this.budgetLimits.run_max_usd) {
       return {
         allowed: false,
-        reason: `Operation would exceed run budget: $${projectedTotal.toFixed(4)} > $${this.budgetLimits.run_max_usd.toFixed(2)}`,
+        reason: `Operation would exceed run budget: $${projectedTotal.toFixed(
+          4,
+        )} > $${this.budgetLimits.run_max_usd.toFixed(2)}`,
       };
     }
 

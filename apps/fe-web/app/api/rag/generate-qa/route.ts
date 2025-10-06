@@ -30,7 +30,9 @@ export interface QAComparisonResult {
 }
 
 async function generateQAHandler(request: NextRequest) {
-  const sessionId = `qa_gen_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  const sessionId = `qa_gen_${Date.now()}_${Math.random()
+    .toString(36)
+    .substr(2, 9)}`;
 
   try {
     const body: QAGenerationRequest = await request.json();
@@ -105,8 +107,8 @@ async function generateQAHandler(request: NextRequest) {
                     "프로젝트 맞춤형 답변",
                   ]
                 : compareMode
-                  ? ["관련 문서 부족으로 개선 제한적"]
-                  : [],
+                ? ["관련 문서 부족으로 개선 제한적"]
+                : [],
             qualityDelta: hasRelevantContext && compareMode ? 0.65 : 0,
           },
           metadata: {

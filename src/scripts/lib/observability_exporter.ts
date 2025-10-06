@@ -420,10 +420,14 @@ export class ObservabilityExporter {
         }
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
         .metric { text-align: center; }
-        .metric-value { font-size: 2em; font-weight: bold; color: ${themeColors.accent}; }
+        .metric-value { font-size: 2em; font-weight: bold; color: ${
+          themeColors.accent
+        }; }
         .metric-label { color: #666; margin-top: 5px; }
         .table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        .table th, .table td { padding: 12px; text-align: left; border-bottom: 1px solid ${themeColors.border}; }
+        .table th, .table td { padding: 12px; text-align: left; border-bottom: 1px solid ${
+          themeColors.border
+        }; }
         .table th { background-color: ${themeColors.border}; font-weight: 600; }
         .status-success { color: #10b981; }
         .status-failed { color: #ef4444; }
@@ -488,11 +492,15 @@ export class ObservabilityExporter {
                     <div class="metric-label">Total Operations</div>
                 </div>
                 <div class="metric">
-                    <div class="metric-value">$${summary.total_cost_usd.toFixed(4)}</div>
+                    <div class="metric-value">$${summary.total_cost_usd.toFixed(
+                      4,
+                    )}</div>
                     <div class="metric-label">Total Cost</div>
                 </div>
                 <div class="metric">
-                    <div class="metric-value">${(summary.total_duration_ms / 1000).toFixed(1)}s</div>
+                    <div class="metric-value">${(
+                      summary.total_duration_ms / 1000
+                    ).toFixed(1)}s</div>
                     <div class="metric-label">Total Duration</div>
                 </div>
             </div>
@@ -517,16 +525,30 @@ export class ObservabilityExporter {
             <h3>Run: ${runId}</h3>
             <div class="grid">
                 <div>
-                    <strong>Duration:</strong> ${(run.duration_ms / 1000).toFixed(1)}s<br>
-                    <strong>Operations:</strong> ${run.summary.total_operations}<br>
+                    <strong>Duration:</strong> ${(
+                      run.duration_ms / 1000
+                    ).toFixed(1)}s<br>
+                    <strong>Operations:</strong> ${
+                      run.summary.total_operations
+                    }<br>
                     <strong>Success Rate:</strong> ${successRate}%<br>
-                    <strong>Total Cost:</strong> $${run.total_cost_usd.toFixed(4)}
+                    <strong>Total Cost:</strong> $${run.total_cost_usd.toFixed(
+                      4,
+                    )}
                 </div>
                 <div>
-                    <strong>Components:</strong> ${run.summary.components.join(", ")}<br>
-                    <strong>Agents:</strong> ${Object.keys(run.agents).length}<br>
-                    <strong>Started:</strong> ${new Date(run.start_time).toLocaleString()}<br>
-                    <strong>Ended:</strong> ${new Date(run.end_time).toLocaleString()}
+                    <strong>Components:</strong> ${run.summary.components.join(
+                      ", ",
+                    )}<br>
+                    <strong>Agents:</strong> ${
+                      Object.keys(run.agents).length
+                    }<br>
+                    <strong>Started:</strong> ${new Date(
+                      run.start_time,
+                    ).toLocaleString()}<br>
+                    <strong>Ended:</strong> ${new Date(
+                      run.end_time,
+                    ).toLocaleString()}
                 </div>
             </div>
 
@@ -587,20 +609,36 @@ export class ObservabilityExporter {
         event.details.status === "success"
           ? "status-success"
           : event.details.status === "failed" ||
-              event.details.status === "error"
-            ? "status-failed"
-            : "status-pending";
+            event.details.status === "error"
+          ? "status-failed"
+          : "status-pending";
 
       html += `
         <div class="timeline-item">
-            <div class="timeline-time">${new Date(event.timestamp).toLocaleTimeString()}</div>
+            <div class="timeline-time">${new Date(
+              event.timestamp,
+            ).toLocaleTimeString()}</div>
             <div><strong>${event.component}</strong> - ${event.event}</div>
             <div class="timeline-details">
                 Run: ${event.run_id} |
-                ${event.details.agent_id ? `Agent: ${event.details.agent_id} | ` : ""}
-                <span class="${statusClass}">${event.details.status || "unknown"}</span>
-                ${event.details.cost_usd ? ` | $${event.details.cost_usd.toFixed(4)}` : ""}
-                ${event.details.latency_ms ? ` | ${event.details.latency_ms}ms` : ""}
+                ${
+                  event.details.agent_id
+                    ? `Agent: ${event.details.agent_id} | `
+                    : ""
+                }
+                <span class="${statusClass}">${
+                  event.details.status || "unknown"
+                }</span>
+                ${
+                  event.details.cost_usd
+                    ? ` | $${event.details.cost_usd.toFixed(4)}`
+                    : ""
+                }
+                ${
+                  event.details.latency_ms
+                    ? ` | ${event.details.latency_ms}ms`
+                    : ""
+                }
             </div>
         </div>`;
     }

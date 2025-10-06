@@ -567,7 +567,9 @@ class SmartRefactorAuditor {
       console.log(`[${i + 1}/${items.length}] 🔧 ${item.title}`);
       console.log(`     Impact: ${item.files.length} files, ${item.risk} risk`);
       console.log(
-        `     Files: ${item.files.slice(0, 3).join(", ")}${item.files.length > 3 ? "..." : ""}`,
+        `     Files: ${item.files.slice(0, 3).join(", ")}${
+          item.files.length > 3 ? "..." : ""
+        }`,
       );
 
       // Save session progress

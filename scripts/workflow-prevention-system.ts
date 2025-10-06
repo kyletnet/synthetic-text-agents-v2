@@ -358,7 +358,9 @@ class WorkflowPreventionSystem {
     console.log("\n🛡️ Workflow Prevention Report");
     console.log("============================");
     console.log(
-      `📊 Overall Status: ${this.getStatusIcon(report.overallStatus)} ${report.overallStatus}`,
+      `📊 Overall Status: ${this.getStatusIcon(report.overallStatus)} ${
+        report.overallStatus
+      }`,
     );
     console.log(`🎯 Prevention Score: ${report.preventionScore}/100`);
     console.log(`🔍 Rules Checked: ${report.rulesChecked}`);
@@ -371,10 +373,10 @@ class WorkflowPreventionSystem {
           violation.severity === "CRITICAL"
             ? "🚨"
             : violation.severity === "HIGH"
-              ? "🔴"
-              : violation.severity === "MEDIUM"
-                ? "🟡"
-                : "🟢";
+            ? "🔴"
+            : violation.severity === "MEDIUM"
+            ? "🟡"
+            : "🟢";
 
         console.log(
           `   ${i + 1}. ${icon} [${violation.ruleId}] ${violation.ruleName}`,
@@ -398,11 +400,15 @@ class WorkflowPreventionSystem {
       }
       if (highCount > 0) {
         console.log(
-          `   ${criticalCount > 0 ? "2" : "1"}. 🔴 Address ${highCount} HIGH priority violations`,
+          `   ${
+            criticalCount > 0 ? "2" : "1"
+          }. 🔴 Address ${highCount} HIGH priority violations`,
         );
       }
       console.log(
-        `   ${criticalCount + highCount > 0 ? "3" : "1"}. 📋 Review remaining ${report.violations.length - criticalCount - highCount} violations`,
+        `   ${criticalCount + highCount > 0 ? "3" : "1"}. 📋 Review remaining ${
+          report.violations.length - criticalCount - highCount
+        } violations`,
       );
     } else {
       console.log(

@@ -16,7 +16,8 @@ describe("EvidenceAligner - Template Normalization", () => {
     const evidence = ["본인 결혼: 경조금 50만원, 휴가 5일"];
 
     // Full sentence form in answer
-    const answer = "본인 결혼의 경우 경조금 50만원과 5일의 휴가를 받을 수 있습니다.";
+    const answer =
+      "본인 결혼의 경우 경조금 50만원과 5일의 휴가를 받을 수 있습니다.";
 
     const qaPairs = [
       {
@@ -39,7 +40,8 @@ describe("EvidenceAligner - Template Normalization", () => {
 
   it("should match structured data patterns", async () => {
     const evidence = ["자녀 결혼: 경조금 20만원, 휴가 1일"];
-    const answer = "자녀 결혼의 경우 경조금 20만원과 1일의 휴가를 받을 수 있습니다.";
+    const answer =
+      "자녀 결혼의 경우 경조금 20만원과 1일의 휴가를 받을 수 있습니다.";
 
     const qaPairs = [
       {
@@ -135,7 +137,8 @@ describe("EvidenceAligner - Real Phase 2 Data", () => {
       },
       {
         id: "qa-p2-002",
-        question: "3년 이상 근무한 직원이 받을 수 있는 연차휴가 일수는 얼마인가요?",
+        question:
+          "3년 이상 근무한 직원이 받을 수 있는 연차휴가 일수는 얼마인가요?",
         answer:
           "3년 이상 계속 근로한 직원은 기본 15일의 연차휴가에 최초 1년을 초과하는 계속 근로연수 매 2년마다 1일씩 가산한 유급휴가를 받을 수 있습니다. 이 경우 가산휴가를 포함한 총 휴가일수는 25일을 한도로 합니다.",
         evidence: [

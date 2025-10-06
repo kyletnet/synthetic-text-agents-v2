@@ -395,6 +395,7 @@ npm run ship
 **Steps** (Automatic):
 
 1. ✅ **Validation Gate**:
+
    - Health score check
    - P0 violation check
    - TypeScript compilation
@@ -402,14 +403,17 @@ npm run ship
    - Architecture validation
 
 2. ✅ **Documentation Sync**:
+
    - Doc drift check
    - Update stale docs (if auto-fix enabled)
 
 3. ✅ **Optimization** (optional):
+
    - Bundle size check
    - Performance metrics
 
 4. ✅ **Build Verification**:
+
    - Production build test
    - Smoke tests
 

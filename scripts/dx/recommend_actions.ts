@@ -185,7 +185,9 @@ function generateIssueRecommendations(
   // Check duplication issues
   if (metrics.duplication.rate > 0.15) {
     recommendations.push({
-      issue: `High duplication rate: ${(metrics.duplication.rate * 100).toFixed(1)}%`,
+      issue: `High duplication rate: ${(metrics.duplication.rate * 100).toFixed(
+        1,
+      )}%`,
       ...RECOMMENDATION_RULES.high_duplication,
     });
   }
@@ -193,14 +195,18 @@ function generateIssueRecommendations(
   // Check coverage issues
   if (metrics.coverage.entity_coverage_rate < 0.6) {
     recommendations.push({
-      issue: `Low entity coverage: ${(metrics.coverage.entity_coverage_rate * 100).toFixed(1)}%`,
+      issue: `Low entity coverage: ${(
+        metrics.coverage.entity_coverage_rate * 100
+      ).toFixed(1)}%`,
       ...RECOMMENDATION_RULES.low_entity_coverage,
     });
   }
 
   if (metrics.coverage.section_coverage_rate < 0.7) {
     recommendations.push({
-      issue: `Low section coverage: ${(metrics.coverage.section_coverage_rate * 100).toFixed(1)}%`,
+      issue: `Low section coverage: ${(
+        metrics.coverage.section_coverage_rate * 100
+      ).toFixed(1)}%`,
       ...RECOMMENDATION_RULES.low_section_coverage,
     });
   }
@@ -208,14 +214,18 @@ function generateIssueRecommendations(
   // Check evidence issues
   if (metrics.evidence.presence_rate < 0.8) {
     recommendations.push({
-      issue: `Missing evidence: ${(metrics.evidence.presence_rate * 100).toFixed(1)}% presence rate`,
+      issue: `Missing evidence: ${(
+        metrics.evidence.presence_rate * 100
+      ).toFixed(1)}% presence rate`,
       ...RECOMMENDATION_RULES.missing_evidence,
     });
   }
 
   if (metrics.evidence.alignment_mean < 0.5) {
     recommendations.push({
-      issue: `Poor evidence alignment: ${(metrics.evidence.alignment_mean * 100).toFixed(1)}% mean alignment`,
+      issue: `Poor evidence alignment: ${(
+        metrics.evidence.alignment_mean * 100
+      ).toFixed(1)}% mean alignment`,
       ...RECOMMENDATION_RULES.poor_evidence_alignment,
     });
   }
@@ -223,7 +233,9 @@ function generateIssueRecommendations(
   // Check hallucination issues
   if (metrics.hallucination.rate > 0.05) {
     recommendations.push({
-      issue: `High hallucination rate: ${(metrics.hallucination.rate * 100).toFixed(1)}%`,
+      issue: `High hallucination rate: ${(
+        metrics.hallucination.rate * 100
+      ).toFixed(1)}%`,
       ...RECOMMENDATION_RULES.high_hallucination,
     });
   }
@@ -246,7 +258,9 @@ function generateIssueRecommendations(
   // Check cost/latency issues
   if (metrics.cost_latency.cost_per_item > 0.1) {
     recommendations.push({
-      issue: `High cost per item: $${metrics.cost_latency.cost_per_item.toFixed(3)}`,
+      issue: `High cost per item: $${metrics.cost_latency.cost_per_item.toFixed(
+        3,
+      )}`,
       ...RECOMMENDATION_RULES.high_cost_per_item,
     });
   }
@@ -260,7 +274,9 @@ function generateIssueRecommendations(
 
   if (metrics.cost_latency.budget_utilization > 0.95) {
     recommendations.push({
-      issue: `Budget near limit: ${(metrics.cost_latency.budget_utilization * 100).toFixed(1)}% utilized`,
+      issue: `Budget near limit: ${(
+        metrics.cost_latency.budget_utilization * 100
+      ).toFixed(1)}% utilized`,
       ...RECOMMENDATION_RULES.budget_overrun,
     });
   }
@@ -268,7 +284,9 @@ function generateIssueRecommendations(
   // Check failure/retry issues
   if (metrics.failure_retry.failure_rate > 0.25) {
     recommendations.push({
-      issue: `High failure rate: ${(metrics.failure_retry.failure_rate * 100).toFixed(1)}%`,
+      issue: `High failure rate: ${(
+        metrics.failure_retry.failure_rate * 100
+      ).toFixed(1)}%`,
       ...RECOMMENDATION_RULES.high_failure_rate,
     });
   }
@@ -320,7 +338,9 @@ function generateIssueRecommendations(
     }
 
     recommendations.push({
-      issue: `${spike.type} spike: ${spike.value.toFixed(3)} (threshold: ${spike.threshold.toFixed(3)})`,
+      issue: `${spike.type} spike: ${spike.value.toFixed(
+        3,
+      )} (threshold: ${spike.threshold.toFixed(3)})`,
       ...rule,
       severity: "high" as const,
     });

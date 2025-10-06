@@ -436,8 +436,9 @@ class AIFixEngine {
 
     if (line.includes(`${propertyName}:`)) {
       // 해당 라인을 주석 처리
-      lines[errorLine] =
-        `    // ${line.trim()} // TODO: Remove or fix property`;
+      lines[
+        errorLine
+      ] = `    // ${line.trim()} // TODO: Remove or fix property`;
 
       return {
         success: true,

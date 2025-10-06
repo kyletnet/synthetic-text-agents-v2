@@ -25,31 +25,37 @@ We implement the **7 Essential Pre-flight Requirements + 3-Layer Multi-Agent Orc
 ### Essential Pre-flight Requirements (7 Core Elements)
 
 1. **Report Consistency Guarantee**
+
    - CASES_TOTAL > 0 enforcement
    - session_report.md RESULT/RUN_STATE/DRY_RUN/MODEL_ID ↔ actual execution result alignment
    - Bidirectional linking between baseline_report.md and session_report.md
 
 2. **DLQ & Retry Policy**
+
    - 429/5xx/timeout → exponential backoff then final DLQ isolation
    - DLQ file storage (reports/dlq/\*) and reprocessing CLI provision
    - Transient vs. permanent error classification
 
 3. **Budget Guards & Kill Switch**
+
    - Run/item-level budget ceiling configuration
    - Environment variable `HARD_STOP=1` → immediate runtime termination
    - Profile-specific limits with 95% utilization triggers
 
 4. **Data Freeze & Manifest**
+
    - Input dataset/gold set checksum fixation
    - Same input ±5% reproducibility guarantee
    - Manifest validation and integrity checking
 
 5. **Random Sampling Seed Fixation**
+
    - Batch sampling, diversity sampling, retriever tie-break seed values fixed
    - Deterministic reproduction of sampling decisions
    - Seed documentation and version control
 
 6. **Log & Trace Standardization**
+
    - All agent call logs with common fields: `RUN_ID, ITEM_ID, AGENT_ROLE, COST, LAT_MS, RETRIES`
    - Structured logging for audit trail and debugging
    - Centralized log aggregation and analysis

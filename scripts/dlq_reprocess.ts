@@ -55,7 +55,9 @@ class DLQReprocessor {
       : pendingItems;
 
     console.log(
-      `Processing ${itemsToProcess.length} items (dry-run: ${options.dryRun || false})`,
+      `Processing ${itemsToProcess.length} items (dry-run: ${
+        options.dryRun || false
+      })`,
     );
 
     let successCount = 0;
@@ -65,7 +67,9 @@ class DLQReprocessor {
     for (const item of itemsToProcess) {
       try {
         console.log(
-          `\n📋 Processing item ${item.item_id} (retry ${item.retry_count + 1}/${item.max_retries})`,
+          `\n📋 Processing item ${item.item_id} (retry ${
+            item.retry_count + 1
+          }/${item.max_retries})`,
         );
 
         if (options.dryRun) {

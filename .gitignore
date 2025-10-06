@@ -71,6 +71,8 @@ id_ed25519*
 # Runtime files
 # Temporary files
 # Test coverage
+# Python virtual environments
+.venv-embeddings/
 build/
 coverage/
 credentials.*

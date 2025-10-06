@@ -471,7 +471,9 @@ class ReferenceTracker {
 - **Stale**: ${report.staleCount} ⚠️
 
 ### 🎯 Quick Access (Essential Docs)
-${report.quickAccess.map((qa) => `- **${qa.path}** - ${qa.description}`).join("\n")}
+${report.quickAccess
+  .map((qa) => `- **${qa.path}** - ${qa.description}`)
+  .join("\n")}
 
 ${
   report.gaps.length > 0

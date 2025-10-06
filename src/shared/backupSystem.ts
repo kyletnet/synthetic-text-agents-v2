@@ -981,7 +981,9 @@ export class BackupSystem extends EventEmitter {
   }
 
   private generateBackupId(strategy: BackupStrategy): string {
-    return `backup_${strategy.name}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    return `backup_${strategy.name}_${Date.now()}_${Math.random()
+      .toString(36)
+      .substr(2, 9)}`;
   }
 }
 

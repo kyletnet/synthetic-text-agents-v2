@@ -370,7 +370,11 @@ export class ManifestManager {
       const comp = comparison as any;
       if (!comp.within_tolerance) {
         significantChanges.push(
-          `${metric}: ${comp.delta_pct.toFixed(1)}% change (${comp.baseline_value.toFixed(3)} → ${comp.comparison_value.toFixed(3)})`,
+          `${metric}: ${comp.delta_pct.toFixed(
+            1,
+          )}% change (${comp.baseline_value.toFixed(
+            3,
+          )} → ${comp.comparison_value.toFixed(3)})`,
         );
       }
     }

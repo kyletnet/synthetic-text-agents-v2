@@ -214,7 +214,9 @@ export abstract class BaseAgent {
     if (this.totalCost >= limits.max_cost_usd) {
       return {
         allowed: false,
-        reason: `Cost limit exceeded: $${this.totalCost.toFixed(4)} >= $${limits.max_cost_usd.toFixed(4)}`,
+        reason: `Cost limit exceeded: $${this.totalCost.toFixed(
+          4,
+        )} >= $${limits.max_cost_usd.toFixed(4)}`,
       };
     }
 

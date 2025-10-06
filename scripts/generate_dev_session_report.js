@@ -228,8 +228,12 @@ class DevSessionReportGenerator {
 ## 📋 세션 개요
 - **세션 ID**: \`${this.sessionId}\`
 - **타임스탬프**: \`${this.timestamp}\`
-- **Git 상태**: ${gitStatus.clean ? "✅ Clean" : `⚠️ ${gitStatus.total_changes}개 변경사항`}
-- **웹뷰**: ${webViewStatus.running ? "🟢 실행중" : "🔴 정지됨"} (포트 ${webViewStatus.port})
+- **Git 상태**: ${
+      gitStatus.clean ? "✅ Clean" : `⚠️ ${gitStatus.total_changes}개 변경사항`
+    }
+- **웹뷰**: ${webViewStatus.running ? "🟢 실행중" : "🔴 정지됨"} (포트 ${
+      webViewStatus.port
+    })
 
 ## 🎯 현재 작업 상황
 
@@ -241,11 +245,16 @@ class DevSessionReportGenerator {
 \`\`\`
 
 ### 최근 커밋 (최근 5개)
-${recentCommits.map((commit) => `- \`${commit.hash}\` ${commit.message}`).join("\n")}
+${recentCommits
+  .map((commit) => `- \`${commit.hash}\` ${commit.message}`)
+  .join("\n")}
 
 ### 개발 진행상황
 **최근 수정 파일 (Top 5):**
-${devProgress.recent_files_modified.map((file) => `- ${file}`).join("\n") || "없음"}
+${
+  devProgress.recent_files_modified.map((file) => `- ${file}`).join("\n") ||
+  "없음"
+}
 
 **새 기능:** ${devProgress.new_features.length}개
 **버그 수정:** ${devProgress.bug_fixes.length}개
@@ -280,24 +289,49 @@ ${currentIssues.todo_comments
 ${
   webViewStatus.baseline_status
     ? `- **최근 품질 점수**: ${webViewStatus.baseline_status}
-- **마지막 리포트**: ${new Date(webViewStatus.last_report_time).toLocaleString("ko-KR")}`
+- **마지막 리포트**: ${new Date(webViewStatus.last_report_time).toLocaleString(
+        "ko-KR",
+      )}`
     : "- 베이스라인 리포트 없음"
 }
 
 ## 🔧 권장 다음 단계
 
-${gitStatus.total_changes > 10 ? "1. **커밋 정리**: 변경사항이 많습니다. 논리적으로 나누어 커밋하세요." : ""}
-${!projectHealth.typescript ? "2. **TypeScript 수정**: 타입 에러를 해결하세요." : ""}
+${
+  gitStatus.total_changes > 10
+    ? "1. **커밋 정리**: 변경사항이 많습니다. 논리적으로 나누어 커밋하세요."
+    : ""
+}
+${
+  !projectHealth.typescript
+    ? "2. **TypeScript 수정**: 타입 에러를 해결하세요."
+    : ""
+}
 ${!projectHealth.build ? "3. **빌드 수정**: 빌드 에러를 해결하세요." : ""}
-${currentIssues.eslint_warnings > 5 ? "4. **린팅 정리**: ESLint 경고가 많습니다." : ""}
-${!webViewStatus.running ? "5. **웹뷰 실행**: \`npm run dev:cli\`로 웹뷰를 시작하세요." : ""}
+${
+  currentIssues.eslint_warnings > 5
+    ? "4. **린팅 정리**: ESLint 경고가 많습니다."
+    : ""
+}
+${
+  !webViewStatus.running
+    ? "5. **웹뷰 실행**: `npm run dev:cli`로 웹뷰를 시작하세요."
+    : ""
+}
 
 ## 📝 다른 개발자/LLM을 위한 컨텍스트
 
 **이 세션에서 작업 중인 내용:**
-${devProgress.new_features.concat(devProgress.bug_fixes, devProgress.refactoring).slice(0, 3).join(", ") || "일반적인 개발 작업"}
+${
+  devProgress.new_features
+    .concat(devProgress.bug_fixes, devProgress.refactoring)
+    .slice(0, 3)
+    .join(", ") || "일반적인 개발 작업"
+}
 
-**현재 프로젝트 상태:** ${projectHealth.typescript && projectHealth.build ? "안정적" : "개선 필요"}
+**현재 프로젝트 상태:** ${
+      projectHealth.typescript && projectHealth.build ? "안정적" : "개선 필요"
+    }
 
 **즉시 필요한 작업:**
 ${!projectHealth.typescript ? "- TypeScript 에러 수정" : ""}

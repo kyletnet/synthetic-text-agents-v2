@@ -47,8 +47,9 @@ class WorkaroundResolutionOrchestrator {
 
       // Step 2: Generate resolution plans
       console.log("📋 Step 2: Analyzing and planning...");
-      const plans =
-        await workaroundResolutionEngine.generateResolutionPlans(findings);
+      const plans = await workaroundResolutionEngine.generateResolutionPlans(
+        findings,
+      );
       console.log(`   Generated: ${plans.length} resolution plans`);
 
       // Step 3: Execute based on mode
@@ -276,7 +277,9 @@ class WorkaroundResolutionOrchestrator {
 
     guidedPlans.forEach((plan, index) => {
       console.log(
-        `   ${index + 1}. ${plan.finding.file}:${plan.finding.line} (${plan.estimatedTime})`,
+        `   ${index + 1}. ${plan.finding.file}:${plan.finding.line} (${
+          plan.estimatedTime
+        })`,
       );
       console.log(`      ${plan.fixSuggestion.substring(0, 80)}...`);
     });
@@ -318,7 +321,9 @@ class WorkaroundResolutionOrchestrator {
     implementationPlan += `## 🚀 Milestone 1: Quick Wins (Week 1)\n`;
     implementationPlan += `**Goal**: Resolve ${milestones.milestone1.length} low-hanging fruit items\n\n`;
     milestones.milestone1.forEach((plan, index) => {
-      implementationPlan += `${index + 1}. **${plan.finding.type}** in \`${plan.finding.file}\`\n`;
+      implementationPlan += `${index + 1}. **${plan.finding.type}** in \`${
+        plan.finding.file
+      }\`\n`;
       implementationPlan += `   - Effort: ${plan.estimatedTime}\n`;
       implementationPlan += `   - Strategy: ${plan.strategy}\n`;
       implementationPlan += `   - Risk: ${plan.riskLevel}\n\n`;
@@ -328,7 +333,9 @@ class WorkaroundResolutionOrchestrator {
     implementationPlan += `## 🎯 Milestone 2: Medium Effort (Weeks 2-3)\n`;
     implementationPlan += `**Goal**: Address ${milestones.milestone2.length} guided fix items\n\n`;
     milestones.milestone2.slice(0, 10).forEach((plan, index) => {
-      implementationPlan += `${index + 1}. **${plan.finding.type}** in \`${plan.finding.file}\`\n`;
+      implementationPlan += `${index + 1}. **${plan.finding.type}** in \`${
+        plan.finding.file
+      }\`\n`;
       implementationPlan += `   - ${plan.fixSuggestion}\n`;
       implementationPlan += `   - Effort: ${plan.estimatedTime}\n\n`;
     });
@@ -365,21 +372,54 @@ class WorkaroundResolutionOrchestrator {
     report += `## 📊 Current Status\n\n`;
     report += `### Discovered Items\n`;
     report += `- **Total Workarounds**: ${plans.length}\n`;
-    report += `- **Critical**: ${plans.filter((p) => p.finding.severity === "CRITICAL").length}\n`;
-    report += `- **High Priority**: ${plans.filter((p) => p.finding.severity === "HIGH").length}\n`;
-    report += `- **Medium Priority**: ${plans.filter((p) => p.finding.severity === "MEDIUM").length}\n`;
-    report += `- **Low Priority**: ${plans.filter((p) => p.finding.severity === "LOW").length}\n\n`;
+    report += `- **Critical**: ${
+      plans.filter((p) => p.finding.severity === "CRITICAL").length
+    }\n`;
+    report += `- **High Priority**: ${
+      plans.filter((p) => p.finding.severity === "HIGH").length
+    }\n`;
+    report += `- **Medium Priority**: ${
+      plans.filter((p) => p.finding.severity === "MEDIUM").length
+    }\n`;
+    report += `- **Low Priority**: ${
+      plans.filter((p) => p.finding.severity === "LOW").length
+    }\n\n`;
 
     report += `### Resolution Strategies\n`;
-    report += `- **Auto-fixable**: ${plans.filter((p) => p.strategy === "auto-fix").length} (${Math.round((plans.filter((p) => p.strategy === "auto-fix").length / plans.length) * 100)}%)\n`;
-    report += `- **Guided fixes**: ${plans.filter((p) => p.strategy === "guided-fix").length} (${Math.round((plans.filter((p) => p.strategy === "guided-fix").length / plans.length) * 100)}%)\n`;
-    report += `- **Manual review**: ${plans.filter((p) => p.strategy === "manual-review").length} (${Math.round((plans.filter((p) => p.strategy === "manual-review").length / plans.length) * 100)}%)\n`;
-    report += `- **Architectural**: ${plans.filter((p) => p.strategy === "architectural-change").length} (${Math.round((plans.filter((p) => p.strategy === "architectural-change").length / plans.length) * 100)}%)\n\n`;
+    report += `- **Auto-fixable**: ${
+      plans.filter((p) => p.strategy === "auto-fix").length
+    } (${Math.round(
+      (plans.filter((p) => p.strategy === "auto-fix").length / plans.length) *
+        100,
+    )}%)\n`;
+    report += `- **Guided fixes**: ${
+      plans.filter((p) => p.strategy === "guided-fix").length
+    } (${Math.round(
+      (plans.filter((p) => p.strategy === "guided-fix").length / plans.length) *
+        100,
+    )}%)\n`;
+    report += `- **Manual review**: ${
+      plans.filter((p) => p.strategy === "manual-review").length
+    } (${Math.round(
+      (plans.filter((p) => p.strategy === "manual-review").length /
+        plans.length) *
+        100,
+    )}%)\n`;
+    report += `- **Architectural**: ${
+      plans.filter((p) => p.strategy === "architectural-change").length
+    } (${Math.round(
+      (plans.filter((p) => p.strategy === "architectural-change").length /
+        plans.length) *
+        100,
+    )}%)\n\n`;
 
     report += `## 🎯 Key Achievements\n\n`;
     report += `✅ **System Analysis Complete**: Identified and categorized all 157 workarounds\n`;
     report += `✅ **Resolution Strategy**: Created systematic approach with 4-tier milestone plan\n`;
-    report += `✅ **Automation Ready**: ${plans.filter((p) => p.strategy === "auto-fix" && p.confidence >= 0.7).length} items ready for automatic fixing\n`;
+    report += `✅ **Automation Ready**: ${
+      plans.filter((p) => p.strategy === "auto-fix" && p.confidence >= 0.7)
+        .length
+    } items ready for automatic fixing\n`;
     report += `✅ **Implementation Guide**: Detailed step-by-step instructions for manual items\n\n`;
 
     report += `## 📈 Impact Assessment\n\n`;
@@ -392,17 +432,31 @@ class WorkaroundResolutionOrchestrator {
       return total + 0.5;
     }, 0);
 
-    report += `- **Estimated Total Effort**: ${Math.round(totalEstimatedDays)} developer days\n`;
-    report += `- **Quick Wins Available**: ${plans.filter((p) => p.estimatedTime.includes("minutes") || p.estimatedTime.includes("hour")).length} items\n`;
+    report += `- **Estimated Total Effort**: ${Math.round(
+      totalEstimatedDays,
+    )} developer days\n`;
+    report += `- **Quick Wins Available**: ${
+      plans.filter(
+        (p) =>
+          p.estimatedTime.includes("minutes") ||
+          p.estimatedTime.includes("hour"),
+      ).length
+    } items\n`;
     report += `- **Technical Debt Reduction**: Significant improvement in code maintainability\n`;
     report += `- **System Health**: Will increase from 55 to projected 85+ score\n\n`;
 
     report += progressReport;
 
     report += `## 🚀 Next Steps\n\n`;
-    report += `1. **Immediate** (This week): Run auto-fixes for ${plans.filter((p) => p.strategy === "auto-fix").length} items\n`;
-    report += `2. **Short-term** (Next 2 weeks): Address ${plans.filter((p) => p.strategy === "guided-fix").length} guided fixes\n`;
-    report += `3. **Medium-term** (Next month): Review ${plans.filter((p) => p.strategy === "manual-review").length} complex items\n`;
+    report += `1. **Immediate** (This week): Run auto-fixes for ${
+      plans.filter((p) => p.strategy === "auto-fix").length
+    } items\n`;
+    report += `2. **Short-term** (Next 2 weeks): Address ${
+      plans.filter((p) => p.strategy === "guided-fix").length
+    } guided fixes\n`;
+    report += `3. **Medium-term** (Next month): Review ${
+      plans.filter((p) => p.strategy === "manual-review").length
+    } complex items\n`;
     report += `4. **Long-term** (Future sprints): Plan architectural changes\n\n`;
 
     report += `## 📄 Generated Artifacts\n\n`;
@@ -425,8 +479,9 @@ class WorkaroundResolutionOrchestrator {
     console.log("");
 
     const findings = await this.detectWorkarounds();
-    const plans =
-      await workaroundResolutionEngine.generateResolutionPlans(findings);
+    const plans = await workaroundResolutionEngine.generateResolutionPlans(
+      findings,
+    );
 
     console.log("📊 Performing dry-run analysis...");
     const dryRunResults = await workaroundResolutionEngine.performDryRun(plans);
@@ -463,8 +518,9 @@ class WorkaroundResolutionOrchestrator {
     console.log("");
 
     const findings = await this.detectWorkarounds();
-    const plans =
-      await workaroundResolutionEngine.generateResolutionPlans(findings);
+    const plans = await workaroundResolutionEngine.generateResolutionPlans(
+      findings,
+    );
 
     console.log("🔧 Executing auto-fixes with rollback support...");
     const results =
@@ -520,8 +576,9 @@ class WorkaroundResolutionOrchestrator {
     console.log(`🔄 Rolling back to snapshot: ${snapshotId}`);
 
     // Find the resolution result with this snapshot
-    const success =
-      await workaroundResolutionEngine.rollbackResolution(snapshotId);
+    const success = await workaroundResolutionEngine.rollbackResolution(
+      snapshotId,
+    );
 
     if (success) {
       console.log(`✅ Successfully rolled back to snapshot: ${snapshotId}`);

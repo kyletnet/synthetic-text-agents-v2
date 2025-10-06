@@ -75,7 +75,9 @@ class LLMSignalsValidator {
     } catch (error) {
       return {
         passed: false,
-        message: `Invalid JSON: ${error instanceof Error ? error.message : "Unknown error"}`,
+        message: `Invalid JSON: ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`,
       };
     }
   }
@@ -156,7 +158,9 @@ class LLMSignalsValidator {
     } catch (error) {
       return {
         passed: false,
-        message: `Validation error: ${error instanceof Error ? error.message : "Unknown error"}`,
+        message: `Validation error: ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`,
       };
     }
   }
@@ -264,7 +268,9 @@ class LLMSignalsValidator {
 
     console.log(`\n📊 Validation Summary:`);
     console.log(
-      `   Overall: ${report.overall === "PASS" ? "✅" : "❌"} ${report.overall}`,
+      `   Overall: ${report.overall === "PASS" ? "✅" : "❌"} ${
+        report.overall
+      }`,
     );
     if (report.overall === "PASS") {
       console.log(`   Total signals: ${report.summary.totalSignals}`);

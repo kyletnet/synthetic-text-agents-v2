@@ -576,7 +576,9 @@ class ArchitecturalEvolutionEngine {
 
       // Import 추가
       const importName = this.generateImportName(componentName);
-      const importPath = `./${component.path.replace("scripts/", "").replace(".ts", ".js")}`;
+      const importPath = `./${component.path
+        .replace("scripts/", "")
+        .replace(".ts", ".js")}`;
 
       if (!content.includes(`import ${importName}`)) {
         const importSection =
@@ -595,8 +597,12 @@ class ArchitecturalEvolutionEngine {
         const securityCheck = `
       console.log("   🔐 ${componentName} Security Check...");
       const ${this.camelCase(componentName)} = new ${importName}();
-      const ${this.camelCase(componentName)}Result = await ${this.camelCase(componentName)}.check();
-      console.log(\`   🛡️ Security: \${${this.camelCase(componentName)}Result.status}\`);
+      const ${this.camelCase(componentName)}Result = await ${this.camelCase(
+        componentName,
+      )}.check();
+      console.log(\`   🛡️ Security: \${${this.camelCase(
+        componentName,
+      )}Result.status}\`);
 
 `;
         content = content.replace(
@@ -626,8 +632,10 @@ class ArchitecturalEvolutionEngine {
       );
       if (!component) continue;
 
-      const scriptName =
-        `${component.type}:${componentName.replace(/[^a-z0-9]/gi, "")}`.toLowerCase();
+      const scriptName = `${component.type}:${componentName.replace(
+        /[^a-z0-9]/gi,
+        "",
+      )}`.toLowerCase();
       const scriptCommand = `tsx ${component.path}`;
 
       if (!packageJson.scripts[scriptName]) {
@@ -653,8 +661,9 @@ class ArchitecturalEvolutionEngine {
       const improvements = await this.identifyStructuralImprovements();
 
       // 2. 설계 원칙 대비 검증
-      const safeImprovements =
-        await this.validateAgainstPrinciples(improvements);
+      const safeImprovements = await this.validateAgainstPrinciples(
+        improvements,
+      );
 
       // 3. 자동 적용 가능한 것들 실행
       await this.applyStructuralEvolution(safeImprovements);
@@ -825,10 +834,10 @@ class ArchitecturalEvolutionEngine {
       (improvement.priority === "critical"
         ? 50
         : improvement.priority === "high"
-          ? 30
-          : improvement.priority === "medium"
-            ? 20
-            : 10) *
+        ? 30
+        : improvement.priority === "medium"
+        ? 20
+        : 10) *
         0.1
     );
   }

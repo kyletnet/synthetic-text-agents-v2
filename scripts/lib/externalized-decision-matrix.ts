@@ -410,7 +410,9 @@ export class ExternalizedDecisionMatrix extends EventEmitter {
     score: number,
   ): string {
     const config = this.config.execution_strategies[selectedStrategy];
-    return `Selected ${selectedStrategy} strategy (score: ${score.toFixed(2)}) for ${context.priority} priority operation. ${config.description}`;
+    return `Selected ${selectedStrategy} strategy (score: ${score.toFixed(
+      2,
+    )}) for ${context.priority} priority operation. ${config.description}`;
   }
 
   private evaluateIntegrationRule(

@@ -185,7 +185,9 @@ expect.extend({
       message: () =>
         isNot
           ? `Expected not to be valid agent result`
-          : `Expected to be valid agent result but received: ${JSON.stringify(received)}`,
+          : `Expected to be valid agent result but received: ${JSON.stringify(
+              received,
+            )}`,
     };
   },
 
@@ -207,7 +209,9 @@ expect.extend({
       message: () =>
         isNot
           ? `Expected not to be valid error report`
-          : `Expected to be valid error report but received: ${JSON.stringify(received)}`,
+          : `Expected to be valid error report but received: ${JSON.stringify(
+              received,
+            )}`,
     };
   },
 });

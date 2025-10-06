@@ -52,7 +52,9 @@ export class CircuitBreaker {
     };
 
     console.log(
-      `🛡️ [CircuitBreaker] ${this.name} initialized: ${JSON.stringify(this.config)}`,
+      `🛡️ [CircuitBreaker] ${this.name} initialized: ${JSON.stringify(
+        this.config,
+      )}`,
     );
   }
 
@@ -78,7 +80,9 @@ export class CircuitBreaker {
         const remainingTime =
           this.config.timeoutWindow - (Date.now() - this.state.lastFailureTime);
         throw new Error(
-          `Circuit breaker ${this.name} is OPEN. Retry in ${Math.round(remainingTime / 1000)}s`,
+          `Circuit breaker ${this.name} is OPEN. Retry in ${Math.round(
+            remainingTime / 1000,
+          )}s`,
         );
       }
     }
@@ -192,7 +196,9 @@ export class CircuitBreaker {
     }
 
     console.log(
-      `🔄 [CircuitBreaker] ${this.name} manually reset${force ? " (forced)" : ""}`,
+      `🔄 [CircuitBreaker] ${this.name} manually reset${
+        force ? " (forced)" : ""
+      }`,
     );
     this.state = {
       failureCount: 0,

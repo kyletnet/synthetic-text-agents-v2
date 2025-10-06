@@ -96,11 +96,15 @@ export class LLMExecutionAuthority {
   static async authorizeExecution(
     context: ExecutionContext,
   ): Promise<AuthorizedExecution> {
-    const executionId = `exec_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+    const executionId = `exec_${Date.now()}_${Math.random()
+      .toString(36)
+      .slice(2, 8)}`;
     const startTime = Date.now();
 
     // 🔍 START EXECUTION TRACE (미들웨어에서는 간단하게)
-    const traceId = `trace_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+    const traceId = `trace_${Date.now()}_${Math.random()
+      .toString(36)
+      .slice(2, 8)}`;
     console.log(`🔍 [LEA] Starting execution trace: ${traceId}`);
 
     // 🚨 Feature Flag Check
@@ -175,7 +179,9 @@ export class LLMExecutionAuthority {
       this.recordExecution(authorization);
 
       console.log(
-        `✅ [LEA] Execution authorized: ${executionId} (${Date.now() - startTime}ms)`,
+        `✅ [LEA] Execution authorized: ${executionId} (${
+          Date.now() - startTime
+        }ms)`,
       );
       return authorization;
     } catch (error) {
@@ -203,8 +209,8 @@ export class LLMExecutionAuthority {
     const status = allChecksPass
       ? "healthy"
       : Object.values(checks).filter((check) => check).length >= 3
-        ? "degraded"
-        : "critical";
+      ? "degraded"
+      : "critical";
 
     return {
       status,

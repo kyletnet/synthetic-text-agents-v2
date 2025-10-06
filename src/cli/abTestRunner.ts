@@ -53,11 +53,15 @@ class ABTestCLI {
       console.log(`   🎯 Confidence: ${metrics.averageConfidence.toFixed(2)}`);
       console.log(`   🌈 Diversity: ${metrics.diversityScore.toFixed(2)}/10`);
       console.log(
-        `   🧠 Agent Collaboration: ${metrics.agentCollaborationScore.toFixed(2)}/10`,
+        `   🧠 Agent Collaboration: ${metrics.agentCollaborationScore.toFixed(
+          2,
+        )}/10`,
       );
       console.log(`   ⏱️  Processing Time: ${duration}ms`);
       console.log(
-        `   🤖 Agents Used: ${response.metadata?.agentsUsed?.join(", ") || "unknown"}`,
+        `   🤖 Agents Used: ${
+          response.metadata?.agentsUsed?.join(", ") || "unknown"
+        }`,
       );
       console.log(
         `   📝 Questions Generated: ${response.questions?.length || 0}`,
@@ -111,7 +115,9 @@ class ABTestCLI {
         };
 
         console.log(
-          `   ✅ ${variantId}: Quality ${metrics.qualityScore.toFixed(1)}, Time ${duration}ms`,
+          `   ✅ ${variantId}: Quality ${metrics.qualityScore.toFixed(
+            1,
+          )}, Time ${duration}ms`,
         );
       } catch (error) {
         results[variantId] = {
@@ -171,7 +177,9 @@ class ABTestCLI {
 
     variants.forEach((variant) => {
       console.log(
-        `\n📦 ${variant.id} (${variant.enabled ? "✅ Enabled" : "❌ Disabled"})`,
+        `\n📦 ${variant.id} (${
+          variant.enabled ? "✅ Enabled" : "❌ Disabled"
+        })`,
       );
       console.log(`   📝 ${variant.name}`);
       console.log(`   💡 ${variant.description}`);
@@ -233,7 +241,9 @@ class ABTestCLI {
           : prev,
       );
       console.log(
-        `\n🏆 Best Performer: ${best[0]} (Quality: ${best[1].metrics.qualityScore.toFixed(2)})`,
+        `\n🏆 Best Performer: ${
+          best[0]
+        } (Quality: ${best[1].metrics.qualityScore.toFixed(2)})`,
       );
     }
   }

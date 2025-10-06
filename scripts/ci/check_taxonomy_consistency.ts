@@ -161,7 +161,9 @@ class TaxonomyChecker {
                   this.report.unknown_stages.push({
                     file: filePath,
                     line: 1, // HTML doesn't have meaningful line numbers
-                    content: `"components": [${run.components.map((c: string) => `"${c}"`).join(", ")}]`,
+                    content: `"components": [${run.components
+                      .map((c: string) => `"${c}"`)
+                      .join(", ")}]`,
                     category: "stage",
                     found_value: component,
                     context: `observability component: ${component}`,

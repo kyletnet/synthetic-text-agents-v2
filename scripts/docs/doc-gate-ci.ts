@@ -144,19 +144,27 @@ class DocQualityGate {
     console.log("📊 DOCUMENTATION QUALITY GATE SUMMARY");
     console.log("=".repeat(60));
     console.log(
-      `   Overall: ${report.overall === "PASS" ? "✅" : "❌"} ${report.overall}`,
+      `   Overall: ${report.overall === "PASS" ? "✅" : "❌"} ${
+        report.overall
+      }`,
     );
     console.log(`   Total issues: ${report.summary.totalIssues}`);
     console.log(`   Blocking issues: ${report.summary.blockingIssues}`);
     console.log("\n   Stage Results:");
     console.log(
-      `   - Audit: ${report.stages.audit.status === "PASS" ? "✅" : "❌"} ${report.stages.audit.status}`,
+      `   - Audit: ${report.stages.audit.status === "PASS" ? "✅" : "❌"} ${
+        report.stages.audit.status
+      }`,
     );
     console.log(
-      `   - Signals: ${report.stages.signals.status === "PASS" ? "✅" : "⚠️"} ${report.stages.signals.status} (non-blocking)`,
+      `   - Signals: ${report.stages.signals.status === "PASS" ? "✅" : "⚠️"} ${
+        report.stages.signals.status
+      } (non-blocking)`,
     );
     console.log(
-      `   - Linting: ${report.stages.lint.status === "PASS" ? "✅" : "❌"} ${report.stages.lint.status}`,
+      `   - Linting: ${report.stages.lint.status === "PASS" ? "✅" : "❌"} ${
+        report.stages.lint.status
+      }`,
     );
     console.log(`\n📄 Report saved to: ${reportPath}`);
     console.log("=".repeat(60));

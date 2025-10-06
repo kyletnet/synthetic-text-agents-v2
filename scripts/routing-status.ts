@@ -30,13 +30,17 @@ class RoutingStatusMonitor {
     };
 
     console.log(
-      `${modeEmoji[status.currentMode]} **Current Mode**: ${status.currentMode.toUpperCase()}`,
+      `${
+        modeEmoji[status.currentMode]
+      } **Current Mode**: ${status.currentMode.toUpperCase()}`,
     );
 
     // Hub Health
     const healthEmoji = status.failover.hubHealthy ? "✅" : "❌";
     console.log(
-      `${healthEmoji} **Hub Health**: ${status.failover.hubHealthy ? "Healthy" : "Unhealthy"}`,
+      `${healthEmoji} **Hub Health**: ${
+        status.failover.hubHealthy ? "Healthy" : "Unhealthy"
+      }`,
     );
 
     if (status.failover.directModeActive) {
@@ -128,7 +132,9 @@ class RoutingStatusMonitor {
         `     - Hub: ${status.metrics.averageLatency.hub.toFixed(1)}ms`,
       );
       console.log(
-        `     - Fallback: ${status.metrics.averageLatency.fallback.toFixed(1)}ms`,
+        `     - Fallback: ${status.metrics.averageLatency.fallback.toFixed(
+          1,
+        )}ms`,
       );
       console.log("");
     }
@@ -185,14 +191,20 @@ class RoutingStatusMonitor {
 
     report += `## Current Status\n\n`;
     report += `- **Mode**: ${status.currentMode}\n`;
-    report += `- **Hub Health**: ${status.failover.hubHealthy ? "✅ Healthy" : "❌ Unhealthy"}\n`;
+    report += `- **Hub Health**: ${
+      status.failover.hubHealthy ? "✅ Healthy" : "❌ Unhealthy"
+    }\n`;
     report += `- **Direct Connections**: ${status.failover.directConnections}\n`;
     report += `- **Emergency Queue**: ${status.failover.emergencyQueueSize}\n\n`;
 
     report += `## Performance Metrics\n\n`;
     report += `- **Latency Reduction**: ${performance.latencyReduction}\n`;
-    report += `- **Hub Latency**: ${status.performance.hubLatency.toFixed(1)}ms\n`;
-    report += `- **Direct Latency**: ${status.performance.directLatency.toFixed(1)}ms\n`;
+    report += `- **Hub Latency**: ${status.performance.hubLatency.toFixed(
+      1,
+    )}ms\n`;
+    report += `- **Direct Latency**: ${status.performance.directLatency.toFixed(
+      1,
+    )}ms\n`;
     report += `- **Throughput**: ${performance.throughputImprovement}\n`;
     report += `- **Failover Count**: ${performance.failoverCount}\n\n`;
 

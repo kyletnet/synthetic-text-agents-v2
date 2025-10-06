@@ -342,7 +342,9 @@ async function checkLLMSignals(): Promise<GateResult> {
     return {
       passed: signalRatio >= 50, // 50% 이상의 문서가 LLM 시그널 포함
       score: signalRatio,
-      message: `LLM signals: ${signalRatio.toFixed(1)}% of docs (${docsWithSignals}/${totalDocs})`,
+      message: `LLM signals: ${signalRatio.toFixed(
+        1,
+      )}% of docs (${docsWithSignals}/${totalDocs})`,
       details:
         signalRatio < 50
           ? ["Consider adding LLM optimization tags to key documents"]

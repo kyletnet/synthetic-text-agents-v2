@@ -291,12 +291,16 @@ export class ObservabilityConsistencyChecker {
     } else if (diff <= 0.03) {
       result.cost_check = "WARN";
       result.notes.push(
-        `Cost within tolerance: session=$${sessionCost.toFixed(4)}, html=$${htmlCost.toFixed(4)}, diff=$${diff.toFixed(4)}`,
+        `Cost within tolerance: session=$${sessionCost.toFixed(
+          4,
+        )}, html=$${htmlCost.toFixed(4)}, diff=$${diff.toFixed(4)}`,
       );
     } else {
       result.cost_check = "FAIL";
       result.notes.push(
-        `Cost difference exceeds threshold: session=$${sessionCost.toFixed(4)}, html=$${htmlCost.toFixed(4)}, diff=$${diff.toFixed(4)} > $0.03`,
+        `Cost difference exceeds threshold: session=$${sessionCost.toFixed(
+          4,
+        )}, html=$${htmlCost.toFixed(4)}, diff=$${diff.toFixed(4)} > $0.03`,
       );
     }
   }

@@ -161,7 +161,9 @@ class AuditTriggerDetector {
         this.addCondition({
           name: "Critical Dependencies Outdated",
           triggered: true,
-          reason: `Critical dependencies need updates: ${criticalOutdated.join(", ")}`,
+          reason: `Critical dependencies need updates: ${criticalOutdated.join(
+            ", ",
+          )}`,
           priority: "MEDIUM",
         });
       }

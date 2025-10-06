@@ -200,12 +200,16 @@ function checkConsistency(
     } else if (costDiff <= 0.03) {
       result.cost_check = "WARN";
       result.notes.push(
-        `Cost difference within threshold: session=$${sessionData.cost_usd}, obs=$${obsData.total_cost_usd}, diff=$${costDiff.toFixed(3)}`,
+        `Cost difference within threshold: session=$${
+          sessionData.cost_usd
+        }, obs=$${obsData.total_cost_usd}, diff=$${costDiff.toFixed(3)}`,
       );
     } else {
       result.cost_check = "FAIL";
       result.notes.push(
-        `Cost difference exceeds threshold: session=$${sessionData.cost_usd}, obs=$${obsData.total_cost_usd}, diff=$${costDiff.toFixed(3)}`,
+        `Cost difference exceeds threshold: session=$${
+          sessionData.cost_usd
+        }, obs=$${obsData.total_cost_usd}, diff=$${costDiff.toFixed(3)}`,
       );
     }
 
@@ -261,7 +265,9 @@ function checkConsistency(
     result.exit = hasFailures ? 1 : 0;
   } catch (error) {
     result.notes.push(
-      `Error during check: ${error instanceof Error ? error.message : String(error)}`,
+      `Error during check: ${
+        error instanceof Error ? error.message : String(error)
+      }`,
     );
     result.exit = 1;
   }

@@ -229,8 +229,8 @@ export class RAGPerformanceMonitor {
       recentAvgLatency < olderAvgLatency * 0.9
         ? "improving"
         : recentAvgLatency > olderAvgLatency * 1.1
-          ? "degrading"
-          : "stable";
+        ? "degrading"
+        : "stable";
 
     const recentAvgCost =
       recentMetrics.reduce((sum, m) => sum + m.estimatedCost, 0) /
@@ -243,8 +243,8 @@ export class RAGPerformanceMonitor {
       recentAvgCost < olderAvgCost * 0.9
         ? "decreasing"
         : recentAvgCost > olderAvgCost * 1.1
-          ? "increasing"
-          : "stable";
+        ? "increasing"
+        : "stable";
 
     const recommendations: string[] = [];
 
@@ -287,7 +287,9 @@ export class RAGPerformanceMonitor {
       alerts.push({
         type: "cost_threshold",
         severity: "high",
-        message: `Daily cost limit exceeded: $${this.totalCost.toFixed(2)} > $${this.alertThresholds.dailyCostLimit}`,
+        message: `Daily cost limit exceeded: $${this.totalCost.toFixed(2)} > $${
+          this.alertThresholds.dailyCostLimit
+        }`,
         metrics: {
           totalCost: this.totalCost,
           limit: this.alertThresholds.dailyCostLimit,

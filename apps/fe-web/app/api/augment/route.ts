@@ -6,7 +6,9 @@ import {
 import { withAPIGuard } from "@/lib/api-guard";
 
 async function augmentHandler(request: NextRequest) {
-  const sessionId = `augment_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
+  const sessionId = `augment_${Date.now()}_${Math.random()
+    .toString(36)
+    .slice(2, 11)}`;
 
   try {
     const body: AugmentationRequest = await request.json();
@@ -51,7 +53,10 @@ async function augmentHandler(request: NextRequest) {
     const processingTime = Date.now() - startTime;
 
     console.log(
-      `🔄 Data augmentation: "${input.substring(0, 50)}..." (${augmentationType}, ${count} variants, ${processingTime}ms)`,
+      `🔄 Data augmentation: "${input.substring(
+        0,
+        50,
+      )}..." (${augmentationType}, ${count} variants, ${processingTime}ms)`,
     );
 
     return NextResponse.json({

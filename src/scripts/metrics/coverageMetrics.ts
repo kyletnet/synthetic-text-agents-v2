@@ -314,7 +314,9 @@ export function calculateCoverageMetrics(
     config.alert_thresholds.entity_coverage_rate_min
   ) {
     criticalGaps.push(
-      `Low entity coverage: ${(entityCoverage.coverage_rate * 100).toFixed(1)}%`,
+      `Low entity coverage: ${(entityCoverage.coverage_rate * 100).toFixed(
+        1,
+      )}%`,
     );
   }
   if (
@@ -322,7 +324,9 @@ export function calculateCoverageMetrics(
     config.alert_thresholds.section_coverage_rate_min
   ) {
     criticalGaps.push(
-      `Low section coverage: ${(sectionCoverage.coverage_rate * 100).toFixed(1)}%`,
+      `Low section coverage: ${(sectionCoverage.coverage_rate * 100).toFixed(
+        1,
+      )}%`,
     );
   }
   if (
@@ -360,10 +364,14 @@ export function generateCoverageReport(metrics: CoverageMetrics): string {
   // Summary metrics
   lines.push("### Overall Coverage Summary");
   lines.push(
-    `- **Overall Score**: ${(metrics.coverage_summary.overall_score * 100).toFixed(1)}%`,
+    `- **Overall Score**: ${(
+      metrics.coverage_summary.overall_score * 100
+    ).toFixed(1)}%`,
   );
   lines.push(
-    `- **Alert Status**: ${metrics.alert_triggered ? "⚠️ ISSUES DETECTED" : "✅ NORMAL"}`,
+    `- **Alert Status**: ${
+      metrics.alert_triggered ? "⚠️ ISSUES DETECTED" : "✅ NORMAL"
+    }`,
   );
   lines.push("");
 
@@ -374,7 +382,9 @@ export function generateCoverageReport(metrics: CoverageMetrics): string {
     `- **Covered Entities**: ${metrics.entity_coverage.covered_entities}`,
   );
   lines.push(
-    `- **Coverage Rate**: ${(metrics.entity_coverage.coverage_rate * 100).toFixed(1)}%`,
+    `- **Coverage Rate**: ${(
+      metrics.entity_coverage.coverage_rate * 100
+    ).toFixed(1)}%`,
   );
 
   if (metrics.entity_coverage.missed_entities.length > 0) {
@@ -394,7 +404,9 @@ export function generateCoverageReport(metrics: CoverageMetrics): string {
     `- **Covered Sections**: ${metrics.section_coverage.covered_sections}`,
   );
   lines.push(
-    `- **Coverage Rate**: ${(metrics.section_coverage.coverage_rate * 100).toFixed(1)}%`,
+    `- **Coverage Rate**: ${(
+      metrics.section_coverage.coverage_rate * 100
+    ).toFixed(1)}%`,
   );
   lines.push("");
 

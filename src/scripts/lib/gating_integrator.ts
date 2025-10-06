@@ -276,7 +276,9 @@ export class GatingIntegrator {
     if (!criteria.enforceResult.includes(metrics.result)) {
       return {
         passed: false,
-        reason: `Result '${metrics.result}' not in allowed results: [${criteria.enforceResult.join(", ")}]`,
+        reason: `Result '${
+          metrics.result
+        }' not in allowed results: [${criteria.enforceResult.join(", ")}]`,
       };
     }
     return { passed: true, reason: "Result requirement met" };
@@ -290,7 +292,9 @@ export class GatingIntegrator {
     if (metrics.p0Violations.length > 0) {
       return {
         passed: false,
-        reason: `Critical P0 violations found: ${metrics.p0Violations.join(", ")}`,
+        reason: `Critical P0 violations found: ${metrics.p0Violations.join(
+          ", ",
+        )}`,
       };
     }
 
@@ -375,7 +379,9 @@ export class GatingIntegrator {
       console.log(`\n[GATING] ${result.canProceed ? "✅ PASS" : "❌ FAIL"}`);
       console.log(`[GATING] Gate Status: ${result.decision.gateStatus}`);
       console.log(
-        `[GATING] Overall Score: ${(result.decision.overallScore * 100).toFixed(1)}%`,
+        `[GATING] Overall Score: ${(result.decision.overallScore * 100).toFixed(
+          1,
+        )}%`,
       );
 
       if (result.violations.length > 0) {

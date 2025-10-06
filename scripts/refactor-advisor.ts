@@ -239,7 +239,9 @@ class RefactorAdvisor {
           category: "Type Safety",
           files: [pattern.filePattern],
           codeExample: this.generateTypeFixExample(pattern),
-          reasoning: `패턴 분석: ${pattern.frequency}회 발생, 성공률 ${(pattern.successRate * 100).toFixed(1)}%`,
+          reasoning: `패턴 분석: ${pattern.frequency}회 발생, 성공률 ${(
+            pattern.successRate * 100
+          ).toFixed(1)}%`,
         };
 
       case "imports":
@@ -534,10 +536,18 @@ if (obj.config) {
           Math.floor(suggestion.confidence * 10),
         );
         console.log(
-          `   ${suggestion.confidence >= 0.7 ? "🎯" : suggestion.confidence >= 0.5 ? "💡" : "🤔"} ${suggestion.title}`,
+          `   ${
+            suggestion.confidence >= 0.7
+              ? "🎯"
+              : suggestion.confidence >= 0.5
+              ? "💡"
+              : "🤔"
+          } ${suggestion.title}`,
         );
         console.log(
-          `      Confidence: ${confidenceBar} ${(suggestion.confidence * 100).toFixed(0)}%`,
+          `      Confidence: ${confidenceBar} ${(
+            suggestion.confidence * 100
+          ).toFixed(0)}%`,
         );
         console.log(
           `      Effort: ${suggestion.effort}, Impact: ${suggestion.impact}`,
@@ -553,7 +563,9 @@ if (obj.config) {
     for (let i = 0; i < topSuggestions.length; i++) {
       const suggestion = topSuggestions[i];
       console.log(
-        `   ${i + 1}. ${suggestion.title} (${(suggestion.confidence * 100).toFixed(0)}% confidence)`,
+        `   ${i + 1}. ${suggestion.title} (${(
+          suggestion.confidence * 100
+        ).toFixed(0)}% confidence)`,
       );
       if (suggestion.codeExample) {
         console.log("      Example:");

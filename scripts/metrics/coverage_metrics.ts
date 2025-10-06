@@ -84,7 +84,9 @@ function extractKeyPhrases(
   });
 
   console.log(
-    `[DEBUG] Extracted words: ${words.length}, sample: ${words.slice(0, 5).join(", ")}`,
+    `[DEBUG] Extracted words: ${words.length}, sample: ${words
+      .slice(0, 5)
+      .join(", ")}`,
   );
 
   const phrases: string[] = [];
@@ -172,7 +174,9 @@ function isEntityCovered(entity: string, qaItems: QAItem[]): boolean {
       answerText.includes(entityLower)
     ) {
       console.log(
-        `[DEBUG] Entity "${entityLower}" found in QA item ${item.index || "unknown"}`,
+        `[DEBUG] Entity "${entityLower}" found in QA item ${
+          item.index || "unknown"
+        }`,
       );
       return true;
     }
@@ -292,7 +296,9 @@ function isSectionCovered(
         intersection.size / Math.min(sectionWords.size, evidenceWords.size);
 
       console.log(
-        `[DEBUG] Section overlap: ${intersection.size} common words, overlap rate: ${overlap.toFixed(3)}`,
+        `[DEBUG] Section overlap: ${
+          intersection.size
+        } common words, overlap rate: ${overlap.toFixed(3)}`,
       );
 
       if (overlap >= overlapThreshold) {
@@ -383,7 +389,9 @@ export function calculateCoverageMetrics(
     config.alert_thresholds.entity_coverage_rate_min
   ) {
     criticalGaps.push(
-      `Low entity coverage: ${(entityCoverage.coverage_rate * 100).toFixed(1)}%`,
+      `Low entity coverage: ${(entityCoverage.coverage_rate * 100).toFixed(
+        1,
+      )}%`,
     );
   }
   if (
@@ -391,7 +399,9 @@ export function calculateCoverageMetrics(
     config.alert_thresholds.section_coverage_rate_min
   ) {
     criticalGaps.push(
-      `Low section coverage: ${(sectionCoverage.coverage_rate * 100).toFixed(1)}%`,
+      `Low section coverage: ${(sectionCoverage.coverage_rate * 100).toFixed(
+        1,
+      )}%`,
     );
   }
   if (
@@ -429,10 +439,14 @@ export function generateCoverageReport(metrics: CoverageMetrics): string {
   // Summary metrics
   lines.push("### Overall Coverage Summary");
   lines.push(
-    `- **Overall Score**: ${(metrics.coverage_summary.overall_score * 100).toFixed(1)}%`,
+    `- **Overall Score**: ${(
+      metrics.coverage_summary.overall_score * 100
+    ).toFixed(1)}%`,
   );
   lines.push(
-    `- **Alert Status**: ${metrics.alert_triggered ? "⚠️ ISSUES DETECTED" : "✅ NORMAL"}`,
+    `- **Alert Status**: ${
+      metrics.alert_triggered ? "⚠️ ISSUES DETECTED" : "✅ NORMAL"
+    }`,
   );
   lines.push("");
 
@@ -443,7 +457,9 @@ export function generateCoverageReport(metrics: CoverageMetrics): string {
     `- **Covered Entities**: ${metrics.entity_coverage.covered_entities}`,
   );
   lines.push(
-    `- **Coverage Rate**: ${(metrics.entity_coverage.coverage_rate * 100).toFixed(1)}%`,
+    `- **Coverage Rate**: ${(
+      metrics.entity_coverage.coverage_rate * 100
+    ).toFixed(1)}%`,
   );
 
   if (metrics.entity_coverage.missed_entities.length > 0) {
@@ -463,7 +479,9 @@ export function generateCoverageReport(metrics: CoverageMetrics): string {
     `- **Covered Sections**: ${metrics.section_coverage.covered_sections}`,
   );
   lines.push(
-    `- **Coverage Rate**: ${(metrics.section_coverage.coverage_rate * 100).toFixed(1)}%`,
+    `- **Coverage Rate**: ${(
+      metrics.section_coverage.coverage_rate * 100
+    ).toFixed(1)}%`,
   );
   lines.push("");
 

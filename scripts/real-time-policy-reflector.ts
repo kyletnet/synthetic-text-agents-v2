@@ -52,8 +52,9 @@ class RealTimePolicyReflector {
       const changeType = this.determineChangeType(filePath);
 
       // 2. 영향받는 컴포넌트 식별
-      const impactedComponents =
-        await this.identifyImpactedComponents(changeType);
+      const impactedComponents = await this.identifyImpactedComponents(
+        changeType,
+      );
 
       // 3. 자동 정책 반영
       await this.applyPolicyChanges(changeType);

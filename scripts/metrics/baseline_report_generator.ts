@@ -36,8 +36,8 @@ export async function prewriteSessionMeta(meta: {
     const merged = prev.includes("PROFILE:")
       ? prev
       : prev
-        ? prev + "\n" + block + "\n"
-        : block + "\n";
+      ? prev + "\n" + block + "\n"
+      : block + "\n";
     await fs.writeFile(SESSION_REPORT + ".tmp", merged, "utf8");
     await fs.rename(SESSION_REPORT + ".tmp", SESSION_REPORT);
   } catch (e) {
@@ -531,7 +531,9 @@ function generateGateMappingBanner(
   lines.push("");
   lines.push(`**Current Profile**: ${profile.toUpperCase()}`);
   lines.push(
-    `**Auto-calibration**: ${autocalibrationEnabled ? "✅ ENABLED" : "❌ DISABLED"}`,
+    `**Auto-calibration**: ${
+      autocalibrationEnabled ? "✅ ENABLED" : "❌ DISABLED"
+    }`,
   );
   lines.push("");
   lines.push("**Gate Rules**:");
@@ -566,21 +568,27 @@ function generateKPITrends(trends: {
   if (trends.accuracy) {
     const t = trends.accuracy;
     lines.push(
-      `| Accuracy Score | ${t.sparkline} | ${t.min.toFixed(3)} | ${t.median.toFixed(3)} | ${t.max.toFixed(3)} |`,
+      `| Accuracy Score | ${t.sparkline} | ${t.min.toFixed(
+        3,
+      )} | ${t.median.toFixed(3)} | ${t.max.toFixed(3)} |`,
     );
   }
 
   if (trends.cost_per_item) {
     const t = trends.cost_per_item;
     lines.push(
-      `| Cost per Item | ${t.sparkline} | $${t.min.toFixed(4)} | $${t.median.toFixed(4)} | $${t.max.toFixed(4)} |`,
+      `| Cost per Item | ${t.sparkline} | $${t.min.toFixed(
+        4,
+      )} | $${t.median.toFixed(4)} | $${t.max.toFixed(4)} |`,
     );
   }
 
   if (trends.latency_p95) {
     const t = trends.latency_p95;
     lines.push(
-      `| P95 Latency | ${t.sparkline} | ${t.min.toFixed(0)}ms | ${t.median.toFixed(0)}ms | ${t.max.toFixed(0)}ms |`,
+      `| P95 Latency | ${t.sparkline} | ${t.min.toFixed(
+        0,
+      )}ms | ${t.median.toFixed(0)}ms | ${t.max.toFixed(0)}ms |`,
     );
   }
 
@@ -638,10 +646,10 @@ function generateThresholdSummary(
     gating.gate_status === "PASS"
       ? "✅"
       : gating.gate_status === "WARN"
-        ? "⚠️"
-        : gating.gate_status === "PARTIAL"
-          ? "🟡"
-          : "❌";
+      ? "⚠️"
+      : gating.gate_status === "PARTIAL"
+      ? "🟡"
+      : "❌";
 
   lines.push(`**Gate Status**: ${statusEmoji} ${gating.gate_status}`);
   lines.push(`**Profile**: ${profile.toUpperCase()}`);
@@ -801,7 +809,9 @@ function generateThresholdSummary(
       for (const change of appliedChanges) {
         const changeStr =
           change.old_value !== change.new_value
-            ? `${change.old_value.toFixed(3)} → ${change.new_value.toFixed(3)} (${(change.change_pct * 100).toFixed(1)}%)`
+            ? `${change.old_value.toFixed(3)} → ${change.new_value.toFixed(
+                3,
+              )} (${(change.change_pct * 100).toFixed(1)}%)`
             : "No change";
         lines.push(`- ✅ ${change.metric_name}: ${changeStr}`);
       }
@@ -812,7 +822,9 @@ function generateThresholdSummary(
       lines.push("**Blocked by Drift Guard**:");
       for (const change of blockedChanges) {
         lines.push(
-          `- 🛡️ ${change.metric_name}: Change of ${(change.change_pct * 100).toFixed(1)}% exceeds drift guard limit`,
+          `- 🛡️ ${change.metric_name}: Change of ${(
+            change.change_pct * 100
+          ).toFixed(1)}% exceeds drift guard limit`,
         );
       }
       lines.push("");
@@ -866,11 +878,13 @@ function generateMarkdownReport(
     summary.recommendation_level === "green"
       ? "✅"
       : summary.recommendation_level === "yellow"
-        ? "⚠️"
-        : "❌";
+      ? "⚠️"
+      : "❌";
 
   lines.push(
-    `**Overall Quality Score**: ${statusIcon} ${(summary.overall_quality_score * 100).toFixed(1)}%`,
+    `**Overall Quality Score**: ${statusIcon} ${(
+      summary.overall_quality_score * 100
+    ).toFixed(1)}%`,
   );
   lines.push(
     `**Recommendation Level**: ${summary.recommendation_level.toUpperCase()}`,
@@ -946,18 +960,24 @@ function generateMarkdownReport(
   lines.push("## 1. Duplication Analysis");
   lines.push("");
   lines.push(
-    `- **Duplication Rate**: ${((summary.duplication?.rate || 0) * 100).toFixed(1)}%`,
+    `- **Duplication Rate**: ${((summary.duplication?.rate || 0) * 100).toFixed(
+      1,
+    )}%`,
   );
   lines.push(
     `- **High Similarity Pairs**: ${summary.duplication.high_similarity_pairs}`,
   );
   if (summary.duplication.semantic_duplication_rate !== undefined) {
     lines.push(
-      `- **Semantic Duplication Rate**: ${(summary.duplication.semantic_duplication_rate * 100).toFixed(1)}%`,
+      `- **Semantic Duplication Rate**: ${(
+        summary.duplication.semantic_duplication_rate * 100
+      ).toFixed(1)}%`,
     );
   }
   lines.push(
-    `- **Alert Status**: ${summary.duplication.alert_triggered ? "⚠️ TRIGGERED" : "✅ NORMAL"}`,
+    `- **Alert Status**: ${
+      summary.duplication.alert_triggered ? "⚠️ TRIGGERED" : "✅ NORMAL"
+    }`,
   );
   lines.push("");
 
@@ -970,16 +990,24 @@ function generateMarkdownReport(
     summary.qtype_distribution.distributions,
   )) {
     lines.push(
-      `| ${qtype} | ${(data as any).count} | ${((data as any).ratio * 100).toFixed(1)}% |`,
+      `| ${qtype} | ${(data as any).count} | ${(
+        (data as any).ratio * 100
+      ).toFixed(1)}% |`,
     );
   }
   lines.push("");
   lines.push(
-    `- **Imbalance Score**: ${summary.qtype_distribution.imbalance_score.toFixed(3)}`,
+    `- **Imbalance Score**: ${summary.qtype_distribution.imbalance_score.toFixed(
+      3,
+    )}`,
   );
   lines.push(`- **Entropy**: ${summary.qtype_distribution.entropy.toFixed(3)}`);
   lines.push(
-    `- **Missing Categories**: ${summary.qtype_distribution.missing_categories.length > 0 ? summary.qtype_distribution.missing_categories.join(", ") : "None"}`,
+    `- **Missing Categories**: ${
+      summary.qtype_distribution.missing_categories.length > 0
+        ? summary.qtype_distribution.missing_categories.join(", ")
+        : "None"
+    }`,
   );
   lines.push("");
 
@@ -987,13 +1015,19 @@ function generateMarkdownReport(
   lines.push("## 3. Coverage Analysis");
   lines.push("");
   lines.push(
-    `- **Entity Coverage**: ${(summary.coverage.entity_coverage_rate * 100).toFixed(1)}%`,
+    `- **Entity Coverage**: ${(
+      summary.coverage.entity_coverage_rate * 100
+    ).toFixed(1)}%`,
   );
   lines.push(
-    `- **Section Coverage**: ${(summary.coverage.section_coverage_rate * 100).toFixed(1)}%`,
+    `- **Section Coverage**: ${(
+      summary.coverage.section_coverage_rate * 100
+    ).toFixed(1)}%`,
   );
   lines.push(
-    `- **Overall Coverage Score**: ${(summary.coverage.overall_score * 100).toFixed(1)}%`,
+    `- **Overall Coverage Score**: ${(
+      summary.coverage.overall_score * 100
+    ).toFixed(1)}%`,
   );
   if (summary.coverage.critical_gaps.length > 0) {
     lines.push(`- **Critical Gaps**:`);
@@ -1018,18 +1052,28 @@ function generateMarkdownReport(
   lines.push("| Metric | Value | Status |");
   lines.push("|--------|-------|--------|");
   lines.push(
-    `| **Citation Presence %** | **${(summary.evidence_quality.presence_rate * 100).toFixed(1)}%** | ${evidenceIcon} |`,
+    `| **Citation Presence %** | **${(
+      summary.evidence_quality.presence_rate * 100
+    ).toFixed(1)}%** | ${evidenceIcon} |`,
   );
   lines.push(
-    `| **Snippet Alignment %** | **${(summary.evidence_quality.alignment_mean * 100).toFixed(1)}%** | ${alignmentIcon} |`,
+    `| **Snippet Alignment %** | **${(
+      summary.evidence_quality.alignment_mean * 100
+    ).toFixed(1)}%** | ${alignmentIcon} |`,
   );
   lines.push(
-    `| **95th Percentile Alignment** | ${summary.evidence_quality.alignment_p95.toFixed(3)} | - |`,
+    `| **95th Percentile Alignment** | ${summary.evidence_quality.alignment_p95.toFixed(
+      3,
+    )} | - |`,
   );
   lines.push("");
 
   lines.push(
-    `- **Alert Status**: ${summary.evidence_quality.alert_triggered ? "⚠️ QUALITY ISSUES" : "✅ NORMAL"}`,
+    `- **Alert Status**: ${
+      summary.evidence_quality.alert_triggered
+        ? "⚠️ QUALITY ISSUES"
+        : "✅ NORMAL"
+    }`,
   );
   lines.push("");
 
@@ -1042,33 +1086,39 @@ function generateMarkdownReport(
       summary.citation_quality.valid_rate >= 0.8
         ? "✅"
         : summary.citation_quality.valid_rate >= 0.6
-          ? "⚠️"
-          : "❌";
+        ? "⚠️"
+        : "❌";
     const alignmentIcon =
       summary.citation_quality.avg_alignment_score >= 0.6
         ? "✅"
         : summary.citation_quality.avg_alignment_score >= 0.4
-          ? "⚠️"
-          : "❌";
+        ? "⚠️"
+        : "❌";
     const coverageIcon =
       summary.citation_quality.avg_coverage >= 0.5
         ? "✅"
         : summary.citation_quality.avg_coverage >= 0.3
-          ? "⚠️"
-          : "❌";
+        ? "⚠️"
+        : "❌";
 
     lines.push("### 📚 Citation Validation Metrics");
     lines.push("");
     lines.push("| Metric | Value | Status |");
     lines.push("|--------|-------|--------|");
     lines.push(
-      `| **Valid Citations Rate** | **${(summary.citation_quality.valid_rate * 100).toFixed(1)}%** | ${validRateIcon} |`,
+      `| **Valid Citations Rate** | **${(
+        summary.citation_quality.valid_rate * 100
+      ).toFixed(1)}%** | ${validRateIcon} |`,
     );
     lines.push(
-      `| **Avg Alignment Score** | **${(summary.citation_quality.avg_alignment_score * 100).toFixed(1)}%** | ${alignmentIcon} |`,
+      `| **Avg Alignment Score** | **${(
+        summary.citation_quality.avg_alignment_score * 100
+      ).toFixed(1)}%** | ${alignmentIcon} |`,
     );
     lines.push(
-      `| **Avg Citation Coverage** | **${(summary.citation_quality.avg_coverage * 100).toFixed(1)}%** | ${coverageIcon} |`,
+      `| **Avg Citation Coverage** | **${(
+        summary.citation_quality.avg_coverage * 100
+      ).toFixed(1)}%** | ${coverageIcon} |`,
     );
     lines.push(
       `| **Total Citations** | ${summary.citation_quality.total_citations} | - |`,
@@ -1082,10 +1132,12 @@ function generateMarkdownReport(
       summary.citation_quality.evidence_usage_rate >= 0.8
         ? "✅"
         : summary.citation_quality.evidence_usage_rate >= 0.5
-          ? "⚠️"
-          : "❌";
+        ? "⚠️"
+        : "❌";
     lines.push(
-      `- **Evidence Usage Rate**: ${(summary.citation_quality.evidence_usage_rate * 100).toFixed(1)}% ${usageIcon}`,
+      `- **Evidence Usage Rate**: ${(
+        summary.citation_quality.evidence_usage_rate * 100
+      ).toFixed(1)}% ${usageIcon}`,
     );
     lines.push(
       `- **Unused Evidence**: ${summary.citation_quality.unused_evidence_count} / ${summary.citation_quality.total_evidence_count}`,
@@ -1093,7 +1145,9 @@ function generateMarkdownReport(
     lines.push("");
 
     lines.push(
-      `- **Quality Gate**: ${summary.citation_quality.alert_triggered ? "❌ FAILED" : "✅ PASSED"}`,
+      `- **Quality Gate**: ${
+        summary.citation_quality.alert_triggered ? "❌ FAILED" : "✅ PASSED"
+      }`,
     );
     lines.push("");
   }
@@ -1102,7 +1156,9 @@ function generateMarkdownReport(
   lines.push("## 5. Hallucination Detection");
   lines.push("");
   lines.push(
-    `- **Hallucination Rate**: ${((summary.hallucination?.rate || 0) * 100).toFixed(2)}%`,
+    `- **Hallucination Rate**: ${(
+      (summary.hallucination?.rate || 0) * 100
+    ).toFixed(2)}%`,
   );
   lines.push(`- **High Risk Cases**: ${summary.hallucination.high_risk_count}`);
   lines.push("");
@@ -1129,7 +1185,11 @@ function generateMarkdownReport(
     `- **Total Violations**: ${summary.pii_license?.total_violations || 0}`,
   );
   lines.push(
-    `- **Compliance Status**: ${summary.pii_license?.alert_triggered ? "🚨 VIOLATIONS DETECTED" : "✅ COMPLIANT"}`,
+    `- **Compliance Status**: ${
+      summary.pii_license?.alert_triggered
+        ? "🚨 VIOLATIONS DETECTED"
+        : "✅ COMPLIANT"
+    }`,
   );
   lines.push("");
 
@@ -1141,7 +1201,9 @@ function generateMarkdownReport(
   lines.push(`- **Latency P50**: ${summary.latency_p50_ms.toFixed(0)}ms`);
   lines.push(`- **Latency P95**: ${summary.latency_p95_ms.toFixed(0)}ms`);
   lines.push(
-    `- **Budget Utilization**: ${(summary.budget_utilization * 100).toFixed(1)}%`,
+    `- **Budget Utilization**: ${(summary.budget_utilization * 100).toFixed(
+      1,
+    )}%`,
   );
   lines.push("");
 
@@ -1149,7 +1211,9 @@ function generateMarkdownReport(
   lines.push("## 8. Reproducibility Assessment");
   lines.push("");
   lines.push(
-    `- **Reproducibility Check**: ${summary.reproducibility_check.passed ? "✅ PASSED" : "⚠️ FAILED"}`,
+    `- **Reproducibility Check**: ${
+      summary.reproducibility_check.passed ? "✅ PASSED" : "⚠️ FAILED"
+    }`,
   );
   if (Object.keys(summary.reproducibility_check.deviations).length > 0) {
     lines.push(`- **Deviations**:`);
@@ -1308,8 +1372,9 @@ export async function generateBaselineReports(
     // Perform auto-calibration if enabled
     if (enableAutocalibration) {
       console.log(`📈 Running auto-calibration...`);
-      calibrationResults =
-        await thresholdManager.autoCalibrateThresholds(profile);
+      calibrationResults = await thresholdManager.autoCalibrateThresholds(
+        profile,
+      );
 
       if (calibrationResults.length > 0) {
         console.log(
@@ -1372,7 +1437,9 @@ export async function generateBaselineReports(
 
       if (!result.valid) {
         console.warn(
-          `❌ Schema validation failed for record ${i}: ${result.errors?.join(", ")}`,
+          `❌ Schema validation failed for record ${i}: ${result.errors?.join(
+            ", ",
+          )}`,
         );
       }
     }

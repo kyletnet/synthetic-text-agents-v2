@@ -94,8 +94,8 @@ async function getRealTimeMetrics() {
           metrics.activeTraces > 100
             ? "high"
             : metrics.activeTraces > 50
-              ? "medium"
-              : "low",
+            ? "medium"
+            : "low",
       },
       timestamp: new Date().toISOString(),
     },

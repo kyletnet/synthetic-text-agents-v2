@@ -300,7 +300,9 @@ export class QuickCheck {
     const successCount = results.filter((r) => r.success).length;
 
     console.log(
-      `\\n📊 Summary: ${successCount}/${results.length} checks passed in ${Math.round(totalDuration / 1000)}s`,
+      `\\n📊 Summary: ${successCount}/${
+        results.length
+      } checks passed in ${Math.round(totalDuration / 1000)}s`,
     );
 
     results.forEach((result) => {

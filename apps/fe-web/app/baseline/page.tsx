@@ -236,7 +236,9 @@ const BaselineDashboard: React.FC = () => {
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 mb-8">
           <div className="text-center">
             <div
-              className={`text-6xl font-bold ${getScoreColor(report.overallScore)} mb-4`}
+              className={`text-6xl font-bold ${getScoreColor(
+                report.overallScore,
+              )} mb-4`}
             >
               {getScoreIcon(report.overallScore)} {report.overallScore}%
             </div>
@@ -375,7 +377,9 @@ const BaselineDashboard: React.FC = () => {
                   {metric.name}
                 </h3>
                 <span
-                  className={`px-2 py-1 rounded text-xs font-semibold ${getPriorityColor(metric.priority)}`}
+                  className={`px-2 py-1 rounded text-xs font-semibold ${getPriorityColor(
+                    metric.priority,
+                  )}`}
                 >
                   {metric.priority}
                 </span>
@@ -383,7 +387,9 @@ const BaselineDashboard: React.FC = () => {
 
               <div className="mb-4">
                 <div
-                  className={`text-3xl font-bold mb-2 ${getStatusColor(metric.status).split(" ")[0]}`}
+                  className={`text-3xl font-bold mb-2 ${
+                    getStatusColor(metric.status).split(" ")[0]
+                  }`}
                 >
                   {metric.value}
                   {metric.name.includes("Rate") ||
@@ -402,7 +408,9 @@ const BaselineDashboard: React.FC = () => {
                       : ""}
                   </span>
                   <span
-                    className={`px-2 py-1 rounded ${getStatusColor(metric.status)}`}
+                    className={`px-2 py-1 rounded ${getStatusColor(
+                      metric.status,
+                    )}`}
                   >
                     {metric.status.toUpperCase()}
                   </span>
@@ -421,11 +429,14 @@ const BaselineDashboard: React.FC = () => {
                       metric.status === "pass"
                         ? "bg-green-500"
                         : metric.status === "warn"
-                          ? "bg-yellow-500"
-                          : "bg-red-500"
+                        ? "bg-yellow-500"
+                        : "bg-red-500"
                     }`}
                     style={{
-                      width: `${Math.min(100, (metric.value / metric.threshold) * 100)}%`,
+                      width: `${Math.min(
+                        100,
+                        (metric.value / metric.threshold) * 100,
+                      )}%`,
                     }}
                   />
                 </div>

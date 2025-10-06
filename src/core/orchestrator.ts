@@ -302,8 +302,12 @@ export class Orchestrator {
         const qaCount = 3; // Minimal demo
         for (let i = 0; i < qaCount; i++) {
           questions.push({
-            question: `Demo Question ${i + 1}: This is a demonstration question in dry-run mode.`,
-            answer: `Demo Answer ${i + 1}: This is a demonstration answer. Enable real API to get actual AI-generated content.`,
+            question: `Demo Question ${
+              i + 1
+            }: This is a demonstration question in dry-run mode.`,
+            answer: `Demo Answer ${
+              i + 1
+            }: This is a demonstration answer. Enable real API to get actual AI-generated content.`,
             confidence: 0.5,
             domain: "demo",
           });
@@ -314,8 +318,12 @@ export class Orchestrator {
         const qaCount = 3;
         for (let i = 0; i < qaCount; i++) {
           questions.push({
-            question: `Offline Question ${i + 1}: System operating in offline mode without API connectivity.`,
-            answer: `Offline Answer ${i + 1}: This content was generated in offline mode. Configure API keys for AI-generated content.`,
+            question: `Offline Question ${
+              i + 1
+            }: System operating in offline mode without API connectivity.`,
+            answer: `Offline Answer ${
+              i + 1
+            }: This content was generated in offline mode. Configure API keys for AI-generated content.`,
             confidence: 0.6,
             domain: "offline-fallback",
           });

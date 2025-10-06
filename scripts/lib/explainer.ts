@@ -67,7 +67,9 @@ export class Explainer {
     const fileList = item.files?.slice(0, 3).join(", ") || "unknown files";
 
     return {
-      summary: `${count} TypeScript type error${count > 1 ? "s" : ""} blocking build`,
+      summary: `${count} TypeScript type error${
+        count > 1 ? "s" : ""
+      } blocking build`,
 
       why: `TypeScript errors prevent the project from compiling, which means:
 • Developer workflow is completely blocked
@@ -106,7 +108,9 @@ This is a BLOCKER for all downstream work.`,
     const isError = item.description.toLowerCase().includes("error");
 
     return {
-      summary: `${count} ESLint ${isError ? "errors" : "warnings"} need attention`,
+      summary: `${count} ESLint ${
+        isError ? "errors" : "warnings"
+      } need attention`,
 
       why: isError
         ? `ESLint ERRORS indicate violations of critical coding standards:
@@ -141,7 +145,9 @@ While not critical, fixing these prevents future technical debt.`,
       },
 
       decisionCriteria: [
-        `Are there errors (not warnings)? → Priority: ${isError ? "HIGH" : "MEDIUM"}`,
+        `Are there errors (not warnings)? → Priority: ${
+          isError ? "HIGH" : "MEDIUM"
+        }`,
         "Does this affect core business logic? → Fix first",
         "Is this in legacy code being phased out? → Defer or suppress",
       ],
@@ -252,8 +258,8 @@ Industry research shows files >500 lines have 2-3x higher bug rates.`,
           filesAffected < 3
             ? "1 day"
             : filesAffected < 10
-              ? "1 week"
-              : "2 weeks",
+            ? "1 week"
+            : "2 weeks",
       },
 
       decisionCriteria: [

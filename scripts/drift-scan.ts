@@ -250,8 +250,8 @@ class DriftScanner {
           drift.status === "error"
             ? "🔴"
             : drift.status === "expired"
-              ? "⏰"
-              : "⚠️";
+            ? "⏰"
+            : "⚠️";
 
         console.log(`${icon} ${drift.doc}`);
         console.log(`   Status: ${drift.status.toUpperCase()}`);

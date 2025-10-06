@@ -130,7 +130,11 @@ export class AdaptiveExecutionEngine extends EventEmitter {
       console.log(`   Strategy: ${decision.execution}`);
       console.log(`   Reasoning: ${decision.reasoning}`);
       console.log(
-        `   Trade-offs: P=${Math.round(decision.tradeoffs.performance * 100)}% S=${Math.round(decision.tradeoffs.safety * 100)}% U=${Math.round(decision.tradeoffs.usability * 100)}%`,
+        `   Trade-offs: P=${Math.round(
+          decision.tradeoffs.performance * 100,
+        )}% S=${Math.round(decision.tradeoffs.safety * 100)}% U=${Math.round(
+          decision.tradeoffs.usability * 100,
+        )}%`,
       );
 
       const startTime = performance.now();
@@ -236,7 +240,9 @@ export class AdaptiveExecutionEngine extends EventEmitter {
     console.log(`📋 Executing batch of ${operations.length} operations`);
     console.log(`   Execution plan: ${executionPlan.strategy}`);
     console.log(
-      `   Estimated duration: ${Math.round(executionPlan.estimatedDuration / 1000)}s`,
+      `   Estimated duration: ${Math.round(
+        executionPlan.estimatedDuration / 1000,
+      )}s`,
     );
 
     let completed = 0;
@@ -250,7 +256,9 @@ export class AdaptiveExecutionEngine extends EventEmitter {
               operationId: "batch",
               stage: operation.name,
               percentage: (completed / totalOperations) * 100,
-              message: `Executing ${operation.name} (${completed + 1}/${totalOperations})`,
+              message: `Executing ${operation.name} (${
+                completed + 1
+              }/${totalOperations})`,
             });
 
             const result = await this.execute(
@@ -345,7 +353,9 @@ export class AdaptiveExecutionEngine extends EventEmitter {
         operationId: "batch",
         stage: "Complete",
         percentage: 100,
-        message: `Batch execution complete: ${results.filter((r) => r.success).length}/${totalOperations} successful`,
+        message: `Batch execution complete: ${
+          results.filter((r) => r.success).length
+        }/${totalOperations} successful`,
       });
 
       return results;
@@ -416,7 +426,9 @@ export class AdaptiveExecutionEngine extends EventEmitter {
       decision.execution !== "user-guided" &&
       operation.type !== "evolution"
     ) {
-      const cacheKey = `${operation.name}-${JSON.stringify(operation.metadata)}`;
+      const cacheKey = `${operation.name}-${JSON.stringify(
+        operation.metadata,
+      )}`;
       cachedResult = await perfCache.get(cacheKey, {
         ttl: this.getCacheTTL(operation.type),
         checkFileChanges: true,
@@ -492,7 +504,9 @@ export class AdaptiveExecutionEngine extends EventEmitter {
 
     // Cache successful results
     if (result.success && !cachedResult && operation.type !== "evolution") {
-      const cacheKey = `${operation.name}-${JSON.stringify(operation.metadata)}`;
+      const cacheKey = `${operation.name}-${JSON.stringify(
+        operation.metadata,
+      )}`;
       await perfCache.set(cacheKey, result.output || "success", {
         ttl: this.getCacheTTL(operation.type),
       });
@@ -818,7 +832,9 @@ export class AdaptiveExecutionEngine extends EventEmitter {
       description: `Execute operation with ${decision.execution} strategy`,
       command: operation.command,
       riskLevel: this.getRiskLevel(operation),
-      impact: `Strategy: ${decision.execution}, Expected duration: ${Math.round(decision.expectedOutcome.duration / 1000)}s`,
+      impact: `Strategy: ${decision.execution}, Expected duration: ${Math.round(
+        decision.expectedOutcome.duration / 1000,
+      )}s`,
     });
 
     return result.approved;

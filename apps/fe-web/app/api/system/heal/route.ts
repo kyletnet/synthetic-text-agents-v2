@@ -59,7 +59,9 @@ async function healHandler(request: NextRequest) {
       switch (action) {
         case "heal":
           console.log(
-            `🔄 [Heal API] Manual healing requested${actionType ? ` for: ${actionType}` : ""}`,
+            `🔄 [Heal API] Manual healing requested${
+              actionType ? ` for: ${actionType}` : ""
+            }`,
           );
 
           const healingResults = await selfHealingEngine.manualHeal(actionType);

@@ -1,0 +1,66 @@
+{
+  "schemaVersion": "2025-10-quality-v1",
+  "timestamp": "2025-10-06T13:58:01.719Z",
+  "phase": "Phase 2",
+  "guideline_compliance": {
+    "score": 0.9999999999999999,
+    "version": "1.0",
+    "breakdown": {
+      "question_types": 1,
+      "answer_structure": 1,
+      "number_formats": 1,
+      "prohibitions": 1
+    }
+  },
+  "violations": [
+    {
+      "id": "align-qa-p2-001",
+      "severity": "high",
+      "category": "evidence_alignment",
+      "description": "답변과 Evidence 정렬도가 낮습니다 (19.1%)",
+      "location": {
+        "qaId": "qa-p2-001",
+        "field": "answer"
+      },
+      "suggestion": "Evidence에 기반한 답변으로 수정하세요"
+    },
+    {
+      "id": "align-qa-p2-002",
+      "severity": "high",
+      "category": "evidence_alignment",
+      "description": "답변과 Evidence 정렬도가 낮습니다 (15.9%)",
+      "location": {
+        "qaId": "qa-p2-002",
+        "field": "answer"
+      },
+      "suggestion": "Evidence에 기반한 답변으로 수정하세요"
+    },
+    {
+      "id": "align-qa-p2-003",
+      "severity": "high",
+      "category": "evidence_alignment",
+      "description": "답변과 Evidence 정렬도가 낮습니다 (3.5%)",
+      "location": {
+        "qaId": "qa-p2-003",
+        "field": "answer"
+      },
+      "suggestion": "Evidence에 기반한 답변으로 수정하세요"
+    }
+  ],
+  "recommendations": [],
+  "evidence_metrics": {
+    "snippet_alignment": 0.12839019995349918,
+    "citation_presence": 1,
+    "context_precision": 1,
+    "context_recall": 1,
+    "retrieval_quality_score": 0.6513560799813998
+  },
+  "shadow_metrics": {
+    "hybrid_search": {
+      "improvement_delta": -0.09793627297155044,
+      "bm25_avg": 0,
+      "vector_avg": 0,
+      "hybrid_avg": 0.14280446776919029
+    }
+  }
+}

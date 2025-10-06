@@ -278,7 +278,9 @@ class DocumentationAuditor {
 
     console.log(`\n📊 Audit Summary:`);
     console.log(
-      `   Overall: ${report.overall === "PASS" ? "✅" : "❌"} ${report.overall}`,
+      `   Overall: ${report.overall === "PASS" ? "✅" : "❌"} ${
+        report.overall
+      }`,
     );
     console.log(`   Critical issues: ${report.summary.critical}`);
     console.log(`   Warnings: ${report.summary.warning}`);

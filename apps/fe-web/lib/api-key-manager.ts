@@ -177,7 +177,9 @@ class APIKeyManager {
 
     const currentKey = this.keys[this.currentIndex];
     console.log(
-      `Rotated to key: ${currentKey?.name || "UNKNOWN"} (rotation #${this.rotationCount})`,
+      `Rotated to key: ${currentKey?.name || "UNKNOWN"} (rotation #${
+        this.rotationCount
+      })`,
     );
   }
 

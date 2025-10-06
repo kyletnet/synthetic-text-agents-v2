@@ -622,7 +622,9 @@ export class ThresholdManager {
         "utf-8",
       );
       console.log(
-        `Applied ${results.filter((r) => r.applied).length} threshold calibrations to ${this.configPath}`,
+        `Applied ${
+          results.filter((r) => r.applied).length
+        } threshold calibrations to ${this.configPath}`,
       );
     }
   }
@@ -700,7 +702,11 @@ export class ThresholdManager {
       currentMetrics.evidence_missing_rate >
       p0Thresholds.evidence_missing_rate_max
     ) {
-      const violation = `Evidence missing rate: ${(currentMetrics.evidence_missing_rate * 100).toFixed(1)}% > ${(p0Thresholds.evidence_missing_rate_max * 100).toFixed(1)}%`;
+      const violation = `Evidence missing rate: ${(
+        currentMetrics.evidence_missing_rate * 100
+      ).toFixed(1)}% > ${(p0Thresholds.evidence_missing_rate_max * 100).toFixed(
+        1,
+      )}%`;
       p0Violations.push(violation);
       violations.push({
         level: "P0",
@@ -716,7 +722,11 @@ export class ThresholdManager {
     if (
       currentMetrics.hallucination_rate > p0Thresholds.hallucination_rate_max
     ) {
-      const violation = `Hallucination rate: ${(currentMetrics.hallucination_rate * 100).toFixed(1)}% > ${(p0Thresholds.hallucination_rate_max * 100).toFixed(1)}%`;
+      const violation = `Hallucination rate: ${(
+        currentMetrics.hallucination_rate * 100
+      ).toFixed(1)}% > ${(p0Thresholds.hallucination_rate_max * 100).toFixed(
+        1,
+      )}%`;
       p0Violations.push(violation);
       violations.push({
         level: "P0",
@@ -796,7 +806,9 @@ export class ThresholdManager {
   ): void {
     // Cost per item
     if (metrics.cost_per_item >= thresholds.cost_per_item_fail) {
-      const msg = `Cost per item FAIL: $${metrics.cost_per_item.toFixed(3)} >= $${thresholds.cost_per_item_fail}`;
+      const msg = `Cost per item FAIL: $${metrics.cost_per_item.toFixed(
+        3,
+      )} >= $${thresholds.cost_per_item_fail}`;
       warnings.push(msg);
       violations.push({
         level: "P1",
@@ -808,7 +820,9 @@ export class ThresholdManager {
         message: msg,
       });
     } else if (metrics.cost_per_item >= thresholds.cost_per_item_warn) {
-      const msg = `Cost per item WARN: $${metrics.cost_per_item.toFixed(3)} >= $${thresholds.cost_per_item_warn}`;
+      const msg = `Cost per item WARN: $${metrics.cost_per_item.toFixed(
+        3,
+      )} >= $${thresholds.cost_per_item_warn}`;
       warnings.push(msg);
       violations.push({
         level: "P1",
@@ -850,7 +864,9 @@ export class ThresholdManager {
 
     // Failure rate
     if (metrics.failure_rate >= thresholds.failure_rate_fail) {
-      const msg = `Failure rate FAIL: ${(metrics.failure_rate * 100).toFixed(1)}% >= ${(thresholds.failure_rate_fail * 100).toFixed(1)}%`;
+      const msg = `Failure rate FAIL: ${(metrics.failure_rate * 100).toFixed(
+        1,
+      )}% >= ${(thresholds.failure_rate_fail * 100).toFixed(1)}%`;
       warnings.push(msg);
       violations.push({
         level: "P1",
@@ -862,7 +878,9 @@ export class ThresholdManager {
         message: msg,
       });
     } else if (metrics.failure_rate >= thresholds.failure_rate_warn) {
-      const msg = `Failure rate WARN: ${(metrics.failure_rate * 100).toFixed(1)}% >= ${(thresholds.failure_rate_warn * 100).toFixed(1)}%`;
+      const msg = `Failure rate WARN: ${(metrics.failure_rate * 100).toFixed(
+        1,
+      )}% >= ${(thresholds.failure_rate_warn * 100).toFixed(1)}%`;
       warnings.push(msg);
       violations.push({
         level: "P1",
@@ -887,7 +905,11 @@ export class ThresholdManager {
   ): void {
     // Duplication rate (higher is worse)
     if (metrics.duplication_rate >= thresholds.duplication_rate_fail) {
-      const msg = `Duplication rate FAIL: ${(metrics.duplication_rate * 100).toFixed(1)}% >= ${(thresholds.duplication_rate_fail * 100).toFixed(1)}%`;
+      const msg = `Duplication rate FAIL: ${(
+        metrics.duplication_rate * 100
+      ).toFixed(1)}% >= ${(thresholds.duplication_rate_fail * 100).toFixed(
+        1,
+      )}%`;
       issues.push(msg);
       violations.push({
         level: "P2",
@@ -899,7 +921,11 @@ export class ThresholdManager {
         message: msg,
       });
     } else if (metrics.duplication_rate >= thresholds.duplication_rate_warn) {
-      const msg = `Duplication rate WARN: ${(metrics.duplication_rate * 100).toFixed(1)}% >= ${(thresholds.duplication_rate_warn * 100).toFixed(1)}%`;
+      const msg = `Duplication rate WARN: ${(
+        metrics.duplication_rate * 100
+      ).toFixed(1)}% >= ${(thresholds.duplication_rate_warn * 100).toFixed(
+        1,
+      )}%`;
       issues.push(msg);
       violations.push({
         level: "P2",
@@ -914,7 +940,9 @@ export class ThresholdManager {
 
     // Coverage rate (lower is worse)
     if (metrics.coverage_rate <= thresholds.coverage_rate_fail) {
-      const msg = `Coverage rate FAIL: ${(metrics.coverage_rate * 100).toFixed(1)}% <= ${(thresholds.coverage_rate_fail * 100).toFixed(1)}%`;
+      const msg = `Coverage rate FAIL: ${(metrics.coverage_rate * 100).toFixed(
+        1,
+      )}% <= ${(thresholds.coverage_rate_fail * 100).toFixed(1)}%`;
       issues.push(msg);
       violations.push({
         level: "P2",
@@ -926,7 +954,9 @@ export class ThresholdManager {
         message: msg,
       });
     } else if (metrics.coverage_rate <= thresholds.coverage_rate_warn) {
-      const msg = `Coverage rate WARN: ${(metrics.coverage_rate * 100).toFixed(1)}% <= ${(thresholds.coverage_rate_warn * 100).toFixed(1)}%`;
+      const msg = `Coverage rate WARN: ${(metrics.coverage_rate * 100).toFixed(
+        1,
+      )}% <= ${(thresholds.coverage_rate_warn * 100).toFixed(1)}%`;
       issues.push(msg);
       violations.push({
         level: "P2",
@@ -941,7 +971,9 @@ export class ThresholdManager {
 
     // Quality score (lower is worse)
     if (metrics.quality_score <= thresholds.quality_score_fail) {
-      const msg = `Quality score FAIL: ${(metrics.quality_score * 100).toFixed(1)}% <= ${(thresholds.quality_score_fail * 100).toFixed(1)}%`;
+      const msg = `Quality score FAIL: ${(metrics.quality_score * 100).toFixed(
+        1,
+      )}% <= ${(thresholds.quality_score_fail * 100).toFixed(1)}%`;
       issues.push(msg);
       violations.push({
         level: "P2",
@@ -953,7 +985,9 @@ export class ThresholdManager {
         message: msg,
       });
     } else if (metrics.quality_score <= thresholds.quality_score_warn) {
-      const msg = `Quality score WARN: ${(metrics.quality_score * 100).toFixed(1)}% <= ${(thresholds.quality_score_warn * 100).toFixed(1)}%`;
+      const msg = `Quality score WARN: ${(metrics.quality_score * 100).toFixed(
+        1,
+      )}% <= ${(thresholds.quality_score_warn * 100).toFixed(1)}%`;
       issues.push(msg);
       violations.push({
         level: "P2",

@@ -270,12 +270,16 @@ export function summarizeMetrics(metrics: MetricsAnalysis): {
   }
   if (metrics.evidence.presence_rate < 0.7) {
     critical_issues.push(
-      `Low evidence presence: ${(metrics.evidence.presence_rate * 100).toFixed(1)}%`,
+      `Low evidence presence: ${(metrics.evidence.presence_rate * 100).toFixed(
+        1,
+      )}%`,
     );
   }
   if (metrics.hallucination.rate > 0.05) {
     critical_issues.push(
-      `High hallucination rate: ${(metrics.hallucination.rate * 100).toFixed(1)}%`,
+      `High hallucination rate: ${(metrics.hallucination.rate * 100).toFixed(
+        1,
+      )}%`,
     );
   }
 
@@ -292,7 +296,9 @@ export function summarizeMetrics(metrics: MetricsAnalysis): {
   }
   if (metrics.failure_retry.failure_rate > 0.1) {
     warning_issues.push(
-      `High failure rate: ${(metrics.failure_retry.failure_rate * 100).toFixed(1)}%`,
+      `High failure rate: ${(metrics.failure_retry.failure_rate * 100).toFixed(
+        1,
+      )}%`,
     );
   }
 
@@ -304,7 +310,9 @@ export function summarizeMetrics(metrics: MetricsAnalysis): {
   }
   if (metrics.coverage.entity_coverage_rate < 0.7) {
     info_items.push(
-      `Low entity coverage: ${(metrics.coverage.entity_coverage_rate * 100).toFixed(1)}%`,
+      `Low entity coverage: ${(
+        metrics.coverage.entity_coverage_rate * 100
+      ).toFixed(1)}%`,
     );
   }
   if (metrics.failure_retry.dlq_count > 0) {

@@ -172,6 +172,7 @@ bash scripts/emergency-recovery.sh contact
 #### **📅 이번 달**
 
 5. **개발자 협업 규칙 정리**
+
    - 누가 어떤 파일 수정 가능한지
    - 코드 리뷰 프로세스
    - 배포 승인 절차

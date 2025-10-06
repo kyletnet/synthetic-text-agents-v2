@@ -385,7 +385,9 @@ export default UnifiedReportingDashboard;`;
     console.log("===========================");
     console.log(`📊 현재 점수: ${plan.currentScore}/100`);
     console.log(
-      `🎯 목표 점수: ${plan.targetScore}/100 (+${plan.targetScore - plan.currentScore})`,
+      `🎯 목표 점수: ${plan.targetScore}/100 (+${
+        plan.targetScore - plan.currentScore
+      })`,
     );
     console.log(
       `📈 예상 개선도: +${plan.expected_outcome.integration_score_gain}점`,

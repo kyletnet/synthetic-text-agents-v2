@@ -528,6 +528,7 @@ git push && gh pr create
 ### 즉시 (1주일)
 
 1. **제품화 방향 결정**
+
    - Web Console?
    - Agent Platform?
    - Plugin Sandbox?

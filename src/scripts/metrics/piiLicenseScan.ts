@@ -195,6 +195,7 @@ function scanForLicense(
     const keywordLower = keyword.toLowerCase();
     let searchStart = 0;
 
+    // eslint-disable-next-line no-constant-condition
     while (true) {
       const matchIndex = textLower.indexOf(keywordLower, searchStart);
       if (matchIndex === -1) break;
@@ -340,7 +341,9 @@ export function generatePiiLicenseReport(metrics: PiiLicenseMetrics): string {
   lines.push(`- **License Risk Items**: ${metrics.license_risk_hits}`);
   lines.push(`- **Total Violations**: ${metrics.total_violations}`);
   lines.push(
-    `- **Alert Status**: ${metrics.alert_triggered ? "🚨 VIOLATIONS DETECTED" : "✅ CLEAN"}`,
+    `- **Alert Status**: ${
+      metrics.alert_triggered ? "🚨 VIOLATIONS DETECTED" : "✅ CLEAN"
+    }`,
   );
   lines.push("");
 
@@ -367,13 +370,18 @@ export function generatePiiLicenseReport(metrics: PiiLicenseMetrics): string {
         match.risk_level === "high"
           ? "🔴"
           : match.risk_level === "medium"
-            ? "🟡"
-            : "🟢";
+          ? "🟡"
+          : "🟢";
       const maskedMatch = match.type === "pii" ? "***REDACTED***" : match.match;
       const location = `${match.location.field}[${match.location.index}]`;
 
       lines.push(
-        `| ${match.type.toUpperCase()} | ${riskIcon} ${match.risk_level} | ${maskedMatch} | ${match.context.substring(0, 50)}... | ${location} |`,
+        `| ${match.type.toUpperCase()} | ${riskIcon} ${
+          match.risk_level
+        } | ${maskedMatch} | ${match.context.substring(
+          0,
+          50,
+        )}... | ${location} |`,
       );
     }
     lines.push("");

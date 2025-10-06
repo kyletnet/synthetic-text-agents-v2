@@ -267,7 +267,9 @@ class GapConfigManager {
 
     console.log("\n" + "═".repeat(70));
     console.log(
-      `\nTotal: ${config.checks.length} checks (${config.checks.filter((c) => c.enabled).length} enabled)\n`,
+      `\nTotal: ${config.checks.length} checks (${
+        config.checks.filter((c) => c.enabled).length
+      } enabled)\n`,
     );
   }
 
@@ -286,7 +288,9 @@ class GapConfigManager {
       `   Fail On: ${config.globalSettings.failOn.join(", ") || "none"}`,
     );
     console.log(
-      `   Auto-fix: ${config.globalSettings.autoFix.enabled ? "enabled" : "disabled"}`,
+      `   Auto-fix: ${
+        config.globalSettings.autoFix.enabled ? "enabled" : "disabled"
+      }`,
     );
     console.log(
       `   Max Auto-fix Severity: ${config.globalSettings.autoFix.maxSeverity}`,
@@ -336,7 +340,9 @@ class GapConfigManager {
     console.log(`   Version: ${config.version}`);
     console.log(`   Mode: ${config.globalSettings.mode}`);
     console.log(
-      `   Checks: ${config.checks.length} (${config.checks.filter((c) => c.enabled).length} enabled)`,
+      `   Checks: ${config.checks.length} (${
+        config.checks.filter((c) => c.enabled).length
+      } enabled)`,
     );
     console.log(`   Teams: ${Object.keys(config.teams).length}`);
   }

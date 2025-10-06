@@ -38,7 +38,9 @@ export async function generateJSON<T = unknown>(args: {
     appendJSONL(`RUN_LOGS/${runId}.jsonl`, payload);
 
   if (DRY) {
-    const mock = `{"mock": true, "note": "dry-run enabled; showing prompt only", "preview": ${JSON.stringify(args.prompt.slice(0, 200))}}`;
+    const mock = `{"mock": true, "note": "dry-run enabled; showing prompt only", "preview": ${JSON.stringify(
+      args.prompt.slice(0, 200),
+    )}}`;
     metaLog({
       ts: new Date().toISOString(),
       type: "llm.dry",

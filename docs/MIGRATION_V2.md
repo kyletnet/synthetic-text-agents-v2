@@ -105,17 +105,20 @@ npm run fix        # 3. 대화형 수정 (캐시 읽기)
 **모든 작업에 적용되는 거버넌스:**
 
 1. **Preflight Checks** - 실행 전 검증
+
    - 환경 변수 확인
    - 캐시 유효성 검증
    - Git 상태 확인
    - 거버넌스 규칙 검증
 
 2. **Snapshot Capture** - 실행 전후 시스템 상태 캡처
+
    - 파일 해시 기록
    - 의존성 변경 추적
    - 예상치 못한 변경 감지
 
 3. **Post-Verification** - 실행 후 검증
+
    - TypeScript 컴파일 확인
    - ESLint 검사
    - 스냅샷 비교

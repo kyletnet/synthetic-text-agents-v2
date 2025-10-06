@@ -258,8 +258,9 @@ class FullSystemTestRunner {
       }
 
       // Test auto-calibration
-      const calibrationResults =
-        await thresholdManager.autoCalibrateThresholds("dev");
+      const calibrationResults = await thresholdManager.autoCalibrateThresholds(
+        "dev",
+      );
 
       // Assertions
       assert(

@@ -89,6 +89,7 @@ Profile: stage
 ### 즉시 조치 항목
 
 1. **approval system timeout 개선 완료** ✅
+
    - GPT 조언 기반 큐 시스템 도입 완료
    - 타임아웃 시 건너뛰기 → 큐 저장으로 변경
    - 리스크별 차등 타임아웃 적용

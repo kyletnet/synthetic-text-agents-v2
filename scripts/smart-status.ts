@@ -201,8 +201,8 @@ function displayReport(report: StatusReport): void {
     report.overallHealth >= 8
       ? "EXCELLENT"
       : report.overallHealth >= 6
-        ? "GOOD"
-        : "NEEDS ATTENTION";
+      ? "GOOD"
+      : "NEEDS ATTENTION";
 
   console.log(
     `${healthIcon} SYSTEM HEALTH: ${healthStatus} (${report.overallHealth}/10)`,

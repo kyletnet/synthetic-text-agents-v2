@@ -415,7 +415,9 @@ export class CheckpointManager {
     const startIndex = resumeInfo ? resumeInfo.last_successful_index + 1 : 0;
 
     console.log(
-      `[CHECKPOINT] Resuming execution from index ${startIndex} (${items.length - startIndex} remaining)`,
+      `[CHECKPOINT] Resuming execution from index ${startIndex} (${
+        items.length - startIndex
+      } remaining)`,
     );
 
     const results: any[] = [];

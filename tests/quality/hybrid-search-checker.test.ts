@@ -155,8 +155,7 @@ describe("HybridSearchChecker - Hybrid Scoring", () => {
     expect(hybridMetric).toBeDefined();
 
     // Hybrid should be weighted average (α=0.7 for vector, 0.3 for bm25)
-    const expectedHybrid =
-      0.7 * vectorMetric!.score + 0.3 * bm25Metric!.score;
+    const expectedHybrid = 0.7 * vectorMetric!.score + 0.3 * bm25Metric!.score;
 
     expect(hybridMetric!.score).toBeCloseTo(expectedHybrid, 2);
   });

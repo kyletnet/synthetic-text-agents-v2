@@ -147,7 +147,13 @@ class UnifiedSystemDashboard {
       const registryData = registry.getRegistryData();
       console.log(`   📊 Total Components: ${registryData.totalComponents}`);
       console.log(
-        `   ✅ Compliant: ${registryData.complianceStats.compliant} (${Math.round((registryData.complianceStats.compliant / registryData.totalComponents) * 100)}%)`,
+        `   ✅ Compliant: ${
+          registryData.complianceStats.compliant
+        } (${Math.round(
+          (registryData.complianceStats.compliant /
+            registryData.totalComponents) *
+            100,
+        )}%)`,
       );
       console.log(
         `   ❌ Violations: ${registryData.complianceStats.violations}`,
@@ -378,7 +384,9 @@ class UnifiedSystemDashboard {
 
       if (unusedScripts.length > 0) {
         console.log(
-          `⚠️ 미관리 스크립트: ${unusedScripts.slice(0, 5).join(", ")}${unusedScripts.length > 5 ? "..." : ""}`,
+          `⚠️ 미관리 스크립트: ${unusedScripts.slice(0, 5).join(", ")}${
+            unusedScripts.length > 5 ? "..." : ""
+          }`,
         );
       }
 

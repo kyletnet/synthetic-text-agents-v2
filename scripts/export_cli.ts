@@ -283,7 +283,10 @@ export class BaselineExporter {
     }
 
     console.log(
-      `Input validation passed: ${validCount}/${Math.min(3, lines.length)} sample lines are valid JSON`,
+      `Input validation passed: ${validCount}/${Math.min(
+        3,
+        lines.length,
+      )} sample lines are valid JSON`,
     );
   }
 }

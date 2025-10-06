@@ -85,7 +85,9 @@ class QuickDocUpdater {
   }
 
   private updateTimestamp(content: string): string {
-    const timestamp = `_Last updated: ${new Date().toLocaleDateString("ko-KR")}_`;
+    const timestamp = `_Last updated: ${new Date().toLocaleDateString(
+      "ko-KR",
+    )}_`;
 
     // 기존 타임스탬프 패턴 찾기
     const patterns = [
@@ -181,13 +183,19 @@ _Auto-updated by /sync_`;
 
 **As of ${new Date().toLocaleDateString("ko-KR")}:**
 
-- ✅ TypeScript: ${stats.tsErrors === 0 ? "All errors resolved" : `${stats.tsErrors} errors remaining`}
+- ✅ TypeScript: ${
+      stats.tsErrors === 0
+        ? "All errors resolved"
+        : `${stats.tsErrors} errors remaining`
+    }
 - ✅ Build: ${stats.buildStatus}
 - ✅ Health Score: ${stats.healthScore}/10
 - 🤖 AI Systems: Active (fix, status, health reporting)
 - 📚 Documentation: Auto-synchronized
 
-**Ready for handoff**: ${stats.healthScore >= 8 ? "✅ YES" : "⚠️ Needs attention"}
+**Ready for handoff**: ${
+      stats.healthScore >= 8 ? "✅ YES" : "⚠️ Needs attention"
+    }
 
 ---`;
 

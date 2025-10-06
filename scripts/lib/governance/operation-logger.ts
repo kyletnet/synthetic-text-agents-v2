@@ -408,7 +408,9 @@ export class OperationLogger {
     console.log(`   Success: ${successCount}`);
     console.log(`   Failure: ${failureCount}`);
     console.log(
-      `   Success rate: ${result.total > 0 ? ((successCount / result.total) * 100).toFixed(1) : 0}%`,
+      `   Success rate: ${
+        result.total > 0 ? ((successCount / result.total) * 100).toFixed(1) : 0
+      }%`,
     );
     console.log(`   Log size: ${(this.getLogSize() / 1024).toFixed(2)} KB\n`);
   }

@@ -110,7 +110,9 @@ class ProjectCommandsServer {
           content: [
             {
               type: "text",
-              text: `Command executed successfully:\\n\\nSTDOUT:\\n${stdout}${stderr ? `\\n\\nSTDERR:\\n${stderr}` : ""}`,
+              text: `Command executed successfully:\\n\\nSTDOUT:\\n${stdout}${
+                stderr ? `\\n\\nSTDERR:\\n${stderr}` : ""
+              }`,
             },
           ],
         };

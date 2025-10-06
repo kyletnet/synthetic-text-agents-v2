@@ -249,7 +249,9 @@ export class EnhancedExporter {
             validCount++;
           } else {
             errors.push(
-              `Line ${i + 1}: ${validate.errors?.map((e) => e.message).join(", ")}`,
+              `Line ${i + 1}: ${validate.errors
+                ?.map((e) => e.message)
+                .join(", ")}`,
             );
           }
         } catch {

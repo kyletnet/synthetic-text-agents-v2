@@ -121,15 +121,18 @@ jobs:
 ### Defense in Depth
 
 1. **Layer 1: Execution Shims**
+
    - Immediate blocking of direct script execution
    - Clear error messages directing to unified launcher
 
 2. **Layer 2: Unified Launcher**
+
    - Centralized environment loading
    - Policy violation detection
    - Budget guards and safety checks
 
 3. **Layer 3: Health Monitoring**
+
    - Continuous coverage verification
    - Missing script detection
    - Registry integrity checks

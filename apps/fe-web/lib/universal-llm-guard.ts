@@ -154,8 +154,9 @@ export class UniversalLLMGuard {
         console.log(`🛡️ [Guard] Requesting authorization: ${context.method}`);
 
         // 🔒 Request execution authorization
-        const authorization =
-          await LLMExecutionAuthority.authorizeExecution(context);
+        const authorization = await LLMExecutionAuthority.authorizeExecution(
+          context,
+        );
 
         if (!authorization.authorized) {
           this.stats.executionsBlocked++;
@@ -351,12 +352,18 @@ export class UniversalLLMGuard {
 
   private static generateFallbackText(args: any[]): string {
     const prompt = args[0] || "default prompt";
-    return `[FALLBACK] Generated response for: "${prompt.substring(0, 50)}..." - This is a template response generated when LLM execution is not available.`;
+    return `[FALLBACK] Generated response for: "${prompt.substring(
+      0,
+      50,
+    )}..." - This is a template response generated when LLM execution is not available.`;
   }
 
   private static generateFallbackAugmentation(args: any[]): string {
     const [input, type] = args;
-    return `[FALLBACK] ${type} augmentation of: "${input?.substring(0, 50)}..." - Template augmentation result.`;
+    return `[FALLBACK] ${type} augmentation of: "${input?.substring(
+      0,
+      50,
+    )}..." - Template augmentation result.`;
   }
 
   private static generateFallbackEvaluation(args: any[]): any {

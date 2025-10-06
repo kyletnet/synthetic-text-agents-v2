@@ -13,8 +13,16 @@
  */
 
 import { execSync } from "child_process";
-import { existsSync, readdirSync, readFileSync, statSync } from "fs";
-import { join } from "path";
+import {
+  existsSync,
+  readdirSync,
+  readFileSync,
+  statSync,
+  writeFileSync,
+  mkdirSync,
+} from "fs";
+import { join, dirname } from "path";
+import type { SystemSnapshot } from "./lib/governance/snapshot.schema.js";
 
 class RollbackSystem {
   private projectRoot: string;
@@ -41,9 +49,70 @@ class RollbackSystem {
     console.log(`   Created: ${latest.timestamp}`);
     console.log(`   Files: ${latest.fileCount}\n`);
 
-    // TODO: Implement actual file restoration from snapshot
-    console.log("⚠️  Rollback mechanism not yet fully implemented");
-    console.log("💡 Manual rollback: git stash && git reset --hard HEAD~1");
+    // Load snapshot data
+    const snapshotPath = join(this.snapshotDir, `${latest.id}.json`);
+    const snapshot: SystemSnapshot = JSON.parse(
+      readFileSync(snapshotPath, "utf-8"),
+    );
+
+    console.log("🔄 Restoring files from snapshot...\n");
+
+    let restored = 0;
+    let skipped = 0;
+    let failed = 0;
+
+    // Restore each file from snapshot
+    for (const [relativePath, fileSnapshot] of Object.entries(snapshot.files)) {
+      try {
+        // Check if content is available
+        if (!fileSnapshot.content) {
+          console.log(`⚠️  Skipping ${relativePath} (no content in snapshot)`);
+          skipped++;
+          continue;
+        }
+
+        const fullPath = join(this.projectRoot, relativePath);
+
+        // Ensure directory exists
+        const dir = dirname(fullPath);
+        if (!existsSync(dir)) {
+          mkdirSync(dir, { recursive: true });
+        }
+
+        // Restore file content
+        writeFileSync(fullPath, fileSnapshot.content, "utf-8");
+
+        console.log(`✅ Restored: ${relativePath}`);
+        restored++;
+      } catch (error) {
+        console.error(
+          `❌ Failed to restore ${relativePath}: ${
+            error instanceof Error ? error.message : String(error)
+          }`,
+        );
+        failed++;
+      }
+    }
+
+    console.log("\n═".repeat(60));
+    console.log("📊 Rollback Summary:");
+    console.log(`   ✅ Restored: ${restored} files`);
+    console.log(`   ⚠️  Skipped: ${skipped} files`);
+    console.log(`   ❌ Failed: ${failed} files`);
+
+    if (failed > 0) {
+      console.log(
+        "\n⚠️  Some files failed to restore. Manual intervention may be required.",
+      );
+      process.exit(1);
+    } else if (skipped > 0) {
+      console.log("\n⚠️  Some files were skipped (no content in snapshot).");
+      console.log(
+        "💡 Consider creating a new snapshot to capture current state.",
+      );
+    } else {
+      console.log("\n✅ Rollback completed successfully!");
+    }
   }
 
   listSnapshots(): Array<{ id: string; timestamp: Date; fileCount: number }> {

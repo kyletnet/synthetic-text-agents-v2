@@ -16,12 +16,16 @@ const bins = score.bins || [];
 const bar = bins
   .map(
     (n, i) =>
-      `${(i / 10).toFixed(1)}–${((i + 1) / 10).toFixed(1)}│${"█".repeat(Math.min(40, n))} ${n}`,
+      `${(i / 10).toFixed(1)}–${((i + 1) / 10).toFixed(1)}│${"█".repeat(
+        Math.min(40, n),
+      )} ${n}`,
   )
   .join("\n");
 
 const head = `# Baseline-LLM Panel Report
-- Model: ${meta.model}  | Panel: ${meta.panelSize} | Mode: ${meta.mode} | Used: ${meta.used}/${meta.total}
+- Model: ${meta.model}  | Panel: ${meta.panelSize} | Mode: ${
+  meta.mode
+} | Used: ${meta.used}/${meta.total}
 - Pass threshold: ${meta.passThreshold}
 - Mean score: ${score.mean.toFixed(3)}
 - Pass rate: ${(score.passRate * 100).toFixed(1)}%
@@ -44,15 +48,16 @@ const best = results
 const casebook = `# Casebook (Hard cases)
 ${worst
   .map(
-    (
-      r,
-      idx,
-    ) => `## ${idx + 1}. score=${r.agg.median.toFixed(2)} ${r.agg.pass ? "(PASS)" : "(FAIL)"}
+    (r, idx) => `## ${idx + 1}. score=${r.agg.median.toFixed(2)} ${
+      r.agg.pass ? "(PASS)" : "(FAIL)"
+    }
 **Q**: ${r.q}
 **A**: ${r.a}
 ${r.doc ? `**Doc**: ${r.doc.slice(0, 400)}...` : ""}
 **Panel**
-${r.panel.map((p, i) => `- P${i + 1}: ${p.score.toFixed(2)} — ${p.comment}`).join("\n")}
+${r.panel
+  .map((p, i) => `- P${i + 1}: ${p.score.toFixed(2)} — ${p.comment}`)
+  .join("\n")}
 `,
   )
   .join("\n")}

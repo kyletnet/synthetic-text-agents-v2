@@ -185,7 +185,9 @@ export class MultiAgentOrchestrator {
 
     if (totalEstimatedCost > maxBudget) {
       decisions.budget_guardian_actions.push(
-        `Estimated cost $${totalEstimatedCost.toFixed(4)} exceeds budget $${maxBudget.toFixed(4)} - enabling fallback modes`,
+        `Estimated cost $${totalEstimatedCost.toFixed(
+          4,
+        )} exceeds budget $${maxBudget.toFixed(4)} - enabling fallback modes`,
       );
 
       return {
@@ -205,7 +207,9 @@ export class MultiAgentOrchestrator {
     }
 
     decisions.budget_guardian_actions.push(
-      `Budget approved: $${totalEstimatedCost.toFixed(4)} within limit $${maxBudget.toFixed(4)}`,
+      `Budget approved: $${totalEstimatedCost.toFixed(
+        4,
+      )} within limit $${maxBudget.toFixed(4)}`,
     );
 
     return {
@@ -297,7 +301,9 @@ export class MultiAgentOrchestrator {
     const diversityScore = Math.min(strategyVariation / 3, 1.0);
 
     decisions.diversity_planner_choices.push(
-      `Final strategy: Evidence=${evidenceStrategy}, Answer=${answerStrategy}, Audit=${auditStrategy} (diversity=${diversityScore.toFixed(2)})`,
+      `Final strategy: Evidence=${evidenceStrategy}, Answer=${answerStrategy}, Audit=${auditStrategy} (diversity=${diversityScore.toFixed(
+        2,
+      )})`,
     );
 
     return {
@@ -557,8 +563,8 @@ export class MultiAgentOrchestrator {
       complexity: hasComplexityIndicators
         ? "high"
         : multipleQuestionWords
-          ? "medium"
-          : "low",
+        ? "medium"
+        : "low",
       has_multiple_aspects: multipleQuestionWords,
       question_type:
         questionWords.find((word) => question.toLowerCase().includes(word)) ||
@@ -582,8 +588,8 @@ export class MultiAgentOrchestrator {
     return answerStyle === "comprehensive"
       ? 0.05
       : answerStyle === "focused"
-        ? 0.03
-        : 0.02;
+      ? 0.03
+      : 0.02;
   }
 
   private estimateAuditCost(input: OrchestrationInput): number {
@@ -592,8 +598,8 @@ export class MultiAgentOrchestrator {
     return auditDepth === "comprehensive"
       ? 0.02
       : auditDepth === "standard"
-        ? 0.01
-        : 0.005;
+      ? 0.01
+      : 0.005;
   }
 }
 

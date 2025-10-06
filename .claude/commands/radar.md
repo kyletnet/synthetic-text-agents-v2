@@ -36,23 +36,28 @@ allowed-tools: Bash(npx tsx scripts/radar-engine.ts)
 **`/inspect`보다 훨씬 깊게:**
 
 1. **테스트 커버리지 갭**
+
    - 핵심 파일 중 테스트 없는 것
    - 커버리지 0% 파일
 
 2. **거대 파일 분석 + 품질 영향**
+
    - 1000줄+ 파일 감지
    - 도메인 지식 vs 구조 문제 구분
    - P1 (리팩토링 권장) vs P2 (품질 필수)
 
 3. **중복 의존성**
+
    - package-lock.json 전체 분석
    - 버전 충돌 위험 감지
 
 4. **사용되지 않는 코드**
+
    - Unused exports
    - Dead code 패턴
 
 5. **보안 취약점**
+
    - npm audit 전체 스캔
 
 6. **워크어라운드 패턴**
@@ -143,10 +148,12 @@ allowed-tools: Bash(npx tsx scripts/radar-engine.ts)
 ## ⚠️ 주의사항
 
 1. **수정하지 마세요**
+
    - `/radar`는 발견만
    - 수정은 `/refactor` 또는 `/fix`
 
 2. **P2 항목 신중히**
+
    - P2 = 품질 필수 파일
    - 함부로 리팩토링하면 기능 저하
 

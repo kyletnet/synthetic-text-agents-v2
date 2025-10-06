@@ -61,7 +61,9 @@ class PerformanceMetricsReporter {
       export?: boolean;
     } = {},
   ): Promise<PerformanceReport> {
-    const reportId = `perf-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const reportId = `perf-${Date.now()}-${Math.random()
+      .toString(36)
+      .substr(2, 9)}`;
     const now = new Date();
     const period = this.calculatePeriod(options.period || "daily");
 
@@ -265,7 +267,9 @@ class PerformanceMetricsReporter {
       alerts.push({
         type: "latency_spike",
         severity: "high",
-        message: `Average latency (${avgLatency.toFixed(1)}ms) exceeds threshold (${this.alertThresholds.latencySpike}ms)`,
+        message: `Average latency (${avgLatency.toFixed(
+          1,
+        )}ms) exceeds threshold (${this.alertThresholds.latencySpike}ms)`,
         timestamp: new Date().toISOString(),
       });
     }
@@ -313,7 +317,9 @@ class PerformanceMetricsReporter {
 
 **Report ID**: \`${report.reportId}\`
 **Generated**: ${report.timestamp}
-**Period**: ${period.start.toLocaleString()} → ${period.end.toLocaleString()} (${period.duration})
+**Period**: ${period.start.toLocaleString()} → ${period.end.toLocaleString()} (${
+      period.duration
+    })
 
 ## 🎯 Performance Grade: ${metrics.trends.performanceGrade}
 
@@ -323,9 +329,15 @@ ${metrics.trends.recommendation}
 
 ### Message Routing Efficiency
 - **Total Messages**: ${metrics.totalMessages.toLocaleString()}
-- **Direct Mode**: ${metrics.routingEfficiency.directMode.count} (${metrics.routingEfficiency.directMode.percentage}) - Avg: ${metrics.routingEfficiency.directMode.avgLatency.toFixed(1)}ms
-- **Hub Mode**: ${metrics.routingEfficiency.hubMode.count} (${metrics.routingEfficiency.hubMode.percentage}) - Avg: ${metrics.routingEfficiency.hubMode.avgLatency.toFixed(1)}ms
-- **Fallback Mode**: ${metrics.routingEfficiency.fallbackMode.count} (${metrics.routingEfficiency.fallbackMode.percentage}) - Avg: ${metrics.routingEfficiency.fallbackMode.avgLatency.toFixed(1)}ms
+- **Direct Mode**: ${metrics.routingEfficiency.directMode.count} (${
+      metrics.routingEfficiency.directMode.percentage
+    }) - Avg: ${metrics.routingEfficiency.directMode.avgLatency.toFixed(1)}ms
+- **Hub Mode**: ${metrics.routingEfficiency.hubMode.count} (${
+      metrics.routingEfficiency.hubMode.percentage
+    }) - Avg: ${metrics.routingEfficiency.hubMode.avgLatency.toFixed(1)}ms
+- **Fallback Mode**: ${metrics.routingEfficiency.fallbackMode.count} (${
+      metrics.routingEfficiency.fallbackMode.percentage
+    }) - Avg: ${metrics.routingEfficiency.fallbackMode.avgLatency.toFixed(1)}ms
 
 ### Performance Improvements
 - **Latency Reduction**: ${metrics.performance.latencyReduction}
@@ -378,7 +390,9 @@ ${
     // Performance Grade
     const gradeEmoji = { A: "🏆", B: "🥈", C: "🥉", D: "⚠️" };
     console.log(
-      `${gradeEmoji[metrics.trends.performanceGrade]} **Performance Grade**: ${metrics.trends.performanceGrade}`,
+      `${gradeEmoji[metrics.trends.performanceGrade]} **Performance Grade**: ${
+        metrics.trends.performanceGrade
+      }`,
     );
     console.log(`💡 **Recommendation**: ${metrics.trends.recommendation}\n`);
 
@@ -398,13 +412,21 @@ ${
     // Message Distribution Summary
     console.log("🎯 **Routing Efficiency**:");
     console.log(
-      `   Direct: ${metrics.routingEfficiency.directMode.percentage} (${metrics.routingEfficiency.directMode.avgLatency.toFixed(1)}ms avg)`,
+      `   Direct: ${
+        metrics.routingEfficiency.directMode.percentage
+      } (${metrics.routingEfficiency.directMode.avgLatency.toFixed(1)}ms avg)`,
     );
     console.log(
-      `   Hub: ${metrics.routingEfficiency.hubMode.percentage} (${metrics.routingEfficiency.hubMode.avgLatency.toFixed(1)}ms avg)`,
+      `   Hub: ${
+        metrics.routingEfficiency.hubMode.percentage
+      } (${metrics.routingEfficiency.hubMode.avgLatency.toFixed(1)}ms avg)`,
     );
     console.log(
-      `   Fallback: ${metrics.routingEfficiency.fallbackMode.percentage} (${metrics.routingEfficiency.fallbackMode.avgLatency.toFixed(1)}ms avg)\n`,
+      `   Fallback: ${
+        metrics.routingEfficiency.fallbackMode.percentage
+      } (${metrics.routingEfficiency.fallbackMode.avgLatency.toFixed(
+        1,
+      )}ms avg)\n`,
     );
 
     // Risk Factors & Optimizations

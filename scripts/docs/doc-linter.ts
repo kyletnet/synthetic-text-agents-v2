@@ -96,7 +96,9 @@ class DocumentationLinter {
       issues.push({
         file,
         severity: "warning",
-        message: `File is very large (${(stats.size / 1024).toFixed(0)}KB) - consider splitting`,
+        message: `File is very large (${(stats.size / 1024).toFixed(
+          0,
+        )}KB) - consider splitting`,
       });
     }
 
@@ -176,7 +178,9 @@ class DocumentationLinter {
         issues.push({
           file: name,
           severity: "info",
-          message: `Duplicate filename in ${paths.length} locations: ${paths.join(", ")}`,
+          message: `Duplicate filename in ${
+            paths.length
+          } locations: ${paths.join(", ")}`,
         });
       }
     }
@@ -209,8 +213,8 @@ class DocumentationLinter {
             issue.severity === "error"
               ? "❌"
               : issue.severity === "warning"
-                ? "⚠️"
-                : "ℹ️";
+              ? "⚠️"
+              : "ℹ️";
           const location = issue.line ? `:${issue.line}` : "";
           console.log(`   ${icon} ${issue.message}${location}`);
         }
@@ -265,7 +269,9 @@ class DocumentationLinter {
 
     console.log(`\n📊 Linting Summary:`);
     console.log(
-      `   Overall: ${report.overall === "PASS" ? "✅" : "❌"} ${report.overall}`,
+      `   Overall: ${report.overall === "PASS" ? "✅" : "❌"} ${
+        report.overall
+      }`,
     );
     console.log(`   Errors: ${report.summary.errors}`);
     console.log(`   Warnings: ${report.summary.warnings}`);

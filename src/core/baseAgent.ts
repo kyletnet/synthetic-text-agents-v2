@@ -139,7 +139,11 @@ export abstract class BaseAgent implements IBaseAgent {
     output: unknown,
     _context?: AgentContext,
   ): Promise<string> {
-    return `Agent ${this.id} processed ${typeof input} input and produced ${typeof output} output using ${this.specialization} expertise.`;
+    return `Agent ${
+      this.id
+    } processed ${typeof input} input and produced ${typeof output} output using ${
+      this.specialization
+    } expertise.`;
   }
 
   protected async estimateTokensUsed(

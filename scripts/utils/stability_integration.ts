@@ -211,9 +211,8 @@ export class StabilityIntegration {
           // Handle budget violations
           if (budgetViolations.some((v) => v.action === "abort")) {
             emergencyStopTriggered = true;
-            stopReason = budgetViolations.find(
-              (v) => v.action === "abort",
-            )?.message;
+            stopReason = budgetViolations.find((v) => v.action === "abort")
+              ?.message;
             break;
           }
 
@@ -255,7 +254,11 @@ export class StabilityIntegration {
 
           processedItems++;
           console.log(
-            `[STABILITY] Completed item ${i + 1}/${items.length}: ${item.id} (Cost: $${itemCost.toFixed(4)}, Quality: ${itemResult.final_answer.quality_gate_result})`,
+            `[STABILITY] Completed item ${i + 1}/${items.length}: ${
+              item.id
+            } (Cost: $${itemCost.toFixed(4)}, Quality: ${
+              itemResult.final_answer.quality_gate_result
+            })`,
           );
         } catch (error) {
           failedItems++;
@@ -366,7 +369,9 @@ export class StabilityIntegration {
     if (budgetStatus.usage.remaining_budget_usd < estimatedCost) {
       return {
         allowed: false,
-        reason: `Insufficient budget remaining: $${budgetStatus.usage.remaining_budget_usd.toFixed(4)} < $${estimatedCost.toFixed(4)}`,
+        reason: `Insufficient budget remaining: $${budgetStatus.usage.remaining_budget_usd.toFixed(
+          4,
+        )} < $${estimatedCost.toFixed(4)}`,
       };
     }
 
@@ -446,18 +451,26 @@ export class StabilityIntegration {
 **Processing Summary:**
 - Items Processed: ${summary.processed_items}
 - Items Failed: ${summary.failed_items}
-- Success Rate: ${((summary.processed_items / (summary.processed_items + summary.failed_items)) * 100).toFixed(1)}%
+- Success Rate: ${(
+        (summary.processed_items /
+          (summary.processed_items + summary.failed_items)) *
+        100
+      ).toFixed(1)}%
 
 **Resource Usage:**
 - Total Cost: $${summary.total_cost_usd.toFixed(4)}
 - Total Latency: ${(summary.total_latency_ms / 1000).toFixed(1)}s
-- Average Cost per Item: $${(summary.total_cost_usd / Math.max(summary.processed_items, 1)).toFixed(4)}
+- Average Cost per Item: $${(
+        summary.total_cost_usd / Math.max(summary.processed_items, 1)
+      ).toFixed(4)}
 
 **Stability Features:**
 - Checkpoints Created: ${summary.checkpoints_created}
 - DLQ Entries: ${summary.dlq_entries}
 - Budget Guard Active: Yes
-- Kill Switch Monitoring: ${this.config.enable_hard_stop ? "Enabled" : "Disabled"}
+- Kill Switch Monitoring: ${
+        this.config.enable_hard_stop ? "Enabled" : "Disabled"
+      }
 
 **Budget Status:**
 ${JSON.stringify(this.budgetGuard.getBudgetStatus().usage, null, 2)}

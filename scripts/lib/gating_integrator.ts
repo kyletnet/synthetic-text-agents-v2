@@ -4,6 +4,7 @@ import {
 } from "../metrics/threshold_manager.js";
 import { createBudgetGuardian } from "./budget_guardian.js";
 import { getAgentLogger } from "./agent_logger.js";
+import { createManifestManager } from "./manifest_manager.js";
 
 /**
  * Gating Integrator
@@ -72,20 +73,21 @@ export class GatingIntegrator {
   private thresholdManager = createThresholdManager();
   private budgetGuardian = createBudgetGuardian();
   private logger = getAgentLogger();
+  private manifestManager = createManifestManager();
 
   /**
    * Evaluate session result based on metrics and context
    */
-  evaluateSessionResult(
+  async evaluateSessionResult(
     context: GatingContext,
     metrics: GatedMetrics,
     manifestHash?: string,
     budgetState?: any,
-  ): SessionResult {
+  ): Promise<SessionResult> {
     console.log(`🚪 Evaluating session result for ${context.run_id}...`);
 
     // Validate required conditions
-    const validations = this.validateRequiredConditions(
+    const validations = await this.validateRequiredConditions(
       context,
       metrics,
       manifestHash,
@@ -123,18 +125,18 @@ export class GatingIntegrator {
   /**
    * Validate required conditions before gating
    */
-  private validateRequiredConditions(
+  private async validateRequiredConditions(
     context: GatingContext,
     metrics: GatedMetrics,
     manifestHash?: string,
     budgetState?: any,
-  ): {
+  ): Promise<{
     cases_total_valid: boolean;
     threshold_compliance: boolean;
     manifest_integrity: boolean;
     budget_compliance: boolean;
     validation_errors: string[];
-  } {
+  }> {
     const errors: string[] = [];
 
     // 1. Cases total validation
@@ -155,7 +157,9 @@ export class GatingIntegrator {
     }
 
     // 3. Manifest integrity (if provided)
-    const manifestIntegrityOk = manifestHash ? true : true; // TODO: implement actual validation
+    const manifestIntegrityOk = manifestHash
+      ? await this.validateManifestIntegrity(manifestHash, context, metrics)
+      : true; // No manifest provided = skip validation
 
     // 4. Threshold compliance (basic sanity checks)
     const thresholdCompliance = this.validateThresholdSanity(metrics);
@@ -170,6 +174,172 @@ export class GatingIntegrator {
       budget_compliance: budgetCompliant,
       validation_errors: errors,
     };
+  }
+
+  /**
+   * Validate manifest integrity
+   *
+   * Ensures that the manifest hash matches the current metrics,
+   * preventing tampering with governance policies and data integrity.
+   *
+   * This is a critical trust root for the entire governance system.
+   */
+  private async validateManifestIntegrity(
+    expectedHash: string,
+    context: GatingContext,
+    metrics: GatedMetrics,
+  ): Promise<boolean> {
+    try {
+      // Attempt to load and validate manifest
+      const manifest = this.manifestManager.loadManifest(expectedHash);
+
+      if (!manifest) {
+        // Hash might be a direct checksum, verify against metrics
+        const currentHash = await this.calculateMetricsHash(metrics);
+
+        if (currentHash !== expectedHash) {
+          // Manifest integrity failure - CRITICAL
+          await this.notifyManifestFailure(
+            expectedHash,
+            currentHash,
+            context,
+            "hash_mismatch",
+          );
+          return false;
+        }
+
+        console.log(`✅ Manifest integrity verified (direct hash)`);
+        console.log(`   Run ID: ${context.run_id}`);
+        console.log(`   Hash: ${currentHash.substring(0, 16)}...`);
+
+        return true;
+      }
+
+      // Validate full manifest
+      const validation = await this.manifestManager.validateManifest(
+        manifest.manifest_id,
+      );
+
+      if (!validation.valid) {
+        await this.notifyManifestFailure(
+          expectedHash,
+          null,
+          context,
+          "manifest_corruption",
+          {
+            issues: validation.issues,
+            missing_files: validation.missing_files,
+            modified_files: validation.modified_files,
+          },
+        );
+        return false;
+      }
+
+      console.log(`✅ Manifest integrity verified (full manifest)`);
+      console.log(`   Run ID: ${context.run_id}`);
+      console.log(`   Manifest ID: ${manifest.manifest_id}`);
+      console.log(`   Files: ${manifest.file_count}`);
+
+      return true;
+    } catch (error) {
+      // Validation error - treat as failure for safety
+      await this.notifyManifestFailure(
+        expectedHash,
+        null,
+        context,
+        "validation_error",
+        { error: String(error) },
+      );
+      return false;
+    }
+  }
+
+  /**
+   * Calculate hash of metrics for integrity verification
+   */
+  private async calculateMetricsHash(metrics: GatedMetrics): Promise<string> {
+    const { createHash } = await import("crypto");
+
+    // Create deterministic JSON representation
+    const metricsJson = JSON.stringify(metrics, Object.keys(metrics).sort());
+
+    return createHash("sha256").update(metricsJson).digest("hex");
+  }
+
+  /**
+   * Notify governance of manifest integrity failure
+   *
+   * This is a CRITICAL event that indicates potential:
+   * - Data tampering
+   * - Policy corruption
+   * - Governance bypass attempt
+   * - Configuration drift
+   */
+  private async notifyManifestFailure(
+    expectedHash: string,
+    actualHash: string | null,
+    context: GatingContext,
+    failureType: "hash_mismatch" | "manifest_corruption" | "validation_error",
+    details?: any,
+  ): Promise<void> {
+    const errorMessage = {
+      hash_mismatch:
+        "Manifest hash mismatch - possible data tampering detected",
+      manifest_corruption:
+        "Manifest validation failed - data integrity compromised",
+      validation_error:
+        "Manifest validation error - unable to verify integrity",
+    }[failureType];
+
+    // Log to audit trail (agent logger integration point)
+    const traceContext = this.logger.createTraceContext(
+      context.run_id,
+      "manifest_validation",
+      context.session_id,
+    );
+
+    this.logger.logOperationComplete(
+      traceContext,
+      "gating_integrator",
+      "governance",
+      "manifest_validation",
+      Date.now() - 1000,
+      {
+        cost_usd: 0,
+        output_data: {
+          failure_type: failureType,
+          expected_hash: expectedHash,
+          actual_hash: actualHash,
+          ...details,
+        },
+        quality_score: 0,
+        confidence_score: 0,
+      },
+    );
+
+    // Console notification (immediate visibility)
+    console.error(`\n🚨 CRITICAL: ${errorMessage}`);
+    console.error(`   Run ID: ${context.run_id}`);
+    console.error(`   Expected Hash: ${expectedHash}`);
+    if (actualHash) {
+      console.error(`   Actual Hash: ${actualHash}`);
+    }
+    if (details?.issues) {
+      console.error(`   Issues: ${details.issues.join(", ")}`);
+    }
+    if (details?.modified_files) {
+      console.error(`   Modified Files: ${details.modified_files.join(", ")}`);
+    }
+    console.error(
+      `   Impact: Governance trust chain broken - cannot proceed\n`,
+    );
+
+    // TODO: Integrate with governance notification system
+    // await this.notifyGovernanceSystem({
+    //   event: 'manifest_integrity_failure',
+    //   severity: 'critical',
+    //   ...
+    // });
   }
 
   /**
@@ -510,14 +680,20 @@ export class GatingIntegrator {
 
         if (calibrationResults.length > 0) {
           console.log(
-            `📊 Applied ${calibrationResults.filter((r) => r.applied).length} threshold calibrations`,
+            `📊 Applied ${
+              calibrationResults.filter((r) => r.applied).length
+            } threshold calibrations`,
           );
 
           // Log calibration for audit
           const appliedResults = calibrationResults.filter((r) => r.applied);
           for (const result of appliedResults) {
             console.log(
-              `   ${result.metric_name}: ${result.old_value} → ${result.new_value} (${result.change_pct > 0 ? "+" : ""}${(result.change_pct * 100).toFixed(1)}%)`,
+              `   ${result.metric_name}: ${result.old_value} → ${
+                result.new_value
+              } (${result.change_pct > 0 ? "+" : ""}${(
+                result.change_pct * 100
+              ).toFixed(1)}%)`,
             );
           }
 
@@ -566,7 +742,7 @@ export async function evaluateSession(
   const budgetState = budgetGuardian.loadBudgetState(context.run_id);
 
   // Evaluate session
-  const sessionResult = integrator.evaluateSessionResult(
+  const sessionResult = await integrator.evaluateSessionResult(
     context,
     metrics,
     manifestHash,

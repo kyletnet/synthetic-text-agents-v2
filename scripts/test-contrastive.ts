@@ -57,17 +57,23 @@ async function main() {
   console.log("\n📊 Comparison: Contrastive vs N-gram");
   const ngramScore1 = calculateNgramOverlap(answer1, evidence1);
   console.log(
-    `Test 1 - Contrastive: ${result1.score.toFixed(3)}, N-gram: ${ngramScore1.toFixed(3)}`,
+    `Test 1 - Contrastive: ${result1.score.toFixed(
+      3,
+    )}, N-gram: ${ngramScore1.toFixed(3)}`,
   );
 
   const ngramScore2 = calculateNgramOverlap(answer2, evidence2);
   console.log(
-    `Test 2 - Contrastive: ${result2.score.toFixed(3)}, N-gram: ${ngramScore2.toFixed(3)}`,
+    `Test 2 - Contrastive: ${result2.score.toFixed(
+      3,
+    )}, N-gram: ${ngramScore2.toFixed(3)}`,
   );
 
   const ngramScore3 = calculateNgramOverlap(answer3, evidence3);
   console.log(
-    `Test 3 - Contrastive: ${result3.score.toFixed(3)}, N-gram: ${ngramScore3.toFixed(3)}`,
+    `Test 3 - Contrastive: ${result3.score.toFixed(
+      3,
+    )}, N-gram: ${ngramScore3.toFixed(3)}`,
   );
 }
 

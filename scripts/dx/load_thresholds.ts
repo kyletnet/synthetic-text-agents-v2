@@ -194,7 +194,9 @@ export async function loadThresholds(
       dxConfig.profiles[profile as keyof typeof dxConfig.profiles];
     if (!profileConfig) {
       throw new Error(
-        `Unknown profile: ${profile}. Available: ${Object.keys(dxConfig.profiles).join(", ")}`,
+        `Unknown profile: ${profile}. Available: ${Object.keys(
+          dxConfig.profiles,
+        ).join(", ")}`,
       );
     }
 

@@ -143,12 +143,18 @@ export class ComponentHarmonyAnalyzer extends EventEmitter {
       `   Interface Consistency: ${metrics.interfaceConsistency.toFixed(2)}`,
     );
     console.log(
-      `   Communication Efficiency: ${metrics.communicationEfficiency.toFixed(2)}`,
+      `   Communication Efficiency: ${metrics.communicationEfficiency.toFixed(
+        2,
+      )}`,
     );
 
     if (issues.length > 0) {
       console.log(
-        `   Issues Found: ${issues.length} (${issues.filter((i) => i.severity === "high" || i.severity === "critical").length} critical)`,
+        `   Issues Found: ${issues.length} (${
+          issues.filter(
+            (i) => i.severity === "high" || i.severity === "critical",
+          ).length
+        } critical)`,
       );
     }
 
@@ -452,7 +458,9 @@ export class ComponentHarmonyAnalyzer extends EventEmitter {
           type: "inconsistency",
           severity: iface.consistency < 0.3 ? "high" : "medium",
           component: iface.component,
-          description: `Low interface consistency: ${(iface.consistency * 100).toFixed(0)}%`,
+          description: `Low interface consistency: ${(
+            iface.consistency * 100
+          ).toFixed(0)}%`,
           recommendation:
             "Standardize parameter patterns and naming conventions",
         });

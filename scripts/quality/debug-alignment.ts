@@ -17,7 +17,7 @@ async function main() {
   const aligner = new EvidenceAligner();
 
   console.log("🔍 Snippet Alignment Debug Analysis\n");
-  console.log("=" .repeat(80));
+  console.log("=".repeat(80));
 
   for (const qa of qaPairs) {
     if (!qa.evidence || qa.evidence.length === 0) continue;
@@ -83,7 +83,7 @@ async function main() {
     console.log(
       `\n  ✅ Overall Alignment: ${(avgAlignment * 100).toFixed(1)}%`,
     );
-    console.log("=" .repeat(80));
+    console.log("=".repeat(80));
   }
 }
 
@@ -125,10 +125,16 @@ function calculateKeywordOverlap(text1: string, text2: string): number {
 
   // Keyword overlap
   const words1 = new Set(
-    text1.toLowerCase().split(/\s+/).filter((w) => w.length >= 2),
+    text1
+      .toLowerCase()
+      .split(/\s+/)
+      .filter((w) => w.length >= 2),
   );
   const words2 = new Set(
-    text2.toLowerCase().split(/\s+/).filter((w) => w.length >= 2),
+    text2
+      .toLowerCase()
+      .split(/\s+/)
+      .filter((w) => w.length >= 2),
   );
 
   let keywordScore = 0;

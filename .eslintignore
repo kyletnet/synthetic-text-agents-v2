@@ -1,0 +1,8 @@
+node_modules/
+dist/
+build/
+coverage/
+.venv-embeddings/
+*.py
+**/*.py
+src/rag/python-scripts/

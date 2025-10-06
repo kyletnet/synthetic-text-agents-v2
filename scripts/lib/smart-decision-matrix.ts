@@ -129,7 +129,9 @@ export class SmartDecisionMatrix {
         const yamlContent = readFileSync(this.strategyMatrixPath, "utf8");
         this.strategyMatrix = yaml.parse(yamlContent);
         console.log(
-          `📋 Strategy Matrix loaded: ${this.strategyMatrix?.version || "unknown"}`,
+          `📋 Strategy Matrix loaded: ${
+            this.strategyMatrix?.version || "unknown"
+          }`,
         );
       } else {
         console.warn("⚠️ Strategy matrix file not found, using defaults");
@@ -591,11 +593,13 @@ export class SmartDecisionMatrix {
       primaryWeight === weights.performance
         ? "performance"
         : primaryWeight === weights.safety
-          ? "safety"
-          : "usability";
+        ? "safety"
+        : "usability";
 
     let reasoning = `Selected ${strategy.execution} execution for ${profile.name}. `;
-    reasoning += `Primary concern: ${primaryConcern} (${Math.round(primaryWeight * 100)}% weight). `;
+    reasoning += `Primary concern: ${primaryConcern} (${Math.round(
+      primaryWeight * 100,
+    )}% weight). `;
 
     // Add context-specific reasoning
     if (context.priority === "P0") {

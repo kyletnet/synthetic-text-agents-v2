@@ -36,6 +36,7 @@ import {
   ALL_INVARIANTS,
 } from "./lib/patterns/architecture-invariants.js";
 import { getQualityPolicyManager } from "./lib/quality-policy.js";
+import { trackHealthScore } from "./lib/quality-history.js";
 import type {
   InspectionResults,
   AutoFixableItem,
@@ -114,7 +115,7 @@ class InspectionEngine {
 
           // 3. Save to cache (SoT)
           console.log("\n💾 Saving inspection results...");
-          this.saveResults(summary);
+          await this.saveResults(summary);
 
           // 4. Show next steps
           this.showNextSteps();
@@ -612,8 +613,8 @@ class InspectionEngine {
           p0.length > 0
             ? "🔴 BLOCKING: System architecture violations must be fixed"
             : p1.length > 0
-              ? "🟡 HIGH: Architecture issues should be addressed soon"
-              : "🟢 LOW: Minor architecture improvements recommended",
+            ? "🟡 HIGH: Architecture issues should be addressed soon"
+            : "🟢 LOW: Minor architecture improvements recommended",
         suggestedAction: "npm run _arch:validate to see detailed violations",
       };
     } catch (error) {
@@ -693,8 +694,8 @@ class InspectionEngine {
       summary.healthScore >= 80
         ? "🟢"
         : summary.healthScore >= 60
-          ? "🟡"
-          : "🔴";
+        ? "🟡"
+        : "🔴";
     console.log(
       `\n${scoreIcon} Overall Health Score: ${summary.healthScore}/100`,
     );
@@ -743,7 +744,7 @@ class InspectionEngine {
   /**
    * Save results to cache
    */
-  private saveResults(summary: InspectionSummary): void {
+  private async saveResults(summary: InspectionSummary): Promise<void> {
     const results: Omit<InspectionResults, "timestamp" | "ttl"> = {
       schemaVersion: "2025-10-inspect-v1",
       autoFixable: this.autoFixable,
@@ -754,6 +755,36 @@ class InspectionEngine {
     this.cache.saveResults(results);
     console.log("✅ Results saved to: reports/inspection-results.json");
     console.log("⏰ Valid for: 5 minutes");
+
+    // Track health score history (P0 Gap #2)
+    try {
+      await trackHealthScore(
+        {
+          timestamp: Date.now(),
+          healthScore: summary.healthScore,
+          details: {
+            typescript: summary.typescript,
+            codeStyle: summary.codeStyle,
+            tests: summary.tests,
+            security: summary.security,
+          },
+          gates: {
+            typescript: summary.typescript.includes("PASS") ? "PASS" : "FAIL",
+            codeStyle: summary.codeStyle.includes("PASS") ? "PASS" : "FAIL",
+            tests: summary.tests.includes("PASS") ? "PASS" : "FAIL",
+            security: summary.security.includes("PASS") ? "PASS" : "FAIL",
+          },
+        },
+        this.projectRoot,
+      );
+    } catch (error) {
+      // Non-blocking: quality history tracking failure should not break inspection
+      console.warn(
+        `⚠️  Health score tracking failed: ${
+          error instanceof Error ? error.message : error
+        }`,
+      );
+    }
   }
 
   /**

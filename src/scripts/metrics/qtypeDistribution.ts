@@ -253,13 +253,17 @@ export function generateQtypeReport(distribution: QtypeDistribution): string {
   for (const [qtype, data] of Object.entries(distribution.distributions)) {
     const examples = data.examples.slice(0, 2).join("; ");
     lines.push(
-      `| ${qtype} | ${data.count} | ${(data.ratio * 100).toFixed(1)}% | ${examples} |`,
+      `| ${qtype} | ${data.count} | ${(data.ratio * 100).toFixed(
+        1,
+      )}% | ${examples} |`,
     );
   }
 
   if (distribution.unclassified_count > 0) {
     lines.push(
-      `| unclassified | ${distribution.unclassified_count} | ${(distribution.unclassified_ratio * 100).toFixed(1)}% | - |`,
+      `| unclassified | ${distribution.unclassified_count} | ${(
+        distribution.unclassified_ratio * 100
+      ).toFixed(1)}% | - |`,
     );
   }
 
@@ -272,10 +276,16 @@ export function generateQtypeReport(distribution: QtypeDistribution): string {
   );
   lines.push(`- **Entropy**: ${distribution.entropy.toFixed(3)}`);
   lines.push(
-    `- **Missing Categories**: ${distribution.missing_categories.length > 0 ? distribution.missing_categories.join(", ") : "None"}`,
+    `- **Missing Categories**: ${
+      distribution.missing_categories.length > 0
+        ? distribution.missing_categories.join(", ")
+        : "None"
+    }`,
   );
   lines.push(
-    `- **Alert Status**: ${distribution.alert_triggered ? "⚠️ TRIGGERED" : "✅ NORMAL"}`,
+    `- **Alert Status**: ${
+      distribution.alert_triggered ? "⚠️ TRIGGERED" : "✅ NORMAL"
+    }`,
   );
 
   lines.push("");

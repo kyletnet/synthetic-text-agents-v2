@@ -285,7 +285,9 @@ export class PerformanceDashboard {
       this.addAlert({
         level: "critical",
         title: "Critical Error Rate",
-        description: `Error rate (${(overview.errorRate * 100).toFixed(1)}%) exceeds critical threshold`,
+        description: `Error rate (${(overview.errorRate * 100).toFixed(
+          1,
+        )}%) exceeds critical threshold`,
         source: "error_tracking",
         timestamp: now,
       });
@@ -293,7 +295,9 @@ export class PerformanceDashboard {
       this.addAlert({
         level: "warning",
         title: "High Error Rate",
-        description: `Error rate (${(overview.errorRate * 100).toFixed(1)}%) exceeds warning threshold`,
+        description: `Error rate (${(overview.errorRate * 100).toFixed(
+          1,
+        )}%) exceeds warning threshold`,
         source: "error_tracking",
         timestamp: now,
       });
@@ -304,7 +308,9 @@ export class PerformanceDashboard {
       this.addAlert({
         level: "critical",
         title: "Critical CPU Usage",
-        description: `CPU usage (${system.cpuUsage.toFixed(1)}%) exceeds critical threshold`,
+        description: `CPU usage (${system.cpuUsage.toFixed(
+          1,
+        )}%) exceeds critical threshold`,
         source: "system_monitor",
         timestamp: now,
       });
@@ -312,7 +318,9 @@ export class PerformanceDashboard {
       this.addAlert({
         level: "warning",
         title: "High CPU Usage",
-        description: `CPU usage (${system.cpuUsage.toFixed(1)}%) exceeds warning threshold`,
+        description: `CPU usage (${system.cpuUsage.toFixed(
+          1,
+        )}%) exceeds warning threshold`,
         source: "system_monitor",
         timestamp: now,
       });
@@ -322,7 +330,9 @@ export class PerformanceDashboard {
       this.addAlert({
         level: "critical",
         title: "Critical Memory Usage",
-        description: `Memory usage (${system.memoryUsage.toFixed(1)}%) exceeds critical threshold`,
+        description: `Memory usage (${system.memoryUsage.toFixed(
+          1,
+        )}%) exceeds critical threshold`,
         source: "system_monitor",
         timestamp: now,
       });
@@ -330,7 +340,9 @@ export class PerformanceDashboard {
       this.addAlert({
         level: "warning",
         title: "High Memory Usage",
-        description: `Memory usage (${system.memoryUsage.toFixed(1)}%) exceeds warning threshold`,
+        description: `Memory usage (${system.memoryUsage.toFixed(
+          1,
+        )}%) exceeds warning threshold`,
         source: "system_monitor",
         timestamp: now,
       });
@@ -344,7 +356,11 @@ export class PerformanceDashboard {
         this.addAlert({
           level: "critical",
           title: `Critical Quality Score - ${agent.name}`,
-          description: `Agent ${agent.name} quality score (${agent.averageQualityScore.toFixed(1)}) below critical threshold`,
+          description: `Agent ${
+            agent.name
+          } quality score (${agent.averageQualityScore.toFixed(
+            1,
+          )}) below critical threshold`,
           source: "quality_monitor",
           timestamp: now,
         });
@@ -354,7 +370,11 @@ export class PerformanceDashboard {
         this.addAlert({
           level: "warning",
           title: `Low Quality Score - ${agent.name}`,
-          description: `Agent ${agent.name} quality score (${agent.averageQualityScore.toFixed(1)}) below warning threshold`,
+          description: `Agent ${
+            agent.name
+          } quality score (${agent.averageQualityScore.toFixed(
+            1,
+          )}) below warning threshold`,
           source: "quality_monitor",
           timestamp: now,
         });

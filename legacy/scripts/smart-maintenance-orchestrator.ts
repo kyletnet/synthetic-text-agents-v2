@@ -305,8 +305,8 @@ class SmartMaintenanceOrchestrator {
       mode === "smart" && autoFix
         ? "🤖 Smart Maintenance (자동수정+리팩터링)"
         : mode === "smart"
-          ? "🤖 Smart Maintenance (자동수정)"
-          : "🛡️ Safe Maintenance (검증만)";
+        ? "🤖 Smart Maintenance (자동수정)"
+        : "🛡️ Safe Maintenance (검증만)";
     console.log(`${modeLabel} Starting...`);
     console.log("═".repeat(60));
 
@@ -462,7 +462,9 @@ class SmartMaintenanceOrchestrator {
     console.log(`📊 수집된 승인 항목: ${session.pendingApprovals.length}개`);
     session.pendingApprovals.forEach((approval, idx) => {
       console.log(
-        `   ${idx + 1}. ${approval.description} (우선순위: ${approval.priority})`,
+        `   ${idx + 1}. ${approval.description} (우선순위: ${
+          approval.priority
+        })`,
       );
     });
 
@@ -1189,12 +1191,14 @@ class SmartMaintenanceOrchestrator {
         session.healthScoreAfter >= 80
           ? "🟢 우수"
           : session.healthScoreAfter >= 60
-            ? "🟡 양호"
-            : "🔴 개선필요";
+          ? "🟡 양호"
+          : "🔴 개선필요";
       console.log(`\n🏥 시스템 건강도 변화:`);
       console.log(`   Before: ${session.healthScoreBefore}/100`);
       console.log(
-        `   After: ${session.healthScoreAfter}/100 (${improvement >= 0 ? "+" : ""}${improvement})`,
+        `   After: ${session.healthScoreAfter}/100 (${
+          improvement >= 0 ? "+" : ""
+        }${improvement})`,
       );
       console.log(`   Status: ${status}`);
     }
@@ -1861,7 +1865,9 @@ npm run optimize    # 성능 최적화 분석
    * 스마트 유지보수에 스냅샷 시스템 통합
    */
   async runSmartMaintenanceWithSnapshot(): Promise<void> {
-    const sessionId = `${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
+    const sessionId = `${Date.now()}-${Math.random()
+      .toString(36)
+      .substring(2, 11)}`;
     let snapshotCreated = false;
 
     try {
@@ -2183,7 +2189,9 @@ npm run optimize    # 성능 최적화 분석
         if (breaker.isPermanentlyOpen()) {
           const state = breaker.getState();
           issues.push(
-            `🚨 CRITICAL: Circuit Breaker '${breaker.getStatus().split(":")[0]}' PERMANENTLY OPEN`,
+            `🚨 CRITICAL: Circuit Breaker '${
+              breaker.getStatus().split(":")[0]
+            }' PERMANENTLY OPEN`,
           );
           issues.push(`   → Reason: ${state.permanentOpenReason}`);
           issues.push(`   → Manual reset required: breaker.reset(true)`);
@@ -2218,9 +2226,13 @@ npm run optimize    # 성능 최적화 분석
 
       // 상태 요약
       output += `\n📊 Status Summary:\n`;
-      output += `   - Dormant Mode: ${healingStats.isDormant ? "🔴 YES" : "✅ NO"}\n`;
+      output += `   - Dormant Mode: ${
+        healingStats.isDormant ? "🔴 YES" : "✅ NO"
+      }\n`;
       output += `   - Consecutive Failures: ${healingStats.consecutiveFailures}/10\n`;
-      output += `   - Circuit Breakers: ${allBreakers.length} total, ${allBreakers.filter((b: any) => b.isPermanentlyOpen()).length} PERMANENT_OPEN\n`;
+      output += `   - Circuit Breakers: ${allBreakers.length} total, ${
+        allBreakers.filter((b: any) => b.isPermanentlyOpen()).length
+      } PERMANENT_OPEN\n`;
       output += `   - Background Tasks: ${taskStats.totalTasks}/10\n`;
 
       return { healthy, output };

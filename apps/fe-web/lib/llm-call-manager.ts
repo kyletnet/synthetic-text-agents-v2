@@ -77,7 +77,9 @@ class LLMCallTracker {
       );
     } else if (result.source === "fallback") {
       console.warn(
-        `⚠️ [FALLBACK] LLM call failed, using template: ${result.error?.message || "unknown reason"}`,
+        `⚠️ [FALLBACK] LLM call failed, using template: ${
+          result.error?.message || "unknown reason"
+        }`,
       );
     }
 
@@ -193,8 +195,8 @@ class LLMCallTracker {
       issues.length === 0
         ? "healthy"
         : issues.some((i) => i.includes("CRITICAL"))
-          ? "critical"
-          : "warning";
+        ? "critical"
+        : "warning";
 
     return { status, issues, recommendations };
   }

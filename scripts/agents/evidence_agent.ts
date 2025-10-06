@@ -251,7 +251,11 @@ Response format: {"strategy": "...", "focus_areas": [...], "search_keywords": [.
       const focusIdx = i % focusAreas.length;
 
       evidenceItems.push({
-        text: `Evidence ${i + 1}: Content related to "${focusAreas[focusIdx]}" from source ${sourceIdx + 1}. This is simulated evidence for testing purposes.`,
+        text: `Evidence ${i + 1}: Content related to "${
+          focusAreas[focusIdx]
+        }" from source ${
+          sourceIdx + 1
+        }. This is simulated evidence for testing purposes.`,
         source: `document_${sourceIdx + 1}`,
       });
     }
@@ -307,8 +311,8 @@ Provide only a number between 0.0 and 1.0 representing relevance.`;
             relevanceScore > 0.7
               ? "direct"
               : relevanceScore > 0.4
-                ? "contextual"
-                : "background",
+              ? "contextual"
+              : "background",
         });
       } catch (error) {
         // Fallback scoring if LLM call fails
@@ -341,14 +345,14 @@ Provide only a number between 0.0 and 1.0 representing relevance.`;
         highQualityEvidence.length >= 3
           ? "comprehensive"
           : highQualityEvidence.length >= 1
-            ? "focused"
-            : "conservative",
+          ? "focused"
+          : "conservative",
       potential_gaps:
         evidence.length < 3
           ? ["Limited evidence available"]
           : !evidenceTypes.includes("direct")
-            ? ["No direct evidence found"]
-            : [],
+          ? ["No direct evidence found"]
+          : [],
     };
   }
 
@@ -401,7 +405,9 @@ Provide only a number between 0.0 and 1.0 representing relevance.`;
 
     for (let i = 0; i < Math.min(maxItems, documents.length); i++) {
       results.push({
-        text: `Keyword-based evidence for "${keywords.join(", ")}" from document ${i + 1}`,
+        text: `Keyword-based evidence for "${keywords.join(
+          ", ",
+        )}" from document ${i + 1}`,
         source: `document_${i + 1}`,
       });
     }

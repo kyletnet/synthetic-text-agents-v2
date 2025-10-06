@@ -50,7 +50,9 @@ class InteractiveApprovalSystem {
     console.log(`📝 설명: ${request.description}`);
     console.log(`⚡ 실행 명령어: ${request.command}`);
     console.log(
-      `🎯 위험도: ${this.getRiskEmoji(request.riskLevel)} ${request.riskLevel.toUpperCase()}`,
+      `🎯 위험도: ${this.getRiskEmoji(
+        request.riskLevel,
+      )} ${request.riskLevel.toUpperCase()}`,
     );
     console.log(`💥 영향: ${request.impact}`);
 

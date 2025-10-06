@@ -102,7 +102,9 @@ async function checkApiKeyReadiness() {
   } catch (error) {
     return {
       status: "not-ready" as const,
-      details: `API key check failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+      details: `API key check failed: ${
+        error instanceof Error ? error.message : "Unknown error"
+      }`,
       lastChecked: new Date().toISOString(),
     };
   }
@@ -122,7 +124,9 @@ async function checkEssentialServices() {
     if (missingVars.length > 0) {
       return {
         status: "not-ready" as const,
-        details: `Missing required environment variables: ${missingVars.join(", ")}`,
+        details: `Missing required environment variables: ${missingVars.join(
+          ", ",
+        )}`,
         lastChecked: new Date().toISOString(),
       };
     }
@@ -147,7 +151,9 @@ async function checkEssentialServices() {
   } catch (error) {
     return {
       status: "not-ready" as const,
-      details: `Essential services check failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+      details: `Essential services check failed: ${
+        error instanceof Error ? error.message : "Unknown error"
+      }`,
       lastChecked: new Date().toISOString(),
     };
   }
@@ -174,7 +180,9 @@ async function checkConfigurationReadiness() {
       if (missingProdVars.length > 0) {
         return {
           status: "not-ready" as const,
-          details: `Missing production configuration: ${missingProdVars.join(", ")}`,
+          details: `Missing production configuration: ${missingProdVars.join(
+            ", ",
+          )}`,
           lastChecked: new Date().toISOString(),
         };
       }
@@ -188,7 +196,9 @@ async function checkConfigurationReadiness() {
   } catch (error) {
     return {
       status: "not-ready" as const,
-      details: `Configuration check failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+      details: `Configuration check failed: ${
+        error instanceof Error ? error.message : "Unknown error"
+      }`,
       lastChecked: new Date().toISOString(),
     };
   }
@@ -235,7 +245,9 @@ async function checkDatabaseReadiness() {
   } catch (error) {
     return {
       status: "not-ready" as const,
-      details: `Database readiness check failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+      details: `Database readiness check failed: ${
+        error instanceof Error ? error.message : "Unknown error"
+      }`,
       lastChecked: new Date().toISOString(),
     };
   }

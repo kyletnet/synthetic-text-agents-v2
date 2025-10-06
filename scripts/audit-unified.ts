@@ -133,7 +133,9 @@ class UnifiedAuditor {
 
       this.results.push({ name, passed: true, duration, findings });
       console.log(
-        `✅ ${name} passed (${(duration / 1000).toFixed(1)}s, ${findings} findings)\n`,
+        `✅ ${name} passed (${(duration / 1000).toFixed(
+          1,
+        )}s, ${findings} findings)\n`,
       );
     } catch (error) {
       const duration = Date.now() - startTime;
@@ -154,7 +156,9 @@ class UnifiedAuditor {
         error: errorMsg,
       });
       console.log(
-        `❌ ${name} failed (${(duration / 1000).toFixed(1)}s${findings ? `, ${findings} findings` : ""})\n`,
+        `❌ ${name} failed (${(duration / 1000).toFixed(1)}s${
+          findings ? `, ${findings} findings` : ""
+        })\n`,
       );
     }
   }

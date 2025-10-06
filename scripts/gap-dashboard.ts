@@ -58,10 +58,10 @@ class GapDashboard {
       summary.total === 0
         ? "✅"
         : summary.P0 > 0
-          ? "🔴"
-          : summary.P1 > 0
-            ? "🟡"
-            : "🟢";
+        ? "🔴"
+        : summary.P1 > 0
+        ? "🟡"
+        : "🟢";
     const statusText =
       summary.total === 0 ? "ALL CLEAR" : `${summary.total} GAP(S) DETECTED`;
 

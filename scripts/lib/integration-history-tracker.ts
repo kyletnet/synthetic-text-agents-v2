@@ -162,10 +162,15 @@ export class IntegrationHistoryTracker extends EventEmitter {
 
     console.log(`   Total integrations: ${timeline.totalIntegrations}`);
     console.log(
-      `   Success rate: ${((timeline.successfulIntegrations / timeline.totalIntegrations) * 100).toFixed(1)}%`,
+      `   Success rate: ${(
+        (timeline.successfulIntegrations / timeline.totalIntegrations) *
+        100
+      ).toFixed(1)}%`,
     );
     console.log(
-      `   Average duration: ${(timeline.averageDuration / 1000 / 60).toFixed(1)} minutes`,
+      `   Average duration: ${(timeline.averageDuration / 1000 / 60).toFixed(
+        1,
+      )} minutes`,
     );
 
     this.emit("timeline:generated", timeline);
@@ -400,16 +405,29 @@ export class IntegrationHistoryTracker extends EventEmitter {
     // Summary statistics
     report += `## 📊 Summary Statistics\n\n`;
     report += `- **Total Integrations**: ${timeline.totalIntegrations}\n`;
-    report += `- **Successful**: ${timeline.successfulIntegrations} (${((timeline.successfulIntegrations / timeline.totalIntegrations) * 100).toFixed(1)}%)\n`;
-    report += `- **Failed**: ${timeline.failedIntegrations} (${((timeline.failedIntegrations / timeline.totalIntegrations) * 100).toFixed(1)}%)\n`;
-    report += `- **Average Duration**: ${(timeline.averageDuration / 1000 / 60).toFixed(1)} minutes\n\n`;
+    report += `- **Successful**: ${timeline.successfulIntegrations} (${(
+      (timeline.successfulIntegrations / timeline.totalIntegrations) *
+      100
+    ).toFixed(1)}%)\n`;
+    report += `- **Failed**: ${timeline.failedIntegrations} (${(
+      (timeline.failedIntegrations / timeline.totalIntegrations) *
+      100
+    ).toFixed(1)}%)\n`;
+    report += `- **Average Duration**: ${(
+      timeline.averageDuration /
+      1000 /
+      60
+    ).toFixed(1)} minutes\n\n`;
 
     // Recent activity
     report += `## 🕒 Recent Activity (Last 10 Events)\n\n`;
     timeline.events.slice(0, 10).forEach((event) => {
       const date = event.timestamp.toISOString().split("T")[0];
       const time = event.timestamp.toISOString().split("T")[1].split(".")[0];
-      report += `- **${date} ${time}** - ${event.type.replace("_", " ")} for \`${event.component.name}\` by ${event.actor}\n`;
+      report += `- **${date} ${time}** - ${event.type.replace(
+        "_",
+        " ",
+      )} for \`${event.component.name}\` by ${event.actor}\n`;
     });
     report += "\n";
 
@@ -420,7 +438,9 @@ export class IntegrationHistoryTracker extends EventEmitter {
         report += `### ${componentName}\n`;
         events.slice(0, 5).forEach((event) => {
           const date = event.timestamp.toISOString().split("T")[0];
-          report += `- **${date}**: ${event.type.replace("_", " ")} (${event.strategy})\n`;
+          report += `- **${date}**: ${event.type.replace("_", " ")} (${
+            event.strategy
+          })\n`;
         });
         report += "\n";
       }
@@ -431,7 +451,9 @@ export class IntegrationHistoryTracker extends EventEmitter {
     report += `| Month | Integrations | Successes | Failures | Avg Duration |\n`;
     report += `|-------|--------------|-----------|----------|--------------|\n`;
     timeline.monthlyStats.forEach((month) => {
-      report += `| ${month.month} | ${month.integrations} | ${month.successes} | ${month.failures} | ${month.avgDuration.toFixed(1)}min |\n`;
+      report += `| ${month.month} | ${month.integrations} | ${
+        month.successes
+      } | ${month.failures} | ${month.avgDuration.toFixed(1)}min |\n`;
     });
     report += "\n";
 
@@ -641,7 +663,9 @@ export class IntegrationHistoryTracker extends EventEmitter {
   }
 
   private generateEventId(): string {
-    return `integration_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    return `integration_${Date.now()}_${Math.random()
+      .toString(36)
+      .substr(2, 9)}`;
   }
 
   private shouldUpdateTimeline(eventType: string): boolean {

@@ -216,7 +216,9 @@ export class IntegratedMaintenanceOrchestrator extends ComponentAdapter {
     const { mode, tasks } = operation.metadata;
 
     console.log(
-      `🔧 Performing ${mode} maintenance with ${Array.isArray(tasks) ? tasks.length : 0} tasks`,
+      `🔧 Performing ${mode} maintenance with ${
+        Array.isArray(tasks) ? tasks.length : 0
+      } tasks`,
     );
 
     const results = [];
@@ -454,10 +456,10 @@ export class IntegratedMaintenanceOrchestrator extends ComponentAdapter {
       const baseTime = task.command.includes("typecheck")
         ? 30
         : task.command.includes("audit")
-          ? 45
-          : task.command.includes("lint")
-            ? 15
-            : 10;
+        ? 45
+        : task.command.includes("lint")
+        ? 15
+        : 10;
       return total + baseTime;
     }, 0);
   }

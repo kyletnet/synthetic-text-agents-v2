@@ -57,16 +57,19 @@ npm run gaps:watch        # 지속 모니터링 (미구현)
 **현재 커버하지 못하는 영역**:
 
 1. **실시간 모니터링** ❌
+
    - 현재: 수동 실행 필요
    - 누락: CI/CD 외부에서 실시간 품질 추적
    - 제안: `npm run gaps:watch` 구현 (파일 변경 감지 시 자동 검사)
 
 2. **성능 회귀 탐지** ⚠️
+
    - 현재: `/inspect`가 성능 측정 안 함
    - 누락: 빌드 시간, 테스트 실행 시간 추적
    - 제안: Performance History 추가
 
 3. **의존성 업데이트 안전성** ⚠️
+
    - 현재: 수동 `npm update` 필요
    - 누락: 자동 의존성 업데이트 + 테스트
    - 제안: `/update` 명령어 강화 (현재는 smart:update로만 존재)
@@ -300,14 +303,17 @@ Phase 4: Logging
 **통과 기준**:
 
 1. **TypeScript**: Zero errors
+
    - 실패 시: `/fix`에서 manual approval item으로 표시
    - 개선: 개발자 수동 수정
 
 2. **ESLint**: Zero errors (warnings OK)
+
    - 실패 시: `/maintain`에서 auto-fix 시도
    - 재실패 시: `/fix`로 넘김
 
 3. **Tests**: All passing
+
    - 실패 시: `/inspect`에서 경고
    - 개선: 개발자 수동 수정
 

@@ -9,6 +9,7 @@
 ## 📊 Final Results
 
 ### Before (Shadow Mode - Buggy)
+
 ```
 bm25_avg:             0%       (버그: 항상 0)
 vector_avg:           0%       (버그: 항상 0)
@@ -18,6 +19,7 @@ Gate C:               FAIL
 ```
 
 ### After (Fixed & Enhanced)
+
 ```
 bm25_avg:             7.2%     (+7.2% ✅)
 vector_avg:           60.0%    (+60.0% ✅)
@@ -32,14 +34,14 @@ Gate C:               PASS ✅
 
 ## 🎯 Gate C Requirements
 
-| Requirement | Target | Achieved | Status |
-|-------------|--------|----------|--------|
-| improvement_delta | ≥ +5% | **+20.1%** | ✅ **PASS** (4x 초과!) |
-| BM25 > 0 | > 0 | 7.2% | ✅ PASS |
-| Vector > 0 | > 0 | 60.0% | ✅ PASS |
-| Hybrid > baseline | > baseline | 44.1% vs 24.1% | ✅ PASS (83% 향상) |
-| Cost increase | ≤ +10% | $0 (local) | ✅ PASS |
-| Latency | ≤ +10% | ~5ms | ✅ PASS |
+| Requirement       | Target     | Achieved       | Status                 |
+| ----------------- | ---------- | -------------- | ---------------------- |
+| improvement_delta | ≥ +5%      | **+20.1%**     | ✅ **PASS** (4x 초과!) |
+| BM25 > 0          | > 0        | 7.2%           | ✅ PASS                |
+| Vector > 0        | > 0        | 60.0%          | ✅ PASS                |
+| Hybrid > baseline | > baseline | 44.1% vs 24.1% | ✅ PASS (83% 향상)     |
+| Cost increase     | ≤ +10%     | $0 (local)     | ✅ PASS                |
+| Latency           | ≤ +10%     | ~5ms           | ✅ PASS                |
 
 **Overall**: ✅ **ALL GATE C REQUIREMENTS MET**
 
@@ -50,7 +52,9 @@ Gate C:               PASS ✅
 ### 1. Critical Bugs Fixed
 
 #### Bug 1: BM25 Normalization ❌ → ✅
+
 **Problem**:
+
 ```typescript
 // Before (WRONG)
 return score / queryTerms.length; // Always produces tiny scores
@@ -59,6 +63,7 @@ return score / queryTerms.length; // Always produces tiny scores
 **Root Cause**: Dividing by query length doesn't account for IDF magnitude
 
 **Fix**:
+
 ```typescript
 // After (CORRECT)
 let maxPossibleScore = 0;
@@ -74,7 +79,9 @@ return score / maxPossibleScore; // Proper normalization
 ---
 
 #### Bug 2: IDF Calculation for Small Corpus ❌ → ✅
+
 **Problem**:
+
 ```typescript
 // Before (WRONG)
 const idf = Math.log((N - df + 0.5) / (df + 0.5) + 1);
@@ -84,12 +91,13 @@ const idf = Math.log((N - df + 0.5) / (df + 0.5) + 1);
 **Root Cause**: Small corpus (N=3) causes IDF to be near-zero or negative
 
 **Fix**:
+
 ```typescript
 // After (CORRECT)
 const smoothing = 1.0; // Add smoothing for small corpus
 const numerator = N - df + smoothing;
 const denominator = df + smoothing;
-const rawIDF = Math.log((numerator / denominator) + 1);
+const rawIDF = Math.log(numerator / denominator + 1);
 const idf = Math.max(0.1, rawIDF); // Floor at 0.1 (minimum importance)
 ```
 
@@ -98,7 +106,9 @@ const idf = Math.max(0.1, rawIDF); // Floor at 0.1 (minimum importance)
 ---
 
 #### Bug 3: Vector Similarity Too Weak ❌ → ✅
+
 **Problem**:
+
 ```typescript
 // Before (WRONG)
 const jaccard = intersection.size / union.size; // Too conservative
@@ -108,6 +118,7 @@ return 0.5 * jaccard + 0.5 * tfScore; // Score too low (8.9%)
 **Root Cause**: Jaccard similarity penalizes length differences
 
 **Fix**:
+
 ```typescript
 // After (CORRECT - based on evidence-aligner success)
 // 1. N-gram extraction (unigram + bigram)
@@ -127,7 +138,9 @@ return Math.min(1.0, combinedScore * 1.2); // 20% boost
 ---
 
 #### Bug 4: Orchestrator Metrics Extraction ❌ → ✅
+
 **Problem**:
+
 ```typescript
 // Before (WRONG)
 const breakdown = hybridMetric.details?.breakdown ?? {};
@@ -140,10 +153,15 @@ return {
 **Root Cause**: Orchestrator looked in wrong location for BM25/Vector scores
 
 **Fix**:
+
 ```typescript
 // After (CORRECT)
-const bm25Metric = metrics.find(m => m.dimension.includes("hybrid_search_bm25"));
-const vectorMetric = metrics.find(m => m.dimension.includes("hybrid_search_vector"));
+const bm25Metric = metrics.find((m) =>
+  m.dimension.includes("hybrid_search_bm25"),
+);
+const vectorMetric = metrics.find((m) =>
+  m.dimension.includes("hybrid_search_vector"),
+);
 return {
   bm25_avg: bm25Metric?.score ?? 0, // Now finds correct metric
   vector_avg: vectorMetric?.score ?? 0,
@@ -157,16 +175,19 @@ return {
 ### 2. Algorithm Enhancements
 
 #### A. N-gram Matching
+
 - **Before**: Unigram only
 - **After**: Unigram + Bigram for better phrase matching
 - **Benefit**: "15일의 유급휴가" matches better
 
 #### B. Overlap Coefficient
+
 - **Before**: Jaccard similarity (intersection / union)
 - **After**: Overlap coefficient (intersection / min)
 - **Benefit**: More lenient for length differences (question vs evidence)
 
 #### C. IDF Smoothing
+
 - **Before**: Raw IDF calculation
 - **After**: Smoothing + minimum floor
 - **Benefit**: Stable scores in small corpus (N=3)
@@ -176,6 +197,7 @@ return {
 ## 🧪 Test Results
 
 ### Unit Tests: 12/13 Passed (92%)
+
 ```
 ✅ BM25 Scoring (2/3)
   ✅ handle small corpus without negative IDF
@@ -208,6 +230,7 @@ return {
 ## 📈 Performance Metrics
 
 ### Computational Cost
+
 ```
 BM25 calculation:     ~1ms  (local, $0)
 Vector similarity:    ~2ms  (local, $0)
@@ -220,6 +243,7 @@ Total overhead:       ~3.5ms per QA pair
 **Scalability**: O(N·M) where N=corpus size, M=average doc length
 
 ### Comparison to Baseline
+
 ```
 Baseline (simple keyword matching):  24.1%
 Hybrid Search (BM25 + Vector):       44.1%
@@ -231,6 +255,7 @@ Improvement:                         +83% relative (+20.1% absolute)
 ## 📝 Methodology: Test-Driven Development
 
 ### TDD Process
+
 1. ✅ **Write tests first** (13 comprehensive test cases)
 2. ✅ **Run tests** (5/13 failed - baseline)
 3. ✅ **Fix bugs systematically**:
@@ -242,6 +267,7 @@ Improvement:                         +83% relative (+20.1% absolute)
 5. ✅ **Validate on real data** (Gate C passed)
 
 ### Test Coverage
+
 ```
 BM25 Algorithm:        3 tests
 Vector Similarity:     3 tests
@@ -258,6 +284,7 @@ Total:                13 tests (92% pass rate)
 ### Why 20.1% Improvement?
 
 **Analysis**:
+
 - **BM25 contribution**: 7.2% × 0.3 (alpha) = 2.2%
 - **Vector contribution**: 60.0% × 0.7 (alpha) = 42.0%
 - **Hybrid total**: 2.2% + 42.0% = 44.2% (≈ 44.1% actual)
@@ -270,6 +297,7 @@ Total:                13 tests (92% pass rate)
 
 **Current**: α = 0.7 (70% vector, 30% BM25)
 **Rationale**:
+
 - Korean text benefits more from semantic matching (vector)
 - BM25 provides exact term matching (e.g., "15일", "50만원")
 - Balanced approach leverages both strengths
@@ -281,7 +309,9 @@ Total:                13 tests (92% pass rate)
 ## 📁 Modified Files
 
 ### Core Implementation
+
 1. **scripts/quality/checkers/hybrid-search-checker.ts** ✅
+
    - Fixed BM25 normalization (line 261-262)
    - Fixed IDF calculation with smoothing (line 367-373)
    - Enhanced Vector similarity with n-grams (line 284-318)
@@ -292,6 +322,7 @@ Total:                13 tests (92% pass rate)
    - Now correctly reads BM25/Vector from separate metrics
 
 ### Test Suite
+
 3. **tests/quality/hybrid-search-checker.test.ts** ✅ (NEW)
    - 13 comprehensive TDD tests
    - Covers BM25, Vector, Hybrid, Edge cases
@@ -302,7 +333,9 @@ Total:                13 tests (92% pass rate)
 ## 🚀 Production Readiness
 
 ### Gate C Validation
+
 ✅ All requirements met:
+
 - improvement_delta: 20.1% >> 5% ✅
 - BM25 functional: 7.2% > 0 ✅
 - Vector functional: 60.0% > 0 ✅
@@ -311,6 +344,7 @@ Total:                13 tests (92% pass rate)
 - Latency: +5ms ≤ +10% ✅
 
 ### Deployment Readiness
+
 ✅ **Shadow Mode**: Currently reporting only (no gate impact)
 ✅ **No Regressions**: All existing Phase 1-2 tests pass
 ✅ **Zero Cost**: Pure algorithmic (no API calls)
@@ -324,28 +358,31 @@ Total:                13 tests (92% pass rate)
 ## 🔄 Next Steps: Canary Deployment (Phase 3 Activation)
 
 ### Canary Strategy
+
 ```typescript
 // Current: Shadow mode (reporting only)
-FEATURE_QUALITY_HYBRID_SEARCH=false
+FEATURE_QUALITY_HYBRID_SEARCH = false;
 
 // Step 1: Canary 10% (1 day)
-HYBRID_CANARY_RATE=0.1
+HYBRID_CANARY_RATE = 0.1;
 
 // Step 2: Canary 50% (2 days)
-HYBRID_CANARY_RATE=0.5
+HYBRID_CANARY_RATE = 0.5;
 
 // Step 3: Full rollout 100%
-FEATURE_QUALITY_HYBRID_SEARCH=true
-HYBRID_CANARY_RATE=1.0
+FEATURE_QUALITY_HYBRID_SEARCH = true;
+HYBRID_CANARY_RATE = 1.0;
 ```
 
 ### Monitoring Metrics
+
 - improvement_delta: Should remain ≥ +5%
 - Cost tracking: Ensure $0 (no API calls)
 - Latency: Monitor p50, p95, p99
 - Regression checks: Existing Phase 1-2 metrics stable
 
 ### Rollback Condition
+
 ```
 if (improvement_delta < 0 || latency_p95 > 20ms) {
   FEATURE_QUALITY_HYBRID_SEARCH=false; // Instant rollback
@@ -357,6 +394,7 @@ if (improvement_delta < 0 || latency_p95 > 20ms) {
 ## 📊 Summary Metrics
 
 **Before Enhancement**:
+
 ```
 ✗ improvement_delta: -9.8% (worse than baseline)
 ✗ bm25_avg: 0% (bug)
@@ -365,6 +403,7 @@ if (improvement_delta < 0 || latency_p95 > 20ms) {
 ```
 
 **After Enhancement**:
+
 ```
 ✓ improvement_delta: +20.1% (4x target!)
 ✓ bm25_avg: 7.2%
@@ -374,6 +413,7 @@ if (improvement_delta < 0 || latency_p95 > 20ms) {
 ```
 
 **Key Achievements**:
+
 - ✅ Fixed 4 critical bugs (BM25, IDF, Vector, Orchestrator)
 - ✅ Implemented TDD with 13 comprehensive tests (92% pass)
 - ✅ Gate C requirements exceeded by 4x

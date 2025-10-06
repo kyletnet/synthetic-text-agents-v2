@@ -208,7 +208,9 @@ export class ProcessOverloadProtection {
                 }
               } catch (error) {
                 cleanupDetails.push(
-                  `Failed to kill process ${process.pid}: ${error instanceof Error ? error.message : "Unknown error"}`,
+                  `Failed to kill process ${process.pid}: ${
+                    error instanceof Error ? error.message : "Unknown error"
+                  }`,
                 );
               }
             }
@@ -251,7 +253,9 @@ export class ProcessOverloadProtection {
         cleaned: cleanedCount,
         details: [
           ...cleanupDetails,
-          `Cleanup failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+          `Cleanup failed: ${
+            error instanceof Error ? error.message : "Unknown error"
+          }`,
         ],
       };
     }
@@ -273,7 +277,9 @@ export class ProcessOverloadProtection {
     }
 
     console.log(
-      `🔄 [ProcessProtection] Starting process monitoring (every ${intervalMs / 1000}s)`,
+      `🔄 [ProcessProtection] Starting process monitoring (every ${
+        intervalMs / 1000
+      }s)`,
     );
 
     backgroundTaskManager.registerInterval(
@@ -283,7 +289,9 @@ export class ProcessOverloadProtection {
 
         if (overloadStatus.isOverloaded) {
           console.log(
-            `🚨 [ProcessProtection] ${overloadStatus.severity.toUpperCase()}: ${overloadStatus.reason}`,
+            `🚨 [ProcessProtection] ${overloadStatus.severity.toUpperCase()}: ${
+              overloadStatus.reason
+            }`,
           );
 
           if (

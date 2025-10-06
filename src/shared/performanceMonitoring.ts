@@ -401,7 +401,9 @@ export class PerformanceMonitor extends EventEmitter {
       for (const metric of recentMetrics) {
         const labels = this.formatPrometheusLabels(metric.tags || {});
         lines.push(
-          `${sanitizedName}${labels} ${metric.value} ${metric.timestamp.getTime()}`,
+          `${sanitizedName}${labels} ${
+            metric.value
+          } ${metric.timestamp.getTime()}`,
         );
       }
 

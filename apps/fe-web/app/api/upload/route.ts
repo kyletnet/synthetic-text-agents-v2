@@ -38,7 +38,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(
         {
           error: true,
-          message: `File type ${fileExt} not supported. Allowed types: ${allowedTypes.join(", ")}`,
+          message: `File type ${fileExt} not supported. Allowed types: ${allowedTypes.join(
+            ", ",
+          )}`,
         },
         { status: 400 },
       );
@@ -50,7 +52,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(
         {
           error: true,
-          message: `Invalid input type. Allowed types: ${allowedInputTypes.join(", ")}`,
+          message: `Invalid input type. Allowed types: ${allowedInputTypes.join(
+            ", ",
+          )}`,
         },
         { status: 400 },
       );
@@ -58,7 +62,10 @@ export async function POST(req: NextRequest) {
 
     // Generate unique filename with timestamp
     const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
-    const fileId = `${timestamp}_${inputType}_${file.name.replace(/[^a-zA-Z0-9.-]/g, "_")}`;
+    const fileId = `${timestamp}_${inputType}_${file.name.replace(
+      /[^a-zA-Z0-9.-]/g,
+      "_",
+    )}`;
     const filePath = path.join(uploadsDir, fileId);
 
     // Save file

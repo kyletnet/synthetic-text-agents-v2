@@ -60,7 +60,9 @@ export class DataAugmentationSystem {
   static async augmentData(
     request: AugmentationRequest,
   ): Promise<AugmentationSession> {
-    const sessionId = `aug_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
+    const sessionId = `aug_${Date.now()}_${Math.random()
+      .toString(36)
+      .slice(2, 11)}`;
 
     // RAG 컨텍스트 준비 (옵션)
     let ragContext = "";
@@ -207,7 +209,10 @@ export class DataAugmentationSystem {
 
     const base = variations[index % variations.length];
     const contextSuffix = ragContext
-      ? `\n\n관련 문서 정보를 바탕으로 보완하면: ${ragContext.substring(0, 100)}...`
+      ? `\n\n관련 문서 정보를 바탕으로 보완하면: ${ragContext.substring(
+          0,
+          100,
+        )}...`
       : "";
 
     return `${base}: "${input}"을 패러프레이즈하여 의미는 유지하되 표현을 다양화한 결과입니다.${contextSuffix}`;

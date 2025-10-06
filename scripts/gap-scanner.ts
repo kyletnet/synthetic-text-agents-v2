@@ -229,7 +229,9 @@ class GapChecker {
         }
       } catch (error) {
         console.error(
-          `   ⚠️  Check failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+          `   ⚠️  Check failed: ${
+            error instanceof Error ? error.message : "Unknown error"
+          }`,
         );
       }
     }
@@ -758,7 +760,9 @@ class GapChecker {
           category: check.category,
           title: `Deprecated doc referenced: ${path.basename(deprecatedDoc)}`,
           description: inGracePeriod
-            ? `${references.length} reference(s) found. Grace period ends in ${gracePeriod - daysSinceDeprecation} day(s)`
+            ? `${references.length} reference(s) found. Grace period ends in ${
+                gracePeriod - daysSinceDeprecation
+              } day(s)`
             : `${references.length} reference(s) to deprecated doc. Grace period expired.`,
           autoFixable: false,
           details: {

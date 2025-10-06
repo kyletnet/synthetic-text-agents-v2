@@ -158,9 +158,11 @@ npm run demo                   # → dev 사용
 ### ✅ **새로 추가된 핵심 기능**
 
 1. **🔧 TypeScript 오류 → 리팩토링 추천**
+
    - `npm run ts:check` - 컴파일 오류를 구체적 수정 가이드로 변환
 
 2. **📚 문서 품질 게이트**
+
    - `npm run docs:gate` - 릴리스 차단 기준 적용
    - Coverage < 80%, Stale > 7days 등 기준으로 배포 차단
 

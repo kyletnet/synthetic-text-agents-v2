@@ -211,7 +211,12 @@
         nav.innerHTML = items
           .map(
             (it) =>
-              `<div class="card" onclick="selectItem(${it.i})"><div><strong>#${it.i + 1}</strong></div><div class="mono">${(it.q || "").slice(0, 60)}</div></div>`,
+              `<div class="card" onclick="selectItem(${it.i})"><div><strong>#${
+                it.i + 1
+              }</strong></div><div class="mono">${(it.q || "").slice(
+                0,
+                60,
+              )}</div></div>`,
           )
           .join("");
         renderKPI();
@@ -226,8 +231,14 @@
 
         $("#panel-result").innerHTML = [
           `<h3>결과 보기</h3>`,
-          `<div><span class="badge">conf:${b.confidence ?? ""}</span> <span class="badge">domain:${b.domain || ""}</span></div>`,
-          `<div class="row"><div><strong>Question</strong><div class="mono">${b.question || ""}</div></div><div><strong>Answer</strong><div class="mono">${b.answer || ""}</div></div></div>`,
+          `<div><span class="badge">conf:${
+            b.confidence ?? ""
+          }</span> <span class="badge">domain:${b.domain || ""}</span></div>`,
+          `<div class="row"><div><strong>Question</strong><div class="mono">${
+            b.question || ""
+          }</div></div><div><strong>Answer</strong><div class="mono">${
+            b.answer || ""
+          }</div></div></div>`,
         ].join("");
 
         $("#panel-feedback").innerHTML =
@@ -247,14 +258,20 @@
             ? applies
                 .map(
                   (a) =>
-                    `<div class="card"><div class="mono">규칙: ${JSON.stringify(a.rules)}\n사유: ${a.reason || ""}</div></div>`,
+                    `<div class="card"><div class="mono">규칙: ${JSON.stringify(
+                      a.rules,
+                    )}\n사유: ${a.reason || ""}</div></div>`,
                 )
                 .join("")
             : "<em>없음</em>");
 
         $("#panel-diff").innerHTML = [
           `<h3>Before/After</h3>`,
-          `<div class="row"><div><strong>Before</strong><div class="mono">${b.answer || ""}</div></div><div><strong>After</strong><div class="mono">${r?.after?.answer || r.answer || "(재생성 없음)"}</div></div></div>`,
+          `<div class="row"><div><strong>Before</strong><div class="mono">${
+            b.answer || ""
+          }</div></div><div><strong>After</strong><div class="mono">${
+            r?.after?.answer || r.answer || "(재생성 없음)"
+          }</div></div></div>`,
         ].join("");
       }
 
@@ -298,7 +315,9 @@
         $("#kpis").innerHTML = [
           `<span class="badge">baseline:${state.baseline.length}</span>`,
           `<span class="badge">rerun:${state.rerun.length}</span>`,
-          `<span class="badge ${calls ? "ok" : ""}">성공률:${succ}${calls ? "%" : ""}</span>`,
+          `<span class="badge ${calls ? "ok" : ""}">성공률:${succ}${
+            calls ? "%" : ""
+          }</span>`,
           `<span class="badge">평균토큰/호출:${avgTok}</span>`,
           `<span class="badge">평균지연(ms):${avgLat}</span>`,
           `<span class="badge">dry:${dry}</span>`,

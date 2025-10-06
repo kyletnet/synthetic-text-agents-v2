@@ -296,8 +296,8 @@ class SecurityAuditChecker {
         report.overallStatus === "PASS"
           ? "✅ PASS"
           : report.overallStatus === "WARN"
-            ? "⚠️ WARN"
-            : "❌ FAIL"
+          ? "⚠️ WARN"
+          : "❌ FAIL"
       }`,
     );
     console.log(`🔍 Total Issues: ${report.totalIssues}`);
@@ -310,10 +310,10 @@ class SecurityAuditChecker {
           issue.severity === "CRITICAL"
             ? "🚨"
             : issue.severity === "HIGH"
-              ? "🔴"
-              : issue.severity === "MEDIUM"
-                ? "🟡"
-                : "🟢";
+            ? "🔴"
+            : issue.severity === "MEDIUM"
+            ? "🟡"
+            : "🟢";
         console.log(`   ${i + 1}. ${icon} ${issue.issue}`);
         if (issue.file) console.log(`      📁 File: ${issue.file}`);
         console.log(`      💡 Solution: ${issue.solution}`);

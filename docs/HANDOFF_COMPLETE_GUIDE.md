@@ -11,11 +11,13 @@
 ### Tier 1: 시스템 이해 (필수, 30분 읽기)
 
 1. **CLAUDE.md** - 시스템 철학 및 핵심 설계
+
    - 위치: `/CLAUDE.md`
    - 내용: 8-Agent 시스템, 사고 과정 프로그래밍, 품질 우선 원칙
    - 필수 이유: 시스템 전체 맥락
 
 2. **LLM_DEVELOPMENT_CONTRACT.md** - 개발 계약 (변경 금지 룰)
+
    - 위치: `/LLM_DEVELOPMENT_CONTRACT.md`
    - 내용: No-Mock 정책, Feature Flag First, 하위 호환성
    - 필수 이유: 개발 시 반드시 준수해야 할 규칙
@@ -28,11 +30,13 @@
 ### Tier 2: 워크플로우 (필수, 20분 읽기)
 
 4. **SLASH_COMMAND_WORKFLOW.md** - 일상 개발 워크플로우
+
    - 위치: `/docs/SLASH_COMMAND_WORKFLOW.md`
    - 내용: `/inspect` → `/maintain` → `/fix` → `/ship` 순서
    - 필수 이유: 개발 프로세스 전체 흐름
 
 5. **QUALITY_GOVERNANCE_SUMMARY.md** - 품질 거버넌스 업데이트
+
    - 위치: `/docs/QUALITY_GOVERNANCE_SUMMARY.md`
    - 내용: 품질 필수 파일 보호, SecurityGuard, CI/CD 자동화
    - 필수 이유: 최신 시스템 변경사항 (2025-10-04 업데이트)
@@ -45,6 +49,7 @@
 ### Tier 3: 정책 및 구성 (필수, 10분 읽기)
 
 7. **quality-policy.json** - 품질 정책 (Single Source of Truth)
+
    - 위치: `/quality-policy.json`
    - 내용: 품질 필수 파일 목록, 리팩토링 기준, 인용 품질 임계값
    - 필수 이유: 시스템 품질 기준 중앙 관리
@@ -61,6 +66,7 @@
 ### 아키텍처 이해 필요 시
 
 9. **llm_friendly_summary.md** - 기술 아키텍처 요약
+
    - 위치: `/docs/llm_friendly_summary.md`
    - 내용: 8-Agent 구조, RAG 시스템, 통신 프로토콜
 
@@ -71,6 +77,7 @@
 ### 배포/운영 필요 시
 
 11. **OPERATIONS_GUIDE.md** - 운영 가이드
+
     - 위치: `/docs/OPERATIONS_GUIDE.md`
     - 내용: 배포 프로세스, 모니터링, 장애 대응
 
@@ -81,6 +88,7 @@
 ### 개발 중 참고 사항
 
 13. **TYPESCRIPT_GUIDELINES.md** - TypeScript 상세 가이드
+
     - 위치: `/docs/TYPESCRIPT_GUIDELINES.md`
     - 내용: strict 모드, any 사용 규칙, 에러 처리
 

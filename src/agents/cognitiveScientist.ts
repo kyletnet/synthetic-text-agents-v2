@@ -239,8 +239,9 @@ export class CognitiveScientist extends BaseAgent {
     request: CognitiveAnalysisRequest,
     _context?: AgentContext,
   ): Promise<ExpertThinkingModel> {
-    const cognitiveArchitecture =
-      await this.buildCognitiveArchitecture(request);
+    const cognitiveArchitecture = await this.buildCognitiveArchitecture(
+      request,
+    );
     const knowledgeStructure = await this.mapKnowledgeStructure(request);
     const cognitiveProcesses = await this.analyzeCognitiveProcesses(request);
 

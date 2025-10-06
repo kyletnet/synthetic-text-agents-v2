@@ -544,8 +544,9 @@ export class LogForwarder extends EventEmitter {
         }
 
         case "bearer":
-          headers["Authorization"] =
-            `Bearer ${target.authentication.credentials.token}`;
+          headers[
+            "Authorization"
+          ] = `Bearer ${target.authentication.credentials.token}`;
           break;
 
         case "aws":

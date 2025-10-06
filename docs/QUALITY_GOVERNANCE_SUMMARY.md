@@ -34,6 +34,7 @@ src/agents/linguisticsEngineer.ts    # 언어 최적화
 **추가 기능**:
 
 1. **Race Condition 방지**
+
    - 파일 작업 시 자동 락(Lock) 관리
    - 동시 수정 충돌 방지
    - 데드락 자동 감지 및 복구

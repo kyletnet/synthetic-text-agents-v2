@@ -104,7 +104,9 @@ function fixUnusedVars(): number {
           lines[lineIndex] = newLine;
           fixedCount++;
           console.log(
-            `  ✓ ${filePath.split("/").pop()}:${unused.line} - ${unused.variable} -> _${unused.variable}`,
+            `  ✓ ${filePath.split("/").pop()}:${unused.line} - ${
+              unused.variable
+            } -> _${unused.variable}`,
           );
         }
       }

@@ -61,13 +61,23 @@ function generateMarkdownReport(report: DxLoopReport): string {
 
 **Status**: ${statusEmoji[summary.overall_status]} ${summary.overall_status}
 **Timestamp**: ${report.timestamp}
-**Profile**: ${report.profile} | **Mode**: ${report.mode} | **Budget**: $${report.budget_usd}
+**Profile**: ${report.profile} | **Mode**: ${report.mode} | **Budget**: $${
+    report.budget_usd
+  }
 **Recommendation**: ${summary.proceed_recommendation ? "PROCEED" : "BLOCK"}
 
-${summary.overall_status === "FAIL" ? "🚨 **CRITICAL ISSUES DETECTED - FULL RUN BLOCKED**" : ""}
+${
+  summary.overall_status === "FAIL"
+    ? "🚨 **CRITICAL ISSUES DETECTED - FULL RUN BLOCKED**"
+    : ""
+}
 
 ### Top Issues
-${summary.top_issues.length > 0 ? summary.top_issues.map((issue) => `- ${issue}`).join("\n") : "- No significant issues detected"}
+${
+  summary.top_issues.length > 0
+    ? summary.top_issues.map((issue) => `- ${issue}`).join("\n")
+    : "- No significant issues detected"
+}
 
 ### Next Actions
 ${summary.next_actions.map((action) => `- [ ] ${action}`).join("\n")}
@@ -109,7 +119,11 @@ ${gating.p2_issues.map((i) => `- ${i}`).join("\n")}
 
 **Status**: ${consistency.passed ? "✅ Passed" : "❌ Failed"}
 **Cases Total**: ${consistency.cases_total}
-**Reports Found**: Session(${(consistency as any).session_report_exists ? "✓" : "✗"}), Baseline(${(consistency as any).baseline_report_exists ? "✓" : "✗"}), LLM(${(consistency as any).llm_analysis_exists ? "✓" : "✗"})
+**Reports Found**: Session(${
+    (consistency as any).session_report_exists ? "✓" : "✗"
+  }), Baseline(${
+    (consistency as any).baseline_report_exists ? "✓" : "✗"
+  }), LLM(${(consistency as any).llm_analysis_exists ? "✓" : "✗"})
 
 ${
   consistency.issues.length > 0
@@ -123,8 +137,12 @@ ${consistency.issues.map((issue) => `- ${issue}`).join("\n")}
 ## Metrics Summary
 
 ### Quality Indicators
-- **Duplication Rate**: ${(metrics.duplication.rate * 100).toFixed(1)}% (${metrics.duplication.pairs_detected} pairs)
-- **Entity Coverage**: ${(metrics.coverage.entity_coverage_rate * 100).toFixed(1)}%
+- **Duplication Rate**: ${(metrics.duplication.rate * 100).toFixed(1)}% (${
+    metrics.duplication.pairs_detected
+  } pairs)
+- **Entity Coverage**: ${(metrics.coverage.entity_coverage_rate * 100).toFixed(
+    1,
+  )}%
 - **Evidence Presence**: ${(metrics.evidence.presence_rate * 100).toFixed(1)}%
 - **Hallucination Rate**: ${(metrics.hallucination.rate * 100).toFixed(1)}%
 
@@ -132,7 +150,9 @@ ${consistency.issues.map((issue) => `- ${issue}`).join("\n")}
 - **Cost per Item**: $${metrics.cost_latency.cost_per_item.toFixed(3)}
 - **P95 Latency**: ${metrics.cost_latency.latency_p95_ms}ms
 - **Failure Rate**: ${(metrics.failure_retry.failure_rate * 100).toFixed(1)}%
-- **Budget Utilization**: ${(metrics.cost_latency.budget_utilization * 100).toFixed(1)}%
+- **Budget Utilization**: ${(
+    metrics.cost_latency.budget_utilization * 100
+  ).toFixed(1)}%
 
 ### Security Indicators
 - **PII Hits**: ${metrics.pii_license.pii_hits}
@@ -145,18 +165,31 @@ ${consistency.issues.map((issue) => `- ${issue}`).join("\n")}
 ${
   anomalies.anomalies.length > 0
     ? `### Statistical Anomalies
-${anomalies.anomalies.map((a) => `- **${a.metric}**: ${a.description} (severity: ${a.severity})`).join("\n")}
+${anomalies.anomalies
+  .map((a) => `- **${a.metric}**: ${a.description} (severity: ${a.severity})`)
+  .join("\n")}
 
 `
     : ""
 }${
     anomalies.spikes.length > 0
       ? `### Spikes Detected
-${anomalies.spikes.map((s) => `- **${s.type}**: ${s.value.toFixed(3)} (threshold: ${s.threshold.toFixed(3)})`).join("\n")}
+${anomalies.spikes
+  .map(
+    (s) =>
+      `- **${s.type}**: ${s.value.toFixed(3)} (threshold: ${s.threshold.toFixed(
+        3,
+      )})`,
+  )
+  .join("\n")}
 
 `
       : ""
-  }${anomalies.anomalies.length === 0 && anomalies.spikes.length === 0 ? "No significant anomalies detected.\n\n" : ""}---
+  }${
+    anomalies.anomalies.length === 0 && anomalies.spikes.length === 0
+      ? "No significant anomalies detected.\n\n"
+      : ""
+  }---
 
 ## Threshold Calibration
 
@@ -169,7 +202,11 @@ ${
 ${calibration.changes
   .map(
     (c) =>
-      `- **${c.metric}**: ${c.current_warn}→${c.suggested_warn} (warn), ${c.current_fail}→${c.suggested_fail} (fail) [confidence: ${(c.confidence * 100).toFixed(0)}%]`,
+      `- **${c.metric}**: ${c.current_warn}→${c.suggested_warn} (warn), ${
+        c.current_fail
+      }→${c.suggested_fail} (fail) [confidence: ${(c.confidence * 100).toFixed(
+        0,
+      )}%]`,
   )
   .join("\n")}
 

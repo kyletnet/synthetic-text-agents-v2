@@ -60,7 +60,9 @@ export class SafetyAnalyzer {
     // 🆕 CRITICAL: Quality-essential check (최우선!)
     const qualityImpact = this.analyzeQualityImpact(item);
     criteria.push(
-      `quality-essential: ${qualityImpact.isEssential ? "YES (PROTECTED)" : "no"}`,
+      `quality-essential: ${
+        qualityImpact.isEssential ? "YES (PROTECTED)" : "no"
+      }`,
     );
     if (qualityImpact.isEssential) {
       criteria.push(`  → reason: ${qualityImpact.reason}`);

@@ -23,16 +23,19 @@ npm run fix -- --non-interactive  # Non-interactive list mode (for AI)
 **Handles manual-approval items from inspection cache:**
 
 1. **TypeScript Errors**
+
    - Compilation errors
    - Type mismatches
    - Import issues
 
 2. **Technical Debt**
+
    - TODO markers (144 items)
    - FIXME comments
    - HACK workarounds
 
 3. **Refactoring Queue**
+
    - Code quality improvements
    - Architecture improvements
    - Performance optimizations

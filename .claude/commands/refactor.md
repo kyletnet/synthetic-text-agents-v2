@@ -22,16 +22,19 @@ npm run refactor   # Via npm (same command)
 **Handles structural improvements across files:**
 
 1. **Cross-Module Issues**
+
    - Duplicate export elimination
    - Config file normalization
    - Module boundary violations
 
 2. **Architecture Improvements**
+
    - Dependency graph optimization
    - Interface consolidation
    - Layer separation enforcement
 
 3. **Technical Debt Reduction**
+
    - Dead code removal
    - Unused import cleanup
    - Pattern consistency enforcement

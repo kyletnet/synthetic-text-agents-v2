@@ -15,6 +15,7 @@ import {
   ALL_INVARIANTS,
   type InvariantViolation,
 } from "./lib/patterns/architecture-invariants.js";
+import { AutoFixEngine } from "./lib/patterns/auto-fix-engine.js";
 
 class ArchitectureValidator {
   private rootDir: string;
@@ -64,22 +65,57 @@ class ArchitectureValidator {
     // Auto-fix if requested
     if (this.autoFix) {
       const fixable = violations.filter((v) => v.autoFixable);
-      console.log(`\n🔧 Auto-fixing ${fixable.length} violations...`);
-      // TODO: Implement auto-fix logic
-      console.log("⚠️  Auto-fix not yet implemented");
+
+      if (fixable.length === 0) {
+        console.log("\n⚠️  No auto-fixable violations found");
+      } else {
+        const engine = new AutoFixEngine(this.rootDir);
+        const result = await engine.fix(fixable);
+
+        // Update violations list after fixes
+        if (result.fixedViolations > 0) {
+          console.log("\n🔄 Re-validating after fixes...");
+          const newSnapshot = createCodebaseSnapshot(this.rootDir);
+          const newViolations = validateInvariants(newSnapshot, ALL_INVARIANTS);
+
+          console.log(
+            `\n📊 Remaining violations: ${newViolations.length} (was ${violations.length})`,
+          );
+
+          // Update local violations for exit code
+          violations.length = 0;
+          violations.push(...newViolations);
+
+          // Re-group by severity
+          const newP0 = violations.filter((v) => v.severity === "P0");
+          const newP1 = violations.filter((v) => v.severity === "P1");
+          const newP2 = violations.filter((v) => v.severity === "P2");
+
+          console.log(`   🔴 P0: ${newP0.length}`);
+          console.log(`   🟡 P1: ${newP1.length}`);
+          console.log(`   🟢 P2: ${newP2.length}`);
+        }
+      }
     }
 
-    // Decide whether to block
-    if (p0.length > 0) {
+    // Decide whether to block (re-group after potential auto-fix)
+    const finalP0 = violations.filter((v) => v.severity === "P0");
+    const finalP1 = violations.filter((v) => v.severity === "P1");
+
+    if (finalP0.length > 0) {
       console.log("\n🔒 BLOCKING: P0 violations detected");
       console.log("💡 Fix violations above before proceeding");
       process.exit(1);
     }
 
-    if (p1.length > 0) {
+    if (finalP1.length > 0) {
       console.log("\n⚠️  WARNING: P1 violations detected");
       console.log("💡 These should be addressed soon");
       process.exit(0); // Don't block on P1
+    }
+
+    if (violations.length === 0) {
+      console.log("\n✅ All violations resolved!");
     }
 
     process.exit(0);

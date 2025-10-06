@@ -178,7 +178,9 @@ export class BudgetGuardian {
 
       return {
         can_proceed: false,
-        reason: `Run cost limit exceeded: $${projectedCost.toFixed(3)} > $${limits.max_cost_per_run}`,
+        reason: `Run cost limit exceeded: $${projectedCost.toFixed(3)} > $${
+          limits.max_cost_per_run
+        }`,
         warning_level: "critical",
         remaining_budget: {
           cost_usd: Math.max(
@@ -221,7 +223,9 @@ export class BudgetGuardian {
     // Check item-level limits
     if (estimatedCost > limits.max_cost_per_item) {
       warnings.push(
-        `Item cost ($${estimatedCost.toFixed(3)}) exceeds limit ($${limits.max_cost_per_item})`,
+        `Item cost ($${estimatedCost.toFixed(3)}) exceeds limit ($${
+          limits.max_cost_per_item
+        })`,
       );
       warningLevel = "high";
     }
@@ -248,7 +252,9 @@ export class BudgetGuardian {
       if (projectedAgentCost > agentLimits.max_cost_usd) {
         return {
           can_proceed: false,
-          reason: `Agent ${agentRole} cost limit exceeded: $${projectedAgentCost.toFixed(3)} > $${agentLimits.max_cost_usd}`,
+          reason: `Agent ${agentRole} cost limit exceeded: $${projectedAgentCost.toFixed(
+            3,
+          )} > $${agentLimits.max_cost_usd}`,
           warning_level: "critical",
           remaining_budget: {
             cost_usd: Math.max(
@@ -291,12 +297,16 @@ export class BudgetGuardian {
     if (costUtilization > 0.9 || timeUtilization > 0.9) {
       warningLevel = "high";
       warnings.push(
-        `Budget utilization high: cost ${(costUtilization * 100).toFixed(1)}%, time ${(timeUtilization * 100).toFixed(1)}%`,
+        `Budget utilization high: cost ${(costUtilization * 100).toFixed(
+          1,
+        )}%, time ${(timeUtilization * 100).toFixed(1)}%`,
       );
     } else if (costUtilization > 0.75 || timeUtilization > 0.75) {
       warningLevel = maxLevel(warningLevel as LevelKey, "medium");
       warnings.push(
-        `Budget utilization moderate: cost ${(costUtilization * 100).toFixed(1)}%, time ${(timeUtilization * 100).toFixed(1)}%`,
+        `Budget utilization moderate: cost ${(costUtilization * 100).toFixed(
+          1,
+        )}%, time ${(timeUtilization * 100).toFixed(1)}%`,
       );
     } else if (costUtilization > 0.5 || timeUtilization > 0.5) {
       warningLevel = maxLevel(warningLevel as LevelKey, "low");

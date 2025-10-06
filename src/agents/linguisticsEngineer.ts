@@ -123,8 +123,9 @@ export class LinguisticsEngineer extends BaseAgent {
 
     const llmOptimization = await this.optimizeForLLM(request, context);
     const languageQuality = await this.analyzeLanguageQuality(request);
-    const terminologyFramework =
-      await this.developTerminologyFramework(request);
+    const terminologyFramework = await this.developTerminologyFramework(
+      request,
+    );
     const structuralRecommendations =
       await this.generateStructuralRecommendations(request, llmOptimization);
     const performancePredictions = await this.predictPerformance(
@@ -357,8 +358,8 @@ export class LinguisticsEngineer extends BaseAgent {
       request.targetLLM === "claude"
         ? 2000
         : request.targetLLM === "gpt"
-          ? 1500
-          : 800;
+        ? 1500
+        : 800;
     const efficiencyScore = Math.max(
       0,
       Math.min(
@@ -620,8 +621,9 @@ export class LinguisticsEngineer extends BaseAgent {
       request,
       domainVocabulary,
     );
-    const consistencyRules =
-      await this.establishConsistencyRules(domainVocabulary);
+    const consistencyRules = await this.establishConsistencyRules(
+      domainVocabulary,
+    );
 
     return {
       domainVocabulary,
@@ -994,7 +996,23 @@ export class LinguisticsEngineer extends BaseAgent {
           result.languageQuality.naturalness.score) /
         4;
 
-      return `Linguistics Engineer optimized prompt structure for target LLM with ${tokenEst} estimated tokens (${(efficiency * 100).toFixed(0)}% efficiency). Average language quality: ${avgLangScore.toFixed(1)}/10 (Clarity ${result.languageQuality.clarity.score}/10, Consistency ${result.languageQuality.consistency.score}/10, Precision ${result.languageQuality.precision.score}/10, Naturalness ${result.languageQuality.naturalness.score}/10). Performance prediction: ${result.performancePredictions.generationQuality}/10 quality, ${result.performancePredictions.processingSpeed} processing speed.`;
+      return `Linguistics Engineer optimized prompt structure for target LLM with ${tokenEst} estimated tokens (${(
+        efficiency * 100
+      ).toFixed(
+        0,
+      )}% efficiency). Average language quality: ${avgLangScore.toFixed(
+        1,
+      )}/10 (Clarity ${result.languageQuality.clarity.score}/10, Consistency ${
+        result.languageQuality.consistency.score
+      }/10, Precision ${
+        result.languageQuality.precision.score
+      }/10, Naturalness ${
+        result.languageQuality.naturalness.score
+      }/10). Performance prediction: ${
+        result.performancePredictions.generationQuality
+      }/10 quality, ${
+        result.performancePredictions.processingSpeed
+      } processing speed.`;
     }
 
     return super.explainReasoning(input, output, context);

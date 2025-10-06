@@ -22,11 +22,13 @@ main
 #### **보호 규칙 (모두 체크):**
 
 - ✅ **Require a pull request before merging**
+
   - ✅ Require approvals: **1**
   - ✅ Dismiss stale PR approvals when new commits are pushed
   - ✅ Require review from code owners
 
 - ✅ **Require status checks to pass before merging**
+
   - ✅ Require branches to be up to date before merging
   - **필수 status checks:**
     - `Security Scan`

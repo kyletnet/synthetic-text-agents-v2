@@ -19,6 +19,7 @@
 **즉시 조치**:
 
 1. ✅ `/inspect` 버그 수정 완료
+
    - `TypeError: output.match is not a function` 수정
    - Line 475-477 type safety 추가
 
@@ -292,10 +293,12 @@ private saveToFile(gaps: Gap[]): void {
 ### P1 (1주일)
 
 5. **Explainer 시스템 추가**
+
    - `scripts/explainer.ts` 생성
    - `/fix`에 통합
 
 6. **Shared Snapshot/Cache 시스템**
+
    - `validate-unified.ts` 실제 통합
 
 7. **Quality Policy 검증 추가**
@@ -304,9 +307,11 @@ private saveToFile(gaps: Gap[]): void {
 ### P2 (1개월)
 
 8. **Dashboard 통합**
+
    - 모든 결과를 `dashboard.json`으로 병합
 
 9. **Human-friendly Summary**
+
    - `/status:human` 명령어
 
 10. **실제 Rollback 구현**
@@ -360,11 +365,13 @@ private saveToFile(gaps: Gap[]): void {
 ### P3 (3개월) - "연결된 시스템"
 
 1. **LLM 통합 대시보드**
+
    - Web UI (React/Next.js)
    - 모든 메트릭 시각화
    - Real-time 모니터링
 
 2. **자동 품질 개선 루프**
+
    - Quality 저하 감지 → 자동 Issue → 자동 PR → 자동 테스트
 
 3. **Experimentation Framework**
@@ -374,6 +381,7 @@ private saveToFile(gaps: Gap[]): void {
 ### P4 (6개월) - "자율 운영 시스템"
 
 4. **자가 치유 시스템**
+
    - 문제 감지 → 자동 복구 → 자동 검증
 
 5. **Predictive Quality**
@@ -383,6 +391,7 @@ private saveToFile(gaps: Gap[]): void {
 ### P5 (1년) - "플랫폼화"
 
 6. **Multi-tenant Support**
+
    - 여러 팀/프로젝트 지원
    - 격리된 품질 정책
 

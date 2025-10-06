@@ -2,7 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { RAGSystem } from "@/lib/rag-utils";
 
 export async function POST(request: NextRequest) {
-  const sessionId = `upload_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  const sessionId = `upload_${Date.now()}_${Math.random()
+    .toString(36)
+    .substr(2, 9)}`;
 
   try {
     const formData = await request.formData();
@@ -33,7 +35,9 @@ export async function POST(request: NextRequest) {
       );
       return NextResponse.json(
         {
-          error: `File type ${fileExt} not supported. Allowed: ${allowedTypes.join(", ")}`,
+          error: `File type ${fileExt} not supported. Allowed: ${allowedTypes.join(
+            ", ",
+          )}`,
         },
         { status: 400 },
       );
@@ -46,11 +50,15 @@ export async function POST(request: NextRequest) {
     const validInputTypes = ["document", "gold", "mixed"];
     if (inputType && !validInputTypes.includes(inputType)) {
       console.error(
-        `Upload error: Invalid input type ${inputType}. Valid types: ${validInputTypes.join(", ")}`,
+        `Upload error: Invalid input type ${inputType}. Valid types: ${validInputTypes.join(
+          ", ",
+        )}`,
       );
       return NextResponse.json(
         {
-          error: `Invalid input type. Allowed types: ${validInputTypes.join(", ")}`,
+          error: `Invalid input type. Allowed types: ${validInputTypes.join(
+            ", ",
+          )}`,
         },
         { status: 400 },
       );
@@ -62,7 +70,9 @@ export async function POST(request: NextRequest) {
     const processingTime = Date.now() - startTime;
 
     console.log(
-      `📄 Document uploaded: ${file.name} (${content.length} chars, input_type: ${inputType || "default"})`,
+      `📄 Document uploaded: ${file.name} (${
+        content.length
+      } chars, input_type: ${inputType || "default"})`,
     );
 
     // Get updated stats
@@ -84,7 +94,9 @@ export async function POST(request: NextRequest) {
       },
       stats,
       processingTime,
-      message: `File uploaded and processed successfully. Document has been chunked for RAG. Input type: ${inputType || "default"}`,
+      message: `File uploaded and processed successfully. Document has been chunked for RAG. Input type: ${
+        inputType || "default"
+      }`,
     });
   } catch (error) {
     console.error("Upload error:", error);

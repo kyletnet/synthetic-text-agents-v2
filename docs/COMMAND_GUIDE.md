@@ -605,27 +605,34 @@ npm run /radar
 **검사 항목**:
 
 1. **테스트되지 않은 Critical 파일** (P0)
+
    - 핵심 파일 9개 + src/shared/ 전체 스캔
    - 실제 커버리지 리포트 기반 (자동 생성)
 
 2. **대형 파일 탐지** (P1)
+
    - 1000줄 이상 파일 리스트
    - 모듈 분리 권장
 
 3. **Deprecated 파일 불일치** (P1)
+
    - 문서에 deprecated로 표시되었지만 여전히 존재하는 파일
 
 4. **불필요한 백업 파일** (P2)
+
    - .backup, .old, .deprecated 파일
    - .system-backups 디렉토리
 
 5. **중복 의존성** (P2)
+
    - 동일 패키지의 여러 버전 설치
 
 6. **Dead Code** (P2)
+
    - 사용되지 않는 export (ts-prune 사용)
 
 7. **보안 취약점** (P0/P1)
+
    - npm audit 결과
 
 8. **Git 이슈** (P2)

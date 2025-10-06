@@ -1,0 +1,77 @@
+{
+  "schemaVersion": "2025-10-quality-v1",
+  "timestamp": "2025-10-06T13:53:18.235Z",
+  "phase": "Phase 2",
+  "guideline_compliance": {
+    "score": 0.9999999999999999,
+    "version": "1.0",
+    "breakdown": {
+      "question_types": 1,
+      "answer_structure": 1,
+      "number_formats": 1,
+      "prohibitions": 1
+    }
+  },
+  "violations": [
+    {
+      "id": "align-qa-p2-001",
+      "severity": "high",
+      "category": "evidence_alignment",
+      "description": "답변과 Evidence 정렬도가 낮습니다 (50.0%)",
+      "location": {
+        "qaId": "qa-p2-001",
+        "field": "answer"
+      },
+      "suggestion": "Evidence에 기반한 답변으로 수정하세요"
+    },
+    {
+      "id": "align-qa-p2-002",
+      "severity": "high",
+      "category": "evidence_alignment",
+      "description": "답변과 Evidence 정렬도가 낮습니다 (53.4%)",
+      "location": {
+        "qaId": "qa-p2-002",
+        "field": "answer"
+      },
+      "suggestion": "Evidence에 기반한 답변으로 수정하세요"
+    },
+    {
+      "id": "align-qa-p2-003",
+      "severity": "high",
+      "category": "evidence_alignment",
+      "description": "답변과 Evidence 정렬도가 낮습니다 (9.1%)",
+      "location": {
+        "qaId": "qa-p2-003",
+        "field": "answer"
+      },
+      "suggestion": "Evidence에 기반한 답변으로 수정하세요"
+    },
+    {
+      "id": "halluc-qa-p2-003",
+      "severity": "critical",
+      "category": "hallucination",
+      "description": "근거 없는 주장 1개 발견",
+      "location": {
+        "qaId": "qa-p2-003",
+        "field": "answer"
+      },
+      "suggestion": "Evidence에 포함된 내용만 사용하세요"
+    }
+  ],
+  "recommendations": [],
+  "evidence_metrics": {
+    "snippet_alignment": 0.37484084542908064,
+    "citation_presence": 1,
+    "context_precision": 1,
+    "context_recall": 0.16666666666666666,
+    "retrieval_quality_score": 0.5832696715049656
+  },
+  "shadow_metrics": {
+    "hybrid_search": {
+      "improvement_delta": -0.12271442820358724,
+      "bm25_avg": 0,
+      "vector_avg": 0,
+      "hybrid_avg": 0.1550633495741905
+    }
+  }
+}

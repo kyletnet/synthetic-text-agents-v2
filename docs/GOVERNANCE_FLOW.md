@@ -401,11 +401,13 @@ npx tsx scripts/generate-tool-map.ts   # Regenerate tool map
 ### Available Data Sources
 
 1. **Enforcement Log** (`enforcement-log.jsonl`)
+
    - All governance decisions
    - Timestamp, tool, mode, result, violations
    - Append-only, never modified
 
 2. **Tool Map** (`tool-map.json`)
+
    - System structure snapshot
    - Commands → Engines → Policies
    - Regenerate on demand
@@ -454,6 +456,7 @@ cat reports/governance/tool-map.json | jq '.engines["inspection-engine"].usedByC
    ```
 
 2. **Implement in enforcer:**
+
    - Add check in `GovernanceEnforcer.checkFile()`
    - Log result in `GovernanceLogger`
 

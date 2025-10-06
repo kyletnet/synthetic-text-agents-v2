@@ -44,9 +44,19 @@ _Auto-generated: ${now}_
 
 | Component | Status | Details |
 |-----------|--------|---------|
-| seed_doc_path | **${docPath}** | ${docPath !== "missing" && docPath !== "partial" ? "Doc-only pipeline wired" : "No explicit doc ingestion routing found"} |
-| gold_pairs_path | **${pairsPath}** | ${pairsPath !== "missing" && pairsPath !== "partial" ? "Pairs-only pipeline wired" : "No explicit gold pair routing found"} |
-| mixed inputs | **${docPath !== "missing" && pairsPath !== "missing" ? "partial" : "missing"}** | Mixed = both routes present |
+| seed_doc_path | **${docPath}** | ${
+    docPath !== "missing" && docPath !== "partial"
+      ? "Doc-only pipeline wired"
+      : "No explicit doc ingestion routing found"
+  } |
+| gold_pairs_path | **${pairsPath}** | ${
+    pairsPath !== "missing" && pairsPath !== "partial"
+      ? "Pairs-only pipeline wired"
+      : "No explicit gold pair routing found"
+  } |
+| mixed inputs | **${
+    docPath !== "missing" && pairsPath !== "missing" ? "partial" : "missing"
+  }** | Mixed = both routes present |
 | default path | **ok** | Backward-compatible fallback retained |
 
 ## RAG/Chunking

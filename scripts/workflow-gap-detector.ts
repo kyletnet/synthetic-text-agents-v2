@@ -249,7 +249,9 @@ class WorkflowGapDetector {
       }[gap.severity];
 
       console.log(
-        `\n${index + 1}. ${severityIcon} ${gap.type.toUpperCase()}: ${gap.component}`,
+        `\n${index + 1}. ${severityIcon} ${gap.type.toUpperCase()}: ${
+          gap.component
+        }`,
       );
       console.log(`   📝 ${gap.description}`);
       console.log(`   🔧 Fix: ${gap.suggestedFix}`);

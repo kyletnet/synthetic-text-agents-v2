@@ -116,7 +116,9 @@ function executeEvaluation(
       } else {
         resolve({
           success: false,
-          error: `Evaluation failed with exit code ${code}. Stderr: ${stderr || "No error details"}`,
+          error: `Evaluation failed with exit code ${code}. Stderr: ${
+            stderr || "No error details"
+          }`,
         });
       }
     });

@@ -273,7 +273,9 @@ export class QAGenerator extends BaseAgent {
     const arr: QAPair[] = [];
     for (let i = 0; i < count; i++) {
       arr.push({
-        question: `[DRY-RUN] ${topic}에 대해 알아야 할 점은 무엇인가요? (${i + 1})`,
+        question: `[DRY-RUN] ${topic}에 대해 알아야 할 점은 무엇인가요? (${
+          i + 1
+        })`,
         answer: `[DRY-RUN] 실제 API 키를 설정하면 진짜 AI가 ${topic}에 대한 상세한 답변을 생성합니다.`,
         confidence: 0.5,
         domain: "dry-run",

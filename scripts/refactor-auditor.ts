@@ -227,7 +227,9 @@ class RefactorAuditor {
           description: `Required configuration file not found`,
           files: [configDef.file],
           impact: "System may fail to initialize or operate correctly",
-          recommendation: `Create ${configDef.file} with required fields: ${configDef.required.join(", ")}`,
+          recommendation: `Create ${
+            configDef.file
+          } with required fields: ${configDef.required.join(", ")}`,
         });
       }
     }
@@ -248,7 +250,9 @@ class RefactorAuditor {
             if (!hasRequiredKeys) {
               invalidStructures.push({
                 file: reportFile,
-                issue: `Line ${lineNum} missing required keys: ${expectedKeys.join(" or ")}`,
+                issue: `Line ${lineNum} missing required keys: ${expectedKeys.join(
+                  " or ",
+                )}`,
               });
             }
           } catch {
@@ -467,7 +471,9 @@ class RefactorAuditor {
         priority: "HIGH",
         severity: "P0",
         title: "Insufficient Runtime Protection",
-        description: `Only ${coveragePercent.toFixed(1)}% of source files have runtime protection mechanisms (Target: 60%+)`,
+        description: `Only ${coveragePercent.toFixed(
+          1,
+        )}% of source files have runtime protection mechanisms (Target: 60%+)`,
         files: vulnerableFiles.slice(0, 10),
         impact:
           "System vulnerable to cascading failures and poor user experience",
@@ -552,7 +558,10 @@ class RefactorAuditor {
             const importPath = fromMatch[1];
             if (importPath.startsWith("./") || importPath.startsWith("../")) {
               const reverseImportPattern = new RegExp(
-                `from\\s+['"].*${file.split("/").pop()?.replace(".ts", "")}.*['"]`,
+                `from\\s+['"].*${file
+                  .split("/")
+                  .pop()
+                  ?.replace(".ts", "")}.*['"]`,
               );
               const targetFile = this.resolveImportPath(file, importPath);
               const targetContent = this.safeReadFile(targetFile);
@@ -1002,7 +1011,9 @@ class RefactorAuditor {
       if (missingScripts.length > 0) {
         safetyIssues.push({
           file: "package.json",
-          issue: `Missing scripts: ${missingScripts.map((s) => s.name).join(", ")}`,
+          issue: `Missing scripts: ${missingScripts
+            .map((s) => s.name)
+            .join(", ")}`,
         });
       }
 
@@ -1060,7 +1071,9 @@ class RefactorAuditor {
         priority: "HIGH",
         severity: "P0",
         title: "Critical Release Safety Missing",
-        description: `Missing ${criticalMissing.length} critical release safety mechanisms: ${criticalMissing.join(", ")}`,
+        description: `Missing ${
+          criticalMissing.length
+        } critical release safety mechanisms: ${criticalMissing.join(", ")}`,
         files: [...ciFiles, "package.json", ".husky/pre-commit"],
         impact: "High risk of releasing broken, untested, or vulnerable code",
         recommendation:
@@ -1295,7 +1308,9 @@ class RefactorAuditor {
         console.log(`Recommendation: ${finding.recommendation}`);
         if (this.config.verbose) {
           console.log(
-            `Files: ${finding.files.slice(0, 3).join(", ")}${finding.files.length > 3 ? "..." : ""}`,
+            `Files: ${finding.files.slice(0, 3).join(", ")}${
+              finding.files.length > 3 ? "..." : ""
+            }`,
           );
         }
       }

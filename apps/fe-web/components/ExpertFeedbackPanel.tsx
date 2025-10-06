@@ -114,10 +114,10 @@ export default function ExpertFeedbackPanel({
         key === "diversity"
           ? "다양성"
           : key === "quality"
-            ? "품질"
-            : key === "relevance"
-              ? "관련성"
-              : "유용성",
+          ? "품질"
+          : key === "relevance"
+          ? "관련성"
+          : "유용성",
       score: metric.score,
     }));
 

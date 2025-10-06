@@ -10,14 +10,17 @@
 ### P0 (즉시 - 완료)
 
 1. ✅ **문서 정리 자동화**
+
    - `/inspect --deep` 실행 시 자동으로 `doc:lifecycle:stale` 실행
    - 주간 CI/CD 스케줄링 추가 (매주 월요일)
 
 2. ✅ **Protected Files Pre-commit Hook**
+
    - `.git/hooks/pre-commit` 설치 완료
    - `quality-policy.json` 기반 자동 차단
 
 3. ✅ **Gap → GitHub Issue 자동 생성**
+
    - `npm run gaps:issues` 명령어 추가
    - P0 gap 자동 Issue 생성
 
@@ -268,6 +271,7 @@ npm run rollback         # 즉시 복구
 ### 즉시 필요 (1주일)
 
 1. **GuidelineManager 통합**
+
    - QA 생성 파이프라인에 연결
    - `src/agents/` 에서 사용 시작
 
@@ -278,10 +282,12 @@ npm run rollback         # 즉시 복구
 ### 중기 (1개월)
 
 3. **Rollback 실제 구현**
+
    - Snapshot 기반 파일 복원
    - 자동 테스트 후 복구
 
 4. **실시간 모니터링 구현**
+
    - `gaps:watch` 파일 감지 로직
    - 변경 시 자동 gap scan
 

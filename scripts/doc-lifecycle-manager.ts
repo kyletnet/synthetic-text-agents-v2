@@ -295,7 +295,13 @@ class DocLifecycleManager {
 
 This document is no longer maintained.
 
-${options.replacementDoc ? `**Replacement**: See [@${path.basename(options.replacementDoc)}](../${options.replacementDoc})` : ""}
+${
+  options.replacementDoc
+    ? `**Replacement**: See [@${path.basename(options.replacementDoc)}](../${
+        options.replacementDoc
+      })`
+    : ""
+}
 ${options.reason ? `**Reason**: ${options.reason}` : ""}
 
 **Deprecation Date**: ${deprecationDate.toISOString().split("T")[0]}
@@ -347,7 +353,9 @@ ${options.reason ? `**Reason**: ${options.reason}` : ""}
     const header = `---
 **📦 ARCHIVED**
 
-This is a historical version archived on ${new Date().toISOString().split("T")[0]}.
+This is a historical version archived on ${
+      new Date().toISOString().split("T")[0]
+    }.
 
 ${reason ? `**Reason**: ${reason}` : ""}
 
@@ -406,7 +414,9 @@ For the latest version, see [Active Documentation](../../active/)
         if (existsSync(entry.path)) {
           await unlink(entry.path);
           console.log(
-            `🗑️  Deleted: ${entry.path} (deprecated ${this.getDaysAgo(entry.deprecatedAt)} days ago)`,
+            `🗑️  Deleted: ${entry.path} (deprecated ${this.getDaysAgo(
+              entry.deprecatedAt,
+            )} days ago)`,
           );
           deleted++;
         }

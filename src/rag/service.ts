@@ -273,6 +273,16 @@ export class RAGService {
     };
   }
 
+  /**
+   * Get chunks for a specific document
+   *
+   * Used by embedding generation to get chunks after document is indexed
+   */
+  getDocumentChunks(path: string): Chunk[] | null {
+    const docIndex = this.documentIndex.get(path);
+    return docIndex ? docIndex.chunks : null;
+  }
+
   private async buildIndex(): Promise<void> {
     for (const indexPath of this.config.indexPaths) {
       await this.indexPath(indexPath);

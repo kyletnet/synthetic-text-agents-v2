@@ -377,7 +377,9 @@ export class HybridSearchChecker implements QualityChecker {
    */
   private calculateIDF(terms: string[], corpus: QAPair[]): Map<string, number> {
     // Count only documents with evidence
-    const N = corpus.filter((qa) => qa.evidence && qa.evidence.length > 0).length;
+    const N = corpus.filter(
+      (qa) => qa.evidence && qa.evidence.length > 0,
+    ).length;
     const idfMap = new Map<string, number>();
 
     if (N === 0) return idfMap;
@@ -405,7 +407,7 @@ export class HybridSearchChecker implements QualityChecker {
       const denominator = df + smoothing;
 
       // Calculate IDF with floor at 0.1 (minimum importance)
-      const rawIDF = Math.log((numerator / denominator) + 1);
+      const rawIDF = Math.log(numerator / denominator + 1);
       const idf = Math.max(0.1, rawIDF);
 
       idfMap.set(term, idf);

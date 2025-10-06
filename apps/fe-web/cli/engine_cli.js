@@ -84,7 +84,10 @@ function generateDeterministicSampleData(input) {
     samples,
     links: {
       runLogPath: `docs/RUN_LOGS/${currentDate}_run-${runId}.md`,
-      decisionPath: `docs/LEDGER/dec-${currentDate.replace(/-/g, "")}-${runId}.md`,
+      decisionPath: `docs/LEDGER/dec-${currentDate.replace(
+        /-/g,
+        "",
+      )}-${runId}.md`,
     },
     suggestedTags: issuesTop3.slice(0, 2),
   };

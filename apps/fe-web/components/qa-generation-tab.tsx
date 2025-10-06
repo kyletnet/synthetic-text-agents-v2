@@ -104,7 +104,9 @@ export default function QAGenerationTab({
       }
     } catch (error) {
       setError(
-        `Generation error: ${error instanceof Error ? error.message : "Unknown error"}`,
+        `Generation error: ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`,
       );
     } finally {
       setLoading(false);

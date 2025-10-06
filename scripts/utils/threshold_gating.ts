@@ -141,8 +141,8 @@ export class ThresholdGating {
           priority === "P0"
             ? "FAIL"
             : metricName.includes("_warn")
-              ? "WARN"
-              : "FAIL";
+            ? "WARN"
+            : "FAIL";
         violationType = "max_exceeded";
       }
     } else if (isMinThreshold) {
@@ -151,8 +151,8 @@ export class ThresholdGating {
           priority === "P0"
             ? "FAIL"
             : metricName.includes("_warn")
-              ? "WARN"
-              : "FAIL";
+            ? "WARN"
+            : "FAIL";
         violationType = "min_not_met";
       }
     } else {
@@ -193,7 +193,9 @@ export class ThresholdGating {
     // AC-1 Logic: P0 violations → FAIL, P1 multiple → WARN, P2 minor → PASS
     if (p0Violations.length > 0) {
       overallResult = "FAIL";
-      summary = `Critical P0 violation detected: ${p0Violations.map((v) => v.metric_name).join(", ")}`;
+      summary = `Critical P0 violation detected: ${p0Violations
+        .map((v) => v.metric_name)
+        .join(", ")}`;
       recommendation =
         "IMMEDIATE ACTION REQUIRED: Fix P0 violations before production deployment";
     } else if (p1Violations.length >= 2) {
@@ -272,7 +274,9 @@ GATING_SUMMARY: ${gatingResult.summary}
       const gatingSection = `
 ## Threshold Gating Results
 
-**Overall Result**: ${this.getStatusBadge(gatingResult.overall_result)} ${gatingResult.overall_result}
+**Overall Result**: ${this.getStatusBadge(gatingResult.overall_result)} ${
+        gatingResult.overall_result
+      }
 
 **Summary**: ${gatingResult.summary}
 
@@ -302,7 +306,9 @@ ${gatingResult.metric_results
   )
   .map(
     (r) =>
-      `- ${r.status === "FAIL" ? "❌" : "⚠️"} ${r.metric_name}: ${r.value} vs ${r.threshold_value}`,
+      `- ${r.status === "FAIL" ? "❌" : "⚠️"} ${r.metric_name}: ${r.value} vs ${
+        r.threshold_value
+      }`,
   )
   .join("\n")}
 `
@@ -319,7 +325,9 @@ ${gatingResult.metric_results
   )
   .map(
     (r) =>
-      `- ${r.status === "FAIL" ? "❌" : "⚠️"} ${r.metric_name}: ${r.value} vs ${r.threshold_value}`,
+      `- ${r.status === "FAIL" ? "❌" : "⚠️"} ${r.metric_name}: ${r.value} vs ${
+        r.threshold_value
+      }`,
   )
   .join("\n")}
 `
@@ -330,7 +338,9 @@ ${gatingResult.metric_results
 ${gatingResult.metric_results
   .map(
     (r) =>
-      `- ${this.getStatusBadge(r.status)} **${r.metric_name}** (${r.priority}): ${r.value} vs ${r.threshold_value}`,
+      `- ${this.getStatusBadge(r.status)} **${r.metric_name}** (${
+        r.priority
+      }): ${r.value} vs ${r.threshold_value}`,
   )
   .join("\n")}
 

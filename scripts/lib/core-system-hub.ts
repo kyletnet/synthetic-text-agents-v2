@@ -509,8 +509,8 @@ export class CoreSystemHub extends EventEmitter {
         message.priority === "P0"
           ? "critical"
           : message.priority === "P1"
-            ? "high"
-            : "medium",
+          ? "high"
+          : "medium",
       bypassReason: "hub_failure_bypass",
     };
 
@@ -523,8 +523,9 @@ export class CoreSystemHub extends EventEmitter {
    * Start a coordinated operation across multiple components
    */
   async startOperation(operation: Operation): Promise<string> {
-    const strategy =
-      await this.decisionEngine.decideExecutionStrategy(operation);
+    const strategy = await this.decisionEngine.decideExecutionStrategy(
+      operation,
+    );
 
     operation.participants = strategy.participants;
     operation.metadata.strategy = strategy.strategy;
@@ -874,8 +875,8 @@ export class CoreSystemHub extends EventEmitter {
         status.status === "healthy"
           ? 100
           : status.status === "degraded"
-            ? 50
-            : 0;
+          ? 50
+          : 0;
     }
 
     this.systemState.health =
@@ -1033,7 +1034,11 @@ export class CoreSystemHub extends EventEmitter {
 
     return {
       latencyReduction,
-      throughputImprovement: `${((this.routingMetrics.routingModeCount.direct / this.routingMetrics.totalMessages) * 100).toFixed(1)}% direct routing`,
+      throughputImprovement: `${(
+        (this.routingMetrics.routingModeCount.direct /
+          this.routingMetrics.totalMessages) *
+        100
+      ).toFixed(1)}% direct routing`,
       failoverCount: failoverEvents,
       avgRecoveryTime: 18.4, // Placeholder - would calculate from actual failover recovery times
       recommendation: this.generatePerformanceRecommendation(),

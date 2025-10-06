@@ -17,6 +17,7 @@
 import {
   existsSync,
   readFileSync,
+  writeFileSync,
   copyFileSync,
   readdirSync,
   statSync,
@@ -261,4 +262,181 @@ export function getQualityHistoryTracker(
     instance = new QualityHistoryTracker(projectRoot);
   }
   return instance;
+}
+
+// ============================================================================
+// Health Score Tracking (for inspection-engine integration)
+// ============================================================================
+
+export interface HealthScoreMetrics {
+  timestamp: number;
+  healthScore: number;
+  details: {
+    typescript: string;
+    codeStyle: string;
+    tests: string;
+    security: string;
+  };
+  gates?: {
+    typescript: "PASS" | "FAIL";
+    codeStyle: "PASS" | "FAIL";
+    tests: "PASS" | "FAIL";
+    security: "PASS" | "FAIL";
+  };
+}
+
+export interface HealthScoreTrend {
+  period: string;
+  healthScore: number;
+  passRate: number;
+  metrics: HealthScoreMetrics;
+}
+
+/**
+ * Track health score from inspection-engine
+ */
+export async function trackHealthScore(
+  metrics: HealthScoreMetrics,
+  projectRoot: string = process.cwd(),
+): Promise<void> {
+  const historyDir = join(projectRoot, "reports/quality-history");
+
+  if (!existsSync(historyDir)) {
+    mkdirSync(historyDir, { recursive: true });
+  }
+
+  const date = new Date(metrics.timestamp).toISOString().split("T")[0];
+  const filePath = join(historyDir, `health-score-${date}.json`);
+
+  try {
+    const content = JSON.stringify(metrics, null, 2);
+    writeFileSync(filePath, content);
+  } catch (error) {
+    console.warn(
+      `⚠️  Failed to save health score: ${
+        error instanceof Error ? error.message : error
+      }`,
+    );
+    throw error; // Re-throw for debugging
+  }
+}
+
+/**
+ * Get health score trend (last N days)
+ */
+export function getHealthScoreTrend(
+  days: number = 7,
+  projectRoot: string = process.cwd(),
+): HealthScoreTrend[] {
+  const historyDir = join(projectRoot, "reports/quality-history");
+
+  if (!existsSync(historyDir)) {
+    return [];
+  }
+
+  try {
+    const files = readdirSync(historyDir)
+      .filter((f) => f.startsWith("health-score-") && f.endsWith(".json"))
+      .sort()
+      .reverse()
+      .slice(0, days);
+
+    const trends: HealthScoreTrend[] = [];
+
+    for (const file of files) {
+      const filePath = join(historyDir, file);
+      const content = readFileSync(filePath, "utf-8");
+      const metrics = JSON.parse(content) as HealthScoreMetrics;
+
+      const passRate = calculateHealthPassRate(metrics);
+
+      trends.push({
+        period: file.replace("health-score-", "").replace(".json", ""),
+        healthScore: metrics.healthScore,
+        passRate,
+        metrics,
+      });
+    }
+
+    return trends;
+  } catch (error) {
+    console.warn(
+      `⚠️  Failed to load health score trend: ${
+        error instanceof Error ? error.message : error
+      }`,
+    );
+    return [];
+  }
+}
+
+/**
+ * Get health score statistics
+ */
+export function getHealthScoreStatistics(
+  days: number = 30,
+  projectRoot: string = process.cwd(),
+): {
+  avgHealthScore: number;
+  avgPassRate: number;
+  trend: "improving" | "stable" | "declining";
+  recentScore: number;
+  previousScore: number;
+} {
+  const trends = getHealthScoreTrend(days, projectRoot);
+
+  if (trends.length === 0) {
+    return {
+      avgHealthScore: 0,
+      avgPassRate: 0,
+      trend: "stable",
+      recentScore: 0,
+      previousScore: 0,
+    };
+  }
+
+  const avgHealthScore =
+    trends.reduce((sum, t) => sum + t.healthScore, 0) / trends.length;
+  const avgPassRate =
+    trends.reduce((sum, t) => sum + t.passRate, 0) / trends.length;
+
+  const recentScore = trends[0]?.healthScore || 0;
+  const previousScore =
+    trends[Math.floor(trends.length / 2)]?.healthScore || recentScore;
+
+  let trend: "improving" | "stable" | "declining" = "stable";
+  if (recentScore > previousScore + 5) {
+    trend = "improving";
+  } else if (recentScore < previousScore - 5) {
+    trend = "declining";
+  }
+
+  return {
+    avgHealthScore: Math.round(avgHealthScore),
+    avgPassRate: Math.round(avgPassRate * 100) / 100,
+    trend,
+    recentScore,
+    previousScore,
+  };
+}
+
+function calculateHealthPassRate(metrics: HealthScoreMetrics): number {
+  if (!metrics.gates) {
+    const { typescript, codeStyle, tests, security } = metrics.details;
+    const passes = [
+      typescript.includes("PASS"),
+      codeStyle.includes("PASS"),
+      tests.includes("PASS"),
+      security.includes("PASS"),
+    ].filter(Boolean).length;
+    return passes / 4;
+  }
+
+  const { typescript, codeStyle, tests, security } = metrics.gates;
+  const passes = [
+    typescript === "PASS",
+    codeStyle === "PASS",
+    tests === "PASS",
+    security === "PASS",
+  ].filter(Boolean).length;
+  return passes / 4;
 }

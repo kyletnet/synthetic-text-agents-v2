@@ -271,8 +271,14 @@ LAST_DLQ_RUN_ID: ${fields.LAST_DLQ_RUN_ID || ""}
 ## System Health
 
 - Environment loading: ${fs.existsSync("tools/load_env.sh") ? "OK" : "MISSING"}
-- API client enforcement: ${fs.existsSync("tools/anthropic_client.sh") ? "OK" : "MISSING"}
-- Registry coverage: ${fs.existsSync("scripts/entrypoints.jsonl") ? this.getEntrypointCount() + " entries" : "MISSING"}
+- API client enforcement: ${
+      fs.existsSync("tools/anthropic_client.sh") ? "OK" : "MISSING"
+    }
+- Registry coverage: ${
+      fs.existsSync("scripts/entrypoints.jsonl")
+        ? this.getEntrypointCount() + " entries"
+        : "MISSING"
+    }
 - Git status: ${this.getGitStatus()} uncommitted changes
 
 ## DLQ Status

@@ -146,7 +146,9 @@ const batchResult = validateQABatch(qaItems);
 
 console.log(`Valid QA: ${batchResult.valid_qa}/${batchResult.total_qa}`);
 console.log(
-  `Avg alignment: ${batchResult.aggregate_metrics.avg_alignment_score.toFixed(3)}`,
+  `Avg alignment: ${batchResult.aggregate_metrics.avg_alignment_score.toFixed(
+    3,
+  )}`,
 );
 ```
 

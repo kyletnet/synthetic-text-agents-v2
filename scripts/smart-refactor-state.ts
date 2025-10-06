@@ -356,7 +356,9 @@ export class SmartRefactorStateManager {
     const adjustments = this.state.learnedCriteria.categoryRiskAdjustments;
     for (const [category, adjustment] of Object.entries(adjustments)) {
       summary.push(
-        `${category}: risk adjusted by ${adjustment > 0 ? "+" : ""}${adjustment}`,
+        `${category}: risk adjusted by ${
+          adjustment > 0 ? "+" : ""
+        }${adjustment}`,
       );
     }
 

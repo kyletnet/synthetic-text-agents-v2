@@ -87,7 +87,9 @@ export default function UploadPage() {
       }
     } catch (error) {
       setUploadStatus(
-        `Upload failed: ${error instanceof Error ? error.message : "Network error"}`,
+        `Upload failed: ${
+          error instanceof Error ? error.message : "Network error"
+        }`,
       );
     } finally {
       setUploading(false);
@@ -212,8 +214,8 @@ export default function UploadPage() {
                 uploadStatus.includes("failed")
                   ? "bg-red-50 text-red-700 border border-red-200"
                   : uploadStatus.includes("successful")
-                    ? "bg-green-50 text-green-700 border border-green-200"
-                    : "bg-blue-50 text-blue-700 border border-blue-200"
+                  ? "bg-green-50 text-green-700 border border-green-200"
+                  : "bg-blue-50 text-blue-700 border border-blue-200"
               }`}
             >
               {uploadStatus}

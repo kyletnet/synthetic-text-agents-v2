@@ -1,0 +1,44 @@
+{
+  "schemaVersion": "2025-10-quality-v1",
+  "timestamp": "2025-10-06T14:46:06.556Z",
+  "phase": "Phase 3",
+  "guideline_compliance": {
+    "score": 0.9999999999999999,
+    "version": "1.0",
+    "breakdown": {
+      "question_types": 1,
+      "answer_structure": 1,
+      "number_formats": 1,
+      "prohibitions": 1
+    }
+  },
+  "violations": [
+    {
+      "id": "align-qa-p2-002",
+      "severity": "high",
+      "category": "evidence_alignment",
+      "description": "답변과 Evidence 정렬도가 낮습니다 (55.3%)",
+      "location": {
+        "qaId": "qa-p2-002",
+        "field": "answer"
+      },
+      "suggestion": "Evidence에 기반한 답변으로 수정하세요"
+    }
+  ],
+  "recommendations": [],
+  "evidence_metrics": {
+    "snippet_alignment": 0.5932983682983685,
+    "citation_presence": 1,
+    "context_precision": 1,
+    "context_recall": 1,
+    "retrieval_quality_score": 0.8373193473193474
+  },
+  "shadow_metrics": {
+    "hybrid_search": {
+      "improvement_delta": 0.20061626502271493,
+      "bm25_avg": 0.07224953073542677,
+      "vector_avg": 0.5995459236326109,
+      "hybrid_avg": 0.44135700576345566
+    }
+  }
+}

@@ -125,8 +125,8 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       healthCheck.status === "healthy"
         ? 200
         : healthCheck.status === "degraded"
-          ? 200
-          : 503;
+        ? 200
+        : 503;
 
     return NextResponse.json(
       {
@@ -203,7 +203,9 @@ async function checkApiKeyAvailability() {
     return {
       status: "fail" as const,
       responseTime: Date.now() - checkStart,
-      details: `API key check failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+      details: `API key check failed: ${
+        error instanceof Error ? error.message : "Unknown error"
+      }`,
       lastChecked: new Date().toISOString(),
     };
   }
@@ -240,7 +242,9 @@ async function checkDatabaseConnectivity() {
     return {
       status: "fail" as const,
       responseTime: Date.now() - checkStart,
-      details: `Database check failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+      details: `Database check failed: ${
+        error instanceof Error ? error.message : "Unknown error"
+      }`,
       lastChecked: new Date().toISOString(),
     };
   }
@@ -277,7 +281,9 @@ async function checkExternalServices() {
     return {
       status: "warn" as const,
       responseTime: Date.now() - checkStart,
-      details: `External services check failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+      details: `External services check failed: ${
+        error instanceof Error ? error.message : "Unknown error"
+      }`,
       lastChecked: new Date().toISOString(),
     };
   }
@@ -324,7 +330,9 @@ async function checkDiskSpace() {
     return {
       status: "warn" as const,
       responseTime: Date.now() - checkStart,
-      details: `Disk space check failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+      details: `Disk space check failed: ${
+        error instanceof Error ? error.message : "Unknown error"
+      }`,
       lastChecked: new Date().toISOString(),
     };
   }
@@ -405,7 +413,9 @@ async function checkMockDataContamination() {
     return {
       status: "fail" as const,
       responseTime: Date.now() - checkStart,
-      details: `Mock contamination check failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+      details: `Mock contamination check failed: ${
+        error instanceof Error ? error.message : "Unknown error"
+      }`,
       lastChecked: new Date().toISOString(),
     };
   }

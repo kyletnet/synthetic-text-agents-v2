@@ -195,6 +195,45 @@ export class EmbeddingManager {
     return this.embeddings.get(chunkId);
   }
 
+  /**
+   * Remove embedding for a specific chunk
+   */
+  removeEmbedding(chunkId: string): boolean {
+    return this.embeddings.delete(chunkId);
+  }
+
+  /**
+   * Remove all embeddings for chunks from a specific document
+   *
+   * @param documentPath - Source document path to match in chunk metadata
+   * @returns Number of embeddings removed
+   */
+  removeEmbeddingsForDocument(documentPath: string): number {
+    let removed = 0;
+    const pathPrefix = documentPath.replace(/[^a-zA-Z0-9]/g, "_");
+
+    for (const chunkId of this.embeddings.keys()) {
+      // Check if embedding's chunk belongs to this document
+      if (chunkId.startsWith(pathPrefix)) {
+        this.embeddings.delete(chunkId);
+        removed++;
+      }
+    }
+
+    this.logger.trace({
+      level: "info",
+      agentId: "embedding-manager",
+      action: "embeddings_removed",
+      data: {
+        documentPath,
+        embeddingsRemoved: removed,
+        remainingEmbeddings: this.embeddings.size,
+      },
+    });
+
+    return removed;
+  }
+
   getStats(): EmbeddingStats & { enabled: boolean } {
     return {
       ...this.stats,
@@ -286,22 +325,91 @@ class OpenAIEmbeddingProvider implements EmbeddingProvider {
   }
 
   async embed(texts: string[]): Promise<number[][]> {
-    // TODO: Implement actual OpenAI API call
-    // For now, return mock vectors to avoid API costs during development
-    this.logger.trace({
-      level: "warn",
-      agentId: "openai-embedding-provider",
-      action: "mock_embeddings_returned",
-      data: { textCount: texts.length, reason: "API not implemented yet" },
-    });
+    // Check if API key is available
+    const apiKey = process.env.OPENAI_API_KEY;
 
-    return texts.map(() =>
-      Array.from({ length: this.dimensions }, () => Math.random() - 0.5),
-    );
+    if (!apiKey) {
+      this.logger.trace({
+        level: "warn",
+        agentId: "openai-embedding-provider",
+        action: "missing_api_key_fallback_to_mock",
+        data: {
+          textCount: texts.length,
+          reason: "OPENAI_API_KEY not set - using mock embeddings",
+        },
+      });
+
+      // Fallback to mock vectors
+      return texts.map(() =>
+        Array.from({ length: this.dimensions }, () => Math.random() - 0.5),
+      );
+    }
+
+    try {
+      // Dynamic import to avoid dependency issues if package not installed
+      const OpenAI = (await import("openai")).default;
+
+      const openai = new OpenAI({ apiKey });
+
+      this.logger.trace({
+        level: "info",
+        agentId: "openai-embedding-provider",
+        action: "embedding_request_started",
+        data: {
+          textCount: texts.length,
+          model: this.model,
+          totalChars: texts.reduce((sum, t) => sum + t.length, 0),
+        },
+      });
+
+      const response = await openai.embeddings.create({
+        model: this.model,
+        input: texts,
+        encoding_format: "float",
+      });
+
+      const embeddings = response.data.map((item: any) => item.embedding);
+
+      this.logger.trace({
+        level: "info",
+        agentId: "openai-embedding-provider",
+        action: "embedding_request_completed",
+        data: {
+          textCount: texts.length,
+          embeddingsCount: embeddings.length,
+          dimensions: embeddings[0]?.length ?? 0,
+          tokensUsed: response.usage.total_tokens,
+          estimatedCost: this.estimateCost(response.usage.total_tokens),
+        },
+      });
+
+      return embeddings;
+    } catch (error) {
+      this.logger.trace({
+        level: "error",
+        agentId: "openai-embedding-provider",
+        action: "embedding_request_failed",
+        data: {
+          textCount: texts.length,
+          error: String(error),
+          fallbackToMock: true,
+        },
+      });
+
+      // Fallback to mock on error
+      console.error(
+        `❌ OpenAI embedding failed, falling back to mock: ${error}`,
+      );
+      return texts.map(() =>
+        Array.from({ length: this.dimensions }, () => Math.random() - 0.5),
+      );
+    }
   }
 
   estimateCost(tokenCount: number): number {
-    // OpenAI embedding pricing (approximate)
+    // OpenAI embedding pricing (as of 2025)
+    // text-embedding-3-small: $0.00002 / 1K tokens
+    // text-embedding-3-large: $0.00013 / 1K tokens
     const pricePerToken = this.model.includes("large")
       ? 0.00013 / 1000
       : 0.00002 / 1000;
@@ -315,6 +423,9 @@ class LocalEmbeddingProvider implements EmbeddingProvider {
   dimensions = 384; // Common for local models
   maxTokens = 512;
   private logger: Logger;
+  private pythonEnvManager: any = null;
+  private pythonProcessManager: any = null;
+  private isInitialized = false;
 
   constructor(
     model: string = "sentence-transformers/all-MiniLM-L6-v2",
@@ -325,14 +436,137 @@ class LocalEmbeddingProvider implements EmbeddingProvider {
   }
 
   async embed(texts: string[]): Promise<number[][]> {
-    // TODO: Implement local model inference
+    // Lazy initialization
+    if (!this.isInitialized) {
+      const initialized = await this.initialize();
+      if (!initialized) {
+        // Fallback to mock if initialization failed
+        return this.mockEmbeddings(texts);
+      }
+    }
+
+    try {
+      // Use Python bridge for real embeddings
+      const embeddings = await this.pythonProcessManager.embed(
+        texts,
+        this.model,
+      );
+
+      // Update dimensions from actual embeddings
+      if (embeddings.length > 0 && embeddings[0].length > 0) {
+        this.dimensions = embeddings[0].length;
+      }
+
+      this.logger.trace({
+        level: "info",
+        agentId: "local-embedding-provider",
+        action: "embeddings_generated",
+        data: {
+          textCount: texts.length,
+          dimensions: this.dimensions,
+          model: this.model,
+        },
+      });
+
+      return embeddings;
+    } catch (error) {
+      this.logger.trace({
+        level: "error",
+        agentId: "local-embedding-provider",
+        action: "embedding_generation_failed",
+        data: {
+          textCount: texts.length,
+          fallbackToMock: true,
+        },
+        error: error instanceof Error ? error.message : String(error),
+      });
+
+      // Fallback to mock on error
+      return this.mockEmbeddings(texts);
+    }
+  }
+
+  /**
+   * Initialize Python environment and process
+   */
+  private async initialize(): Promise<boolean> {
+    try {
+      // Dynamic import to avoid circular dependencies
+      const { PythonEnvironmentManager } = await import(
+        "./python-env-manager.js"
+      );
+      const { PythonProcessManager } = await import(
+        "./python-process-manager.js"
+      );
+
+      this.pythonEnvManager = new PythonEnvironmentManager(this.logger);
+
+      this.logger.trace({
+        level: "info",
+        agentId: "local-embedding-provider",
+        action: "python_setup_started",
+        data: { model: this.model },
+      });
+
+      // Setup Python environment (install dependencies if needed)
+      const pythonEnv = await this.pythonEnvManager.setup();
+
+      if (!pythonEnv.available || !pythonEnv.dependenciesInstalled) {
+        this.logger.trace({
+          level: "warn",
+          agentId: "local-embedding-provider",
+          action: "python_setup_failed",
+          data: {
+            available: pythonEnv.available,
+            dependenciesInstalled: pythonEnv.dependenciesInstalled,
+          },
+        });
+        return false;
+      }
+
+      // Start Python process
+      this.pythonProcessManager = new PythonProcessManager(
+        this.logger,
+        pythonEnv,
+      );
+      await this.pythonProcessManager.start();
+
+      this.isInitialized = true;
+
+      this.logger.trace({
+        level: "info",
+        agentId: "local-embedding-provider",
+        action: "python_setup_completed",
+        data: {
+          pythonVersion: pythonEnv.version,
+          model: this.model,
+        },
+      });
+
+      return true;
+    } catch (error) {
+      this.logger.trace({
+        level: "error",
+        agentId: "local-embedding-provider",
+        action: "python_initialization_failed",
+        data: {},
+        error: error instanceof Error ? error.message : String(error),
+      });
+      return false;
+    }
+  }
+
+  /**
+   * Generate mock embeddings (fallback)
+   */
+  private mockEmbeddings(texts: string[]): number[][] {
     this.logger.trace({
       level: "warn",
       agentId: "local-embedding-provider",
       action: "mock_embeddings_returned",
       data: {
         textCount: texts.length,
-        reason: "Local inference not implemented yet",
+        reason: "Python bridge unavailable",
       },
     });
 
@@ -344,6 +578,15 @@ class LocalEmbeddingProvider implements EmbeddingProvider {
   estimateCost(_tokenCount: number): number {
     return 0; // Local inference is free
   }
+
+  /**
+   * Cleanup Python process
+   */
+  async cleanup(): Promise<void> {
+    if (this.pythonProcessManager) {
+      await this.pythonProcessManager.shutdown();
+    }
+  }
 }
 
 class MockEmbeddingProvider implements EmbeddingProvider {
@@ -351,11 +594,11 @@ class MockEmbeddingProvider implements EmbeddingProvider {
   model: string;
   dimensions = 256;
   maxTokens = 1000;
-  private logger: Logger;
+  private _logger: Logger;
 
   constructor(model: string = "mock-v1", logger: Logger) {
     this.model = model;
-    this.logger = logger;
+    this._logger = logger;
   }
 
   async embed(texts: string[]): Promise<number[][]> {

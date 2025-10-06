@@ -131,11 +131,13 @@ export class IntegrationStrategyHandler extends EventEmitter {
   ): Promise<IntegrationAnalysis> {
     console.log(`🔍 Analyzing component for integration: ${component.name}`);
 
-    const compatibilityScore =
-      await this.calculateCompatibilityScore(component);
+    const compatibilityScore = await this.calculateCompatibilityScore(
+      component,
+    );
     const performanceImpact = await this.calculatePerformanceImpact(component);
-    const architectureAlignment =
-      await this.calculateArchitectureAlignment(component);
+    const architectureAlignment = await this.calculateArchitectureAlignment(
+      component,
+    );
 
     const riskFactors = await this.identifyRiskFactors(
       component,
@@ -243,7 +245,9 @@ export class IntegrationStrategyHandler extends EventEmitter {
     // Check if approval is required
     if (!strategy.approvals.automatic) {
       console.log(
-        `   ⏳ Approval required from: ${strategy.approvals.required.join(", ")}`,
+        `   ⏳ Approval required from: ${strategy.approvals.required.join(
+          ", ",
+        )}`,
       );
       execution.status = "pending";
       execution.approvals.pending = [...strategy.approvals.required];
@@ -656,7 +660,9 @@ export class IntegrationStrategyHandler extends EventEmitter {
     for (let i = 0; i < execution.strategy.implementation.phases.length; i++) {
       const phase = execution.strategy.implementation.phases[i];
       console.log(
-        `     Phase ${i + 1}: ${phase.name} (${phase.duration}) - ${phase.description}`,
+        `     Phase ${i + 1}: ${phase.name} (${phase.duration}) - ${
+          phase.description
+        }`,
       );
 
       if (phase.featureFlags.length > 0) {

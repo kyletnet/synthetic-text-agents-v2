@@ -55,6 +55,9 @@ export interface FileSnapshot {
 
   /** Relative path from project root */
   path: string;
+
+  /** File content (for complete rollback) */
+  content?: string;
 }
 
 export interface PackageSnapshot {

@@ -382,10 +382,12 @@ git push origin main
 #### P1 (1주일)
 
 4. **Validate 명령어 통합**
+
    - `/validate` → 종합 검증
    - `validate:arch`, `validate:design` 등 하위 명령어
 
 5. **Audit 명령어 통합**
+
    - `/audit` → 종합 감사
    - `audit:refactor`, `audit:integration` 등
 

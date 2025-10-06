@@ -99,7 +99,9 @@ transition:
   approvedBy: ${metadata.transition.approvedBy}
   executedAt: ${metadata.transition.executedAt}
   previousMode: ${metadata.transition.previousMode}
-  transitionReason: "${metadata.transition.transitionReason}"${rollbackId ? `\n  rollbackId: ${rollbackId}` : ""}
+  transitionReason: "${metadata.transition.transitionReason}"${
+    rollbackId ? `\n  rollbackId: ${rollbackId}` : ""
+  }
 
 # System Architecture
 architecture:
@@ -415,7 +417,11 @@ npm run /review-sync (상세검토)
 - **승인자**: ${metadata.transition.approvedBy}
 - **이전 모드**: ${metadata.transition.previousMode}
 - **전환 이유**: ${metadata.transition.transitionReason}
-${metadata.transition.rollbackId ? `- **롤백 ID**: ${metadata.transition.rollbackId}` : ""}
+${
+  metadata.transition.rollbackId
+    ? `- **롤백 ID**: ${metadata.transition.rollbackId}`
+    : ""
+}
 
 ## 🎯 전환 목표 달성 현황
 

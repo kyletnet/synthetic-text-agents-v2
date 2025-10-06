@@ -284,8 +284,9 @@ export class PreflightPack {
 
     // Manifest validation - auto-create if missing
     try {
-      const manifestResult =
-        await this.manifestManager.validateManifest("current");
+      const manifestResult = await this.manifestManager.validateManifest(
+        "current",
+      );
       if (!manifestResult.valid) {
         throw new Error(
           `Manifest validation failed: ${manifestResult.issues.join(", ")}`,
@@ -343,7 +344,9 @@ export class PreflightPack {
         this.config.profile,
       );
       outputs.push(
-        `Thresholds: P0=${Object.keys(p0Thresholds).length} rules, Calibration=${status.lastCalibration ? "CURRENT" : "NEEDED"}`,
+        `Thresholds: P0=${
+          Object.keys(p0Thresholds).length
+        } rules, Calibration=${status.lastCalibration ? "CURRENT" : "NEEDED"}`,
       );
     } catch (error) {
       outputs.push(`Thresholds: ERROR - ${error}`);
@@ -594,7 +597,9 @@ export class PreflightPack {
       };
 
       outputs.push(
-        `Full run completed: ${mockResults.casesProcessed} cases, $${mockResults.costUsd.toFixed(4)}`,
+        `Full run completed: ${
+          mockResults.casesProcessed
+        } cases, $${mockResults.costUsd.toFixed(4)}`,
       );
       outputs.push(`Result: ${mockResults.result}`);
       return { outputs };
@@ -677,7 +682,9 @@ export class PreflightPack {
 
     if (!productPlanPath) {
       console.log(
-        `⚠️  Could not read PRODUCT_PLAN.md from paths: ${productPlanPaths.join(", ")}`,
+        `⚠️  Could not read PRODUCT_PLAN.md from paths: ${productPlanPaths.join(
+          ", ",
+        )}`,
       );
     }
 

@@ -83,7 +83,9 @@ class ArtifactLifecycleManager {
 
     const totalSaved = results.reduce((sum, r) => sum + r.sizeSaved, 0);
     logger.info(
-      `🎯 Cleanup complete: ${results.length} operations, ${this.formatSize(totalSaved)} saved`,
+      `🎯 Cleanup complete: ${results.length} operations, ${this.formatSize(
+        totalSaved,
+      )} saved`,
     );
 
     return results;
@@ -339,10 +341,12 @@ if (import.meta.url === `file://${process.argv[1]}`) {
               r.action === "archived"
                 ? "📦"
                 : r.action === "deleted"
-                  ? "🗑️"
-                  : "📁";
+                ? "🗑️"
+                : "📁";
             console.log(
-              `  ${icon} ${r.path} (${manager["formatSize"](r.sizeSaved)} saved) - ${r.reason}`,
+              `  ${icon} ${r.path} (${manager["formatSize"](
+                r.sizeSaved,
+              )} saved) - ${r.reason}`,
             );
           });
           break;

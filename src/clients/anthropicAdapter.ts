@@ -452,7 +452,10 @@ export class LLMAdapter {
         } catch {
           if (i === maxRetries - 1) {
             throw new Error(
-              `Non-JSON response after all retries. Response: ${text.substring(0, 200)}`,
+              `Non-JSON response after all retries. Response: ${text.substring(
+                0,
+                200,
+              )}`,
             );
           }
           continue; // Retry

@@ -282,11 +282,15 @@ export function generateHallucinationReport(
   lines.push(`- **Total Items Analyzed**: ${metrics.total_items}`);
   lines.push(`- **Flagged Items**: ${metrics.flagged_items}`);
   lines.push(
-    `- **Hallucination Rate**: ${(metrics.hallucination_rate * 100).toFixed(2)}%`,
+    `- **Hallucination Rate**: ${(metrics.hallucination_rate * 100).toFixed(
+      2,
+    )}%`,
   );
   lines.push(`- **High Risk Cases**: ${metrics.high_risk_count}`);
   lines.push(
-    `- **Alert Status**: ${metrics.alert_triggered ? "⚠️ HALLUCINATION RISK" : "✅ NORMAL"}`,
+    `- **Alert Status**: ${
+      metrics.alert_triggered ? "⚠️ HALLUCINATION RISK" : "✅ NORMAL"
+    }`,
   );
   lines.push("");
 
@@ -315,10 +319,12 @@ export function generateHallucinationReport(
         flag.risk_level === "high"
           ? "🔴"
           : flag.risk_level === "medium"
-            ? "🟡"
-            : "🟢";
+          ? "🟡"
+          : "🟢";
       lines.push(
-        `| ${flag.index} | ${riskIcon} ${flag.risk_level} | ${(flag.similarity_score * 100).toFixed(1)}% | ${flag.reason} | ${flag.answer} |`,
+        `| ${flag.index} | ${riskIcon} ${flag.risk_level} | ${(
+          flag.similarity_score * 100
+        ).toFixed(1)}% | ${flag.reason} | ${flag.answer} |`,
       );
     }
     lines.push("");

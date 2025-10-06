@@ -303,7 +303,9 @@ export function generateEvidenceReport(
   lines.push(`- **Items with Evidence**: ${metrics.items_with_evidence}`);
   lines.push(`- **Items Missing Evidence**: ${metrics.items_missing_evidence}`);
   lines.push(
-    `- **Evidence Presence Rate**: ${(metrics.evidence_presence_rate * 100).toFixed(1)}%`,
+    `- **Evidence Presence Rate**: ${(
+      metrics.evidence_presence_rate * 100
+    ).toFixed(1)}%`,
   );
   lines.push("");
 
@@ -313,13 +315,17 @@ export function generateEvidenceReport(
     `- **Mean Alignment Score**: ${metrics.snippet_alignment.mean.toFixed(3)}`,
   );
   lines.push(
-    `- **Median Alignment Score**: ${metrics.snippet_alignment.median.toFixed(3)}`,
+    `- **Median Alignment Score**: ${metrics.snippet_alignment.median.toFixed(
+      3,
+    )}`,
   );
   lines.push(
     `- **95th Percentile**: ${metrics.snippet_alignment.p95.toFixed(3)}`,
   );
   lines.push(
-    `- **Alert Status**: ${metrics.alert_triggered ? "⚠️ QUALITY ISSUES" : "✅ NORMAL"}`,
+    `- **Alert Status**: ${
+      metrics.alert_triggered ? "⚠️ QUALITY ISSUES" : "✅ NORMAL"
+    }`,
   );
   lines.push("");
 
@@ -331,7 +337,9 @@ export function generateEvidenceReport(
 
     for (const failure of metrics.failed_alignments) {
       lines.push(
-        `| ${failure.index} | ${failure.question} | ${failure.answer} | ${failure.evidence} | ${failure.alignment_score.toFixed(3)} |`,
+        `| ${failure.index} | ${failure.question} | ${failure.answer} | ${
+          failure.evidence
+        } | ${failure.alignment_score.toFixed(3)} |`,
       );
     }
     lines.push("");

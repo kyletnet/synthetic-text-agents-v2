@@ -233,7 +233,11 @@ console.log(`  Total records: ${totalRecords}`);
 console.log(`  Valid: ${validRecords}`);
 console.log(`  Invalid: ${invalidRecords}`);
 console.log(
-  `  Files with errors: ${errors.length > 0 ? errors.map((e) => e.file).filter((v, i, a) => a.indexOf(v) === i).length : 0}`,
+  `  Files with errors: ${
+    errors.length > 0
+      ? errors.map((e) => e.file).filter((v, i, a) => a.indexOf(v) === i).length
+      : 0
+  }`,
 );
 
 if (errors.length > 0) {

@@ -150,17 +150,73 @@ export class RAGFactory {
       throw new Error("RAG service not initialized");
     }
 
+    // Step 1: Add document to RAG service (creates chunks)
     await this.components.ragService.addDocument(path, content);
 
-    // Generate embeddings if enabled
+    // Step 2: Generate embeddings if enabled
     if (this.config.enableEmbeddings && this.components.embeddingManager) {
-      // TODO: Implement embedding generation for new document
-      this.logger.trace({
-        level: "info",
-        agentId: "rag-factory",
-        action: "embedding_generation_queued",
-        data: { documentPath: path },
-      });
+      try {
+        const start = Date.now();
+
+        // Get chunks for the newly added document
+        const chunks = this.components.ragService.getDocumentChunks(path);
+
+        if (!chunks || chunks.length === 0) {
+          this.logger.trace({
+            level: "warn",
+            agentId: "rag-factory",
+            action: "embedding_generation_skipped",
+            data: {
+              documentPath: path,
+              reason: "No chunks found for document",
+            },
+          });
+          return;
+        }
+
+        this.logger.trace({
+          level: "info",
+          agentId: "rag-factory",
+          action: "embedding_generation_started",
+          data: {
+            documentPath: path,
+            chunkCount: chunks.length,
+          },
+        });
+
+        // Generate embeddings for all chunks
+        const embeddings =
+          await this.components.embeddingManager.generateEmbeddings(chunks);
+
+        // Store each embedding
+        for (const embedding of embeddings) {
+          this.components.embeddingManager.storeEmbedding(embedding);
+        }
+
+        this.logger.trace({
+          level: "info",
+          agentId: "rag-factory",
+          action: "embedding_generation_completed",
+          data: {
+            documentPath: path,
+            chunkCount: chunks.length,
+            embeddingsGenerated: embeddings.length,
+          },
+          duration: Date.now() - start,
+        });
+      } catch (error) {
+        this.logger.trace({
+          level: "error",
+          agentId: "rag-factory",
+          action: "embedding_generation_failed",
+          data: { documentPath: path },
+          error: error instanceof Error ? error.message : String(error),
+        });
+        // Don't throw - embedding generation failure shouldn't block document addition
+        console.warn(
+          `Warning: Embedding generation failed for ${path}: ${error}`,
+        );
+      }
     }
   }
 
@@ -169,7 +225,35 @@ export class RAGFactory {
       throw new Error("RAG service not initialized");
     }
 
+    // Remove document from RAG service
     await this.components.ragService.removeDocument(path);
+
+    // Remove associated embeddings if enabled
+    if (this.config.enableEmbeddings && this.components.embeddingManager) {
+      try {
+        const removed =
+          this.components.embeddingManager.removeEmbeddingsForDocument(path);
+
+        this.logger.trace({
+          level: "info",
+          agentId: "rag-factory",
+          action: "document_embeddings_removed",
+          data: {
+            documentPath: path,
+            embeddingsRemoved: removed,
+          },
+        });
+      } catch (error) {
+        this.logger.trace({
+          level: "warn",
+          agentId: "rag-factory",
+          action: "embedding_removal_failed",
+          data: { documentPath: path },
+          error: error instanceof Error ? error.message : String(error),
+        });
+        // Don't throw - embedding removal failure shouldn't block document removal
+      }
+    }
   }
 
   getStats(): {

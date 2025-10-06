@@ -140,7 +140,9 @@ const OperatorDashboard: React.FC = () => {
               Operator Dashboard
             </h1>
             <div
-              className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(health.status)}`}
+              className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(
+                health.status,
+              )}`}
             >
               {getStatusIcon(health.status)} System Status:{" "}
               {health.status.toUpperCase()}
@@ -225,7 +227,9 @@ const OperatorDashboard: React.FC = () => {
                     {key.replace(/([A-Z])/g, " $1").trim()}
                   </span>
                   <div
-                    className={`px-2 py-1 rounded text-xs font-medium ${getStatusColor(check.status)}`}
+                    className={`px-2 py-1 rounded text-xs font-medium ${getStatusColor(
+                      check.status,
+                    )}`}
                   >
                     {getStatusIcon(check.status)} {check.status.toUpperCase()}
                   </div>

@@ -97,7 +97,9 @@ class SelfHealingTestSuite {
         testName,
         passed: allPassed,
         duration: Date.now() - startTime,
-        details: `System in ${allPassed ? "healthy" : "unhealthy"} initial state`,
+        details: `System in ${
+          allPassed ? "healthy" : "unhealthy"
+        } initial state`,
       });
 
       console.log(allPassed ? "✅ PASSED" : "❌ FAILED");
@@ -133,7 +135,9 @@ class SelfHealingTestSuite {
       const passed = keyStats.activeKeys === 0;
 
       console.log(
-        `  ${passed ? "✅" : "❌"} API keys removed (active: ${keyStats.activeKeys})`,
+        `  ${passed ? "✅" : "❌"} API keys removed (active: ${
+          keyStats.activeKeys
+        })`,
       );
 
       this.results.push({
@@ -185,7 +189,9 @@ class SelfHealingTestSuite {
       const passed = stats.consecutiveFailures >= 5;
 
       console.log(
-        `  ${passed ? "✅" : "❌"} Consecutive failures: ${stats.consecutiveFailures}`,
+        `  ${passed ? "✅" : "❌"} Consecutive failures: ${
+          stats.consecutiveFailures
+        }`,
       );
 
       this.results.push({
@@ -237,7 +243,9 @@ class SelfHealingTestSuite {
       const passed = stats.isDormant && dormantStatus !== null;
 
       console.log(
-        `  ${passed ? "✅" : "❌"} Dormant Mode: ${stats.isDormant ? "ACTIVE" : "INACTIVE"}`,
+        `  ${passed ? "✅" : "❌"} Dormant Mode: ${
+          stats.isDormant ? "ACTIVE" : "INACTIVE"
+        }`,
       );
       if (dormantStatus) {
         console.log(`  📝 Reason: ${dormantStatus.reason}`);
@@ -286,7 +294,9 @@ class SelfHealingTestSuite {
       const isPermanentOpen = healingBreaker.isPermanentlyOpen();
 
       console.log(
-        `  ${isPermanentOpen ? "✅" : "❌"} Circuit breaker state: ${state.state}`,
+        `  ${isPermanentOpen ? "✅" : "❌"} Circuit breaker state: ${
+          state.state
+        }`,
       );
       if (state.permanentOpenReason) {
         console.log(`  📝 Reason: ${state.permanentOpenReason}`);
@@ -341,7 +351,9 @@ class SelfHealingTestSuite {
 
       console.log(`  ${noDuplicates ? "✅" : "❌"} No duplicate tasks`);
       console.log(
-        `  ${underLimit ? "✅" : "❌"} Under task limit (${taskStats.totalTasks}/10)`,
+        `  ${underLimit ? "✅" : "❌"} Under task limit (${
+          taskStats.totalTasks
+        }/10)`,
       );
 
       this.results.push({
@@ -392,7 +404,9 @@ class SelfHealingTestSuite {
 
       console.log(`  ${!stats.isDormant ? "✅" : "❌"} Dormant mode cleared`);
       console.log(
-        `  ${stats.consecutiveFailures === 0 ? "✅" : "❌"} Failures reset: ${stats.consecutiveFailures}`,
+        `  ${stats.consecutiveFailures === 0 ? "✅" : "❌"} Failures reset: ${
+          stats.consecutiveFailures
+        }`,
       );
 
       this.results.push({
@@ -434,7 +448,9 @@ class SelfHealingTestSuite {
       const isReasonable = currentBackoff >= 5000 && currentBackoff <= 10000;
 
       console.log(
-        `  ${isReasonable ? "✅" : "❌"} Backoff delay reasonable after recovery`,
+        `  ${
+          isReasonable ? "✅" : "❌"
+        } Backoff delay reasonable after recovery`,
       );
 
       this.results.push({

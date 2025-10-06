@@ -65,7 +65,9 @@ export default function RunPage() {
         setQaResult(result);
         setQaStatus("completed");
         setStatusMessage(
-          `QA generation completed! Generated ${result.pairsGenerated || "N/A"} QA pairs.`,
+          `QA generation completed! Generated ${
+            result.pairsGenerated || "N/A"
+          } QA pairs.`,
         );
       } else {
         const error = await response.json();
@@ -77,7 +79,9 @@ export default function RunPage() {
     } catch (error) {
       setQaStatus("error");
       setStatusMessage(
-        `QA generation failed: ${error instanceof Error ? error.message : "Network error"}`,
+        `QA generation failed: ${
+          error instanceof Error ? error.message : "Network error"
+        }`,
       );
     }
   };
@@ -111,7 +115,9 @@ export default function RunPage() {
         setEvalResult(result);
         setEvalStatus("completed");
         setStatusMessage(
-          `Quality evaluation completed! Overall score: ${result.overallScore || "N/A"}`,
+          `Quality evaluation completed! Overall score: ${
+            result.overallScore || "N/A"
+          }`,
         );
 
         // Store completion status for results page
@@ -135,7 +141,9 @@ export default function RunPage() {
     } catch (error) {
       setEvalStatus("error");
       setStatusMessage(
-        `Quality evaluation failed: ${error instanceof Error ? error.message : "Network error"}`,
+        `Quality evaluation failed: ${
+          error instanceof Error ? error.message : "Network error"
+        }`,
       );
     }
   };
@@ -336,8 +344,8 @@ export default function RunPage() {
                 statusMessage.includes("error")
                   ? "text-red-600"
                   : statusMessage.includes("completed")
-                    ? "text-green-600"
-                    : "text-blue-600"
+                  ? "text-green-600"
+                  : "text-blue-600"
               }`}
             >
               {statusMessage}

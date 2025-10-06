@@ -58,7 +58,9 @@ class SyncTransactionSystem {
   }
 
   async startTransaction(): Promise<string> {
-    const transactionId = `sync-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`;
+    const transactionId = `sync-${Date.now()}-${Math.random()
+      .toString(36)
+      .substring(2, 8)}`;
     const backupPath = join(this.transactionDir, `${transactionId}-backup`);
 
     console.log("🔄 Starting sync transaction:", transactionId);
@@ -401,7 +403,9 @@ class SyncTransactionSystem {
     console.log(`📊 ID: ${lastTransaction.id}`);
     console.log(`🕐 Time: ${lastTransaction.timestamp}`);
     console.log(
-      `📈 Status: ${this.getStatusIcon(lastTransaction.status)} ${lastTransaction.status}`,
+      `📈 Status: ${this.getStatusIcon(lastTransaction.status)} ${
+        lastTransaction.status
+      }`,
     );
 
     if (lastTransaction.metadata.failurePoint) {
@@ -421,7 +425,10 @@ class SyncTransactionSystem {
     });
 
     console.log(
-      `\n📁 Transaction log: ${join(this.transactionDir, lastTransaction.id + ".json")}`,
+      `\n📁 Transaction log: ${join(
+        this.transactionDir,
+        lastTransaction.id + ".json",
+      )}`,
     );
   }
 

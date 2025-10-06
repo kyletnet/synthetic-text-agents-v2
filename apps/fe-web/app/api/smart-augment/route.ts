@@ -4,7 +4,9 @@ import { ExecutionVerifier } from "@/lib/execution-verifier";
 import { withAPIGuard } from "@/lib/api-guard";
 
 async function smartAugmentHandler(request: NextRequest) {
-  const sessionId = `smart_aug_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
+  const sessionId = `smart_aug_${Date.now()}_${Math.random()
+    .toString(36)
+    .slice(2, 11)}`;
 
   try {
     const body = await request.json();
@@ -43,7 +45,9 @@ async function smartAugmentHandler(request: NextRequest) {
     }
 
     console.log(
-      `🧠 Smart augmentation: "${input.substring(0, 50)}..." (${session.analysis.type}, confidence: ${session.analysis.confidence}, ${processingTime}ms)`,
+      `🧠 Smart augmentation: "${input.substring(0, 50)}..." (${
+        session.analysis.type
+      }, confidence: ${session.analysis.confidence}, ${processingTime}ms)`,
     );
     console.log(
       `🔍 [ExecutionVerifier] Source: ${verification.source}, Verified: ${verification.verified}`,

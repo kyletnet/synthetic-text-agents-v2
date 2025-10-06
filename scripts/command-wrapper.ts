@@ -149,7 +149,9 @@ if (import.meta.url === `file://${process.argv[1]}`) {
       }
 
       console.log(
-        `\n${result.success ? "✅" : "❌"} 실행 ${result.success ? "완료" : "실패"}`,
+        `\n${result.success ? "✅" : "❌"} 실행 ${
+          result.success ? "완료" : "실패"
+        }`,
       );
 
       process.exit(result.success ? 0 : 1);

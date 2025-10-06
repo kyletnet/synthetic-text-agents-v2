@@ -132,7 +132,9 @@ async function anthropicCall(key, model, system, user, reqTimeoutMs) {
   if (process.env.OFFLINE_MODE === "true" || process.env.DRY_RUN === "true") {
     // Generate a realistic mock response for scoring
     const mockScore = 0.75 + Math.random() * 0.2; // 0.75-0.95
-    const mockResponse = `{"score":${mockScore.toFixed(2)},"comment":"(모크) 질문이 명확하고 답변이 적절함. 오프라인 모드 시뮬레이션."}`;
+    const mockResponse = `{"score":${mockScore.toFixed(
+      2,
+    )},"comment":"(모크) 질문이 명확하고 답변이 적절함. 오프라인 모드 시뮬레이션."}`;
 
     // Add small delay to simulate network latency
     await new Promise((resolve) =>

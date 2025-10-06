@@ -426,10 +426,12 @@ const operationLogs = await logger.getByOperationId("op-123");
    ```
 
 2. **캐시 만료 이해하기**
+
    - 5분 이내: 재사용
    - 5분 초과: 재진단
 
 3. **Self-Validation 신뢰하기**
+
    - maintain은 자동으로 재검증
    - 실패 시 수동 개입
 
@@ -544,14 +546,17 @@ npm run maintain  # Self-Validation 다시 시도
 ## Future Enhancements
 
 1. **AI-based Anomaly Detection**
+
    - ML 모델로 비정상 패턴 감지
    - 자동 롤백 제안
 
 2. **Enhanced Rollback**
+
    - Snapshot 기반 자동 롤백
    - 트랜잭션 시스템
 
 3. **Performance Optimization**
+
    - 스냅샷 캡처 최적화
    - 병렬 검증
 

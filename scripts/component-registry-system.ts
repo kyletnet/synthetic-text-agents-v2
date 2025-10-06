@@ -120,7 +120,9 @@ class ComponentRegistrySystem {
           // 진행률 표시 (매 10개마다)
           if ((processedCount + skippedCount) % 10 === 0) {
             console.log(
-              `   📈 Progress: ${processedCount + skippedCount}/${scripts.length} (${skippedCount} cached)`,
+              `   📈 Progress: ${processedCount + skippedCount}/${
+                scripts.length
+              } (${skippedCount} cached)`,
             );
           }
           continue;
@@ -135,7 +137,9 @@ class ComponentRegistrySystem {
         // 진행률 표시 (매 10개마다)
         if ((processedCount + skippedCount) % 10 === 0) {
           console.log(
-            `   📈 Progress: ${processedCount + skippedCount}/${scripts.length} (${processedCount} analyzed, ${skippedCount} cached)`,
+            `   📈 Progress: ${processedCount + skippedCount}/${
+              scripts.length
+            } (${processedCount} analyzed, ${skippedCount} cached)`,
           );
         }
       } catch (error) {
@@ -260,8 +264,9 @@ class ComponentRegistrySystem {
 
     // 필수 통합 포인트 확인
     if (decision.integration.includeInStatus) {
-      const integrationPoints =
-        await this.analyzeCurrentIntegration(scriptPath);
+      const integrationPoints = await this.analyzeCurrentIntegration(
+        scriptPath,
+      );
       if (!integrationPoints.includes("unified-dashboard")) {
         violations.push("Required integration with unified-dashboard missing");
       }
@@ -485,14 +490,24 @@ class ComponentRegistrySystem {
 
 ### 📊 Overview
 - **Total Components**: ${registry.totalComponents}
-- **Compliant**: ${registry.complianceStats.compliant} (${Math.round((registry.complianceStats.compliant / registry.totalComponents) * 100)}%)
-- **Non-compliant**: ${registry.complianceStats.violations} (${Math.round((registry.complianceStats.violations / registry.totalComponents) * 100)}%)
+- **Compliant**: ${registry.complianceStats.compliant} (${Math.round(
+      (registry.complianceStats.compliant / registry.totalComponents) * 100,
+    )}%)
+- **Non-compliant**: ${registry.complianceStats.violations} (${Math.round(
+      (registry.complianceStats.violations / registry.totalComponents) * 100,
+    )}%)
 
 ### 🔗 Integration Health
-- **Unified Dashboard**: ${Math.round(registry.integrationHealth.unifiedDashboard)}% integrated
-- **Package.json**: ${Math.round(registry.integrationHealth.packageJson)}% integrated
+- **Unified Dashboard**: ${Math.round(
+      registry.integrationHealth.unifiedDashboard,
+    )}% integrated
+- **Package.json**: ${Math.round(
+      registry.integrationHealth.packageJson,
+    )}% integrated
 - **Core Commands**: ${registry.integrationHealth.coreCommands} components
-- **Documented**: ${Math.round(registry.integrationHealth.documented)}% documented
+- **Documented**: ${Math.round(
+      registry.integrationHealth.documented,
+    )}% documented
 
 ### ⚠️ Top Issues
 ${registry.components
@@ -603,7 +618,9 @@ if (import.meta.url === `file://${process.argv[1]}`) {
                 `   Integration: ${c.integrationPoints.join(", ") || "None"}`,
               );
               console.log(
-                `   Compliant: ${c.compliance?.isCompliant === true ? "✅" : "❌"}\n`,
+                `   Compliant: ${
+                  c.compliance?.isCompliant === true ? "✅" : "❌"
+                }\n`,
               );
             });
           })

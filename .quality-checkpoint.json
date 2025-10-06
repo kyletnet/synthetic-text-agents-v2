@@ -46,7 +46,12 @@
       },
       "gateB": {
         "status": "FULL_PASS (Option B Enhanced)",
-        "passed": ["retrieval_quality_score", "citation_presence", "context_recall", "snippet_alignment"],
+        "passed": [
+          "retrieval_quality_score",
+          "citation_presence",
+          "context_recall",
+          "snippet_alignment"
+        ],
         "nearMiss": ["snippet_alignment: 59.3% vs 60% target (-0.7%)"],
         "decision": "PASS (primary goal exceeded, secondary near miss acceptable)"
       },
@@ -76,7 +81,7 @@
       ],
       "finalMetrics": {
         "bm25_avg": 0.072,
-        "vector_avg": 0.600,
+        "vector_avg": 0.6,
         "hybrid_avg": 0.441,
         "improvement_delta": 0.201,
         "baseline_avg": 0.241
@@ -89,7 +94,14 @@
       },
       "gateC": {
         "status": "FULL_PASS (all requirements met)",
-        "passed": ["improvement_delta >= 5%", "BM25 > 0", "Vector > 0", "Hybrid > baseline", "Cost <= +10%", "Latency <= +10%"],
+        "passed": [
+          "improvement_delta >= 5%",
+          "BM25 > 0",
+          "Vector > 0",
+          "Hybrid > baseline",
+          "Cost <= +10%",
+          "Latency <= +10%"
+        ],
         "actualResults": {
           "improvement_delta": "20.1% (target: 5%, 4x exceeded!)",
           "cost_increase": "$0 (target: <= +10%)",

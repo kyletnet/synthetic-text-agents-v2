@@ -7,6 +7,7 @@ _Generated: 2025-09-25_
 ### ✅ **TypeScript 컴파일 오류 완전 해결**
 
 1. **scripts/docs/llm-signal-injector.ts:199**
+
    - **문제**: 정규식 구문 오류 `replace(/\\//g, '_')`
    - **해결**: `replace(/\//g, '_')`로 수정
 
@@ -18,11 +19,13 @@ _Generated: 2025-09-25_
 ### ✅ **시스템 자동화 구현 완료**
 
 1. **AI-Powered Fix Engine (`scripts/ai-fix-engine.ts`)**
+
    - 자동 TypeScript 오류 수정 (80-90% 성공률)
    - 세션 기반 롤백 시스템 (`reports/.fix-sessions/`)
    - 지능적 수정 제안 및 성공률 예측
 
 2. **스마트 상태 대시보드 (`scripts/smart-status.ts`)**
+
    - 10점 시스템 건강도 점수
    - AI 기반 다음 액션 제안
    - 실시간 TypeScript/Git/문서 상태 분석
@@ -126,6 +129,7 @@ _마지막 업데이트: 2025. 9. 25. 오후 12:26:24_
 #### ⚠️ **TEMPORARY FIX (4개)**
 
 1. **scripts/sync-health-reporter.ts** (MEDIUM)
+
    - 문제: Line 84: const { stdout } = await execAsync('find src scripts -name "*.ts" -exec grep -l "TEMPORARILY DISABLED\\|TODO.*FIX\\|HACK" {} \\;');
    - 임시 해결: 주석 처리 또는 임시 구현
    - 근본 해결: 완전한 기능 구현 필요
@@ -133,6 +137,7 @@ _마지막 업데이트: 2025. 9. 25. 오후 12:26:24_
    - 인수인계: ✅ 필요
 
 2. **scripts/sync-health-reporter.ts** (MEDIUM)
+
    - 문제: Line 94: if (line.includes('temporarily disabled') ||
    - 임시 해결: 주석 처리 또는 임시 구현
    - 근본 해결: 완전한 기능 구현 필요
@@ -140,6 +145,7 @@ _마지막 업데이트: 2025. 9. 25. 오후 12:26:24_
    - 인수인계: ✅ 필요
 
 3. **scripts/sync-health-reporter.ts** (MEDIUM)
+
    - 문제: Line 95: line.includes('temporary stub') ||
    - 임시 해결: 주석 처리 또는 임시 구현
    - 근본 해결: 완전한 기능 구현 필요
@@ -156,46 +162,55 @@ _마지막 업데이트: 2025. 9. 25. 오후 12:26:24_
 #### 💳 **TECHNICAL DEBT (13개)**
 
 1. **scripts/ai-fix-engine.ts** (LOW)
+
    - 문제: Line 285: lines.splice(insertIndex, 0, `type ${missingName} = any; // TODO: Define proper type`);
    - 영향: Code quality and maintainability
    - 인수인계: ❌ 불필요
 
 2. **scripts/ai-fix-engine.ts** (LOW)
+
    - 문제: Line 394: lines[errorLine] = `    // ${line.trim()} // TODO: Remove or fix property`;
    - 영향: Code quality and maintainability
    - 인수인계: ❌ 불필요
 
 3. **scripts/comprehensive-doc-updater.ts** (LOW)
+
    - 문제: Line 153: path: 'PRODUCTION_TODO_COMPREHENSIVE.md',
    - 영향: Code quality and maintainability
    - 인수인계: ❌ 불필요
 
 4. **scripts/comprehensive-doc-updater.ts** (LOW)
+
    - 문제: Line 156: description: 'Production TODO - needs current status update'
    - 영향: Code quality and maintainability
    - 인수인계: ❌ 불필요
 
 5. **scripts/utils/dlq_handler.ts** (LOW)
+
    - 문제: Line 407: // TODO: Remove from original DLQ file (requires more complex file manipulation)
    - 영향: Code quality and maintainability
    - 인수인계: ❌ 불필요
 
 6. **scripts/sync-health-reporter.ts** (LOW)
+
    - 문제: Line 78: // 3. TODO/FIXME/HACK 주석 스캔
    - 영향: Code quality and maintainability
    - 인수인계: ✅ 필요
 
 7. **scripts/sync-health-reporter.ts** (LOW)
+
    - 문제: Line 84: const { stdout } = await execAsync('find src scripts -name "*.ts" -exec grep -l "TEMPORARILY DISABLED\\|TODO.*FIX\\|HACK" {} \\;');
    - 영향: Code quality and maintainability
    - 인수인계: ❌ 불필요
 
 8. **scripts/sync-health-reporter.ts** (LOW)
+
    - 문제: Line 96: line.includes('TODO.\*FIX'.toLowerCase())) {
    - 영향: Code quality and maintainability
    - 인수인계: ❌ 불필요
 
 9. **scripts/sync-health-reporter.ts** (LOW)
+
    - 문제: Line 121: const { stdout } = await execAsync('find src scripts -name "\*.ts" -exec grep -n "TODO\\|FIXME\\|HACK\\|XXX" {} + | head -20');
    - 영향: Code quality and maintainability
    - 인수인계: ✅ 필요
@@ -248,6 +263,7 @@ _마지막 업데이트: 2025. 9. 25. 오후 12:26:24_
 #### ⚠️ **TEMPORARY FIX (4개)**
 
 1. **scripts/sync-health-reporter.ts** (MEDIUM)
+
    - 문제: Line 84: const { stdout } = await execAsync('find src scripts -name "*.ts" -exec grep -l "TEMPORARILY DISABLED\\|TODO.*FIX\\|HACK" {} \\;');
    - 임시 해결: 주석 처리 또는 임시 구현
    - 근본 해결: 완전한 기능 구현 필요
@@ -255,6 +271,7 @@ _마지막 업데이트: 2025. 9. 25. 오후 12:26:24_
    - 인수인계: ✅ 필요
 
 2. **scripts/sync-health-reporter.ts** (MEDIUM)
+
    - 문제: Line 94: if (line.includes('temporarily disabled') ||
    - 임시 해결: 주석 처리 또는 임시 구현
    - 근본 해결: 완전한 기능 구현 필요
@@ -262,6 +279,7 @@ _마지막 업데이트: 2025. 9. 25. 오후 12:26:24_
    - 인수인계: ✅ 필요
 
 3. **scripts/sync-health-reporter.ts** (MEDIUM)
+
    - 문제: Line 95: line.includes('temporary stub') ||
    - 임시 해결: 주석 처리 또는 임시 구현
    - 근본 해결: 완전한 기능 구현 필요
@@ -278,46 +296,55 @@ _마지막 업데이트: 2025. 9. 25. 오후 12:26:24_
 #### 💳 **TECHNICAL DEBT (11개)**
 
 1. **scripts/ai-fix-engine.ts** (LOW)
+
    - 문제: Line 285: lines.splice(insertIndex, 0, `type ${missingName} = any; // TODO: Define proper type`);
    - 영향: Code quality and maintainability
    - 인수인계: ❌ 불필요
 
 2. **scripts/ai-fix-engine.ts** (LOW)
+
    - 문제: Line 394: lines[errorLine] = `    // ${line.trim()} // TODO: Remove or fix property`;
    - 영향: Code quality and maintainability
    - 인수인계: ❌ 불필요
 
 3. **scripts/utils/dlq_handler.ts** (LOW)
+
    - 문제: Line 407: // TODO: Remove from original DLQ file (requires more complex file manipulation)
    - 영향: Code quality and maintainability
    - 인수인계: ❌ 불필요
 
 4. **scripts/sync-health-reporter.ts** (LOW)
+
    - 문제: Line 78: // 3. TODO/FIXME/HACK 주석 스캔
    - 영향: Code quality and maintainability
    - 인수인계: ✅ 필요
 
 5. **scripts/sync-health-reporter.ts** (LOW)
+
    - 문제: Line 84: const { stdout } = await execAsync('find src scripts -name "*.ts" -exec grep -l "TEMPORARILY DISABLED\\|TODO.*FIX\\|HACK" {} \\;');
    - 영향: Code quality and maintainability
    - 인수인계: ❌ 불필요
 
 6. **scripts/sync-health-reporter.ts** (LOW)
+
    - 문제: Line 96: line.includes('TODO.\*FIX'.toLowerCase())) {
    - 영향: Code quality and maintainability
    - 인수인계: ❌ 불필요
 
 7. **scripts/sync-health-reporter.ts** (LOW)
+
    - 문제: Line 121: const { stdout } = await execAsync('find src scripts -name "\*.ts" -exec grep -n "TODO\\|FIXME\\|HACK\\|XXX" {} + | head -20');
    - 영향: Code quality and maintainability
    - 인수인계: ✅ 필요
 
 8. **scripts/sync-health-reporter.ts** (LOW)
+
    - 문제: Line 128: if (comment.includes('TODO') || comment.includes('FIXME')) {
    - 영향: Code quality and maintainability
    - 인수인계: ✅ 필요
 
 9. **scripts/sync-health-reporter.ts** (LOW)
+
    - 문제: Line 135: handoffRequired: comment.includes('FIXME')
    - 영향: Code quality and maintainability
    - 인수인계: ✅ 필요
@@ -358,6 +385,7 @@ _마지막 업데이트: 2025. 9. 25. 오후 12:26:24_
 #### ⚠️ **TEMPORARY FIX (4개)**
 
 1. **scripts/sync-health-reporter.ts** (MEDIUM)
+
    - 문제: Line 84: const { stdout } = await execAsync('find src scripts -name "*.ts" -exec grep -l "TEMPORARILY DISABLED\\|TODO.*FIX\\|HACK" {} \\;');
    - 임시 해결: 주석 처리 또는 임시 구현
    - 근본 해결: 완전한 기능 구현 필요
@@ -365,6 +393,7 @@ _마지막 업데이트: 2025. 9. 25. 오후 12:26:24_
    - 인수인계: ✅ 필요
 
 2. **scripts/sync-health-reporter.ts** (MEDIUM)
+
    - 문제: Line 94: if (line.includes('temporarily disabled') ||
    - 임시 해결: 주석 처리 또는 임시 구현
    - 근본 해결: 완전한 기능 구현 필요
@@ -372,6 +401,7 @@ _마지막 업데이트: 2025. 9. 25. 오후 12:26:24_
    - 인수인계: ✅ 필요
 
 3. **scripts/sync-health-reporter.ts** (MEDIUM)
+
    - 문제: Line 95: line.includes('temporary stub') ||
    - 임시 해결: 주석 처리 또는 임시 구현
    - 근본 해결: 완전한 기능 구현 필요
@@ -388,46 +418,55 @@ _마지막 업데이트: 2025. 9. 25. 오후 12:26:24_
 #### 💳 **TECHNICAL DEBT (11개)**
 
 1. **scripts/ai-fix-engine.ts** (LOW)
+
    - 문제: Line 285: lines.splice(insertIndex, 0, `type ${missingName} = any; // TODO: Define proper type`);
    - 영향: Code quality and maintainability
    - 인수인계: ❌ 불필요
 
 2. **scripts/ai-fix-engine.ts** (LOW)
+
    - 문제: Line 394: lines[errorLine] = `    // ${line.trim()} // TODO: Remove or fix property`;
    - 영향: Code quality and maintainability
    - 인수인계: ❌ 불필요
 
 3. **scripts/utils/dlq_handler.ts** (LOW)
+
    - 문제: Line 407: // TODO: Remove from original DLQ file (requires more complex file manipulation)
    - 영향: Code quality and maintainability
    - 인수인계: ❌ 불필요
 
 4. **scripts/sync-health-reporter.ts** (LOW)
+
    - 문제: Line 78: // 3. TODO/FIXME/HACK 주석 스캔
    - 영향: Code quality and maintainability
    - 인수인계: ✅ 필요
 
 5. **scripts/sync-health-reporter.ts** (LOW)
+
    - 문제: Line 84: const { stdout } = await execAsync('find src scripts -name "*.ts" -exec grep -l "TEMPORARILY DISABLED\\|TODO.*FIX\\|HACK" {} \\;');
    - 영향: Code quality and maintainability
    - 인수인계: ❌ 불필요
 
 6. **scripts/sync-health-reporter.ts** (LOW)
+
    - 문제: Line 96: line.includes('TODO.\*FIX'.toLowerCase())) {
    - 영향: Code quality and maintainability
    - 인수인계: ❌ 불필요
 
 7. **scripts/sync-health-reporter.ts** (LOW)
+
    - 문제: Line 121: const { stdout } = await execAsync('find src scripts -name "\*.ts" -exec grep -n "TODO\\|FIXME\\|HACK\\|XXX" {} + | head -20');
    - 영향: Code quality and maintainability
    - 인수인계: ✅ 필요
 
 8. **scripts/sync-health-reporter.ts** (LOW)
+
    - 문제: Line 128: if (comment.includes('TODO') || comment.includes('FIXME')) {
    - 영향: Code quality and maintainability
    - 인수인계: ✅ 필요
 
 9. **scripts/sync-health-reporter.ts** (LOW)
+
    - 문제: Line 135: handoffRequired: comment.includes('FIXME')
    - 영향: Code quality and maintainability
    - 인수인계: ✅ 필요

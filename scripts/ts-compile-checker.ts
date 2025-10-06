@@ -286,7 +286,9 @@ class TypeScriptCompileChecker {
 
     switch (pattern) {
       case "type-mismatch":
-        return `🔧 REFACTOR: Fix type compatibility in ${affectedFiles.join(", ")}
+        return `🔧 REFACTOR: Fix type compatibility in ${affectedFiles.join(
+          ", ",
+        )}
 
    Problem: ${errors.length} type assignment errors
    Example: ${firstError.message}
@@ -301,7 +303,9 @@ class TypeScriptCompileChecker {
    🎯 Action: Review and align interface definitions, ensure all required properties are provided`;
 
       case "missing-property":
-        return `🔧 REFACTOR: Add missing properties in ${affectedFiles.join(", ")}
+        return `🔧 REFACTOR: Add missing properties in ${affectedFiles.join(
+          ", ",
+        )}
 
    Problem: ${errors.length} undefined property access errors
    Example: ${firstError.message}
@@ -345,7 +349,9 @@ class TypeScriptCompileChecker {
    🎯 Action: Add missing imports or check variable declarations`;
 
       case "plugin-system":
-        return `🔧 REFACTOR: Fix plugin system integration in ${affectedFiles.join(", ")}
+        return `🔧 REFACTOR: Fix plugin system integration in ${affectedFiles.join(
+          ", ",
+        )}
 
    Problem: ${errors.length} plugin-related type errors
    Example: ${firstError.message}

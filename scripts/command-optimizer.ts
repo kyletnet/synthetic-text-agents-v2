@@ -212,8 +212,9 @@ class CommandOptimizer {
     for (const cmd of mergeCommands) {
       if (cmd.mergeWith && cleanScripts[cmd.mergeWith]) {
         // Alias로 유지 (주석과 함께)
-        cleanScripts[`${cmd.name}:deprecated`] =
-          `echo "⚠️  ${cmd.name} is deprecated. Use '${cmd.mergeWith}' instead." && npm run ${cmd.mergeWith}`;
+        cleanScripts[
+          `${cmd.name}:deprecated`
+        ] = `echo "⚠️  ${cmd.name} is deprecated. Use '${cmd.mergeWith}' instead." && npm run ${cmd.mergeWith}`;
       }
     }
 

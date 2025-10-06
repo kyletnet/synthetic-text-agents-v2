@@ -417,7 +417,11 @@ function findUnnecessaryFiles(): CriticalIssue[] {
         id: "unnecessary-files",
         severity: "P2",
         category: "Cleanup",
-        description: `${foundFiles.length}개의 불필요한 백업 파일 (${(totalSize / 1024 / 1024).toFixed(2)}MB)`,
+        description: `${foundFiles.length}개의 불필요한 백업 파일 (${(
+          totalSize /
+          1024 /
+          1024
+        ).toFixed(2)}MB)`,
         impact: "저장소 크기 증가, 혼란 유발",
         files: foundFiles.slice(0, 10), // 최대 10개만 표시
         count: foundFiles.length,
@@ -711,8 +715,8 @@ function printResults(result: DeepInspectionResult): void {
     result.healthScore >= 80
       ? "green"
       : result.healthScore >= 60
-        ? "yellow"
-        : "red";
+      ? "yellow"
+      : "red";
   log(
     `🎯 Health Score: ${result.healthScore}/100\n`,
     scoreColor as keyof typeof colors,
@@ -735,8 +739,8 @@ function printResults(result: DeepInspectionResult): void {
         issue.severity === "P0"
           ? "red"
           : issue.severity === "P1"
-            ? "yellow"
-            : "cyan";
+          ? "yellow"
+          : "cyan";
       log(
         `   [${issue.severity}] ${issue.category}: ${issue.description}`,
         severityColor as keyof typeof colors,

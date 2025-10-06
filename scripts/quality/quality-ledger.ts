@@ -22,6 +22,8 @@ import {
   mkdirSync,
   statSync,
   renameSync,
+  unlinkSync,
+  readdirSync,
 } from "fs";
 import { join, dirname } from "path";
 import { createHash } from "crypto";
@@ -280,7 +282,6 @@ export class QualityLedger {
           if (ageMs > 5 * 60 * 1000) {
             try {
               // Remove stale lock
-              const { unlinkSync } = require("fs");
               unlinkSync(this.lockPath);
               continue;
             } catch {
@@ -308,7 +309,6 @@ export class QualityLedger {
    */
   private releaseLock(): void {
     try {
-      const { unlinkSync } = require("fs");
       if (existsSync(this.lockPath)) {
         unlinkSync(this.lockPath);
       }
@@ -360,8 +360,6 @@ export class QualityLedger {
     oldestEntry: string | null;
     newestEntry: string | null;
   } {
-    const { readdirSync } = require("fs");
-
     try {
       const files = readdirSync(this.basePath).filter((f: string) =>
         f.endsWith(".jsonl"),

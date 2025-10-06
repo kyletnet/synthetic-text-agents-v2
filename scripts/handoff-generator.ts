@@ -194,8 +194,8 @@ class HandoffGenerator {
           severity: content.includes("TODO")
             ? "LOW"
             : content.includes("HACK")
-              ? "HIGH"
-              : "MEDIUM",
+            ? "HIGH"
+            : "MEDIUM",
         });
       }
     } catch (error) {
@@ -314,13 +314,23 @@ ${data.temporaryWorkarounds
   )
   .join("\n")}
 
-${data.temporaryWorkarounds.length > 5 ? `\n*... and ${data.temporaryWorkarounds.length - 5} more. Run \`npm run status\` for full list.*` : ""}`
+${
+  data.temporaryWorkarounds.length > 5
+    ? `\n*... and ${
+        data.temporaryWorkarounds.length - 5
+      } more. Run \`npm run status\` for full list.*`
+    : ""
+}`
 }
 
 ## 📚 **Documentation Status**
 
-- **Core Docs**: ${data.documentationStatus.core.exists}/${data.documentationStatus.core.total} ✅
-- **Operational Docs**: ${data.documentationStatus.operational.exists}/${data.documentationStatus.operational.total}
+- **Core Docs**: ${data.documentationStatus.core.exists}/${
+      data.documentationStatus.core.total
+    } ✅
+- **Operational Docs**: ${data.documentationStatus.operational.exists}/${
+      data.documentationStatus.operational.total
+    }
 
 ## 🚀 **Next Steps**
 

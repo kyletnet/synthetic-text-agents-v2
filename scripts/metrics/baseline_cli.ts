@@ -130,8 +130,8 @@ async function main(): Promise<void> {
     dryRun: process.argv.includes("--smoke")
       ? "true"
       : process.argv.includes("--full")
-        ? "false"
-        : "unknown",
+      ? "false"
+      : "unknown",
     // cases will be filled after data load; write a provisional 0 now, then update later
     casesTotal: 0,
   });
@@ -188,7 +188,9 @@ async function main(): Promise<void> {
     console.log(`📊 JSONL Data: ${result.jsonlPath}`);
     console.log(`🔒 Integrity Hash: ${result.hash}`);
     console.log(
-      `🏆 Quality Score: ${(result.summary.overall_quality_score * 100).toFixed(1)}%`,
+      `🏆 Quality Score: ${(result.summary.overall_quality_score * 100).toFixed(
+        1,
+      )}%`,
     );
 
     if (result.gating) {

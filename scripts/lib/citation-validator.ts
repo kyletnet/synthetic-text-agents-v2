@@ -105,7 +105,9 @@ export function validateCitation(
       qualityScore -= 0.1;
     } else if (citation.alignment_score < 0.3) {
       warnings.push(
-        `Low alignment score: ${citation.alignment_score.toFixed(3)} (< 0.3 threshold)`,
+        `Low alignment score: ${citation.alignment_score.toFixed(
+          3,
+        )} (< 0.3 threshold)`,
       );
       qualityScore -= 0.05;
     }
@@ -129,7 +131,10 @@ export function validateCitation(
 
         if (!partialMatch) {
           errors.push(
-            `Hallucinated span: "${citation.span_in_answer.substring(0, 50)}..." not found in answer`,
+            `Hallucinated span: "${citation.span_in_answer.substring(
+              0,
+              50,
+            )}..." not found in answer`,
           );
           qualityScore -= 0.3; // Heavy penalty for hallucination
         } else {
@@ -389,7 +394,10 @@ export function getCitationQualityGate(metrics: CitationQualityMetrics): {
   if (metrics.invalid_citations / metrics.total_citations > 0.3) {
     return {
       status: "FAIL",
-      reason: `High invalid citation rate: ${((metrics.invalid_citations / metrics.total_citations) * 100).toFixed(1)}%`,
+      reason: `High invalid citation rate: ${(
+        (metrics.invalid_citations / metrics.total_citations) *
+        100
+      ).toFixed(1)}%`,
     };
   }
 
@@ -397,14 +405,18 @@ export function getCitationQualityGate(metrics: CitationQualityMetrics): {
   if (metrics.avg_alignment_score < 0.4) {
     return {
       status: "WARN",
-      reason: `Low average alignment score: ${metrics.avg_alignment_score.toFixed(3)}`,
+      reason: `Low average alignment score: ${metrics.avg_alignment_score.toFixed(
+        3,
+      )}`,
     };
   }
 
   if (metrics.citation_coverage < 0.5) {
     return {
       status: "WARN",
-      reason: `Low citation coverage: ${(metrics.citation_coverage * 100).toFixed(1)}%`,
+      reason: `Low citation coverage: ${(
+        metrics.citation_coverage * 100
+      ).toFixed(1)}%`,
     };
   }
 
@@ -412,7 +424,10 @@ export function getCitationQualityGate(metrics: CitationQualityMetrics): {
   if (metrics.has_evidence_idx < 0.8) {
     return {
       status: "WARN",
-      reason: `Missing evidence_idx in ${((1 - metrics.has_evidence_idx) * 100).toFixed(1)}% of citations`,
+      reason: `Missing evidence_idx in ${(
+        (1 - metrics.has_evidence_idx) *
+        100
+      ).toFixed(1)}% of citations`,
     };
   }
 

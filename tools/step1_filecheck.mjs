@@ -96,7 +96,7 @@ function analyzeExample(json) {
   let empty = 0;
   for (let i = 0; i < count; i++) {
     const c = chunks[i];
-    const s = typeof c === "string" ? c : (c?.text ?? c?.content ?? "");
+    const s = typeof c === "string" ? c : c?.text ?? c?.content ?? "";
     if (!s || typeof s !== "string" || s.trim().length === 0) empty++;
     const len = (s || "").length;
     if (i < 3)
@@ -109,7 +109,7 @@ function analyzeExample(json) {
   if (empty > 0) note.push(`빈/누락 청크 ${empty}개`);
   // 간단 길이 지표
   const lens = chunks.map((c) => {
-    const s = typeof c === "string" ? c : (c?.text ?? c?.content ?? "");
+    const s = typeof c === "string" ? c : c?.text ?? c?.content ?? "";
     return (s || "").length;
   });
   const sum = lens.reduce((a, b) => a + b, 0);
@@ -158,15 +158,27 @@ function writeReadableMD(p, data) {
       lines.push(`  - 참고: ${ex.analysis.notes.join("; ")}`);
   }
   lines.push(
-    `- outputs/ JSONL: ${data.outputs.files.length}개 (최근 파일 라인=${data.outputs.probe?.total ?? 0}, 파싱성공=${data.outputs.probe?.ok ?? 0}, 실패=${data.outputs.probe?.fail ?? 0})`,
+    `- outputs/ JSONL: ${data.outputs.files.length}개 (최근 파일 라인=${
+      data.outputs.probe?.total ?? 0
+    }, 파싱성공=${data.outputs.probe?.ok ?? 0}, 실패=${
+      data.outputs.probe?.fail ?? 0
+    })`,
   );
   lines.push(
-    `- RUN_LOGS/ JSONL: ${data.logs.files.length}개 (최근 파일 라인=${data.logs.probe?.total ?? 0}, 파싱성공=${data.logs.probe?.ok ?? 0}, 실패=${data.logs.probe?.fail ?? 0})`,
+    `- RUN_LOGS/ JSONL: ${data.logs.files.length}개 (최근 파일 라인=${
+      data.logs.probe?.total ?? 0
+    }, 파싱성공=${data.logs.probe?.ok ?? 0}, 실패=${
+      data.logs.probe?.fail ?? 0
+    })`,
   );
   lines.push("");
   lines.push("판정:");
   lines.push(
-    `- ${data.ok_for_step2 ? "STEP 2(해석/요약) 진행 가능" : "보완 필요: 예제.json이 없거나 구조 감지가 불안정, 혹은 JSONL 파싱 실패율 높음"}`,
+    `- ${
+      data.ok_for_step2
+        ? "STEP 2(해석/요약) 진행 가능"
+        : "보완 필요: 예제.json이 없거나 구조 감지가 불안정, 혹은 JSONL 파싱 실패율 높음"
+    }`,
   );
   lines.push("");
   lines.push("다음 권장 액션:");

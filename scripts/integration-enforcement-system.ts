@@ -203,8 +203,12 @@ class IntegrationEnforcementSystem {
         const newCheck = `
       console.log("   🔍 ${component.spec.purpose} Analysis...");
       const ${this.camelCase(component.spec.name)} = new ${importName}();
-      const ${this.camelCase(component.spec.name)}Report = await ${this.camelCase(component.spec.name)}.analyze();
-      console.log(\`   📊 ${component.spec.purpose}: \${${this.camelCase(component.spec.name)}Report.summary}\`);
+      const ${this.camelCase(
+        component.spec.name,
+      )}Report = await ${this.camelCase(component.spec.name)}.analyze();
+      console.log(\`   📊 ${component.spec.purpose}: \${${this.camelCase(
+        component.spec.name,
+      )}Report.summary}\`);
 `;
         content = content.replace(
           enhancedAnalysisMatch[1],
@@ -254,11 +258,15 @@ class IntegrationEnforcementSystem {
 
       // review-sync 스크립트에 추가
       const reviewSync = packageJson.scripts["review-sync"] || "";
-      const scriptName = `_hidden:${this.generateScriptName(component.spec.name, component.spec.purpose)}`;
+      const scriptName = `_hidden:${this.generateScriptName(
+        component.spec.name,
+        component.spec.purpose,
+      )}`;
 
       if (!reviewSync.includes(scriptName)) {
-        packageJson.scripts["review-sync"] =
-          `${reviewSync} && npm run ${scriptName}`;
+        packageJson.scripts[
+          "review-sync"
+        ] = `${reviewSync} && npm run ${scriptName}`;
         writeFileSync(packagePath, JSON.stringify(packageJson, null, 2));
         component.integrationPoints.push("sync-workflow");
         console.log(`   ✅ Integrated into sync workflow`);

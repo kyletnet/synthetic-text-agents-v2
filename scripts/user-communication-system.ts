@@ -413,8 +413,8 @@ export class UserCommunicationSystem {
             item.priority === "critical"
               ? "high"
               : item.priority === "high"
-                ? "medium"
-                : "low",
+              ? "medium"
+              : "low",
           category: item.type === "approval_needed" ? "fix" : "improve",
           autoExecutable: item.autoExecutable,
         },

@@ -36,19 +36,29 @@ function main() {
   sumMD.push(`# Baseline-Plus Summary`);
   sumMD.push(`- Input: \`${meta.inFile}\`  (total: ${meta.total})`);
   sumMD.push(
-    `- Pass threshold: **${meta.passThreshold}**  ·  Pass rate: **${(diversity.score.passRate * 100).toFixed(1)}%**`,
+    `- Pass threshold: **${meta.passThreshold}**  ·  Pass rate: **${(
+      diversity.score.passRate * 100
+    ).toFixed(1)}%**`,
   );
   sumMD.push(
-    `- Score mean/p50/p95: **${diversity.score.mean.toFixed(2)} / ${diversity.score.p50.toFixed(2)} / ${diversity.score.p95.toFixed(2)}**`,
+    `- Score mean/p50/p95: **${diversity.score.mean.toFixed(
+      2,
+    )} / ${diversity.score.p50.toFixed(2)} / ${diversity.score.p95.toFixed(
+      2,
+    )}**`,
   );
   sumMD.push(
-    `- Answer length (mean/p50/p95): **${diversity.lenA.mean.toFixed(1)} / ${diversity.lenA.p50.toFixed(0)} / ${diversity.lenA.p95.toFixed(0)}**`,
+    `- Answer length (mean/p50/p95): **${diversity.lenA.mean.toFixed(
+      1,
+    )} / ${diversity.lenA.p50.toFixed(0)} / ${diversity.lenA.p95.toFixed(0)}**`,
   );
   sumMD.push(
     `- Lexical diversity (TTR mean): **${diversity.ttrMean.toFixed(2)}**`,
   );
   sumMD.push(
-    `- 3-gram overlap (dup-rate): **${(diversity.dup3Rate * 100).toFixed(1)}%**  (낮을수록 중복↓)`,
+    `- 3-gram overlap (dup-rate): **${(diversity.dup3Rate * 100).toFixed(
+      1,
+    )}%**  (낮을수록 중복↓)`,
   );
   sumMD.push(
     `- Question type distribution: \`${Object.entries(diversity.qtypeDist)

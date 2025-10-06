@@ -160,7 +160,9 @@ ${colors.bright}Examples:${colors.reset}
       `🛡️ Issues Prevented: ${colors.blue}${stats.preventedIssues}${colors.reset}`,
     );
     console.log(
-      `🕒 Last Healing: ${stats.lastHealingTime ? stats.lastHealingTime.toLocaleString() : "Never"}`,
+      `🕒 Last Healing: ${
+        stats.lastHealingTime ? stats.lastHealingTime.toLocaleString() : "Never"
+      }`,
     );
 
     const successRate =
@@ -175,8 +177,8 @@ ${colors.bright}Examples:${colors.reset}
       parseFloat(successRate) >= 90
         ? colors.green
         : parseFloat(successRate) >= 70
-          ? colors.yellow
-          : colors.red;
+        ? colors.yellow
+        : colors.red;
 
     console.log(
       `📈 Success Rate: ${successColor}${successRate}%${colors.reset}\n`,
@@ -210,7 +212,11 @@ ${colors.bright}Examples:${colors.reset}
       const actionColor = this.getActionColor(result.action.severity);
 
       console.log(
-        `${index + 1}. ${statusIcon} [${actionColor}${result.action.type.toUpperCase()}${colors.reset}] ${result.action.description}`,
+        `${
+          index + 1
+        }. ${statusIcon} [${actionColor}${result.action.type.toUpperCase()}${
+          colors.reset
+        }] ${result.action.description}`,
       );
       console.log(
         `   Duration: ${durationStr} | Severity: ${result.action.severity}`,
@@ -277,7 +283,9 @@ ${colors.bright}Examples:${colors.reset}
       }%`,
     );
     console.log(
-      `🕒 Last Healing: ${stats.lastHealingTime ? stats.lastHealingTime.toLocaleString() : "Never"}`,
+      `🕒 Last Healing: ${
+        stats.lastHealingTime ? stats.lastHealingTime.toLocaleString() : "Never"
+      }`,
     );
 
     if (recentHistory.length > 0) {
@@ -301,10 +309,16 @@ ${colors.bright}Examples:${colors.reset}
       const durationStr = `${result.duration}ms`;
 
       console.log(
-        `${index + 1}. ${statusIcon} [${actionColor}${result.action.type.toUpperCase()}${colors.reset}] ${result.action.description}`,
+        `${
+          index + 1
+        }. ${statusIcon} [${actionColor}${result.action.type.toUpperCase()}${
+          colors.reset
+        }] ${result.action.description}`,
       );
       console.log(
-        `   Duration: ${durationStr} | Severity: ${result.action.severity} | Automated: ${result.action.automated ? "Yes" : "No"}`,
+        `   Duration: ${durationStr} | Severity: ${
+          result.action.severity
+        } | Automated: ${result.action.automated ? "Yes" : "No"}`,
       );
 
       if (result.action.requirements) {
@@ -379,8 +393,8 @@ ${colors.bright}Examples:${colors.reset}
       parseFloat(successRate) === 100
         ? colors.green
         : parseFloat(successRate) >= 50
-          ? colors.yellow
-          : colors.red;
+        ? colors.yellow
+        : colors.red;
 
     console.log(
       `📈 Success Rate: ${successColor}${successRate}%${colors.reset}`,

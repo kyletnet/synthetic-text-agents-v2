@@ -345,11 +345,15 @@ export class PreflightRunner {
 
       if (passed) {
         console.log(
-          `✅ Paid smoke passed: ${smokeResult.cases_processed} cases, $${smokeResult.cost_usd.toFixed(3)}`,
+          `✅ Paid smoke passed: ${
+            smokeResult.cases_processed
+          } cases, $${smokeResult.cost_usd.toFixed(3)}`,
         );
       } else {
         console.log(
-          `❌ Paid smoke failed: Success=${smokeResult.success}, Cases=${smokeResult.cases_processed}, Cost=$${smokeResult.cost_usd.toFixed(3)}`,
+          `❌ Paid smoke failed: Success=${smokeResult.success}, Cases=${
+            smokeResult.cases_processed
+          }, Cost=$${smokeResult.cost_usd.toFixed(3)}`,
         );
       }
 
@@ -446,7 +450,9 @@ export class PreflightRunner {
       );
 
       console.log(
-        `✅ Full run completed: ${fullResult.items_processed} items, $${fullResult.cost_usd.toFixed(3)}`,
+        `✅ Full run completed: ${
+          fullResult.items_processed
+        } items, $${fullResult.cost_usd.toFixed(3)}`,
       );
 
       return {
@@ -643,7 +649,9 @@ export class PreflightRunner {
         <pre>${JSON.stringify(data.budget_summary, null, 2)}</pre>
     </div>
 
-    <div class="section ${data.dlq_stats.total_items > 0 ? "warning" : "success"}">
+    <div class="section ${
+      data.dlq_stats.total_items > 0 ? "warning" : "success"
+    }">
         <h2>🔄 DLQ Statistics</h2>
         <pre>${JSON.stringify(data.dlq_stats, null, 2)}</pre>
     </div>

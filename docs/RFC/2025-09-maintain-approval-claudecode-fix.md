@@ -337,6 +337,7 @@ const isClaudeCode = ...
    ```
 
 3. **CI 확인**
+
    - GitHub Actions 통과 대기
    - 모든 환경에서 테스트 통과 확인
 

@@ -214,11 +214,13 @@ Before allowing baseline to pass:
 After citation policy enforcement:
 
 1. ✅ **Validate on small batch** (10-20 QA)
+
    - Measure policy compliance rate
    - Check failure patterns
    - Adjust thresholds if needed
 
 2. ✅ **Full baseline test** (100+ QA)
+
    - Monitor citation coverage
    - Validate quality gates
    - Generate failure reports

@@ -278,7 +278,9 @@ class GapMetricsCollector {
     console.log("═".repeat(70));
     console.log(`📅 Period: ${metrics.period.toUpperCase()}`);
     console.log(
-      `📆 ${metrics.startDate.toISOString().split("T")[0]} → ${metrics.endDate.toISOString().split("T")[0]}`,
+      `📆 ${metrics.startDate.toISOString().split("T")[0]} → ${
+        metrics.endDate.toISOString().split("T")[0]
+      }`,
     );
     console.log(`🔍 Total Scans: ${metrics.totalScans}`);
     console.log("═".repeat(70));
@@ -294,14 +296,14 @@ class GapMetricsCollector {
       metrics.trend.direction === "improving"
         ? "📉"
         : metrics.trend.direction === "degrading"
-          ? "📈"
-          : "➡️";
+        ? "📈"
+        : "➡️";
     const trendText =
       metrics.trend.direction === "improving"
         ? "IMPROVING"
         : metrics.trend.direction === "degrading"
-          ? "DEGRADING"
-          : "STABLE";
+        ? "DEGRADING"
+        : "STABLE";
     console.log(
       `   ${trendIcon} ${trendText} (${metrics.trend.changePercent}% change)`,
     );

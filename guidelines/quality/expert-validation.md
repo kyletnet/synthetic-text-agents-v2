@@ -29,10 +29,12 @@
 ## 검증 프로세스
 
 1. **자동 검증** (Level 1)
+
    - Quality Auditor Agent 자동 실행
    - 기본 품질 기준 미달 시 즉시 거부
 
 2. **AI 교차 검증** (Level 2)
+
    - GPT-4 + Claude 동시 평가
    - 일치도 80% 이상 시 통과
 

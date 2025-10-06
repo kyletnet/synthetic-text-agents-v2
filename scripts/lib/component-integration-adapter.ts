@@ -236,11 +236,15 @@ export abstract class ComponentAdapter {
   }
 
   private generateCorrelationId(): string {
-    return `${this.componentId}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    return `${this.componentId}-${Date.now()}-${Math.random()
+      .toString(36)
+      .substr(2, 9)}`;
   }
 
   private generateOperationId(): string {
-    return `op-${this.componentId}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    return `op-${this.componentId}-${Date.now()}-${Math.random()
+      .toString(36)
+      .substr(2, 9)}`;
   }
 
   /**

@@ -14,8 +14,14 @@
  */
 
 import { getQualityLedger, QualityLedgerEntry } from "./quality-ledger.js";
-import { readFileSync, writeFileSync, existsSync } from "fs";
-import { join } from "path";
+import {
+  readFileSync,
+  writeFileSync,
+  existsSync,
+  mkdirSync,
+  unlinkSync,
+} from "fs";
+import { join, dirname } from "path";
 
 /**
  * Quality phase definition
@@ -267,9 +273,8 @@ export class PhaseStateMachine {
    * Save state to disk
    */
   private saveState(state: PhaseState): void {
-    const dir = require("path").dirname(this.statePath);
+    const dir = dirname(this.statePath);
     if (!existsSync(dir)) {
-      const { mkdirSync } = require("fs");
       mkdirSync(dir, { recursive: true });
     }
 
@@ -352,7 +357,6 @@ export class PhaseStateMachine {
    */
   reset(): void {
     if (existsSync(this.statePath)) {
-      const { unlinkSync } = require("fs");
       unlinkSync(this.statePath);
     }
   }

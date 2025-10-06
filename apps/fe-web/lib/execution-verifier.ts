@@ -191,8 +191,8 @@ export class ExecutionVerifier {
       llmStrictModeEnv === "true"
         ? true
         : llmStrictModeEnv === "false"
-          ? false
-          : null;
+        ? false
+        : null;
 
     // Strict mode 결정 로직
     let strictMode: boolean;

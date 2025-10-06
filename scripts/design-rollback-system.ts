@@ -47,7 +47,9 @@ class DesignRollbackSystem {
   async createPreTransitionSnapshot(): Promise<string> {
     console.log("📸 전환 전 시스템 스냅샷 생성 중...");
 
-    const snapshotId = `design-transition-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`;
+    const snapshotId = `design-transition-${Date.now()}-${Math.random()
+      .toString(36)
+      .substring(2, 8)}`;
     const snapshotDir = join(this.backupDir, snapshotId);
 
     // 백업 디렉토리 생성

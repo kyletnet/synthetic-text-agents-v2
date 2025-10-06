@@ -549,8 +549,8 @@ export async function calculateAllBaselineMetrics(
       overallQualityScore > 0.8
         ? "green"
         : overallQualityScore > 0.6
-          ? "yellow"
-          : "red",
+        ? "yellow"
+        : "red",
   };
 
   // Add reproducibility check with actual summary

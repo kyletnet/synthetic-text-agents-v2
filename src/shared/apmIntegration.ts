@@ -218,7 +218,9 @@ export class NewRelicProvider implements APMProvider {
     if (!this.newrelic) return "";
 
     try {
-      const transactionId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+      const transactionId = `${Date.now()}-${Math.random()
+        .toString(36)
+        .substr(2, 9)}`;
       this.newrelic.setTransactionName(type, name);
       return transactionId;
     } catch (error) {
@@ -307,7 +309,10 @@ export class PrometheusProvider implements APMProvider {
     if (!this.prom) return;
 
     try {
-      const metricName = `synthetic_agents_${metric.name.replace(/[^a-zA-Z0-9_]/g, "_")}`;
+      const metricName = `synthetic_agents_${metric.name.replace(
+        /[^a-zA-Z0-9_]/g,
+        "_",
+      )}`;
 
       if (!this.metrics.has(metricName)) {
         this.metrics.set(

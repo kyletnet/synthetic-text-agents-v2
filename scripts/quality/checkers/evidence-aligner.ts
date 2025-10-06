@@ -116,7 +116,9 @@ export class EvidenceAligner implements QualityChecker {
           id: `align-${qa.id}`,
           severity: "high",
           category: "evidence_alignment",
-          description: `답변과 Evidence 정렬도가 낮습니다 (${(snippetAlignment * 100).toFixed(1)}%)`,
+          description: `답변과 Evidence 정렬도가 낮습니다 (${(
+            snippetAlignment * 100
+          ).toFixed(1)}%)`,
           location: { qaId: qa.id, field: "answer" },
           suggestion: "Evidence에 기반한 답변으로 수정하세요",
         });
@@ -156,7 +158,9 @@ export class EvidenceAligner implements QualityChecker {
         score: avgSnippetAlignment,
         confidence: 0.85,
         details: {
-          violations: violations.filter((v) => v.category === "evidence_alignment"),
+          violations: violations.filter(
+            (v) => v.category === "evidence_alignment",
+          ),
           breakdown: {
             total: count,
             avg: avgSnippetAlignment,
@@ -562,7 +566,9 @@ export class EvidenceAligner implements QualityChecker {
 
     let keywordScore = 0;
     if (ngrams1.size > 0 && ngrams2.size > 0) {
-      const intersection = new Set([...ngrams1].filter((ng) => ngrams2.has(ng)));
+      const intersection = new Set(
+        [...ngrams1].filter((ng) => ngrams2.has(ng)),
+      );
       // Overlap coefficient: intersection / min(set1, set2)
       // More lenient than Jaccard when one text is much longer
       keywordScore = intersection.size / Math.min(ngrams1.size, ngrams2.size);
@@ -684,11 +690,7 @@ export class EvidenceAligner implements QualityChecker {
     }
 
     // Extract amounts (금액)
-    const amountPatterns = [
-      /(\d+)만원/g,
-      /(\d+,\d+)원/g,
-      /(\d+)원/g,
-    ];
+    const amountPatterns = [/(\d+)만원/g, /(\d+,\d+)원/g, /(\d+)원/g];
 
     for (const pattern of amountPatterns) {
       const matches = text.matchAll(pattern);

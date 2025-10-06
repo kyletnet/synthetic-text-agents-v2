@@ -200,7 +200,9 @@ export default function SmartAugmentPage() {
       console.log("피드백 제출 완료:", result);
 
       alert(
-        `피드백이 성공적으로 접수되었습니다!\n\n다음 단계:\n${result.nextSteps?.join("\n") || "처리 중..."}`,
+        `피드백이 성공적으로 접수되었습니다!\n\n다음 단계:\n${
+          result.nextSteps?.join("\n") || "처리 중..."
+        }`,
       );
     } catch (error) {
       console.error("피드백 제출 오류:", error);

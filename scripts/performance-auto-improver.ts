@@ -161,7 +161,9 @@ class PerformanceAutoImprover {
       console.log(`      ${action.description}`);
       console.log(`      Expected: ${action.estimatedImpact}`);
       console.log(
-        `      Risk: ${action.riskLevel.toUpperCase()} | Auto: ${action.autoExecute ? "Yes" : "Manual approval required"}`,
+        `      Risk: ${action.riskLevel.toUpperCase()} | Auto: ${
+          action.autoExecute ? "Yes" : "Manual approval required"
+        }`,
       );
       console.log(`      Command: \`${action.command}\``);
     });
@@ -293,7 +295,9 @@ class PerformanceAutoImprover {
 
         if (result.trim()) {
           console.log(
-            `   Output: ${result.trim().substring(0, 200)}${result.length > 200 ? "..." : ""}`,
+            `   Output: ${result.trim().substring(0, 200)}${
+              result.length > 200 ? "..." : ""
+            }`,
           );
         }
       } catch (error: any) {

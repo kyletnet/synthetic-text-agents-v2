@@ -65,7 +65,9 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
   if (!requiresLLMProtection || isExcluded) {
     // 📝 Log non-protected routes for monitoring
     console.log(
-      `📝 [Middleware] Pass-through: ${pathname} (${isExcluded ? "excluded" : "not LLM-related"})`,
+      `📝 [Middleware] Pass-through: ${pathname} (${
+        isExcluded ? "excluded" : "not LLM-related"
+      })`,
     );
     return NextResponse.next();
   }
@@ -207,5 +209,7 @@ console.log("🛡️ [Middleware] Universal LLM execution protection loaded");
 console.log(`🛡️ [Middleware] Protected routes: ${LLM_PROTECTED_ROUTES.length}`);
 console.log(`🔓 [Middleware] Excluded routes: ${EXCLUDED_ROUTES.length}`);
 console.log(
-  `🚨 [Middleware] Strict mode: ${isStrictModeEnabled() ? "ENABLED" : "DISABLED"}`,
+  `🚨 [Middleware] Strict mode: ${
+    isStrictModeEnabled() ? "ENABLED" : "DISABLED"
+  }`,
 );

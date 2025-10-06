@@ -41,14 +41,18 @@ function checkP0Violations(
   const evidenceMissingRate = 1.0 - metrics.evidence.presence_rate;
   if (evidenceMissingRate > thresholds.evidence_missing_rate_max) {
     violations.push(
-      `Evidence missing rate: ${(evidenceMissingRate * 100).toFixed(1)}% (max: ${(thresholds.evidence_missing_rate_max * 100).toFixed(1)}%)`,
+      `Evidence missing rate: ${(evidenceMissingRate * 100).toFixed(
+        1,
+      )}% (max: ${(thresholds.evidence_missing_rate_max * 100).toFixed(1)}%)`,
     );
   }
 
   // Hallucination rate
   if (metrics.hallucination.rate > thresholds.hallucination_rate_max) {
     violations.push(
-      `Hallucination rate: ${(metrics.hallucination.rate * 100).toFixed(1)}% (max: ${(thresholds.hallucination_rate_max * 100).toFixed(1)}%)`,
+      `Hallucination rate: ${(metrics.hallucination.rate * 100).toFixed(
+        1,
+      )}% (max: ${(thresholds.hallucination_rate_max * 100).toFixed(1)}%)`,
     );
   }
 
@@ -67,13 +71,17 @@ function checkP1Warnings(
   // Cost per item
   if (metrics.cost_latency.cost_per_item > thresholds.cost_per_item_fail) {
     warnings.push(
-      `Cost per item FAIL: $${metrics.cost_latency.cost_per_item.toFixed(3)} (threshold: $${thresholds.cost_per_item_fail})`,
+      `Cost per item FAIL: $${metrics.cost_latency.cost_per_item.toFixed(
+        3,
+      )} (threshold: $${thresholds.cost_per_item_fail})`,
     );
   } else if (
     metrics.cost_latency.cost_per_item > thresholds.cost_per_item_warn
   ) {
     warnings.push(
-      `Cost per item WARN: $${metrics.cost_latency.cost_per_item.toFixed(3)} (threshold: $${thresholds.cost_per_item_warn})`,
+      `Cost per item WARN: $${metrics.cost_latency.cost_per_item.toFixed(
+        3,
+      )} (threshold: $${thresholds.cost_per_item_warn})`,
     );
   }
 
@@ -93,13 +101,17 @@ function checkP1Warnings(
   // Failure rate
   if (metrics.failure_retry.failure_rate > thresholds.failure_rate_fail) {
     warnings.push(
-      `Failure rate FAIL: ${(metrics.failure_retry.failure_rate * 100).toFixed(1)}% (threshold: ${(thresholds.failure_rate_fail * 100).toFixed(1)}%)`,
+      `Failure rate FAIL: ${(metrics.failure_retry.failure_rate * 100).toFixed(
+        1,
+      )}% (threshold: ${(thresholds.failure_rate_fail * 100).toFixed(1)}%)`,
     );
   } else if (
     metrics.failure_retry.failure_rate > thresholds.failure_rate_warn
   ) {
     warnings.push(
-      `Failure rate WARN: ${(metrics.failure_retry.failure_rate * 100).toFixed(1)}% (threshold: ${(thresholds.failure_rate_warn * 100).toFixed(1)}%)`,
+      `Failure rate WARN: ${(metrics.failure_retry.failure_rate * 100).toFixed(
+        1,
+      )}% (threshold: ${(thresholds.failure_rate_warn * 100).toFixed(1)}%)`,
     );
   }
 
@@ -118,24 +130,36 @@ function checkP2Issues(
   // Duplication rate
   if (metrics.duplication.rate > thresholds.duplication_rate_fail) {
     issues.push(
-      `Duplication rate FAIL: ${(metrics.duplication.rate * 100).toFixed(1)}% (threshold: ${(thresholds.duplication_rate_fail * 100).toFixed(1)}%)`,
+      `Duplication rate FAIL: ${(metrics.duplication.rate * 100).toFixed(
+        1,
+      )}% (threshold: ${(thresholds.duplication_rate_fail * 100).toFixed(1)}%)`,
     );
   } else if (metrics.duplication.rate > thresholds.duplication_rate_warn) {
     issues.push(
-      `Duplication rate WARN: ${(metrics.duplication.rate * 100).toFixed(1)}% (threshold: ${(thresholds.duplication_rate_warn * 100).toFixed(1)}%)`,
+      `Duplication rate WARN: ${(metrics.duplication.rate * 100).toFixed(
+        1,
+      )}% (threshold: ${(thresholds.duplication_rate_warn * 100).toFixed(1)}%)`,
     );
   }
 
   // Coverage rate (lower is worse)
   if (metrics.coverage.entity_coverage_rate < thresholds.coverage_rate_fail) {
     issues.push(
-      `Coverage rate FAIL: ${(metrics.coverage.entity_coverage_rate * 100).toFixed(1)}% (threshold: ${(thresholds.coverage_rate_fail * 100).toFixed(1)}%)`,
+      `Coverage rate FAIL: ${(
+        metrics.coverage.entity_coverage_rate * 100
+      ).toFixed(1)}% (threshold: ${(
+        thresholds.coverage_rate_fail * 100
+      ).toFixed(1)}%)`,
     );
   } else if (
     metrics.coverage.entity_coverage_rate < thresholds.coverage_rate_warn
   ) {
     issues.push(
-      `Coverage rate WARN: ${(metrics.coverage.entity_coverage_rate * 100).toFixed(1)}% (threshold: ${(thresholds.coverage_rate_warn * 100).toFixed(1)}%)`,
+      `Coverage rate WARN: ${(
+        metrics.coverage.entity_coverage_rate * 100
+      ).toFixed(1)}% (threshold: ${(
+        thresholds.coverage_rate_warn * 100
+      ).toFixed(1)}%)`,
     );
   }
 
@@ -143,11 +167,15 @@ function checkP2Issues(
   const qualityScore = metrics.evidence.alignment_mean;
   if (qualityScore < thresholds.quality_score_fail) {
     issues.push(
-      `Quality score FAIL: ${(qualityScore * 100).toFixed(1)}% (threshold: ${(thresholds.quality_score_fail * 100).toFixed(1)}%)`,
+      `Quality score FAIL: ${(qualityScore * 100).toFixed(1)}% (threshold: ${(
+        thresholds.quality_score_fail * 100
+      ).toFixed(1)}%)`,
     );
   } else if (qualityScore < thresholds.quality_score_warn) {
     issues.push(
-      `Quality score WARN: ${(qualityScore * 100).toFixed(1)}% (threshold: ${(thresholds.quality_score_warn * 100).toFixed(1)}%)`,
+      `Quality score WARN: ${(qualityScore * 100).toFixed(1)}% (threshold: ${(
+        thresholds.quality_score_warn * 100
+      ).toFixed(1)}%)`,
     );
   }
 
@@ -173,7 +201,9 @@ function applyAdditionalChecks(
   // Add spikes as P1 warnings
   for (const spike of anomalies.spikes) {
     p1Warnings.push(
-      `${spike.type} spike: ${spike.value.toFixed(3)} (threshold: ${spike.threshold.toFixed(3)})`,
+      `${spike.type} spike: ${spike.value.toFixed(
+        3,
+      )} (threshold: ${spike.threshold.toFixed(3)})`,
     );
   }
 

@@ -240,7 +240,9 @@ export class AnswerAgent extends BaseAgent {
     const evidenceContext = relevantEvidence
       .map(
         (e, idx) =>
-          `[Evidence ${idx + 1}] ${e.text} (Source: ${e.source}, Relevance: ${e.relevance_score.toFixed(2)})`,
+          `[Evidence ${idx + 1}] ${e.text} (Source: ${
+            e.source
+          }, Relevance: ${e.relevance_score.toFixed(2)})`,
       )
       .join("\n\n");
 
@@ -535,10 +537,10 @@ Instructions:
           0.7
           ? "high"
           : usedEvidence.reduce((sum, e) => sum + e.relevance_score, 0) /
-                usedEvidence.length >
-              0.5
-            ? "medium"
-            : "low"
+              usedEvidence.length >
+            0.5
+          ? "medium"
+          : "low"
         : "low";
 
     const logicalChain = this.identifyLogicalChain(answer);

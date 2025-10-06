@@ -116,7 +116,9 @@ export function isCanonicalStage(value: string): value is CanonicalStage {
 export function validateSeverity(value: string): CanonicalSeverity {
   if (!isCanonicalSeverity(value)) {
     throw new Error(
-      `Invalid severity '${value}'. Must be one of: ${CANONICAL_SEVERITIES.join(", ")}`,
+      `Invalid severity '${value}'. Must be one of: ${CANONICAL_SEVERITIES.join(
+        ", ",
+      )}`,
     );
   }
   return value;
@@ -125,7 +127,9 @@ export function validateSeverity(value: string): CanonicalSeverity {
 export function validateStage(value: string): CanonicalStage {
   if (!isCanonicalStage(value)) {
     throw new Error(
-      `Invalid stage '${value}'. Must be one of: ${CANONICAL_STAGES.join(", ")}`,
+      `Invalid stage '${value}'. Must be one of: ${CANONICAL_STAGES.join(
+        ", ",
+      )}`,
     );
   }
   return value;

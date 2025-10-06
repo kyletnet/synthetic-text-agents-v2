@@ -340,10 +340,14 @@ _마지막 업데이트: ${new Date().toLocaleString("ko-KR")}_
             WARNING: "⚡",
           };
 
-          section += `#### ${emoji[type as keyof typeof emoji]} **${type.replace("_", " ")} (${issues.length}개)**\n\n`;
+          section += `#### ${
+            emoji[type as keyof typeof emoji]
+          } **${type.replace("_", " ")} (${issues.length}개)**\n\n`;
 
           issues.forEach((issue, index) => {
-            section += `${index + 1}. **${issue.component}** (${issue.severity})\n`;
+            section += `${index + 1}. **${issue.component}** (${
+              issue.severity
+            })\n`;
             section += `   - 문제: ${issue.description}\n`;
             if (issue.temporaryFix) {
               section += `   - 임시 해결: ${issue.temporaryFix}\n`;
@@ -352,7 +356,9 @@ _마지막 업데이트: ${new Date().toLocaleString("ko-KR")}_
               section += `   - 근본 해결: ${issue.rootCauseFix}\n`;
             }
             section += `   - 영향: ${issue.impact}\n`;
-            section += `   - 인수인계: ${issue.handoffRequired ? "✅ 필요" : "❌ 불필요"}\n\n`;
+            section += `   - 인수인계: ${
+              issue.handoffRequired ? "✅ 필요" : "❌ 불필요"
+            }\n\n`;
           });
         }
       });
@@ -370,7 +376,9 @@ _마지막 업데이트: ${new Date().toLocaleString("ko-KR")}_
     };
 
     console.log(
-      `\n${healthEmoji[report.overallHealth]} 시스템 건강 상태: ${report.overallHealth}`,
+      `\n${healthEmoji[report.overallHealth]} 시스템 건강 상태: ${
+        report.overallHealth
+      }`,
     );
     console.log("========================================");
 

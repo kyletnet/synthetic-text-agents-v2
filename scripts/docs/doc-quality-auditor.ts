@@ -154,8 +154,8 @@ class DocQualityAuditor {
           stalenessInDays > 7
             ? "critical"
             : stalenessInDays > 3
-              ? "warning"
-              : "ok",
+            ? "warning"
+            : "ok",
       });
     }
 
@@ -435,7 +435,9 @@ class DocQualityAuditor {
     console.log("\n📊 Document Quality Audit Report");
     console.log("================================");
     console.log(
-      `📈 Coverage: ${(results.coverage.coverageRatio * 100).toFixed(1)}% (${results.coverage.documentedFeatures}/${results.coverage.totalFeatures})`,
+      `📈 Coverage: ${(results.coverage.coverageRatio * 100).toFixed(1)}% (${
+        results.coverage.documentedFeatures
+      }/${results.coverage.totalFeatures})`,
     );
     console.log(`📅 Stale docs: ${results.freshness.length}`);
     console.log(

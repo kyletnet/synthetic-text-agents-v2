@@ -213,8 +213,9 @@ export async function collectSessionData(): Promise<SessionCollection> {
     );
     if (baselineReportFile) {
       collection.files_found.baseline_report = baselineReportFile;
-      collection.baseline_report =
-        await parseBaselineReport(baselineReportFile);
+      collection.baseline_report = await parseBaselineReport(
+        baselineReportFile,
+      );
     }
 
     // Find most recent LLM analysis

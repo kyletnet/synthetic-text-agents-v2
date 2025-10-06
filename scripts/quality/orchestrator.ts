@@ -76,7 +76,9 @@ export class QualityOrchestrator {
    */
   async assess(qaPairs: QAPair[]): Promise<OrchestratorResult> {
     console.log("🔍 Quality Assessment Orchestrator v1.0.0");
-    console.log("════════════════════════════════════════════════════════════\n");
+    console.log(
+      "════════════════════════════════════════════════════════════\n",
+    );
     console.log(`📋 Phase: ${this.phase}`);
     console.log(`🆔 Session ID: ${this.sessionId}`);
     console.log(`📊 QA Pairs: ${qaPairs.length}\n`);
@@ -89,9 +91,7 @@ export class QualityOrchestrator {
       // 2. Calculate compliance score
       console.log("📐 Calculating compliance score...");
       const calculator = new ComplianceScoreCalculator(this.projectRoot);
-      const complianceResult = calculator.calculateScore(
-        checkResult.metrics,
-      );
+      const complianceResult = calculator.calculateScore(checkResult.metrics);
 
       // 3. Make gate decision
       console.log("🚦 Making gate decision...");
@@ -101,14 +101,17 @@ export class QualityOrchestrator {
       );
 
       console.log(
-        `   Result: ${gateDecision.result} (${(gateDecision.score * 100).toFixed(1)}%)`,
+        `   Result: ${gateDecision.result} (${(
+          gateDecision.score * 100
+        ).toFixed(1)}%)`,
       );
       console.log(`   ${gateDecision.reason}\n`);
 
       // 4. Extract phase-specific metrics
       const retrievalQualityScore =
-        checkResult.metrics.find((m) => m.dimension === "retrieval_quality_score")
-          ?.score ?? null;
+        checkResult.metrics.find(
+          (m) => m.dimension === "retrieval_quality_score",
+        )?.score ?? null;
 
       // 4. Update phase state
       console.log("💾 Updating phase state...");
@@ -150,9 +153,13 @@ export class QualityOrchestrator {
 
       console.log(`   Saved: ${reportPath}\n`);
 
-      console.log("════════════════════════════════════════════════════════════");
+      console.log(
+        "════════════════════════════════════════════════════════════",
+      );
       console.log("✅ ASSESSMENT COMPLETE");
-      console.log("════════════════════════════════════════════════════════════\n");
+      console.log(
+        "════════════════════════════════════════════════════════════\n",
+      );
 
       return {
         success: true,
@@ -226,7 +233,70 @@ export class QualityOrchestrator {
           checkerVersion: "phase-2-combined",
         };
       }
-      case "Phase 3":
+      case "Phase 3": {
+        // Phase 3: Canary deployment of Hybrid Search
+        const ruleChecker = new RuleBasedChecker(this.projectRoot);
+        const evidenceAligner = new EvidenceAligner();
+        const hybridSearchChecker = new HybridSearchChecker();
+
+        // Check feature flags
+        const hybridSearchEnabled =
+          process.env.FEATURE_QUALITY_HYBRID_SEARCH === "true";
+        const canaryRate = parseFloat(process.env.HYBRID_CANARY_RATE ?? "0.0");
+
+        console.log(
+          `   Hybrid Search: ${hybridSearchEnabled ? "ENABLED" : "DISABLED"}`,
+        );
+        console.log(`   Canary Rate: ${(canaryRate * 100).toFixed(0)}%`);
+
+        // Canary decision (deterministic for testing, use random for production)
+        const inCanary = Math.random() < canaryRate;
+        console.log(`   In Canary: ${inCanary ? "YES" : "NO"}\n`);
+
+        // Run all checkers
+        const ruleResult = await ruleChecker.check(qaPairs);
+        const evidenceResult = await evidenceAligner.check(qaPairs);
+        const hybridResult = await hybridSearchChecker.check(qaPairs);
+
+        // Determine if hybrid search affects gating
+        const hybridAffectsGating = hybridSearchEnabled && inCanary;
+
+        // Combine results
+        const baseScore =
+          (ruleResult.summary.overallScore +
+            evidenceResult.summary.overallScore) /
+          2;
+
+        // If hybrid affects gating, include it in score
+        const overallScore = hybridAffectsGating
+          ? (baseScore + hybridResult.summary.overallScore) / 2
+          : baseScore;
+
+        return {
+          metrics: [
+            ...ruleResult.metrics,
+            ...evidenceResult.metrics,
+            ...hybridResult.metrics,
+          ],
+          summary: {
+            totalChecked: qaPairs.length,
+            overallScore,
+            passRate:
+              (ruleResult.summary.passRate + evidenceResult.summary.passRate) /
+              2,
+            violationCount:
+              ruleResult.summary.violationCount +
+              evidenceResult.summary.violationCount,
+            recommendationCount:
+              ruleResult.summary.recommendationCount +
+              evidenceResult.summary.recommendationCount,
+          },
+          timestamp: new Date().toISOString(),
+          checkerVersion: hybridAffectsGating
+            ? "phase-3-hybrid-active"
+            : "phase-3-shadow",
+        };
+      }
       case "Phase 4":
         throw new Error(`Phase ${this.phase} checkers not yet implemented`);
       default:
@@ -377,7 +447,8 @@ async function main() {
   // Parse arguments
   const inputPath = args[0] || "data/qa-pairs.json";
   // Join "Phase 1" back together if split
-  const phaseArg = args.length > 2 ? `${args[1]} ${args[2]}` : (args[1] || "Phase 1");
+  const phaseArg =
+    args.length > 2 ? `${args[1]} ${args[2]}` : args[1] || "Phase 1";
   const phase = phaseArg as "Phase 1" | "Phase 2" | "Phase 3" | "Phase 4";
 
   console.log(`📂 Input: ${inputPath}`);

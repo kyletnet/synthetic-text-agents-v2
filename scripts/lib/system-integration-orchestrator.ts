@@ -159,12 +159,14 @@ export class SystemIntegrationOrchestrator {
     const harmonyScore = this.calculateComponentHarmony(components);
 
     // 2. 아키텍처 정렬도 (설계 원칙 일관성)
-    const alignmentScore =
-      await this.calculateArchitecturalAlignment(components);
+    const alignmentScore = await this.calculateArchitecturalAlignment(
+      components,
+    );
 
     // 3. 성능 일관성 (성능 특성의 균형)
-    const performanceScore =
-      await this.calculatePerformanceCoherence(components);
+    const performanceScore = await this.calculatePerformanceCoherence(
+      components,
+    );
 
     // 4. 사용자 경험 일관성
     const uxScore = this.calculateUserExperienceConsistency(components);
@@ -447,8 +449,9 @@ export class SystemIntegrationOrchestrator {
     }
 
     // 3. 아키텍처 패턴 일치 확인
-    const architectureScore =
-      await this.checkArchitecturalCompliance(component);
+    const architectureScore = await this.checkArchitecturalCompliance(
+      component,
+    );
     if (architectureScore < 70) {
       issues.push("Architectural pattern mismatch");
       score -= 10;
@@ -563,8 +566,9 @@ export class SystemIntegrationOrchestrator {
       if (component) {
         component.status = "integrated";
         component.integrationDate = new Date();
-        component.compatibilityScore =
-          await this.calculateCompatibilityScore(component);
+        component.compatibilityScore = await this.calculateCompatibilityScore(
+          component,
+        );
       }
 
       this.integrationHistory.push({
@@ -774,11 +778,15 @@ export class SystemIntegrationOrchestrator {
     const successful = results.filter((r) => r.success).length;
     report += `- **Total Components**: ${results.length}\n`;
     report += `- **Successfully Integrated**: ${successful}\n`;
-    report += `- **Requiring Manual Review**: ${results.length - successful}\n\n`;
+    report += `- **Requiring Manual Review**: ${
+      results.length - successful
+    }\n\n`;
 
     results.forEach((result, index) => {
       report += `### ${index + 1}. ${result.engine}\n`;
-      report += `- **Status**: ${result.success ? "✅ Integrated" : "⚠️ Manual Review Required"}\n`;
+      report += `- **Status**: ${
+        result.success ? "✅ Integrated" : "⚠️ Manual Review Required"
+      }\n`;
       report += `- **Cohesion Score**: ${result.cohesionScore.overallScore}/100\n`;
       if (result.nextSteps.length > 0) {
         report += `- **Next Steps**:\n`;

@@ -11,18 +11,23 @@
 ### ✅ Phase 11: 6개 엔진 Governance 통합
 
 1. **integration-improvement-engine.ts** (415줄)
+
    - `generateImprovementPlan()`, `implementImprovement()` 래핑
 
 2. **design-principle-engine.ts** (345줄)
+
    - `analyzeScript()`, `generateSystemDesign()` 래핑
 
 3. **architectural-evolution-engine.ts** (924줄, 가장 복잡)
+
    - `identifyStructuralImprovements()`, `evolveArchitecture()` 래핑
 
 4. **ai-fix-engine.ts** (785줄, legacy)
+
    - `autoFix()` 래핑
 
 5. **workaround-resolution-engine.ts**
+
    - `generateResolutionPlans()` 래핑
 
 6. **adaptive-execution-engine.ts**

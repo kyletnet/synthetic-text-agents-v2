@@ -33,12 +33,15 @@ CASES_TOTAL > 0 ∧ RESULT ∈ {PASS, PARTIAL}
 ### Primary Goals
 
 1. **규칙 기반 Guideline Compliance** (Phase 1)
+
    - "바로 작동하는" 품질 측정 체계 구축
 
 2. **Evidence-Answer Alignment v2** (Phase 2)
+
    - 신뢰도 강화 (17.9% → 60%)
 
 3. **Semantic Quality Layer** (Phase 3-4)
+
    - 의미·자연도·일관성까지 확장 가능한 구조
 
 4. **CI 통합 및 거버넌스**
@@ -121,17 +124,20 @@ guideline_compliance ≥ 0.85
 **구현 항목**:
 
 1. **guideline-parser.ts**
+
    - 가이드라인 문서 파싱
    - 규칙셋 JSON 캐시 생성 (`docs/guidelines/cache/rules.v1.0.json`)
    - 버전 관리 (`versions.json`)
 
 2. **rule-based-checker.ts**
+
    - `questionTypeCheck`: 7가지 질문 유형
    - `numberFormatCheck`: "15일", "50만원" 형식
    - `prohibitedPatternCheck`: 금지 패턴 검출
    - `answerStructureCheck`: 답변 구조 검증
 
 3. **compliance-score.ts**
+
    - 가중치 (초기값):
      - 질문 유형: 40%
      - 답변 구조: 30%
@@ -198,12 +204,14 @@ Hybrid 섀도우 개선 Δ ≥ +5%
 **구현 항목**:
 
 1. **evidence-aligner.ts**
+
    - `snippet_alignment`: 문장 단위 매칭 + 키워드 중첩 + 역검증
    - `citation_presence`: 인용 존재 여부
    - `context_precision`: Evidence 중 사용 비율
    - `context_recall`: 필요 정보 포함도
 
 2. **hybrid-search-checker.ts (섀도우)**
+
    - BM25 스코어 (렉시컬)
    - Vector 유사도 (시맨틱)
    - 하이브리드 스코어: `α * vector + (1-α) * bm25`
@@ -285,6 +293,7 @@ if (Math.random() < canaryRate) {
 ```
 
 2. **점진적 확대**
+
    - 10% (1일) → 50% (2일) → 100% (3일)
    - 각 단계에서 메트릭 모니터링
 

@@ -441,7 +441,9 @@ export class AutoFixManager extends EventEmitter {
     } = {},
   ): Promise<SnapshotId> {
     const { compress = true, description, tags = [] } = options;
-    const snapshotId = `snapshot_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const snapshotId = `snapshot_${Date.now()}_${Math.random()
+      .toString(36)
+      .substr(2, 9)}`;
 
     console.log(`📸 Creating enhanced snapshot: ${snapshotId}`);
     console.log(`🔧 Operation: ${operation}`);
@@ -830,7 +832,9 @@ export class AutoFixManager extends EventEmitter {
     }
 
     console.log(
-      `📸 **Snapshot Information** (${snapshots.length} snapshot${snapshots.length > 1 ? "s" : ""})`,
+      `📸 **Snapshot Information** (${snapshots.length} snapshot${
+        snapshots.length > 1 ? "s" : ""
+      })`,
     );
     console.log("═".repeat(80));
 
@@ -860,10 +864,14 @@ export class AutoFixManager extends EventEmitter {
       );
       if (snapshot.metadata.compressionSavings > 0) {
         console.log(
-          `💰 **Compressed Size**: ${this.formatBytes(snapshot.metadata.totalCompressedSize)}`,
+          `💰 **Compressed Size**: ${this.formatBytes(
+            snapshot.metadata.totalCompressedSize,
+          )}`,
         );
         console.log(
-          `📉 **Space Saved**: ${snapshot.metadata.compressionSavings.toFixed(1)}%`,
+          `📉 **Space Saved**: ${snapshot.metadata.compressionSavings.toFixed(
+            1,
+          )}%`,
         );
       }
 
@@ -872,12 +880,16 @@ export class AutoFixManager extends EventEmitter {
         `🌍 **Environment**: ${snapshot.metadata.environment.platform} (${snapshot.metadata.environment.architecture})`,
       );
       console.log(
-        `📦 **Project**: ${snapshot.metadata.environment.projectName || "unknown"} v${snapshot.metadata.environment.projectVersion || "0.0.0"}`,
+        `📦 **Project**: ${
+          snapshot.metadata.environment.projectName || "unknown"
+        } v${snapshot.metadata.environment.projectVersion || "0.0.0"}`,
       );
 
       if (snapshot.metadata.gitCommit) {
         console.log(
-          `🔀 **Git**: ${snapshot.metadata.gitCommit.substring(0, 8)} (${snapshot.metadata.environment.gitBranch || "unknown branch"})`,
+          `🔀 **Git**: ${snapshot.metadata.gitCommit.substring(0, 8)} (${
+            snapshot.metadata.environment.gitBranch || "unknown branch"
+          })`,
         );
         if (
           snapshot.metadata.environment.gitStatus &&
@@ -901,7 +913,9 @@ export class AutoFixManager extends EventEmitter {
             : "";
           const size =
             file.isCompressed && file.compressedSize
-              ? `${this.formatBytes(file.compressedSize)} → ${this.formatBytes(file.originalSize)}`
+              ? `${this.formatBytes(file.compressedSize)} → ${this.formatBytes(
+                  file.originalSize,
+                )}`
               : this.formatBytes(file.originalSize);
 
           console.log(`   ${index + 1}. ${file.path}`);
@@ -1010,7 +1024,9 @@ export class AutoFixManager extends EventEmitter {
   }> {
     const content = await fs.readFile(filePath, "utf8");
     const checksum = await this.calculateChecksum(filePath);
-    const backupFileName = `${snapshotId}_${path.basename(filePath)}_${checksum.substring(0, 8)}`;
+    const backupFileName = `${snapshotId}_${path.basename(
+      filePath,
+    )}_${checksum.substring(0, 8)}`;
     const backupPath = path.join(this.backupsDir, backupFileName);
 
     await fs.writeFile(backupPath, content);
@@ -1382,7 +1398,9 @@ export class AutoFixManager extends EventEmitter {
       "Disk space for backups",
       "File system write permissions",
       "Git repository (optional)",
-      `Estimated ${Math.ceil((operation.changes.length * 1024) / 1024)} MB storage`,
+      `Estimated ${Math.ceil(
+        (operation.changes.length * 1024) / 1024,
+      )} MB storage`,
     ];
   }
 }

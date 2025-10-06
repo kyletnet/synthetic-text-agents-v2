@@ -164,10 +164,14 @@ export class AdvancedSystemDiagnostics {
                 category: "imports",
                 severity: "critical",
                 title: "존재하지 않는 Named Import",
-                description: `${missingExports.join(", ")}가 ${imp.from}에서 export되지 않습니다`,
+                description: `${missingExports.join(", ")}가 ${
+                  imp.from
+                }에서 export되지 않습니다`,
                 impact: "모듈 로딩 실패로 시스템 실행 불가",
                 detectedAt: `${file}:${imp.line}`,
-                suggestedFix: `export { ${missingExports.join(", ")} }를 ${imp.from}에 추가하거나 import 구문 수정`,
+                suggestedFix: `export { ${missingExports.join(", ")} }를 ${
+                  imp.from
+                }에 추가하거나 import 구문 수정`,
                 autoFixable: false,
                 evidence: [imp.original],
                 affectedFiles: [file, targetFile],
@@ -502,7 +506,9 @@ export class AdvancedSystemDiagnostics {
             category: "performance",
             severity: "medium",
             title: "대용량 파일 감지",
-            description: `${file} 파일이 ${Math.round(stats.size / 1024)}KB로 큽니다`,
+            description: `${file} 파일이 ${Math.round(
+              stats.size / 1024,
+            )}KB로 큽니다`,
             impact: "컴파일 시간 증가, 메모리 사용량 증가",
             detectedAt: file,
             suggestedFix: "파일 분할 또는 리팩토링 고려",
@@ -723,7 +729,9 @@ export class AdvancedSystemDiagnostics {
     report += `📊 총 이슈: ${result.totalIssues}개\n`;
     report += `🚨 Critical: ${result.criticalIssues}개\n`;
     report += `🔧 자동수정 가능: ${result.autoFixableIssues}개\n`;
-    report += `💊 시스템 상태: ${this.getHealthEmoji(result.systemHealth)} ${result.systemHealth.toUpperCase()}\n\n`;
+    report += `💊 시스템 상태: ${this.getHealthEmoji(
+      result.systemHealth,
+    )} ${result.systemHealth.toUpperCase()}\n\n`;
 
     if (result.criticalIssues > 0) {
       report += "🚨 Critical Issues (즉시 수정 필요):\n";

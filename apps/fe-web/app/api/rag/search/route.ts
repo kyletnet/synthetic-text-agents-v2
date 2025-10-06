@@ -2,7 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { RAGSystem } from "@/lib/rag-utils";
 
 export async function POST(request: NextRequest) {
-  const searchId = `search_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
+  const searchId = `search_${Date.now()}_${Math.random()
+    .toString(36)
+    .slice(2, 11)}`;
 
   try {
     const body = await request.json();

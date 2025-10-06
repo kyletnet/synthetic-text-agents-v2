@@ -245,8 +245,8 @@ export class OptimizationEngine {
             opp.effort === "low"
               ? "low"
               : opp.effort === "medium"
-                ? "medium"
-                : "high",
+              ? "medium"
+              : "high",
           category: opp.category === "performance" ? "optimize" : "improve",
           autoExecutable: opp.effort === "low" && !!opp.command,
         },

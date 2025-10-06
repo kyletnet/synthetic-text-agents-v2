@@ -85,7 +85,9 @@ export function applyRulesToPrompt(basePrompt: string, rules: Rule[]): string {
     } else if (r.type === "vary_sentence_forms" && r.value) {
       p += `\n- 문장 패턴을 반복하지 말고 다양한 어투/문형을 섞어 쓰세요.`;
     } else if (r.type === "must_include_topic_terms" && r.value.length) {
-      p += `\n- 다음 핵심어(주제어)를 반드시 포함하세요: ${r.value.join(", ")}.`;
+      p += `\n- 다음 핵심어(주제어)를 반드시 포함하세요: ${r.value.join(
+        ", ",
+      )}.`;
     } else if (r.type === "forbid_terms" && r.value.length) {
       p += `\n- 다음 금지어를 사용하지 마세요: ${r.value.join(", ")}.`;
     }

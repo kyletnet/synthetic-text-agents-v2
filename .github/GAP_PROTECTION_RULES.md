@@ -13,11 +13,13 @@ To ensure the GAP Prevention System cannot be bypassed, configure these GitHub b
 **Required settings:**
 
 - ✅ **Require a pull request before merging**
+
   - Require approvals: **2**
   - Dismiss stale pull request approvals when new commits are pushed: **enabled**
   - Require review from Code Owners: **enabled**
 
 - ✅ **Require status checks to pass before merging**
+
   - Require branches to be up to date before merging: **enabled**
   - Required checks:
     - `GAP Scanner`
@@ -26,12 +28,15 @@ To ensure the GAP Prevention System cannot be bypassed, configure these GitHub b
     - `GAP Override Detection`
 
 - ✅ **Require conversation resolution before merging**
+
   - **enabled**
 
 - ✅ **Require linear history**
+
   - **enabled** (prevents merge commits)
 
 - ✅ **Do not allow bypassing the above settings**
+
   - **enabled** (prevents admin bypass)
 
 - ✅ **Restrict who can push to matching branches**
@@ -101,6 +106,7 @@ Create these GitHub teams with appropriate permissions:
    ```
 
 2. **Document the reason**:
+
    - Create `docs/emergency/YYYY-MM-DD-reason.md`
    - Explain:
      - What broke
@@ -109,6 +115,7 @@ Create these GitHub teams with appropriate permissions:
      - Rollback plan
 
 3. **Get approval**:
+
    - Required: 2x `@gap-admin` approval
    - Required: 1x `@security-team` approval
 
@@ -160,10 +167,12 @@ Create these GitHub teams with appropriate permissions:
    ```
 
 3. **Document changes**:
+
    - Add comment in `.gaprc.json` explaining why
    - Update `docs/GAP_SCANNER_GUIDE.md` if needed
 
 4. **Get approvals**:
+
    - Required: 2x `@gap-admin`
    - Required: Team notification in PR description
 
@@ -191,11 +200,13 @@ Create these GitHub teams with appropriate permissions:
    ```
 
 2. **Change justification**:
+
    - In PR description
    - In commit message
    - In `.gaprc.json` comment
 
 3. **Impact assessment**:
+
    - Which checks affected
    - Which teams affected
    - Rollback plan
@@ -238,6 +249,7 @@ Create these GitHub teams with appropriate permissions:
    ```
 
 2. **Override usage**:
+
    - Check for `--no-verify` usage
    - Review disabled mode usage
    - Audit bypass PRs
@@ -303,6 +315,7 @@ env:
 ### Access Control
 
 1. **Principle of least privilege**:
+
    - Only `@gap-admin` can approve config changes
    - Only `@devops-team` can modify CI
 

@@ -145,10 +145,14 @@ export function formatCitationMetricsForReport(
 
   lines.push(`| **Total Citations** | **${totalCitations}** | - |`);
   lines.push(
-    `| Valid Citations | ${metrics.valid_citations} (${validPct.toFixed(1)}%) | ${validPct >= 80 ? "✅" : validPct >= 60 ? "⚠️" : "❌"} |`,
+    `| Valid Citations | ${metrics.valid_citations} (${validPct.toFixed(
+      1,
+    )}%) | ${validPct >= 80 ? "✅" : validPct >= 60 ? "⚠️" : "❌"} |`,
   );
   lines.push(
-    `| Invalid Citations | ${metrics.invalid_citations} (${invalidPct.toFixed(1)}%) | ${invalidPct < 10 ? "✅" : invalidPct < 30 ? "⚠️" : "❌"} |`,
+    `| Invalid Citations | ${metrics.invalid_citations} (${invalidPct.toFixed(
+      1,
+    )}%) | ${invalidPct < 10 ? "✅" : invalidPct < 30 ? "⚠️" : "❌"} |`,
   );
   lines.push("");
 
@@ -161,19 +165,29 @@ export function formatCitationMetricsForReport(
   const coverage = metrics.citation_coverage * 100;
 
   lines.push(
-    `| **Avg Alignment Score** | **${alignmentScore.toFixed(3)}** | ${alignmentScore >= 0.6 ? "✅" : alignmentScore >= 0.4 ? "⚠️" : "❌"} |`,
+    `| **Avg Alignment Score** | **${alignmentScore.toFixed(3)}** | ${
+      alignmentScore >= 0.6 ? "✅" : alignmentScore >= 0.4 ? "⚠️" : "❌"
+    } |`,
   );
   lines.push(
-    `| **Citation Coverage** | **${coverage.toFixed(1)}%** | ${coverage >= 60 ? "✅" : coverage >= 40 ? "⚠️" : "❌"} |`,
+    `| **Citation Coverage** | **${coverage.toFixed(1)}%** | ${
+      coverage >= 60 ? "✅" : coverage >= 40 ? "⚠️" : "❌"
+    } |`,
   );
   lines.push(
-    `| Evidence Index Coverage | ${(metrics.has_evidence_idx * 100).toFixed(1)}% | ${metrics.has_evidence_idx >= 0.8 ? "✅" : "⚠️"} |`,
+    `| Evidence Index Coverage | ${(metrics.has_evidence_idx * 100).toFixed(
+      1,
+    )}% | ${metrics.has_evidence_idx >= 0.8 ? "✅" : "⚠️"} |`,
   );
   lines.push(
-    `| Alignment Score Coverage | ${(metrics.has_alignment_score * 100).toFixed(1)}% | ${metrics.has_alignment_score >= 0.8 ? "✅" : "⚠️"} |`,
+    `| Alignment Score Coverage | ${(metrics.has_alignment_score * 100).toFixed(
+      1,
+    )}% | ${metrics.has_alignment_score >= 0.8 ? "✅" : "⚠️"} |`,
   );
   lines.push(
-    `| Span Coverage | ${(metrics.has_span * 100).toFixed(1)}% | ${metrics.has_span >= 0.8 ? "✅" : "⚠️"} |`,
+    `| Span Coverage | ${(metrics.has_span * 100).toFixed(1)}% | ${
+      metrics.has_span >= 0.8 ? "✅" : "⚠️"
+    } |`,
   );
   lines.push("");
 
@@ -182,8 +196,8 @@ export function formatCitationMetricsForReport(
     qualityGate.status === "PASS"
       ? "✅"
       : qualityGate.status === "WARN"
-        ? "⚠️"
-        : "❌";
+      ? "⚠️"
+      : "❌";
   lines.push(`**Quality Gate**: ${gateEmoji} ${qualityGate.status}`);
   lines.push(`**Reason**: ${qualityGate.reason}`);
   lines.push("");

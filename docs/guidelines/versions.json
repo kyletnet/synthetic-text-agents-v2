@@ -1,0 +1,36 @@
+{
+  "active": "1.0",
+  "versions": [
+    {
+      "version": "1.0",
+      "path": "qa-generation-guidelines.md",
+      "effectiveDate": "2024-10-06",
+      "description": "Initial guideline version with 7 question types",
+      "changes": [
+        "7가지 질문 유형 정의",
+        "숫자 표현 규칙 정의",
+        "답변 구조 기준 정의",
+        "권장하지 않는 질문 유형 정의"
+      ],
+      "questionTypes": [
+        "기본 정보 확인형",
+        "조건부 정보 확인형",
+        "비교/구분형",
+        "절차/방법 확인형",
+        "계산/산정형",
+        "조건+예외 복합형",
+        "기간/시점 확인형"
+      ],
+      "rulesCount": 42,
+      "hash": null
+    }
+  ],
+  "changelog": [
+    {
+      "version": "1.0",
+      "date": "2024-10-06",
+      "author": "System",
+      "notes": "Initial version tracking setup"
+    }
+  ]
+}

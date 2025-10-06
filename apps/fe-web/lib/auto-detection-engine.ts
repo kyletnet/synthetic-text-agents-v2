@@ -157,7 +157,9 @@ export class AutoDetectionEngine {
           passed: false,
           severity: "critical",
           category: "Mock Contamination",
-          message: `Silent Mock Contamination detected: ${Math.round(mockRate * 100)}% of executions using mock/fallback`,
+          message: `Silent Mock Contamination detected: ${Math.round(
+            mockRate * 100,
+          )}% of executions using mock/fallback`,
           details: { mockRate, mockContamination, totalExecutions },
           timestamp: new Date(),
           actionRequired: "Check API keys and LLM connectivity immediately",
@@ -168,7 +170,9 @@ export class AutoDetectionEngine {
           passed: false,
           severity: "warning",
           category: "Mock Contamination",
-          message: `Low-level mock usage detected: ${Math.round(mockRate * 100)}%`,
+          message: `Low-level mock usage detected: ${Math.round(
+            mockRate * 100,
+          )}%`,
           details: { mockRate, mockContamination, totalExecutions },
           timestamp: new Date(),
           actionRequired: "Monitor API key health",

@@ -248,13 +248,19 @@ async function runDiagnosticLoop(options: {
     console.log(`${gatingSummary.status_emoji} ${gatingSummary.summary_text}`);
     console.log(`\n📊 Quality Overview:`);
     console.log(
-      `   Consistency: ${consistency.passed ? "✅" : "❌"} | Cases: ${consistency.cases_total}`,
+      `   Consistency: ${consistency.passed ? "✅" : "❌"} | Cases: ${
+        consistency.cases_total
+      }`,
     );
     console.log(
-      `   Evidence: ${(metrics.evidence.presence_rate * 100).toFixed(0)}% | Duplication: ${(metrics.duplication.rate * 100).toFixed(1)}%`,
+      `   Evidence: ${(metrics.evidence.presence_rate * 100).toFixed(
+        0,
+      )}% | Duplication: ${(metrics.duplication.rate * 100).toFixed(1)}%`,
     );
     console.log(
-      `   Cost/Item: $${metrics.cost_latency.cost_per_item.toFixed(3)} | P95 Latency: ${metrics.cost_latency.latency_p95_ms}ms`,
+      `   Cost/Item: $${metrics.cost_latency.cost_per_item.toFixed(
+        3,
+      )} | P95 Latency: ${metrics.cost_latency.latency_p95_ms}ms`,
     );
 
     if (report.summary.top_issues.length > 0) {
@@ -321,7 +327,9 @@ async function reportMode(): Promise<void> {
     );
     console.log(`📅 Generated: ${report.timestamp}`);
     console.log(
-      `🎯 Recommendation: ${report.summary.proceed_recommendation ? "PROCEED" : "BLOCK"}`,
+      `🎯 Recommendation: ${
+        report.summary.proceed_recommendation ? "PROCEED" : "BLOCK"
+      }`,
     );
 
     if (report.summary.top_issues.length > 0) {

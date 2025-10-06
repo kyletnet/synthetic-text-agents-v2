@@ -49,7 +49,9 @@ function sparkline(arr) {
 function mdTable(rows) {
   if (!rows.length) return "";
   const keys = Object.keys(rows[0]);
-  const head = `| ${keys.join(" | ")} |\n| ${keys.map(() => "---").join(" | ")} |\n`;
+  const head = `| ${keys.join(" | ")} |\n| ${keys
+    .map(() => "---")
+    .join(" | ")} |\n`;
   const body = rows
     .map((r) => `| ${keys.map((k) => String(r[k] ?? "")).join(" | ")} |`)
     .join("\n");

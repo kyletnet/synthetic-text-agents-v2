@@ -191,7 +191,9 @@ export class SelfManagementTracker extends EventEmitter {
     await this.persistScore(score);
 
     console.log(
-      `   Overall Score: ${score.overall} (${this.getScoreGrade(score.overall)})`,
+      `   Overall Score: ${score.overall} (${this.getScoreGrade(
+        score.overall,
+      )})`,
     );
     console.log(`   System Health: ${systemHealth}`);
     console.log(`   Integration Cohesion: ${integrationCohesion}`);

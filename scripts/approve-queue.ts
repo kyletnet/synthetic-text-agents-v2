@@ -124,10 +124,10 @@ class ApprovalQueueHandler {
         item.priority === "critical"
           ? "🔴"
           : item.priority === "high"
-            ? "🟠"
-            : item.priority === "medium"
-              ? "🟡"
-              : "🟢";
+          ? "🟠"
+          : item.priority === "medium"
+          ? "🟡"
+          : "🟢";
       console.log(
         `   ${idx + 1}. ${priority} ${item.title} (${item.attempts}회 시도)`,
       );

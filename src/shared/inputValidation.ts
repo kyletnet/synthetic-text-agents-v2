@@ -120,7 +120,9 @@ export class InputValidator {
         errors: [
           {
             field: "validation",
-            message: `Validation failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+            message: `Validation failed: ${
+              error instanceof Error ? error.message : "Unknown error"
+            }`,
             code: "VALIDATION_ERROR",
           },
         ],
@@ -198,7 +200,9 @@ export class InputValidator {
     ) {
       errors.push({
         field: "file.type",
-        message: `File type not allowed. Allowed types: ${this.config.allowedFileTypes.join(", ")}`,
+        message: `File type not allowed. Allowed types: ${this.config.allowedFileTypes.join(
+          ", ",
+        )}`,
         code: "INVALID_FILE_TYPE",
         value: file.type,
       });

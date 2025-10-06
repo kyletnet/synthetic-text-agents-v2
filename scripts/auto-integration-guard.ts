@@ -327,8 +327,8 @@ class AutoIntegrationGuard {
           concern.severity === "HIGH"
             ? "🔴"
             : concern.severity === "MEDIUM"
-              ? "🟡"
-              : "🟢";
+            ? "🟡"
+            : "🟢";
         console.log(`   ${i + 1}. ${icon} ${concern.description}`);
         console.log(`      💡 권장: ${concern.recommendation}`);
       });

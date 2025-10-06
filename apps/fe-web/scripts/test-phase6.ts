@@ -55,7 +55,9 @@ async function testPhase6Integration() {
     console.log("📝 Active Development Processes:");
     statusReport.processes.forEach((proc, index) => {
       console.log(
-        `  ${index + 1}. PID ${proc.pid}: ${proc.command} (CPU: ${proc.cpu}%, Memory: ${proc.memory}%)`,
+        `  ${index + 1}. PID ${proc.pid}: ${proc.command} (CPU: ${
+          proc.cpu
+        }%, Memory: ${proc.memory}%)`,
       );
     });
     console.log("");
@@ -94,7 +96,9 @@ async function testPhase6Integration() {
   const apiKey = process.env.ANTHROPIC_API_KEY;
   console.log(`  - API Key Loaded: ${apiKey ? "YES" : "NO"}`);
   console.log(
-    `  - Key Preview: ${apiKey ? apiKey.substring(0, 10) + "..." : "Not available"}`,
+    `  - Key Preview: ${
+      apiKey ? apiKey.substring(0, 10) + "..." : "Not available"
+    }`,
   );
   console.log("");
 
@@ -115,7 +119,9 @@ async function testPhase6Integration() {
     afterCleanupReport.stats.devProcesses <= 3;
 
   console.log(
-    `\n✅ [Phase6Test] Phase 6 Integration Test: ${isPhase6Successful ? "PASSED ✅" : "FAILED ❌"}`,
+    `\n✅ [Phase6Test] Phase 6 Integration Test: ${
+      isPhase6Successful ? "PASSED ✅" : "FAILED ❌"
+    }`,
   );
 
   if (isPhase6Successful) {
@@ -127,9 +133,13 @@ async function testPhase6Integration() {
     `);
   } else {
     console.log(`❌ Phase 6 issues detected:
-  ${afterCleanupReport.overload.isOverloaded ? "❌" : "✅"} Process overload: ${afterCleanupReport.overload.reason}
+  ${afterCleanupReport.overload.isOverloaded ? "❌" : "✅"} Process overload: ${
+    afterCleanupReport.overload.reason
+  }
   ${!apiKey ? "❌" : "✅"} API Key loading
-  ${afterCleanupReport.stats.devProcesses > 3 ? "❌" : "✅"} Process count within limits
+  ${
+    afterCleanupReport.stats.devProcesses > 3 ? "❌" : "✅"
+  } Process count within limits
     `);
   }
 

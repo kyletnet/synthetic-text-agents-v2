@@ -44,7 +44,9 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      feedbackId: `feedback_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      feedbackId: `feedback_${Date.now()}_${Math.random()
+        .toString(36)
+        .substr(2, 9)}`,
       analysis: analysisResult,
       message:
         "피드백이 성공적으로 접수되었습니다. 3-Agent 시스템이 개선 전략을 수립 중입니다.",

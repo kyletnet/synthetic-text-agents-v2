@@ -50,6 +50,7 @@
 **Type**: Auto-fix styling
 
 - **Auto-Apply**:
+
   - ✅ Prettier formatting
   - ✅ ESLint --fix (safe rules)
   - ✅ Design pattern validation (warnings only)
@@ -126,6 +127,7 @@
 **Type**: Pre-deployment validation + deploy
 
 - **Auto-Apply**:
+
   - ✅ Documentation sync
   - ✅ Optimization (if enabled)
   - ✅ Build verification

@@ -342,7 +342,9 @@ class InteractiveMaintenanceHandler {
     console.log(`🔍 **상세 설명**: ${action.userFriendlyExplanation}`);
     console.log(`⏰ **예상 시간**: ${action.estimatedTime}`);
     console.log(
-      `🔄 **복구 가능성**: ${action.rollbackable ? "부분적으로 가능" : "매우 어려움"}`,
+      `🔄 **복구 가능성**: ${
+        action.rollbackable ? "부분적으로 가능" : "매우 어려움"
+      }`,
     );
 
     console.log("\n💥 **가능한 결과**:");

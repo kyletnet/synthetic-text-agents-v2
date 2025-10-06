@@ -144,7 +144,11 @@ ${colors.bright}Examples:${colors.reset}
       const severityColor = this.getSeverityColor(result.severity);
 
       console.log(
-        `${index + 1}. ${statusIcon} [${severityColor}${result.severity.toUpperCase()}${colors.reset}] ${result.category}`,
+        `${
+          index + 1
+        }. ${statusIcon} [${severityColor}${result.severity.toUpperCase()}${
+          colors.reset
+        }] ${result.category}`,
       );
       console.log(`   ${result.message}`);
       console.log(`   ${colors.white}${timeStr}${colors.reset}\n`);
@@ -185,7 +189,9 @@ ${colors.bright}Examples:${colors.reset}
 
     console.log(`${colors.bright}=== SYSTEM HEALTH SUMMARY ===${colors.reset}`);
     console.log(
-      `${statusIcon} Overall Status: ${overallColor}${health.overall.toUpperCase()}${colors.reset}`,
+      `${statusIcon} Overall Status: ${overallColor}${health.overall.toUpperCase()}${
+        colors.reset
+      }`,
     );
     console.log(`🚨 Critical Issues: ${health.summary.criticalIssues}`);
     console.log(`⚠️  Warnings: ${health.summary.warnings}`);
@@ -215,7 +221,9 @@ ${colors.bright}Examples:${colors.reset}
 
       const severityColor = this.getSeverityColor(severity as any);
       console.log(
-        `\n${severityColor}${severity.toUpperCase()} (${results.length})${colors.reset}`,
+        `\n${severityColor}${severity.toUpperCase()} (${results.length})${
+          colors.reset
+        }`,
       );
       console.log(
         `${severityColor}${"=".repeat(severity.length + 5)}${colors.reset}`,

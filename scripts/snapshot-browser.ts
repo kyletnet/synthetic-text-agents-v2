@@ -232,7 +232,9 @@ class SnapshotBrowser {
       }
 
       console.log(
-        `   📁 Files: ${snapshot.files.length} (${snapshot.files.filter((f: any) => f.isCompressed).length} compressed)`,
+        `   📁 Files: ${snapshot.files.length} (${
+          snapshot.files.filter((f: any) => f.isCompressed).length
+        } compressed)`,
       );
       console.log(
         `   💾 Size: ${this.formatBytes(snapshot.metadata.totalSize)}`,
@@ -240,7 +242,9 @@ class SnapshotBrowser {
 
       if (snapshot.metadata.compressionSavings > 0) {
         console.log(
-          `   🗜️  Compressed: ${this.formatBytes(snapshot.metadata.totalCompressedSize)} (${snapshot.metadata.compressionSavings.toFixed(1)}% saved)`,
+          `   🗜️  Compressed: ${this.formatBytes(
+            snapshot.metadata.totalCompressedSize,
+          )} (${snapshot.metadata.compressionSavings.toFixed(1)}% saved)`,
         );
       }
 
@@ -248,12 +252,16 @@ class SnapshotBrowser {
         `   🌍 Environment: ${snapshot.metadata.environment.platform}`,
       );
       console.log(
-        `   📦 Project: ${snapshot.metadata.environment.projectName || "unknown"}`,
+        `   📦 Project: ${
+          snapshot.metadata.environment.projectName || "unknown"
+        }`,
       );
 
       if (snapshot.metadata.gitCommit) {
         console.log(
-          `   🔀 Git: ${snapshot.metadata.gitCommit.substring(0, 8)} (${snapshot.metadata.environment.gitBranch || "unknown"})`,
+          `   🔀 Git: ${snapshot.metadata.gitCommit.substring(0, 8)} (${
+            snapshot.metadata.environment.gitBranch || "unknown"
+          })`,
         );
       }
 
@@ -378,17 +386,17 @@ async function main() {
       (args.includes("--detailed")
         ? "detailed"
         : args.includes("--json")
-          ? "json"
-          : "table"),
+        ? "json"
+        : "table"),
     filter:
       (args.find((arg) => arg.startsWith("--filter="))?.split("=")[1] as any) ||
       (args.includes("--recent")
         ? "recent"
         : args.includes("--compressed")
-          ? "compressed"
-          : args.includes("--large")
-            ? "large"
-            : "all"),
+        ? "compressed"
+        : args.includes("--large")
+        ? "large"
+        : "all"),
     sort:
       (args.find((arg) => arg.startsWith("--sort="))?.split("=")[1] as any) ||
       "date",

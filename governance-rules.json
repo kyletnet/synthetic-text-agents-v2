@@ -155,6 +155,13 @@
       }
     },
     "eventTypes": {
+      "manifestIntegrityFailure": {
+        "severity": "critical",
+        "channels": ["console", "file", "slack", "github"],
+        "description": "Manifest hash mismatch or corruption - governance trust chain broken",
+        "action": "block-and-alert",
+        "requiresImmediate": true
+      },
       "infiniteLoop": {
         "severity": "critical",
         "channels": ["console", "file", "slack", "github"]
@@ -200,6 +207,27 @@
     "rotationPolicy": {
       "maxSizeMB": 100,
       "maxFiles": 10
+    }
+  },
+  "quality": {
+    "enabled": true,
+    "description": "Quality Assessment System Configuration (Phase 1-4)",
+    "weights": {
+      "questionType": 0.4,
+      "answerStructure": 0.3,
+      "numberFormat": 0.2,
+      "prohibition": 0.1
+    },
+    "thresholds": {
+      "guideline_compliance": 0.85,
+      "retrieval_quality_score": 0.7,
+      "semantic_quality": 0.75
+    },
+    "features": {
+      "FEATURE_GUIDELINE_GATE": true,
+      "FEATURE_EVIDENCE_GATE": false,
+      "FEATURE_QUALITY_HYBRID_SEARCH": false,
+      "FEATURE_QUALITY_RAGAS_EVAL": false
     }
   },
   "qualityLedger": {

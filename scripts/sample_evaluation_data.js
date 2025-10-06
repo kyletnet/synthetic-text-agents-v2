@@ -42,7 +42,9 @@ function sampleEvaluationData(inputPath, outputPath, sampleSize = 100) {
 
   console.log(`✅ Sampled ${sampledLines.length} items to ${outputPath}`);
   console.log(
-    `💰 Estimated cost reduction: ${Math.round((1 - sampledLines.length / totalItems) * 100)}%`,
+    `💰 Estimated cost reduction: ${Math.round(
+      (1 - sampledLines.length / totalItems) * 100,
+    )}%`,
   );
 
   return sampledLines.length;

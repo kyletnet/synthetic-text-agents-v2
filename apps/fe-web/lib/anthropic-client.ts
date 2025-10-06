@@ -118,7 +118,9 @@ export class AnthropicClient {
       } catch (error) {
         // 직접적인 API 에러 처리
         console.warn(
-          `API call failed with key ${apiKeyManager.getStats().currentKeyIndex + 1}: ${error}`,
+          `API call failed with key ${
+            apiKeyManager.getStats().currentKeyIndex + 1
+          }: ${error}`,
         );
         apiKeyManager.recordFailure(currentKey, error);
         lastError = error as Error;
@@ -149,7 +151,9 @@ export class AnthropicClient {
 
 원본: ${input}
 
-${ragContext ? `참고 자료:\n${ragContext}\n\n` : ""}다른 방식으로 표현된 텍스트:`;
+${
+  ragContext ? `참고 자료:\n${ragContext}\n\n` : ""
+}다른 방식으로 표현된 텍스트:`;
         break;
 
       case "extend":
@@ -173,7 +177,9 @@ ${ragContext ? `참고 자료:\n${ragContext}\n\n` : ""}요약:`;
 
 원본: ${input}
 
-${ragContext ? `참고 자료:\n${ragContext}\n\n` : ""}질문-답변 형식으로 작성해주세요:`;
+${
+  ragContext ? `참고 자료:\n${ragContext}\n\n` : ""
+}질문-답변 형식으로 작성해주세요:`;
         break;
 
       case "style_transfer":
@@ -181,7 +187,9 @@ ${ragContext ? `참고 자료:\n${ragContext}\n\n` : ""}질문-답변 형식으�
 
 원본: ${input}
 
-${ragContext ? `참고 자료:\n${ragContext}\n\n` : ""}격식있는 문체로 변환된 텍스트:`;
+${
+  ragContext ? `참고 자료:\n${ragContext}\n\n` : ""
+}격식있는 문체로 변환된 텍스트:`;
         break;
 
       default:
@@ -289,7 +297,9 @@ export const anthropicClient = guardLLMClient(
 
 // 📊 Log guard injection status
 console.log(
-  `🛡️ AnthropicClient guard injection: ${anthropicClient._isGuarded ? "ACTIVE" : "DISABLED"}`,
+  `🛡️ AnthropicClient guard injection: ${
+    anthropicClient._isGuarded ? "ACTIVE" : "DISABLED"
+  }`,
 );
 
 // 🔍 Export raw client for internal testing (DO NOT USE DIRECTLY)

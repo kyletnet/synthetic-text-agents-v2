@@ -263,7 +263,10 @@ class MaintainEngine {
     console.log("\n📊 Auto-fix Summary:");
     console.log(`   Total items: ${items.length}`);
     console.log(
-      `   Estimated time saved: ${items.reduce((sum, item) => sum + (item.estimatedDuration || 0), 0)}s`,
+      `   Estimated time saved: ${items.reduce(
+        (sum, item) => sum + (item.estimatedDuration || 0),
+        0,
+      )}s`,
     );
   }
 

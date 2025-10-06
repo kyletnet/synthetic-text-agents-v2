@@ -335,8 +335,8 @@ async function statusHandler(request: NextRequest): Promise<NextResponse> {
       overallStatus === "critical"
         ? 503
         : overallStatus === "warning"
-          ? 207
-          : 200;
+        ? 207
+        : 200;
 
     return NextResponse.json(systemStatus, { status: statusCode });
   } catch (error) {

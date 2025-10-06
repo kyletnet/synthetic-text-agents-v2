@@ -190,7 +190,7 @@ export class SnapshotManager {
   }
 
   /**
-   * Capture single file metadata
+   * Capture single file metadata and content
    */
   private captureFile(fullPath: string, relativePath: string): FileSnapshot {
     const content = readFileSync(fullPath, "utf8");
@@ -201,6 +201,7 @@ export class SnapshotManager {
       size: stats.size,
       mtime: stats.mtime.toISOString(),
       path: relativePath,
+      content, // Store file content for complete rollback
     };
   }
 

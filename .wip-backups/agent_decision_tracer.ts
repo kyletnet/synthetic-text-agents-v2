@@ -348,13 +348,19 @@ class AgentDecisionTracer {
         <div class="metric">
             <h3>📊 Summary</h3>
             <p>Total Decisions: ${analytics.summary.totalDecisions}</p>
-            <p>Success Rate: ${(analytics.summary.successRate * 100).toFixed(1)}%</p>
-            <p>Avg Confidence: ${(analytics.summary.averageConfidence * 100).toFixed(1)}%</p>
+            <p>Success Rate: ${(analytics.summary.successRate * 100).toFixed(
+              1,
+            )}%</p>
+            <p>Avg Confidence: ${(
+              analytics.summary.averageConfidence * 100
+            ).toFixed(1)}%</p>
         </div>
         
         <div class="metric">
             <h3>⚡ Performance</h3>
-            <p>Best Agent: ${analytics.performance.byAgent[0]?.agentType || "N/A"}</p>
+            <p>Best Agent: ${
+              analytics.performance.byAgent[0]?.agentType || "N/A"
+            }</p>
             <p>Bottlenecks: ${analytics.performance.bottlenecks.length}</p>
         </div>
     </div>
@@ -619,7 +625,9 @@ class AgentDecisionTracer {
 
     if (lowPerformingAgents.length > 0) {
       recommendations.push(
-        `Improve training for agents: ${lowPerformingAgents.map((a) => a.agentType).join(", ")}`,
+        `Improve training for agents: ${lowPerformingAgents
+          .map((a) => a.agentType)
+          .join(", ")}`,
       );
     }
 

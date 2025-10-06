@@ -150,13 +150,17 @@ export class MetricValidator {
       if (delta !== null && policy.autoAdjustLimit.enabled) {
         if (delta < policy.autoAdjustLimit.minDelta) {
           violations.push(
-            `Delta (${delta.toFixed(3)}) below minimum allowed (${policy.autoAdjustLimit.minDelta})`,
+            `Delta (${delta.toFixed(3)}) below minimum allowed (${
+              policy.autoAdjustLimit.minDelta
+            })`,
           );
         }
 
         if (delta > policy.autoAdjustLimit.maxDelta) {
           violations.push(
-            `Delta (${delta.toFixed(3)}) exceeds maximum allowed (${policy.autoAdjustLimit.maxDelta})`,
+            `Delta (${delta.toFixed(3)}) exceeds maximum allowed (${
+              policy.autoAdjustLimit.maxDelta
+            })`,
           );
         }
       }
@@ -167,7 +171,9 @@ export class MetricValidator {
         request.newValue < policy.governance.thresholds.critical
       ) {
         violations.push(
-          `Value (${request.newValue.toFixed(3)}) below critical threshold (${policy.governance.thresholds.critical})`,
+          `Value (${request.newValue.toFixed(3)}) below critical threshold (${
+            policy.governance.thresholds.critical
+          })`,
         );
       }
 
