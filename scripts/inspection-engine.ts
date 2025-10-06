@@ -25,6 +25,7 @@ import { existsSync, readFileSync } from "fs";
 import { join } from "path";
 import { InspectionCache } from "./lib/inspection-cache.js";
 import { GovernanceRunner } from "./lib/governance/governance-runner.js";
+import { recoverIncompleteOps } from "./lib/recovery-manager.js";
 import {
   DIAGNOSTIC_TIMEOUTS,
   getTimeoutMessage,
@@ -65,6 +66,40 @@ class InspectionEngine {
     console.log(
       "📋 Single Source of Truth - Creating comprehensive diagnosis\n",
     );
+
+    // STEP 0: Crash recovery (Stage 1.2)
+    try {
+      const recovery = await recoverIncompleteOps(this.projectRoot);
+
+      if (
+        recovery.recoveredFiles.length > 0 ||
+        recovery.removedLocks.length > 0
+      ) {
+        console.log("🔧 Recovery Manager:");
+        if (recovery.recoveredFiles.length > 0) {
+          console.log(
+            `   ✅ Recovered ${recovery.recoveredFiles.length} incomplete operation(s)`,
+          );
+        }
+        if (recovery.removedLocks.length > 0) {
+          console.log(
+            `   🗑️  Removed ${recovery.removedLocks.length} stale lock(s)`,
+          );
+        }
+        if (recovery.errors.length > 0) {
+          console.log(
+            `   ⚠️  ${recovery.errors.length} error(s) during recovery`,
+          );
+          for (const error of recovery.errors) {
+            console.warn(`      ${error}`);
+          }
+        }
+        console.log("");
+      }
+    } catch (error) {
+      console.warn(`⚠️  Recovery Manager failed: ${error}`);
+      console.warn("   Continuing with inspection...\n");
+    }
 
     try {
       // Run with governance enforcement

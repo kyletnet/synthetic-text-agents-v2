@@ -14,23 +14,25 @@
 
 ## 📋 P0 이슈 목록
 
-| # | 이슈 | 영향도 | 예상 시간 | 담당 |
-|---|------|--------|-----------|------|
-| 1 | Guidelines 디렉토리 미구현 | High | 2h | Dev |
-| 2 | Circular Dependency CI 미통합 | High | 30min | DevOps |
-| 3 | Quality History 미사용 | Medium | 1h | Dev |
-| 4 | /radar /inspect 역할 중복 | Medium | 4h | Architect |
+| #   | 이슈                          | 영향도 | 예상 시간 | 담당      |
+| --- | ----------------------------- | ------ | --------- | --------- |
+| 1   | Guidelines 디렉토리 미구현    | High   | 2h        | Dev       |
+| 2   | Circular Dependency CI 미통합 | High   | 30min     | DevOps    |
+| 3   | Quality History 미사용        | Medium | 1h        | Dev       |
+| 4   | /radar /inspect 역할 중복     | Medium | 4h        | Architect |
 
 ---
 
 ## 🔥 Gap #1: Guidelines 디렉토리 미구현
 
 ### 현재 상태
+
 - ❌ `guidelines/` 디렉토리 없음
 - ❌ `GuidelineManager` 클래스 미구현
 - ✅ `docs/GUIDELINE_INTEGRATION.md` 설계 완료
 
 ### 즉시 조치
+
 ```bash
 # 1. 디렉토리 구조 생성 (5분)
 mkdir -p guidelines/domain-expertise
@@ -56,18 +58,19 @@ EOF
 ```
 
 ### 구현 코드 (기본)
+
 ```typescript
 // scripts/lib/guideline-manager.ts
-import { watch } from 'fs';
-import { readdir, readFile } from 'fs/promises';
-import { join } from 'path';
-import { parse } from 'marked';
+import { watch } from "fs";
+import { readdir, readFile } from "fs/promises";
+import { join } from "path";
+import { parse } from "marked";
 
 export class GuidelineManager {
   private guidelines = new Map<string, any>();
   private watcherActive = false;
 
-  constructor(private guidelinesPath: string = 'guidelines') {}
+  constructor(private guidelinesPath: string = "guidelines") {}
 
   async loadAll(): Promise<void> {
     const files = await this.findMarkdownFiles(this.guidelinesPath);
@@ -77,13 +80,13 @@ export class GuidelineManager {
   }
 
   async loadGuideline(filePath: string): Promise<void> {
-    const content = await readFile(filePath, 'utf-8');
+    const content = await readFile(filePath, "utf-8");
     const parsed = await parse(content);
     this.guidelines.set(filePath, {
       path: filePath,
       content,
       parsed,
-      loadedAt: Date.now()
+      loadedAt: Date.now(),
     });
   }
 
@@ -91,7 +94,7 @@ export class GuidelineManager {
     if (this.watcherActive) return;
 
     watch(this.guidelinesPath, { recursive: true }, async (event, filename) => {
-      if (filename && filename.endsWith('.md')) {
+      if (filename && filename.endsWith(".md")) {
         console.log(`[GuidelineManager] Detected ${event}: ${filename}`);
         await this.loadGuideline(join(this.guidelinesPath, filename));
       }
@@ -112,6 +115,7 @@ export class GuidelineManager {
 ```
 
 ### 검증
+
 ```bash
 # 1. GuidelineManager 테스트
 npx tsx -e "
@@ -126,6 +130,7 @@ ls -la guidelines/
 ```
 
 ### 완료 기준
+
 - [ ] `guidelines/` 디렉토리 존재
 - [ ] 최소 2개 예시 가이드라인 파일 존재
 - [ ] `GuidelineManager` 클래스 구현
@@ -136,11 +141,13 @@ ls -la guidelines/
 ## ⚡ Gap #2: Circular Dependency CI 미통합
 
 ### 현재 상태
+
 - ✅ `scripts/lib/security-guard.ts` 구현 완료
 - ❌ CI/CD에 통합 안 됨
 - ❌ PR 시 자동 검사 없음
 
 ### 즉시 조치 (30분)
+
 ```yaml
 # .github/workflows/unified-quality-gate.yml 수정
 # architecture-validation job에 추가
@@ -149,10 +156,11 @@ ls -la guidelines/
   run: |
     echo "Checking for circular dependencies..."
     npx tsx scripts/lib/security-guard.ts
-  continue-on-error: false  # 실패 시 빌드 중단
+  continue-on-error: false # 실패 시 빌드 중단
 ```
 
 ### 전체 코드
+
 ```yaml
 architecture-validation:
   name: 🏛️ Architecture & Design
@@ -171,7 +179,7 @@ architecture-validation:
     - name: 🏛️ Architecture Invariants
       run: npm run _arch:validate
 
-    - name: 🔍 Circular Dependency Check  # NEW!
+    - name: 🔍 Circular Dependency Check # NEW!
       run: npx tsx scripts/lib/security-guard.ts
 
     - name: 🛡️ Quality Protection Check
@@ -179,6 +187,7 @@ architecture-validation:
 ```
 
 ### 검증
+
 ```bash
 # 1. 로컬 테스트
 npx tsx scripts/lib/security-guard.ts
@@ -192,6 +201,7 @@ git push
 ```
 
 ### 완료 기준
+
 - [ ] unified-quality-gate.yml 수정 완료
 - [ ] 로컬 테스트 성공
 - [ ] CI/CD 실행 확인
@@ -202,11 +212,13 @@ git push
 ## 📊 Gap #3: Quality History 미사용
 
 ### 현재 상태
+
 - ✅ `scripts/lib/quality-history.ts` 구현 완료
 - ❌ 아무 곳에서도 호출 안 됨
 - ❌ 데이터 수집 없음
 
 ### 즉시 조치 (1h)
+
 ```typescript
 // scripts/inspection-engine.ts 수정
 import { trackQualityMetrics } from './lib/quality-history.js';
@@ -238,10 +250,11 @@ async runFullInspection() {
 ```
 
 ### Quality History 구현
+
 ```typescript
 // scripts/lib/quality-history.ts 수정
-import { writeFileSync, existsSync, mkdirSync, readFileSync } from 'fs';
-import { join } from 'path';
+import { writeFileSync, existsSync, mkdirSync, readFileSync } from "fs";
+import { join } from "path";
 
 export interface QualityMetrics {
   timestamp: number;
@@ -254,20 +267,22 @@ export interface QualityMetrics {
   };
 }
 
-export async function trackQualityMetrics(metrics: QualityMetrics): Promise<void> {
-  const historyDir = 'reports/quality-history';
+export async function trackQualityMetrics(
+  metrics: QualityMetrics,
+): Promise<void> {
+  const historyDir = "reports/quality-history";
   if (!existsSync(historyDir)) {
     mkdirSync(historyDir, { recursive: true });
   }
 
-  const date = new Date(metrics.timestamp).toISOString().split('T')[0];
+  const date = new Date(metrics.timestamp).toISOString().split("T")[0];
   const filePath = join(historyDir, `${date}.json`);
 
   writeFileSync(filePath, JSON.stringify(metrics, null, 2));
 }
 
 export function getQualityTrend(days: number = 7): QualityMetrics[] {
-  const historyDir = 'reports/quality-history';
+  const historyDir = "reports/quality-history";
   if (!existsSync(historyDir)) return [];
 
   // Load last N days
@@ -277,6 +292,7 @@ export function getQualityTrend(days: number = 7): QualityMetrics[] {
 ```
 
 ### 검증
+
 ```bash
 # 1. 실행
 npm run status
@@ -294,6 +310,7 @@ console.log('Quality Trend:', trend);
 ```
 
 ### 완료 기준
+
 - [ ] trackQualityMetrics 호출 연결
 - [ ] reports/quality-history/ 디렉토리 생성
 - [ ] 매일 자동 저장 동작
@@ -304,15 +321,18 @@ console.log('Quality Trend:', trend);
 ## 🎯 Gap #4: /radar /inspect 역할 중복
 
 ### 현재 상태
+
 - ⚠️ 기능 70% 중복
 - ⚠️ 사용자 혼란 (언제 뭘 써야 하나?)
 - ✅ `docs/RADAR_NECESSITY_ANALYSIS.md`에서 통합 권장
 
 ### 결정 사항
+
 **옵션 A**: `/radar` 제거, `/inspect --deep`로 통합 (권장)
 **옵션 B**: `/radar` 유지, 역할 명확화
 
 ### 즉시 조치 - 옵션 A (4h)
+
 ```typescript
 // scripts/inspection-engine.ts 수정
 interface InspectionOptions {
@@ -340,6 +360,7 @@ async runFullInspection(options: InspectionOptions = {}) {
 ```
 
 ### CLI 인터페이스
+
 ```bash
 # package.json
 {
@@ -356,22 +377,26 @@ async runFullInspection(options: InspectionOptions = {}) {
 ```
 
 ### 문서 업데이트
+
 ```markdown
 # docs/SLASH_COMMAND_WORKFLOW.md 수정
 
 ## 1️⃣ /inspect - 시스템 진단
 
 ### 빠른 모드 (기본)
+
 \`\`\`bash
-npm run status        # 1-2분
+npm run status # 1-2분
 \`\`\`
 
 ### 심층 모드 (주 1회)
+
 \`\`\`bash
-npm run status:deep   # 5-10분
+npm run status:deep # 5-10분
 \`\`\`
 
 심층 모드 추가 체크:
+
 - 테스트 커버리지 갭
 - 중복 의존성
 - Unused exports
@@ -379,6 +404,7 @@ npm run status:deep   # 5-10분
 ```
 
 ### 마이그레이션 가이드
+
 ```markdown
 # Migration from /radar to /inspect --deep
 
@@ -394,11 +420,12 @@ npm run status:deep   # 5-10분
 
 **Deprecated** (v1.1.0에서 제거 예정):
 \`\`\`bash
-/radar  # Warning: Use /inspect --deep instead
+/radar # Warning: Use /inspect --deep instead
 \`\`\`
 ```
 
 ### 검증
+
 ```bash
 # 1. 빠른 모드
 npm run status
@@ -414,6 +441,7 @@ npm run radar
 ```
 
 ### 완료 기준
+
 - [ ] inspection-engine.ts에 `--deep` 모드 구현
 - [ ] radar 기능 통합 (커버리지, 중복 의존성 등)
 - [ ] package.json 스크립트 업데이트
@@ -427,18 +455,21 @@ npm run radar
 ### Day 1 (8시간)
 
 **오전 (4h)**:
+
 - 09:00-10:00 | Gap #2: Circular Dependency CI 통합 (30min) ✅
 - 10:00-11:30 | Gap #1: Guidelines 디렉토리 구현 (1.5h)
 - 11:30-12:00 | Gap #3: Quality History 연결 (30min)
 - 12:00-13:00 | 점심
 
 **오후 (4h)**:
+
 - 13:00-17:00 | Gap #4: /radar /inspect 통합 (4h)
   - 13:00-15:00 | 코드 통합
   - 15:00-16:00 | 테스트 및 검증
   - 16:00-17:00 | 문서 업데이트
 
 **저녁**:
+
 - 17:00-17:30 | 전체 검증 (`npm run guard`)
 - 17:30-18:00 | 커밋 및 PR 생성
 
@@ -447,12 +478,14 @@ npm run radar
 ## ✅ 최종 검증 체크리스트
 
 ### 기능 검증
+
 - [ ] Guidelines 디렉토리 생성 및 Hot Reload 동작
 - [ ] Circular Dependency CI/CD 자동 검사
 - [ ] Quality History 매일 자동 저장
 - [ ] /inspect --deep 실행 성공
 
 ### 통합 검증
+
 ```bash
 # 1. 전체 시스템 체크
 npm run guard
@@ -465,6 +498,7 @@ git push && gh pr create
 ```
 
 ### 문서 검증
+
 - [ ] SLASH_COMMAND_WORKFLOW.md 업데이트
 - [ ] GUIDELINE_INTEGRATION.md 검증
 - [ ] OPERATIONS_QUICKSTART.md 반영
@@ -475,12 +509,14 @@ git push && gh pr create
 ## 📊 성공 지표
 
 ### 기술적 지표
+
 - ✅ 22/22 통합 테스트 통과
 - ✅ CI/CD 100% 성공
 - ✅ Health Score 90+ 유지
 - ✅ Zero P0 gaps
 
 ### 운영 지표
+
 - ✅ 문서와 실제 시스템 100% 일치
 - ✅ 모든 약속된 기능 구현 완료
 - ✅ 제품화 준비 완료
@@ -490,6 +526,7 @@ git push && gh pr create
 ## 🚀 다음 단계 (P0 완료 후)
 
 ### 즉시 (1주일)
+
 1. **제품화 방향 결정**
    - Web Console?
    - Agent Platform?
@@ -501,6 +538,7 @@ git push && gh pr create
    - Observability 구축
 
 ### 중기 (1개월)
+
 3. **Dynamic Quality Protection**
 4. **Plugin System 구현**
 5. **Rollback 메커니즘**

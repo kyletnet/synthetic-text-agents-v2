@@ -86,7 +86,11 @@ export class GovernanceLogger {
   /**
    * Log an allowed tool
    */
-  logAllowed(tool: string, mode: "analyze" | "transform", reason: string): void {
+  logAllowed(
+    tool: string,
+    mode: "analyze" | "transform",
+    reason: string,
+  ): void {
     this.log({
       tool,
       mode,
@@ -154,9 +158,7 @@ export class GovernanceLogger {
  */
 let globalLogger: GovernanceLogger | null = null;
 
-export function getGovernanceLogger(
-  projectRoot?: string,
-): GovernanceLogger {
+export function getGovernanceLogger(projectRoot?: string): GovernanceLogger {
   if (!globalLogger) {
     globalLogger = new GovernanceLogger(projectRoot);
   }

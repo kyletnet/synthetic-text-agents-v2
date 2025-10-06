@@ -263,9 +263,10 @@ const validator = new LLMIOValidator();
 const defaultFiles = ["qa_sample_100.json"];
 
 // Use command line args if provided, otherwise use defaults
-const filesToValidate = process.argv.slice(2).length > 0
-  ? process.argv.slice(2)
-  : defaultFiles.filter((f) => existsSync(join(process.cwd(), f)));
+const filesToValidate =
+  process.argv.slice(2).length > 0
+    ? process.argv.slice(2)
+    : defaultFiles.filter((f) => existsSync(join(process.cwd(), f)));
 
 console.log(`📄 Validating ${filesToValidate.length} file(s)...\n`);
 

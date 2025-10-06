@@ -46,7 +46,9 @@ class UnifiedValidator {
     }
 
     const ageMinutes = Math.floor((validation.ageSeconds || 0) / 60);
-    console.log(`✅ Using inspection results from ${ageMinutes} minute(s) ago\n`);
+    console.log(
+      `✅ Using inspection results from ${ageMinutes} minute(s) ago\n`,
+    );
 
     const startTime = Date.now();
 

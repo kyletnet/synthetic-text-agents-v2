@@ -14,6 +14,7 @@ import {
   writeFileSync,
   mkdirSync,
   unlinkSync,
+  renameSync,
 } from "fs";
 import { join, dirname } from "path";
 import type {
@@ -23,12 +24,16 @@ import type {
 
 const CACHE_FILE = "reports/inspection-results.json";
 const TTL_SECONDS = 1800; // 30 minutes (was 5 min, too short for slow /inspect)
+const LOCK_TIMEOUT_MS = 5000; // 5 seconds lock acquisition timeout
+const LOCK_RETRY_MS = 100; // 100ms retry interval
 
 export class InspectionCache {
   private cachePath: string;
+  private lockPath: string;
 
   constructor(projectRoot: string = process.cwd()) {
     this.cachePath = join(projectRoot, CACHE_FILE);
+    this.lockPath = this.cachePath + ".lock";
   }
 
   /**
@@ -76,14 +81,78 @@ export class InspectionCache {
   }
 
   /**
+   * Acquire lock for atomic write
+   * Uses exclusive file creation (wx flag) for atomic lock acquisition
+   *
+   * @returns true if lock acquired, false if timeout
+   */
+  private acquireLock(): boolean {
+    const startTime = Date.now();
+
+    while (Date.now() - startTime < LOCK_TIMEOUT_MS) {
+      try {
+        // Atomic operation: create lock file exclusively
+        // 'wx' flag ensures atomic creation (fails if file exists)
+        writeFileSync(this.lockPath, Date.now().toString(), { flag: "wx" });
+        return true;
+      } catch (error) {
+        // Lock exists, check if stale (>5 minutes old for Recovery Manager compat)
+        try {
+          const lockContent = readFileSync(this.lockPath, "utf8");
+          const lockTime = parseInt(lockContent, 10);
+          const lockAgeMs = Date.now() - lockTime;
+
+          if (lockAgeMs > 5 * 60 * 1000) {
+            // Stale lock (>5 minutes), remove and retry
+            try {
+              unlinkSync(this.lockPath);
+              continue;
+            } catch {
+              // Another process might have removed it, continue
+            }
+          }
+        } catch {
+          // Lock file corrupted or removed, retry
+          continue;
+        }
+
+        // Wait before retry
+        const waitTime = LOCK_RETRY_MS;
+        const deadline = Date.now() + waitTime;
+        while (Date.now() < deadline) {
+          // Busy wait (can't use async sleep in sync method)
+        }
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * Release lock
+   */
+  private releaseLock(): void {
+    try {
+      if (existsSync(this.lockPath)) {
+        unlinkSync(this.lockPath);
+      }
+    } catch {
+      // Ignore errors during cleanup
+    }
+  }
+
+  /**
    * Save inspection results with timestamp and TTL
+   * Uses lock-based atomic write to prevent race conditions
+   *
+   * Algorithm:
+   * 1. Acquire lock (with timeout and stale lock detection)
+   * 2. Write to temp file
+   * 3. Atomic rename (temp → target)
+   * 4. Release lock
    */
   saveResults(results: Omit<InspectionResults, "timestamp" | "ttl">): void {
-    const fullResults: InspectionResults = {
-      ...results,
-      timestamp: new Date().toISOString(),
-      ttl: TTL_SECONDS,
-    };
+    const tempPath = this.cachePath + ".tmp";
 
     // Ensure reports directory exists
     const dir = dirname(this.cachePath);
@@ -91,7 +160,39 @@ export class InspectionCache {
       mkdirSync(dir, { recursive: true });
     }
 
-    writeFileSync(this.cachePath, JSON.stringify(fullResults, null, 2), "utf8");
+    // 1. Acquire lock
+    if (!this.acquireLock()) {
+      throw new Error(
+        `Failed to acquire lock after ${LOCK_TIMEOUT_MS}ms timeout`,
+      );
+    }
+
+    try {
+      // 2. Prepare full results
+      const fullResults: InspectionResults = {
+        ...results,
+        timestamp: new Date().toISOString(),
+        ttl: TTL_SECONDS,
+      };
+
+      // 3. Write to temp file
+      writeFileSync(tempPath, JSON.stringify(fullResults, null, 2), "utf8");
+
+      // 4. Atomic rename (overwrites existing file atomically)
+      renameSync(tempPath, this.cachePath);
+    } finally {
+      // 5. Always release lock
+      this.releaseLock();
+
+      // 6. Cleanup temp file if it still exists (failure case)
+      try {
+        if (existsSync(tempPath)) {
+          unlinkSync(tempPath);
+        }
+      } catch {
+        // Ignore cleanup errors
+      }
+    }
   }
 
   /**

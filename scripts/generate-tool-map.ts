@@ -196,7 +196,8 @@ class ToolMapGenerator {
       for (const [engineName, engineData] of Object.entries(map.engines)) {
         if (script.includes(engineName) || script.includes(engineData.path)) {
           cmdData.engine = engineName;
-          cmdData.mode = engineData.mode !== "unknown" ? engineData.mode : undefined;
+          cmdData.mode =
+            engineData.mode !== "unknown" ? engineData.mode : undefined;
           cmdData.description = engineData.description;
           engineData.usedByCommands.push(cmdName);
           break;

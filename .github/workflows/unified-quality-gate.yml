@@ -40,6 +40,19 @@ jobs:
       - name: 📦 Install dependencies (ONCE)
         run: npm ci
 
+      - name: 📦 Restore build cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            dist
+            dist/.tsbuildinfo
+          key: build-${{ runner.os }}-${{ hashFiles('src/**/*.ts', 'scripts/**/*.ts', 'tsconfig.build.json') }}
+          restore-keys: |
+            build-${{ runner.os }}-
+
+      - name: 🏗️ Build (ONCE)
+        run: npm run build
+
       - name: 📘 TypeScript Compilation (ONCE)
         run: npm run typecheck
 
@@ -69,6 +82,7 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: "npm"
       - run: npm ci
+      - run: npm run build
 
       - name: 🏛️ Architecture Invariants
         run: npm run _arch:validate
@@ -135,6 +149,7 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: "npm"
       - run: npm ci
+      - run: npm run build
 
       - name: 🧪 Tests with Coverage
         run: npm run test:coverage
@@ -184,6 +199,7 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: "npm"
       - run: npm ci
+      - run: npm run build
 
       - name: 🔍 GAP Scanner
         run: npm run gap:scan || true
@@ -222,6 +238,7 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: "npm"
       - run: npm ci
+      - run: npm run build
 
       - name: 🔍 Doc-Code Drift Scan
         run: npm run docs:drift-scan:report

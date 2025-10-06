@@ -154,7 +154,8 @@ export class GovernanceEnforcer {
       if (!hasGovernanceImport) {
         violations.push({
           file: relativePath,
-          reason: "Transform tool missing import: GovernanceRunner or wrapWithGovernance",
+          reason:
+            "Transform tool missing import: GovernanceRunner or wrapWithGovernance",
           severity: "critical",
         });
       }
@@ -166,7 +167,8 @@ export class GovernanceEnforcer {
       if (!hasGovernanceUsage) {
         violations.push({
           file: relativePath,
-          reason: "Transform tool missing call: executeWithGovernance() or wrapWithGovernance()",
+          reason:
+            "Transform tool missing call: executeWithGovernance() or wrapWithGovernance()",
           severity: "critical",
         });
       }
@@ -246,7 +248,9 @@ export class GovernanceEnforcer {
       console.log(`   1. Add @tool-mode declaration (analyze or transform)`);
       console.log(`   2. For transform tools: Import GovernanceRunner`);
       console.log(`   3. For transform tools: Add private governance property`);
-      console.log(`   4. For transform tools: Wrap with executeWithGovernance()`);
+      console.log(
+        `   4. For transform tools: Wrap with executeWithGovernance()`,
+      );
     }
 
     console.log("\n" + "═".repeat(60));

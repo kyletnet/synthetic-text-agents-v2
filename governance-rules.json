@@ -12,12 +12,23 @@
       "analyze": {
         "requiresGovernance": false,
         "description": "Read-only operations (reports, scans, validation)",
-        "examples": ["radar-engine", "gaps-engine", "validate-engine", "verify-engine", "inspection-engine"]
+        "examples": [
+          "radar-engine",
+          "gaps-engine",
+          "validate-engine",
+          "verify-engine",
+          "inspection-engine"
+        ]
       },
       "transform": {
         "requiresGovernance": true,
         "description": "Write operations (fixes, refactors, builds)",
-        "examples": ["maintain-engine", "fix-engine", "refactor-engine", "optimization-engine"]
+        "examples": [
+          "maintain-engine",
+          "fix-engine",
+          "refactor-engine",
+          "optimization-engine"
+        ]
       }
     },
     "enforcement": {
@@ -63,11 +74,24 @@
     {
       "id": "CACHE_TTL",
       "severity": "high",
-      "description": "30분 TTL 엄수",
-      "ttlSeconds": 1800,
+      "description": "캐시 TTL 정책 (Path 기반 구분)",
+      "cacheRules": [
+        {
+          "type": "inspection",
+          "ttlSeconds": 1800,
+          "pathPattern": "reports/inspection-results\\.json$",
+          "message": "Inspection 캐시가 만료되었습니다. npm run status를 재실행하세요."
+        },
+        {
+          "type": "quality",
+          "ttlSeconds": 900,
+          "pathPattern": "reports/(baseline_report\\.(jsonl|md)|quality-history/.*\\.jsonl)$",
+          "message": "Quality 평가 캐시가 만료되었습니다. npm run quality:assess를 재실행하세요."
+        }
+      ],
       "enabled": true,
       "enforceInCI": true,
-      "message": "캐시가 만료되었습니다. npm run status를 재실행하세요."
+      "enforcedBy": "CacheManager.enforceTTL"
     }
   ],
   "timeoutPolicy": {
@@ -178,6 +202,36 @@
       "maxFiles": 10
     }
   },
+  "qualityLedger": {
+    "enabled": true,
+    "description": "품질 평가 이력 원장 (JSONL 기반)",
+    "basePath": "reports/quality-history",
+    "filenamePattern": "ledger-{YYYY}-{MM}-{DD}.jsonl",
+    "rotationPolicy": {
+      "maxSizeMB": 50,
+      "retentionDays": 180,
+      "autoRotate": true
+    },
+    "integrityCheck": {
+      "enabled": true,
+      "hashAlgorithm": "sha256",
+      "validateOnRead": true
+    },
+    "schema": {
+      "timestamp": "ISO 8601 string",
+      "phase": "Phase 0|1|2|3|4",
+      "metrics": {
+        "guideline_compliance": "number | null",
+        "retrieval_quality_score": "number | null",
+        "semantic_quality": "number | null"
+      },
+      "gate_result": "PASS|WARN|PARTIAL|FAIL",
+      "next_phase": "string | null",
+      "session_id": "string",
+      "config_version": "string",
+      "hash": "SHA256 entry-level integrity hash"
+    }
+  },
   "qualityProtection": {
     "enabled": true,
     "policySource": "quality-policy.json",
@@ -212,6 +266,90 @@
       "enabled": true,
       "analyzer": "scripts/radar-engine.ts::analyzeFileQualityImpact",
       "onViolation": "block-refactor"
+    }
+  },
+  "metricProtection": {
+    "enabled": true,
+    "description": "품질 메트릭 보호 정책 - 핵심 품질 지표의 자동 조정 제한",
+    "protectedMetrics": [
+      {
+        "name": "guideline_compliance",
+        "priority": "P0",
+        "description": "가이드라인 준수율 (품질 핵심 지표)",
+        "autoAdjustLimit": {
+          "enabled": true,
+          "minDelta": -0.05,
+          "maxDelta": 0.1,
+          "requireApprovalIf": {
+            "deltaExceeds": 0.1,
+            "absoluteValueBelow": 0.8,
+            "consecutiveDrops": 3
+          }
+        },
+        "governance": {
+          "logChanges": true,
+          "notifyOn": ["significant-drop", "below-threshold"],
+          "thresholds": {
+            "critical": 0.7,
+            "warning": 0.85,
+            "target": 0.95
+          }
+        }
+      },
+      {
+        "name": "retrieval_quality_score",
+        "priority": "P0",
+        "description": "검색 품질 점수 (RAG 성능 핵심)",
+        "autoAdjustLimit": {
+          "enabled": true,
+          "minDelta": -0.05,
+          "maxDelta": 0.1,
+          "requireApprovalIf": {
+            "deltaExceeds": 0.1,
+            "absoluteValueBelow": 0.75
+          }
+        },
+        "governance": {
+          "logChanges": true,
+          "notifyOn": ["significant-drop"],
+          "thresholds": {
+            "critical": 0.6,
+            "warning": 0.75,
+            "target": 0.9
+          }
+        }
+      },
+      {
+        "name": "semantic_quality",
+        "priority": "P1",
+        "description": "의미적 품질 점수",
+        "autoAdjustLimit": {
+          "enabled": true,
+          "minDelta": -0.1,
+          "maxDelta": 0.15,
+          "requireApprovalIf": {
+            "deltaExceeds": 0.15
+          }
+        },
+        "governance": {
+          "logChanges": true,
+          "notifyOn": ["below-threshold"],
+          "thresholds": {
+            "warning": 0.7,
+            "target": 0.85
+          }
+        }
+      }
+    ],
+    "changeLogging": {
+      "enabled": true,
+      "logPath": "reports/operations/governance.jsonl",
+      "includeDetails": ["oldValue", "newValue", "delta", "reason", "approver"]
+    },
+    "validation": {
+      "enabled": true,
+      "validator": "scripts/lib/governance/metric-validator.ts",
+      "onViolation": "block-and-notify"
     }
   },
   "riskDomains": [

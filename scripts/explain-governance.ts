@@ -127,7 +127,9 @@ class GovernanceExplainer {
         console.log(`   Violations:`);
         entry.violations.forEach((v) => {
           const icon = v.severity === "critical" ? "🔴" : "🟡";
-          console.log(`      ${icon} [${v.severity.toUpperCase()}] ${v.message}`);
+          console.log(
+            `      ${icon} [${v.severity.toUpperCase()}] ${v.message}`,
+          );
         });
       }
 
@@ -163,18 +165,24 @@ class GovernanceExplainer {
 
     if (hasMissingImport) {
       console.log(`      2. Import governance wrapper:`);
-      console.log(`         import { wrapWithGovernance } from './lib/governance/engine-governance-template.js';`);
+      console.log(
+        `         import { wrapWithGovernance } from './lib/governance/engine-governance-template.js';`,
+      );
     }
 
     if (hasMissingCall) {
       console.log(`      3. Wrap main execution:`);
-      console.log(`         wrapWithGovernance({ name: "tool-name", type: "..." }, async () => {`);
+      console.log(
+        `         wrapWithGovernance({ name: "tool-name", type: "..." }, async () => {`,
+      );
       console.log(`           // your logic here`);
       console.log(`         });`);
     }
 
     if (hasMissingProperty) {
-      console.log(`      4. Add governance property (if using GovernanceRunner directly):`);
+      console.log(
+        `      4. Add governance property (if using GovernanceRunner directly):`,
+      );
       console.log(`         private governance: GovernanceRunner;`);
     }
 
@@ -200,7 +208,9 @@ class GovernanceExplainer {
 
     console.log(`\n   Policy Rationale:`);
     console.log(`      - Analyze tools: Auto-exempt (read-only, no risk)`);
-    console.log(`      - Transform tools: Require governance (write operations, need control)`);
+    console.log(
+      `      - Transform tools: Require governance (write operations, need control)`,
+    );
     console.log(`      - Type-based enforcement: No hardcoded exceptions`);
 
     console.log(`\n═`.repeat(60));
