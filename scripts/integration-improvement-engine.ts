@@ -1,4 +1,9 @@
 #!/usr/bin/env node
+/**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
 
 // @tool-mode: transform
 // @tool-description: Integration improvements - impact analysis and enhancement suggestions

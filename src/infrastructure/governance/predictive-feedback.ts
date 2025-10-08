@@ -1,4 +1,9 @@
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * Predictive Feedback Recorder
  *
  * Records governance decisions and outcomes for future ML-based prediction.

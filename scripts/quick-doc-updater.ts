@@ -1,5 +1,10 @@
 #!/usr/bin/env tsx
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * Quick Document Updater - 핵심 문서들만 빠르게 업데이트
  */
 

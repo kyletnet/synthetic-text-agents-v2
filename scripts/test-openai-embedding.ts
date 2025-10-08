@@ -1,5 +1,10 @@
 #!/usr/bin/env npx tsx
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * Test OpenAI embedding integration
  * Only runs if OPENAI_API_KEY is set
  */

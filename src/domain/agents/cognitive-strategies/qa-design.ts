@@ -1,4 +1,9 @@
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * QA Design Strategy
  *
  * Designs Q&A pairs with cognitive psychology principles:

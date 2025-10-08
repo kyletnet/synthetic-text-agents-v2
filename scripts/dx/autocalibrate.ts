@@ -1,4 +1,9 @@
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * DxLoop v1 - Auto-Calibration System
  * Automatically adjusts P1/P2 thresholds based on recent run history using percentiles
  */

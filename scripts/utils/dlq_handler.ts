@@ -1,4 +1,9 @@
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * Dead Letter Queue (DLQ) Handler
  * Implements AC-2: DLQ & retry policy system
  *

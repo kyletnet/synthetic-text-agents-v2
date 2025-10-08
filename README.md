@@ -2,6 +2,14 @@
 
 AI-powered QA generation using 8-Agent collaboration with P0 hardened launcher.
 
+> **📋 Dual License Notice**
+> This project is dual-licensed:
+> - **Open-Core Components** (Agent templates, demos, docs) are licensed under **Apache-2.0**
+> - **Core Engine** (Multi-agent orchestration, governance kernel, feedback loop) is licensed under **Business Source License 1.1**
+>
+> Production use of core components requires a commercial license or SaaS subscription.
+> See [LICENSE](LICENSE) for full details.
+
 ## Quick Start
 
 **Smoke Test (Free):**

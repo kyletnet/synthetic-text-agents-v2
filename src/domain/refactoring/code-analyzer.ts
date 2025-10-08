@@ -1,4 +1,9 @@
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * Code Analyzer - Domain Layer
  * Responsible for AST analysis and code structure parsing
  */

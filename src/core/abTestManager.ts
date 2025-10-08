@@ -1,3 +1,8 @@
+/**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
 import { QARequest, QAResponse } from "../shared/types.js";
 import { Orchestrator } from "./orchestrator.js";
 import { Logger } from "../shared/logger.js";

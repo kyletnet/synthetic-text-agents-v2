@@ -1,3 +1,8 @@
+/**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
 import type { PatchCard } from "./types";
 
 // Conservative merge (shallow): only set fields that do not exist; never overwrite arrays with longer originals

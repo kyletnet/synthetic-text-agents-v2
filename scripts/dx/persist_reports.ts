@@ -1,4 +1,9 @@
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * DxLoop v1 - Report Persistence
  * Generates and persists dxloop_report.jsonl/md with schema validation and safe config updates
  */

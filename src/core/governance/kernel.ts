@@ -1,4 +1,9 @@
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * Governance Kernel - DNA-Level Architecture Protection
  *
  * This is NOT a runtime validation system.

@@ -1,4 +1,9 @@
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * Composite Entity Extractor
  *
  * Combines NER and dictionary-based extraction for optimal results.

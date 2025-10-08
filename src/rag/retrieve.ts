@@ -1,3 +1,8 @@
+/**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
 // Enhanced retriever with BM25 scoring and fallback to Jaccard similarity.
 // Provides much better semantic matching while maintaining dependency-free design.
 

@@ -1,4 +1,9 @@
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * Base Agent for Multi-Agent Orchestration
  * Implements common orchestration contract with standardized fields:
  * RUN_ID, ITEM_ID, AGENT_ROLE, COST, LAT_MS, RETRIES

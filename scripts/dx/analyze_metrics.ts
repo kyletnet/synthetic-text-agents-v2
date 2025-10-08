@@ -1,4 +1,9 @@
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * DxLoop v1 - Metrics Analyzer
  * Re-calculates and summarizes v1.5 metrics: duplication, qtype, coverage, evidence, hallucination, PII/license
  */

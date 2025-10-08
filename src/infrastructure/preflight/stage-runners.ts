@@ -1,4 +1,9 @@
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * Infrastructure: Preflight Stage Runners
  * Concrete implementations of all 7 preflight stages
  */

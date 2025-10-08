@@ -1,3 +1,8 @@
+/**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
 // Vector embedding infrastructure for future semantic search capabilities.
 // Currently focuses on embedding generation with multiple provider support.
 

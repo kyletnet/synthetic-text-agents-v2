@@ -1,4 +1,9 @@
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * Korean Named Entity Recognition (NER)
  *
  * Pattern-based NER specialized for Korean language.

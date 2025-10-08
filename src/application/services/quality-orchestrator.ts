@@ -1,4 +1,9 @@
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * Quality Orchestrator (Application Service)
  *
  * Orchestrates domain services in a standard workflow.

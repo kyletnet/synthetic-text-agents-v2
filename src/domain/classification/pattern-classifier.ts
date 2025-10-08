@@ -1,4 +1,9 @@
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * Pattern-based Question Classifier
  *
  * Uses regex patterns to classify questions into 4 types.

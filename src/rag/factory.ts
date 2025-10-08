@@ -1,3 +1,8 @@
+/**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
 // RAG Factory - Centralized creation and configuration of RAG components
 // Simplifies integration with existing system without major architectural changes
 

@@ -1,0 +1,50 @@
+{
+  "timestamp": "2025-10-08T06:07:52.112Z",
+  "reportId": "perf-1759903672112-vu9x8rzsf",
+  "period": {
+    "start": "2025-10-07T06:07:52.112Z",
+    "end": "2025-10-08T06:07:52.112Z",
+    "duration": "24h 0m"
+  },
+  "metrics": {
+    "totalMessages": 0,
+    "routingEfficiency": {
+      "directMode": {
+        "count": 0,
+        "percentage": "0.0%",
+        "avgLatency": 40
+      },
+      "hubMode": {
+        "count": 0,
+        "percentage": "0.0%",
+        "avgLatency": 100
+      },
+      "fallbackMode": {
+        "count": 0,
+        "percentage": "0.0%",
+        "avgLatency": 120
+      }
+    },
+    "performance": {
+      "latencyReduction": "60.0%",
+      "throughputImprovement": "NaN% direct routing",
+      "hubHealthUptime": "98.0%",
+      "failoverCount": 0,
+      "avgRecoveryTime": 18.4
+    },
+    "trends": {
+      "performanceGrade": "D",
+      "recommendation": "URGENT: Performance below acceptable threshold. Immediate optimization required.",
+      "riskFactors": [],
+      "optimization": [
+        "Consider increasing direct routing ratio",
+        "Urgent: Review Core-Hub architecture efficiency"
+      ]
+    }
+  },
+  "export": {
+    "reportPath": "",
+    "dashboardPath": "",
+    "alertsGenerated": 1
+  }
+}

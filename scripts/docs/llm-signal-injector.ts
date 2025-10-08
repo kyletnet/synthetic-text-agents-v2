@@ -1,5 +1,10 @@
 #!/usr/bin/env tsx
 /**
+ * SPDX-License-Identifier: Apache-2.0
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * LLM Signal Injector - RAG/LLM 최적화 문서 구조 시그널링
  * GPT 제안: LLM ingestion 최적화를 위한 internal markdown tags
  */

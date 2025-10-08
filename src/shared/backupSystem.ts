@@ -1,4 +1,9 @@
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * Backup and Disaster Recovery System (LEGACY)
  * Provides automated backup, recovery, and disaster recovery capabilities
  *

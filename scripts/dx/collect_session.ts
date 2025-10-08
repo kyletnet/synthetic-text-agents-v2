@@ -1,4 +1,9 @@
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * DxLoop v1 - Session Data Collection
  * Scans and collects core fields from session reports, baseline reports, and LLM analysis
  */

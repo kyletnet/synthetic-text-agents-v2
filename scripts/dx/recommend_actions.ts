@@ -1,4 +1,9 @@
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * DxLoop v1 - Action Recommendations
  * Maps issues to actionable recommendations with cause hypotheses and impact estimates
  */

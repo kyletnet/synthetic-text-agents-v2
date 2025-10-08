@@ -1,4 +1,9 @@
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * DxLoop v1 - Anomaly Detection
  * Detects metric spikes, drift patterns, and statistical outliers using historical data
  */

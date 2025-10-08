@@ -1,5 +1,10 @@
 #!/usr/bin/env node
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * check_observability_consistency.ts — Permanent observability consistency checker
  *
  * CLI usage:

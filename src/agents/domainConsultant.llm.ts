@@ -1,3 +1,8 @@
+/**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
 const { callLLM } = require("../services/llmService");
 type Req = { documentText: string; domain?: string; personas?: string[] };
 type Res = any;

@@ -1,3 +1,8 @@
+/**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
 import { readFileSync, existsSync } from "fs";
 import { calculateDuplicationMetrics } from "./duplicationMetrics.js";
 import { analyzeQuestionTypeDistribution } from "./qtypeDistribution.js";

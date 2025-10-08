@@ -1,3 +1,8 @@
+/**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
 // Enhanced chunker: semantic-aware chunking with markdown support.
 // Prioritizes logical document structure while maintaining backward compatibility.
 

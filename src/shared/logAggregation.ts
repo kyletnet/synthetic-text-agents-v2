@@ -1,4 +1,9 @@
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * Log Aggregation and Analysis System
  * Provides centralized log collection, processing, and analysis
  */

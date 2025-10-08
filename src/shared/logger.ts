@@ -1,3 +1,8 @@
+/**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
 import pino from "pino";
 import { writeFile, appendFile } from "fs/promises";
 import { TraceLog, TraceLogSchema } from "./types.js";

@@ -1,4 +1,9 @@
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * DEPRECATED: Legacy re-export for backward compatibility
  * Please use src/application/metrics/threshold-manager-service.ts instead
  *

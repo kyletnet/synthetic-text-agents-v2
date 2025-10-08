@@ -1,4 +1,9 @@
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * Plugin Loader - 보안과 스코프를 고려한 플러그인 로딩 시스템
  *
  * 팀별/기능별 플러그인을 안전하게 로드하고 실행하는 시스템

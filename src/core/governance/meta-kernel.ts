@@ -1,4 +1,9 @@
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * Meta-Kernel: Self-Verification System
  *
  * Critical Insight (from GPT):
@@ -102,6 +107,11 @@ export class MetaKernel {
 
   /**
    * Verify governance structure integrity
+   *
+   * Phase 2C Extensions:
+   * - Sandbox Runner (infrastructure/governance)
+   * - Loop Scheduler (core/governance)
+   * - Self-Tuning Agent (core/governance)
    */
   private async verifyStructureIntegrity(
     result: MetaVerificationResult,
@@ -110,6 +120,8 @@ export class MetaKernel {
       "kernel.ts",
       "bootloader.ts",
       "meta-kernel.ts", // Self-reference!
+      "loop-scheduler.ts", // Phase 2C: Adaptive loop timing
+      "self-tuning-agent.ts", // Phase 2C: Advisor mode tuning
     ];
 
     let allFound = true;
@@ -127,6 +139,25 @@ export class MetaKernel {
       }
     }
 
+    // Phase 2C: Check infrastructure/governance components
+    const infrastructurePath = join(
+      this.projectRoot,
+      "src/infrastructure/governance",
+    );
+    if (existsSync(infrastructurePath)) {
+      const infrastructureFiles = ["sandbox-runner.ts", "policy-parser.ts"];
+      for (const file of infrastructureFiles) {
+        const filePath = join(infrastructurePath, file);
+        if (!existsSync(filePath)) {
+          result.issues.push(
+            `Missing Phase 2C infrastructure file: ${file}`,
+          );
+        } else {
+          console.log(`   ✅ infrastructure/${file}`);
+        }
+      }
+    }
+
     // Check for unexpected files (potential drift)
     const actualFiles = readdirSync(this.governancePath).filter((f) =>
       f.endsWith(".ts"),
@@ -134,6 +165,8 @@ export class MetaKernel {
     const expectedFiles = new Set([
       ...requiredFiles,
       "meta-kernel.ts",
+      "loop-scheduler.ts", // Phase 2C: Adaptive feedback loop timing
+      "self-tuning-agent.ts", // Phase 2C: Self-tuning advisor
       // Add other expected files
     ]);
 

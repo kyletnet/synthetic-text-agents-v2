@@ -1,3 +1,8 @@
+/**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
 import { BaseAgent } from "../core/baseAgent.js";
 import { AgentContext } from "../shared/types.js";
 import { Logger } from "../shared/logger.js";

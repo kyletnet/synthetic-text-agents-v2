@@ -1,4 +1,9 @@
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * Metrics Port Interface (Version 1)
  *
  * Defines the contract between Domain/Application layers and Infrastructure layer.

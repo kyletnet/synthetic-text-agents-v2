@@ -1,4 +1,9 @@
 #!/usr/bin/env tsx
+/**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
 
 import * as readline from "readline";
 import { detectEnvironment } from "./env-detection.js";

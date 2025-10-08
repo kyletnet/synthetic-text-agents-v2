@@ -1,4 +1,9 @@
 #!/usr/bin/env tsx
+/**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
 
 /**
  * 실시간 진행률 표시 및 상태 업데이트 시스템

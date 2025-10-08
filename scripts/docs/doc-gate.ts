@@ -1,5 +1,10 @@
 #!/usr/bin/env tsx
 /**
+ * SPDX-License-Identifier: Apache-2.0
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * Document Quality Gate - 릴리스/머지 차단 시스템
  * GPT 제안: 기준 미달 문서가 production에 도달하는 것을 방지
  */

@@ -1,4 +1,9 @@
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * Domain Agents Index
  *
  * Exports cognitive strategies and base interfaces for agent domain logic.

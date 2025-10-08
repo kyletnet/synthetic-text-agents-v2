@@ -1,3 +1,8 @@
+/**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
 import { randomUUID } from "crypto";
 import { BaseAgent as IBaseAgent } from "../shared/agent-interface.js";
 import {

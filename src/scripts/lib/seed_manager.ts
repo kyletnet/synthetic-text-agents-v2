@@ -1,4 +1,9 @@
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * Seed Manager
  * Provides consistent randomization across all system components
  * Ensures reproducible results for baseline runs

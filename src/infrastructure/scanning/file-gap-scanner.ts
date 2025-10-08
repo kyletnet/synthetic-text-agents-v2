@@ -1,4 +1,9 @@
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * Infrastructure: File Gap Scanner
  *
  * Concrete implementations of gap detectors that scan files and directories.

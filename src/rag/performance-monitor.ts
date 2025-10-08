@@ -1,3 +1,8 @@
+/**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
 // RAG Performance Monitor - Cost tracking and performance analytics
 // Integrates with existing Performance Guardian system
 

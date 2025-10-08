@@ -1,4 +1,9 @@
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * Audit Agent
  * Third stage in Evidence → Answer → Audit chain
  * Audits answers for quality, accuracy, and completeness

@@ -1,0 +1,41 @@
+# Dual License
+
+This project is dual-licensed under the following terms:
+
+## 1. Open-Core Components (Apache-2.0)
+
+The following directories and files are licensed under the Apache License 2.0:
+- `open-template/` - Agent templates and examples
+- `demo-ui/` - Demo web interface
+- `docs/` - Public documentation
+
+See `LICENSE-APACHE` for full terms.
+
+## 2. Proprietary Core Components (Business Source License 1.1)
+
+The following directories and files are licensed under the Business Source License 1.1:
+- `src/core/` - Core orchestration engine
+- `src/feedback/` - Quality feedback loop
+- `src/infrastructure/governance/` - Governance kernel and policy engine
+- All other source code not explicitly marked as Apache-2.0
+
+See `LICENSE-BSL` for full terms.
+
+### BSL Change Terms
+
+- **Change Date**: 2027-10-08 (2 years from first public release)
+- **Change License**: Apache-2.0
+- **Additional Use Grant**:
+  - Non-production use (development, testing) is permitted
+  - Production use requires a commercial license or SaaS subscription
+
+After the Change Date, all BSL-licensed code will automatically convert to Apache-2.0.
+
+## Questions?
+
+For commercial licensing inquiries, please contact: [enterprise@yourcompany.com]
+
+---
+
+Copyright (c) 2025 [Your Company Name]
+All rights reserved.

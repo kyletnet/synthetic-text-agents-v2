@@ -1,3 +1,8 @@
+/**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
 export function flag(name: string, fallback = false): boolean {
   const v = (process.env[name] ?? "").toString().trim().toLowerCase();
   if (v === "1" || v === "true" || v === "yes" || v === "on") return true;

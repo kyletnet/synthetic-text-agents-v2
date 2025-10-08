@@ -1,4 +1,9 @@
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * DxLoop v1 - Pre-Full-Run Quality & Stability Guard
  * Core type definitions for diagnostic loop system
  */

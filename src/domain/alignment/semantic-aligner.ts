@@ -1,4 +1,9 @@
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * Semantic Alignment Interface
  *
  * Domain layer interface for evidence-answer alignment.

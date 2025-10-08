@@ -1,4 +1,9 @@
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * Policy Interpreter - DSL Evaluation Engine
  *
  * Design Philosophy (from GPT):
@@ -23,6 +28,7 @@
 import { readFileSync, existsSync } from "fs";
 import { load as loadYaml } from "js-yaml";
 import { join } from "path";
+import { SandboxRunner } from "./sandbox-runner.js";
 
 export interface PolicyDefinition {
   name: string;
@@ -63,9 +69,21 @@ export class PolicyInterpreter {
     string,
     (context: EvaluationContext) => Promise<void>
   > = new Map();
+  private sandbox: SandboxRunner; // Phase 2C: Isolated execution
 
   constructor(projectRoot: string = process.cwd()) {
     this.policyPath = join(projectRoot, "governance-rules.yaml");
+    // Phase 2C: Sandbox with minimal timeout for expression evaluation
+    // Note: SandboxRunner requires Logger, but we'll use console as fallback
+    this.sandbox = new SandboxRunner(
+      {
+        info: console.log,
+        debug: console.log,
+        warn: console.warn,
+        error: console.error,
+      } as any,
+      { timeoutMs: 1000 }, // 1s timeout for simple expressions
+    );
     this.registerDefaultActionHandlers();
   }
 
@@ -111,7 +129,7 @@ export class PolicyInterpreter {
     // Evaluate each policy
     for (const policy of relevantPolicies) {
       try {
-        const matched = this.evaluateCondition(policy.condition, context);
+        const matched = await this.evaluateCondition(policy.condition, context);
 
         if (matched) {
           // Execute actions
@@ -149,11 +167,13 @@ export class PolicyInterpreter {
   /**
    * Evaluate condition expression
    * Simple DSL: supports >, <, ==, !=, AND, OR, abs()
+   *
+   * Phase 2C: Uses Sandbox Runner (NO eval, VM isolation)
    */
-  private evaluateCondition(
+  private async evaluateCondition(
     condition: string,
     context: EvaluationContext,
-  ): boolean {
+  ): Promise<boolean> {
     try {
       // Normalize whitespace
       let expr = condition.trim().replace(/\s+/g, " ");
@@ -177,12 +197,10 @@ export class PolicyInterpreter {
       expr = expr.replace(/\bAND\b/g, "&&");
       expr = expr.replace(/\bOR\b/g, "||");
 
-      // Evaluate expression safely
-      // Note: In production, use a safe expression evaluator
-      // like 'expr-eval' library instead of eval()
-      const result = eval(expr);
+      // Phase 2C: Execute in sandbox (NO eval)
+      const result = await this.sandbox.evaluateExpression(expr, context);
 
-      return Boolean(result);
+      return result;
     } catch (error) {
       console.error(
         `[Policy Interpreter] Condition evaluation error: ${error}`,

@@ -1,5 +1,10 @@
 #!/usr/bin/env tsx
 /**
+ * SPDX-License-Identifier: Apache-2.0
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * 문서 품질 감사 시스템 - GPT 제안 구현
  *
  * 기능:

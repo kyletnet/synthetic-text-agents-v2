@@ -1,5 +1,10 @@
 #!/usr/bin/env tsx
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * Refactor Advisor - 패턴 학습 기반 리팩토링 제안 시스템
  * 최근 오류 패턴과 수정 이력을 학습하여 코파일럿 기능 제공
  */

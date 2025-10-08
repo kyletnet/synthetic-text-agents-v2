@@ -1,4 +1,9 @@
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * Multi-Agent Orchestrator
  * Coordinates Evidence → Answer → Audit chain with sub-agents:
  * - Budget Guardian: Cost management and enforcement

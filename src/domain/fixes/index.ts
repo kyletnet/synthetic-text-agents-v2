@@ -1,4 +1,9 @@
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * Fix Commands - Domain Layer
  *
  * Exports all fix command implementations and interfaces

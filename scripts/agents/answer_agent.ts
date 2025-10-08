@@ -1,4 +1,9 @@
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * Answer Agent
  * Second stage in Evidence → Answer → Audit chain
  * Generates answers based on evidence from Evidence Agent

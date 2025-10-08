@@ -1,4 +1,9 @@
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * File Operations for Backup System
  * Low-level file system operations
  * Implements IFileOperations interface (DIP - Dependency Inversion)

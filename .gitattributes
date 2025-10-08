@@ -1,0 +1,79 @@
+# .gitattributes
+# Export-ignore rules for GitHub releases
+# These files/folders will NOT be included in public releases
+
+# Internal folders (NOT in public releases)
+src/core/orchestrator.ts export-ignore
+src/core/governance/kernel.ts export-ignore
+src/core/governance/bootloader.ts export-ignore
+src/core/governance/meta-kernel.ts export-ignore
+src/feedback/** export-ignore
+src/infrastructure/governance/policy-interpreter.ts export-ignore
+src/infrastructure/governance/policy-runtime.ts export-ignore
+src/infrastructure/governance/sandbox-runner.ts export-ignore
+src/infrastructure/governance/adaptive-objective.ts export-ignore
+governance-rules.yaml export-ignore
+feature-flags.json export-ignore
+
+# Environment files
+.env export-ignore
+.env.* export-ignore
+.env.local export-ignore
+.env.production export-ignore
+
+# Internal reports and logs
+reports/ export-ignore
+logs/ export-ignore
+RUN_LOGS/ export-ignore
+DECISIONS/ export-ignore
+
+# Internal scripts
+scripts/internal/ export-ignore
+scripts/mbc-gonogo-check.ts export-ignore
+scripts/secret-lint.ts export-ignore
+
+# Build artifacts
+dist/ export-ignore
+build/ export-ignore
+.next/ export-ignore
+out/ export-ignore
+node_modules/ export-ignore
+coverage/ export-ignore
+test-results/ export-ignore
+
+# IDE and OS files
+.vscode/ export-ignore
+.idea/ export-ignore
+.DS_Store export-ignore
+*.swp export-ignore
+*.swo export-ignore
+
+# Git files
+.git/ export-ignore
+.gitignore export-ignore
+.gitattributes export-ignore
+
+# CI/CD
+.github/ export-ignore
+.husky/ export-ignore
+
+# Testing
+tests/ export-ignore
+*.test.ts export-ignore
+*.spec.ts export-ignore
+vitest.config.ts export-ignore
+jest.config.js export-ignore
+
+# Documentation (internal)
+docs/internal/ export-ignore
+docs/ROLLBACK.md export-ignore
+docs/PRODUCT_PLAN.md export-ignore
+
+# Legacy code
+legacy/ export-ignore
+
+# Red-Team Drill Results (Git LFS for large security reports)
+# Uncomment when git-lfs is enabled:
+# reports/phase0-drill.json filter=lfs diff=lfs merge=lfs -text
+# reports/*-drill.json filter=lfs diff=lfs merge=lfs -text
+reports/*-drill.json export-ignore

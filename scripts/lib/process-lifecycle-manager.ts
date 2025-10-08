@@ -1,4 +1,9 @@
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * 🔄 Process Lifecycle Manager
  *
  * 근본 해결책: 모든 child process 추적 및 cleanup

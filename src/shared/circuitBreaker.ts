@@ -1,4 +1,9 @@
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * Circuit Breaker Pattern Implementation
  * Prevents cascade failures by breaking the circuit when failure rate is too high
  */

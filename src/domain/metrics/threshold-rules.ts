@@ -1,4 +1,9 @@
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * Domain: Threshold Rules and Evaluation
  * Pure business logic for threshold evaluation without I/O
  */

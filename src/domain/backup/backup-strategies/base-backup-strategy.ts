@@ -1,4 +1,9 @@
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * Base Backup Strategy
  * Abstract base class providing common functionality for all backup strategies
  * Uses dependency injection to avoid depending on infrastructure layer

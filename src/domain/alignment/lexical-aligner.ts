@@ -1,4 +1,9 @@
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * Lexical Aligner
  *
  * Character-level alignment using n-gram overlap and cosine similarity.

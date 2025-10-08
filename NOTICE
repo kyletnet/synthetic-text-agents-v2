@@ -1,0 +1,35 @@
+Multi-Agent QA Orchestration System
+Copyright (c) 2025 [Your Company Name]
+
+This product includes software developed at [Your Company Name].
+
+---
+
+## Dual License
+
+This project uses a dual-license model:
+
+1. **Open-Core Components** (Apache-2.0)
+   - Agent templates and examples
+   - Demo UI
+   - Public documentation
+
+2. **Proprietary Core** (Business Source License 1.1)
+   - Core orchestration engine
+   - Governance kernel
+   - Quality feedback loop
+
+See LICENSE file for details.
+
+---
+
+## Third-Party Dependencies
+
+This project uses open-source software.
+See THIRD_PARTY file for a complete list of dependencies and their licenses.
+
+---
+
+## Trademarks
+
+All trademarks are the property of their respective owners.

@@ -1,4 +1,9 @@
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * DEPRECATED: Legacy wrapper for backward compatibility
  * Please use src/infrastructure/filesystem/report-writer.ts instead
  */

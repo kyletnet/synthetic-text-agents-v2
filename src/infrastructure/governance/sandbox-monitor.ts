@@ -1,4 +1,9 @@
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * Sandbox Load Monitor
  *
  * Prevents CPU spikes, infinite loops, and resource exhaustion

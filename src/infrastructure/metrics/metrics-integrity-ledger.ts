@@ -1,4 +1,9 @@
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * Metrics Integrity Ledger
  *
  * Tracks all metrics changes for quality history visualization and drift analysis.

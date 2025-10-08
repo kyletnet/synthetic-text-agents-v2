@@ -1,4 +1,9 @@
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * Core Agent Interface (Circular Dependency Prevention)
  *
  * This file contains only the BaseAgent interface to break circular dependencies.

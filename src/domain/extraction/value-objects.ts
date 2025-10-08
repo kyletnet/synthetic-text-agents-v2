@@ -1,4 +1,9 @@
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * Value Objects for Entity Extraction
  *
  * Immutable value objects representing domain concepts.

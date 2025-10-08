@@ -1,4 +1,9 @@
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * Backup Strategy Interface
  * Defines the contract for backup strategies using Strategy pattern
  */

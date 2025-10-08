@@ -1,4 +1,9 @@
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * Backup Application Interfaces
  * Defines contracts for backup file operations (DIP - Dependency Inversion)
  */

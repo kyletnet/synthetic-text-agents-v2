@@ -1,5 +1,10 @@
 #!/usr/bin/env tsx
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * Comprehensive Document Updater - 모든 핵심 문서를 자동/반자동 업데이트
  *
  * ⚠️  DEPRECATED: This file is no longer directly executable.

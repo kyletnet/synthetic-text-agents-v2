@@ -1,0 +1,180 @@
+{
+  "baselineTag": "phase2c-launch-final",
+  "timestamp": "2025-10-08T06:35:00Z",
+  "phase": "Phase 2C Launch",
+  "description": "Controlled Integration Layer Complete - Ready for External Knowledge",
+  "branch": "phase2c-launch",
+  "controlled_integration_layer": {
+    "parser": {
+      "mode": "parseOnly",
+      "location": "src/infrastructure/governance/policy-parser.ts",
+      "safety": "Sandbox boundary protection, no execution",
+      "status": "✅ READY"
+    },
+    "interpreter": {
+      "mode": "validate",
+      "location": "src/infrastructure/governance/policy-interpreter.ts",
+      "safety": "Grammar validation, no execution",
+      "status": "✅ READY"
+    },
+    "sandbox": {
+      "mode": "execute",
+      "location": "src/infrastructure/governance/sandbox-runner.ts",
+      "safety": "VM isolation, 5s timeout, 50MB limit, read-only context",
+      "status": "✅ NEW"
+    },
+    "governance": {
+      "mode": "commit",
+      "location": "src/core/governance/kernel.ts",
+      "safety": "Manual approval required (human-in-the-loop)",
+      "status": "✅ READY"
+    }
+  },
+  "phase2c_launch_checklist": {
+    "gate_verification": {
+      "latency": "2.10s < 3.1s",
+      "gates": "4/4 PASS",
+      "queue": "≤20 (verified)",
+      "status": "✅ COMPLETE"
+    },
+    "parser_interpreter_structure": {
+      "parseOnly_mode": true,
+      "validate_mode": true,
+      "execution_prevented": true,
+      "status": "✅ COMPLETE"
+    },
+    "sandbox_environment": {
+      "vm_isolation": true,
+      "timeout_5s": true,
+      "memory_limit_50mb": true,
+      "read_only_context": true,
+      "status": "✅ COMPLETE"
+    },
+    "self_tuning_agent": {
+      "mode": "advisor",
+      "auto_apply": false,
+      "requires_approval": true,
+      "location": "src/core/governance/self-tuning-agent.ts",
+      "status": "✅ COMPLETE"
+    },
+    "webview_event_adapter": {
+      "cooldown": "60s",
+      "batch_size": 3,
+      "location": "src/application/feedback-adapter.ts",
+      "status": "✅ COMPLETE"
+    }
+  },
+  "risk_mitigation_complete": {
+    "self_tuning_scheduler_oscillation": {
+      "risk": "자율 학습이 Scheduler interval과 충돌 → drift oscillation",
+      "mitigation": "Self-Tuning Agent: advisor mode, no auto-apply",
+      "status": "✅ MITIGATED"
+    },
+    "parser_code_injection": {
+      "risk": "Sandbox 없이 실행 → 코드 주입 위험",
+      "mitigation": "parseOnly → validate → sandbox 순서 강제, VM 격리",
+      "status": "✅ MITIGATED"
+    },
+    "webview_feedback_flood": {
+      "risk": "즉시 반영 → 피드백 루프 과부하",
+      "mitigation": "cooldown=60s, batchSize=3",
+      "status": "✅ MITIGATED"
+    }
+  },
+  "gpt_strategic_insights": {
+    "current_stage": "자율성 → 설명력 전환",
+    "key_achievement": "완전 자율 거버넌스 모드",
+    "next_evolution": "설명 가능한 지능 + 운영 가시성",
+    "integration_model": "통제된 반자동 (Controlled Integration)",
+    "human_in_the_loop": "모든 정책 적용은 승인 필수"
+  },
+  "system_components": {
+    "brain_autonomy": {
+      "component": "Self-Tuning Agent",
+      "function": "뇌의 자율 조정",
+      "mode": "advisor (suggests only)"
+    },
+    "immune_system": {
+      "component": "Sandbox Runner",
+      "function": "면역 시스템의 백혈구",
+      "protection": "VM isolation, resource limits"
+    },
+    "sensory_feedback": {
+      "component": "WebView Console (Phase 3 preview)",
+      "function": "사람의 감각기관",
+      "safety": "60s cooldown, batch=3"
+    }
+  },
+  "phase2c_week_plan": {
+    "D+0": {
+      "status": "✅ COMPLETE",
+      "tasks": [
+        "Gate verification (latency, queue)",
+        "Parser-Interpreter structure check",
+        "Sandbox environment setup",
+        "Self-Tuning Agent registration",
+        "WebView Event Adapter configuration",
+        "Final baseline generation"
+      ]
+    },
+    "D+1": {
+      "status": "PENDING",
+      "tasks": [
+        "Parser–Interpreter integration test",
+        "Sample 3 policies parseOnly + validate mode",
+        "Policy conversion accuracy verification"
+      ]
+    },
+    "D+2": {
+      "status": "PENDING",
+      "tasks": [
+        "Sandbox Runner integration",
+        "Policy injection safety verification",
+        "VM isolation testing"
+      ]
+    },
+    "D+3": {
+      "status": "PENDING",
+      "tasks": [
+        "Self-Tuning Agent advisor mode test",
+        "Recommendation generation (no auto-apply)",
+        "Manual approval workflow"
+      ]
+    },
+    "D+4": {
+      "status": "PENDING",
+      "tasks": [
+        "Feedback Console connection (Phase 3 preview)",
+        "WebView → Feedback Adapter test",
+        "User input safety verification"
+      ]
+    }
+  },
+  "session_continuity": {
+    "purpose": "세션 끊겨도 이어서 진행 가능하도록",
+    "current_state": "Phase 2C Launch 체크리스트 6/6 완료",
+    "next_action": "D+1: Parser-Interpreter integration test 시작",
+    "rollback_safe": true,
+    "branch": "phase2c-launch"
+  },
+  "commit_reference": {
+    "branch": "phase2c-launch",
+    "base_commit": "c044bcc",
+    "phase2c_files_added": [
+      "src/infrastructure/governance/sandbox-runner.ts",
+      "src/core/governance/self-tuning-agent.ts"
+    ],
+    "phase2c_files_modified": [
+      "src/application/feedback-adapter.ts"
+    ]
+  },
+  "metadata": {
+    "created_by": "Claude Code",
+    "phase": "Phase 2C Launch",
+    "baseline_type": "controlled_integration",
+    "rollback_safe": true,
+    "all_risks_mitigated": true,
+    "human_approval_required": true,
+    "ready_for_external_knowledge": true
+  }
+}

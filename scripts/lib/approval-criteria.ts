@@ -1,4 +1,9 @@
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * 승인 기준 정의 - 단일 모드 승인 시스템
  * 사용자 요청에 따라 복잡한 dual-mode 시스템을 제거하고 명확한 기준으로 단순화
  */

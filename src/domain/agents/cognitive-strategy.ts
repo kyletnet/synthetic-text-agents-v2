@@ -1,4 +1,9 @@
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * Cognitive Strategy Interface
  *
  * Base interface for all cognitive analysis strategies.

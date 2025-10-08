@@ -1,4 +1,9 @@
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * File Scanner - Infrastructure Layer
  * Responsible for file system operations and content reading
  */

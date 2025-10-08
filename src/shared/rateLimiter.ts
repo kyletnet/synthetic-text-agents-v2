@@ -1,4 +1,9 @@
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * Rate Limiter Implementation
  * Protects APIs from abuse and ensures fair usage
  */

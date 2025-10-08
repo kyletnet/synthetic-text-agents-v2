@@ -1,0 +1,26 @@
+# Third-Party Licenses
+
+This project uses the following open-source dependencies:
+
+## Runtime Dependencies
+
+Generated automatically. Run:
+```bash
+npm run license:report
+```
+
+To generate an up-to-date list, install:
+```bash
+npm install -g license-checker
+license-checker --production --json > licenses.json
+```
+
+## Notable Dependencies
+
+- **TypeScript** - Apache-2.0
+- **Node.js** - MIT
+- **Vitest** - MIT
+- **ESLint** - MIT
+- **Prettier** - MIT
+
+For a complete list with versions, see `package-lock.json`.

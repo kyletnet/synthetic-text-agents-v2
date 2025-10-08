@@ -57,7 +57,7 @@ policies:
       impact: May indicate quality degradation or cost spike
       auto_response: Governance will review and suggest rollback if needed
       adaptive_threshold: true
-      last_adapted: '2025-10-08T05:50:21.940Z'
+      last_adapted: '2025-10-08T06:44:54.381Z'
   - name: cost-spike-detection
     type: threshold
     level: error

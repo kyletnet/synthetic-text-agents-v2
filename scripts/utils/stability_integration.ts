@@ -1,4 +1,9 @@
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * Stability Integration Layer
  * Integrates all stability components: thresholds, DLQ, budget guard, agents, checkpoints
  * Provides unified interface for run_v3.sh integration

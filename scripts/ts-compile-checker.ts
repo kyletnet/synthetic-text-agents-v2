@@ -1,5 +1,10 @@
 #!/usr/bin/env tsx
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * TypeScript Compilation Integrity Checker
  * 컴파일 오류를 P0 우선순위로 분류하고 리팩토링 시스템과 연동
  */

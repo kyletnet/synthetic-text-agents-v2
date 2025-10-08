@@ -1,4 +1,9 @@
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * Audit Orchestrator - Application Layer
  * Orchestrates the refactoring audit workflow using Command Pattern
  */

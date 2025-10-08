@@ -1,4 +1,9 @@
 #!/usr/bin/env tsx
+/**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
 
 /**
  * Design Principle Mapper - 탐지된 이슈를 설계 원칙 위반으로 연결

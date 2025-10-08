@@ -1,4 +1,9 @@
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * Citation Failure Logger
  *
  * Logs citation validation failures for debugging and quality improvement.

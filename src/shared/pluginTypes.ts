@@ -1,4 +1,9 @@
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * DocPlugin Interface - 확장 가능한 문서 자동화 플러그인 시스템
  */
 

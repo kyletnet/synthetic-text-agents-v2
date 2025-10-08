@@ -1,4 +1,9 @@
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * Infrastructure: Report Writer
  * Handles all file I/O operations for baseline reports
  */

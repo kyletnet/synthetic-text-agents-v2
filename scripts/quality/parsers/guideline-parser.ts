@@ -1,4 +1,9 @@
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * Guideline Parser
  *
  * MD 가이드라인을 파싱하여 규칙셋 JSON으로 변환

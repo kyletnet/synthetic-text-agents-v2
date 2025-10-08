@@ -1,3 +1,8 @@
+/**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
 // Use the unified anthropic adapter instead of direct SDK calls
 import { LLMAdapter } from "../clients/anthropicAdapter.js";
 

@@ -1,3 +1,8 @@
+/**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
 export type Rule =
   | { type: "length_max_tokens"; value: number; reason: string }
   | { type: "forbid_terms"; value: string[]; reason: string }

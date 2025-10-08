@@ -1,5 +1,10 @@
 #!/usr/bin/env node
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * preflight_pack.ts — Production preflight pack with handoff bundle generation (REFACTORED)
  *
  * Usage: node dist/scripts/preflight_pack.js --profile stage --budget-smoke 2.00 --budget-full 50.00 --run-tags preflight

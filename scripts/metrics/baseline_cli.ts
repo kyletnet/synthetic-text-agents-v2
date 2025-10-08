@@ -1,5 +1,10 @@
 #!/usr/bin/env npx ts-node
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * CLI wrapper for baseline report generator with threshold autocalibration support
  */
 

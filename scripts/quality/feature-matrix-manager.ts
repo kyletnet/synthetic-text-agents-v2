@@ -1,4 +1,9 @@
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * Feature Matrix Manager
  *
  * Manages plugin activation, conflict resolution, and priority ordering.

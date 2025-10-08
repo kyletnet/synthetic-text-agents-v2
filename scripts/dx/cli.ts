@@ -1,5 +1,10 @@
 #!/usr/bin/env node
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * DxLoop v1 - Main CLI Interface
  * Orchestrates the complete diagnostic loop: collect→analyze→calibrate→gate→report
  */

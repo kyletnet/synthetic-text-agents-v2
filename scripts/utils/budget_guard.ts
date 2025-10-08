@@ -1,4 +1,9 @@
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * Budget Guard & Kill Switch System
  * Implements AC-3: Budget guards and kill switch functionality
  *

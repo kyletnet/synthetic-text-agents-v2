@@ -1,4 +1,9 @@
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * DxLoop v1 - Threshold Loader
  * Loads and merges thresholds from baseline_config.json with profile-specific overrides
  */

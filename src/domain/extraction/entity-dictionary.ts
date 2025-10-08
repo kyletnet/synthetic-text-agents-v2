@@ -1,4 +1,9 @@
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * Entity Dictionary
  *
  * Domain-specific entity dictionaries for high-confidence extraction.

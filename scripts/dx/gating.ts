@@ -1,4 +1,9 @@
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * DxLoop v1 - Gating Logic
  * Determines PASS/WARN/PARTIAL/FAIL based on P0/P1/P2 threshold violations
  */

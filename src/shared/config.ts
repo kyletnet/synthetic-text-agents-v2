@@ -1,3 +1,8 @@
+/**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
 import { readFile } from "fs/promises";
 import type { RAGConfig } from "../rag/service.js";
 

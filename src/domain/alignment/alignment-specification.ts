@@ -1,4 +1,9 @@
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * Alignment Specification Pattern
  *
  * Encapsulates alignment rules as objects for testability and composability.

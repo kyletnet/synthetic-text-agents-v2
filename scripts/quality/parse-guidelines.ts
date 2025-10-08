@@ -1,5 +1,10 @@
 #!/usr/bin/env node
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * Guideline Parser CLI
  *
  * 가이드라인을 파싱하고 캐시를 생성합니다.

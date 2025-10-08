@@ -1,3 +1,8 @@
+/**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
 export type Usage = { input_tokens?: number; output_tokens?: number };
 const PRICING: Record<string, { in: number; out: number }> = {
   // USD per 1 token (단순화: $/1e6 tokens 테이블을 1토큰 당 단가로 환산)

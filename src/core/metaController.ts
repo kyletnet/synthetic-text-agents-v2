@@ -1,3 +1,8 @@
+/**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
 import { BaseAgent } from "./baseAgent.js";
 import { QARequest, AgentContext, QARequestSchema } from "../shared/types.js";
 import { Logger } from "../shared/logger.js";

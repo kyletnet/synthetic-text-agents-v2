@@ -1,4 +1,9 @@
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * Policy Parser (Phase 2C Preparation)
  *
  * Parses external policy documents into internal governance format.

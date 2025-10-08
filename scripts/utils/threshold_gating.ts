@@ -1,4 +1,9 @@
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * Threshold Gating System
  * Maps P0/P1/P2 metrics to PASS/WARN/FAIL results according to AC-1
  *

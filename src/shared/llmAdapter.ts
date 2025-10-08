@@ -1,3 +1,8 @@
+/**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
 import { generateText } from "ai";
 import { openai } from "@ai-sdk/openai";
 import { appendJSONL } from "./jsonl.js";

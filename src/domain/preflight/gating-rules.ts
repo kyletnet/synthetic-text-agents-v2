@@ -1,4 +1,9 @@
 /**
+ * SPDX-License-Identifier: BUSL-1.1
+ * Copyright (c) 2025 [Your Company]
+ */
+
+/**
  * Domain: Preflight Gating Rules
  * Defines gate decision logic for pipeline continuation
  */
