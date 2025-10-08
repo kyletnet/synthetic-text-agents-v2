@@ -479,7 +479,28 @@ Feedback + Retrieval + Planner autonomous learning/correction loop.
 
 ---
 
-## Future Roadmap (Phase 2+)
+## Future Roadmap (Phase 2.2+)
+
+### ⭐ Phase 2.2-2.4: Adaptive Ecosystem Evolution 🆕 v3
+
+**See detailed specification**: `docs/RFC/2025-11-adaptive-ecosystem-development-plan.md`
+
+**Strategic Shift**: "Living Organism → Self-Learning Ecosystem"
+
+**3 Evolution Axes**:
+1. **Meta-Governance Engine** (Phase 2.2) - Self-optimizing policies
+2. **Synthetic Ecosystem Simulator** (Phase 2.3) - Zero-risk expansion
+3. **Cross-Tenant Intelligence Exchange** (Phase 2.4) - Collective learning
+
+**Key Capabilities**:
+- **Self-Correcting**: Each layer diagnoses and repairs itself
+- **Self-Learning**: Continuous improvement from feedback/logs
+- **Self-Protecting**: Proactive security/compliance enforcement
+- **Self-Adaptive**: Auto-adjust to load/domain/tenant changes
+
+**Timeline**: 11-13 weeks (Phase 2.2: 3w, Phase 2.3: 4w, Phase 2.4: 4-6w)
+
+---
 
 ### Q1 2026: Multimodal Evidence
 - RetrievalPort V2 - Image/code/table support
