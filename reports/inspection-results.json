@@ -22,19 +22,19 @@
     {
       "id": "workarounds",
       "severity": "critical",
-      "description": "워크어라운드/TODO 마커 161개",
-      "count": 161,
+      "description": "워크어라운드/TODO 마커 162개",
+      "count": 162,
       "files": [
         "src/scripts/metrics/baselineReportGenerator.ts",
         "src/scripts/metrics/__all__.ts",
+        "src/application/agents/diversity-planner-service.ts",
         "src/infrastructure/governance/policy-interpreter.ts",
         "src/infrastructure/governance/policy-runtime.ts",
         "src/domain/fixes/workaround-fix.ts",
         "scripts/resolve-workarounds.ts",
         "scripts/refactor-engine.ts",
         "scripts/ai-fix-engine.ts",
-        "scripts/radar-engine.ts",
-        "scripts/comprehensive-doc-updater.ts"
+        "scripts/radar-engine.ts"
       ],
       "impact": "기술 부채 감소, 코드 품질 개선",
       "suggestedAction": "우선순위가 높은 항목부터 순차적으로 해결 (grep으로 검색 가능)"
@@ -51,6 +51,6 @@
     "security": "fail",
     "integrationScore": 55
   },
-  "timestamp": "2025-10-08T04:12:54.028Z",
+  "timestamp": "2025-10-08T04:21:55.715Z",
   "ttl": 1800
 }
