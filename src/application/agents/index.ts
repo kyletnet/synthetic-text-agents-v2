@@ -5,3 +5,5 @@
  */
 
 export * from "./cognitive-scientist-service.js";
+export * from "./linguistics-engineer-service.js";
+export * from "./diversity-planner-service.js";
