@@ -1,9 +1,10 @@
 # Session State - 2025-10-08
 
-**Last Updated**: 2025-10-08 20:30 KST
+**Last Updated**: 2025-10-08 22:00 KST
 **Branch**: phase2c-launch
-**Session ID**: phase1.6-roadmap-integrated
-**Roadmap**: Evolutionary Expansion (Phase 1.6 → 2.1)
+**Session ID**: phase1.6-v2-ecosystem-evolution
+**Roadmap**: v2 - "Living DNA → Adaptive Ecosystem" (Phase 1.6 → 1.7 → 1.8 → 2.0 → 2.1)
+**Strategic Shift**: Single-loop system → Multi-domain adaptive ecosystem
 
 ---
 
@@ -35,6 +36,12 @@
 - Multi-Tenant Governance Architecture
 - Evolutionary Expansion Strategy
 
+**v2 Roadmap Enhancement** (current session)
+- 4 Critical Weaknesses identified + solutions
+- 3 Fundamental Structures added (Event Spine, Feedback Fabric, Control Plane)
+- Phase 1.7, 1.8 added (Event Spine + Feedback Fabric)
+- Timeline expanded: Week 1-23 (from Week 1-17)
+
 ### Current State Snapshot
 
 ```json
@@ -56,17 +63,40 @@
     "PoisoningGuard",
     "BM25Adapter"
   ],
+  "roadmapVersion": "v2",
+  "strategicShift": "Single-loop → Multi-domain adaptive ecosystem",
+  "criticalWeaknesses": [
+    "Feedback Loop Closure (no convergence detection)",
+    "Multi-Tenant Context Separation (default tenant only)",
+    "Policy Drift Early Warning (reactive only)",
+    "Gate Automation (manual triggers)"
+  ],
+  "fundamentalStructures": [
+    "Event Spine (central event backbone)",
+    "Feedback Intelligence Fabric (data asset transformation)",
+    "Multi-Tenant Control Plane (centralized governance)"
+  ],
   "componentsPending": {
     "phase1.6": [
-      "Feedback Adapter + Source Trust Updater",
+      "Feedback Adapter + Source Trust Updater + Convergence Detector 🆕",
       "Test Chain Integration",
-      "Gate P/I Enhancement",
+      "Gate P/I Enhancement + Autonomous Gate Executor 🆕",
       "Evidence Viewer (WebView SSR)"
     ],
+    "phase1.7": [
+      "Event Spine Infrastructure 🆕 v2",
+      "Policy Trend Analyzer 🆕 v2",
+      "Test Chain Full Automation"
+    ],
+    "phase1.8": [
+      "Feedback Intelligence Fabric 🆕 v2",
+      "Tenant-aware Context Propagation 🆕 v2",
+      "Feedback-Driven Loop"
+    ],
     "phase2.0": [
-      "Tenant Registry + Namespaced Policy DSL",
-      "Tenant-Scoped Retrieval Fabric",
-      "Lineage Ledger Enhancement",
+      "Multi-Tenant Control Plane 🆕 v2",
+      "Data Plane Isolation",
+      "Lineage Ledger V2 🆕",
       "RBAC/ABAC + Data Sovereignty"
     ],
     "phase2.1": [
@@ -336,14 +366,22 @@ git checkout phase1.5-retrieval-complete
 
 ## 📝 Development Log
 
-**2025-10-08 20:30** - Integrated Roadmap 문서화 완료
+**2025-10-08 22:00** - v2 Roadmap Enhancement 완료 ("Living DNA → Adaptive Ecosystem")
+- Integrated Roadmap v2 업데이트 완료
+  - 4 Critical Weaknesses identified + solutions provided
+  - 3 Fundamental Structures added (Event Spine, Feedback Fabric, Control Plane)
+  - Phase 1.7 (Event Spine) + Phase 1.8 (Feedback Fabric) 추가
+  - Timeline expanded: Week 1-23 (from Week 1-17)
+  - Strategic shift: Single-loop → Multi-domain adaptive ecosystem
+- SESSION_STATE.md 업데이트 (v2 전략 반영)
+- Next: NEXT_ACTIONS.md + CHANGELOG.md 업데이트, Git commit
+
+**2025-10-08 20:30** - Integrated Roadmap 문서화 완료 (v1)
 - docs/RFC/2025-10-integrated-roadmap-phase1.6-to-2.1.md 생성
 - docs/ARCHITECTURE_MULTI_TENANT.md 생성
 - Evolutionary Expansion 전략 수립 (NOT Rewrite)
 - Top-3 Priority + Full Backlog 방식 채택
 - Phase 1.6 (2 weeks) → 2.0 (3 weeks) → 2.1 (4-6 weeks) 타임라인 설정
-- SESSION_STATE.md 업데이트 (통합 로드맵 반영)
-- Next: NEXT_ACTIONS.md 업데이트, CHANGELOG.md 업데이트
 
 **2025-10-08 19:00** - Governance Loop 연결 완료
 - Retrieval-Feedback Bridge 구현
