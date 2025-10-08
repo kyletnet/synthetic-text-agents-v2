@@ -1,0 +1,154 @@
+# Quality Enhancement Feature Matrix
+#
+# Defines activation conditions and conflict policies for Advanced Quality Checkers.
+# Prevents over-activation that could cause performance degradation or cost explosion.
+#
+# Reference: docs/RFC/2025-10-integration-brief-quality-enhancement.md
+
+version: 1
+created: 2025-10-08T04:40:00Z
+
+# Feature Activation Priority (1 = highest)
+# Lower priority features are disabled if higher priority ones are active
+priority:
+  ragas_evaluation: 1        # Highest - comprehensive evaluation
+  hybrid_search: 2           # Second - best coverage improvement
+  multiview_embedding: 3     # Third - good alignment improvement
+  translation_embedding: 4   # Fourth - naturalness focus
+  queryside_embedding: 5     # Lowest - lightweight fallback
+
+# Conflict Matrix - Define incompatible combinations
+# Format: [feature_a, feature_b] = reason
+conflicts:
+  # Performance conflicts (both are heavy)
+  - features: [ragas_evaluation, hybrid_search]
+    reason: "Both are computationally expensive - combined latency >1s"
+    severity: critical
+
+  - features: [ragas_evaluation, multiview_embedding]
+    reason: "Ragas already includes multi-view evaluation"
+    severity: high
+
+  # Redundancy conflicts (same goal)
+  - features: [multiview_embedding, queryside_embedding]
+    reason: "Both target alignment - queryside is subset of multiview"
+    severity: medium
+
+  - features: [multiview_embedding, translation_embedding]
+    reason: "Translation already does multi-view via back-translation"
+    severity: low
+
+# Recommended Combinations (tested and safe)
+recommended_combinations:
+  # Balanced quality improvement
+  - name: "balanced"
+    features: [queryside_embedding, hybrid_search]
+    cost_per_1000_qa: 0.15
+    expected_improvement: "+20% overall"
+    latency_ms: 300
+
+  # Maximum coverage
+  - name: "coverage_focus"
+    features: [hybrid_search]
+    cost_per_1000_qa: 0.15
+    expected_improvement: "+25% coverage"
+    latency_ms: 200
+
+  # Maximum naturalness
+  - name: "naturalness_focus"
+    features: [translation_embedding]
+    cost_per_1000_qa: 0.20
+    expected_improvement: "+20% naturalness"
+    latency_ms: 250
+
+  # Comprehensive evaluation (expensive)
+  - name: "comprehensive"
+    features: [ragas_evaluation]
+    cost_per_1000_qa: 0.30
+    expected_improvement: "+30% overall"
+    latency_ms: 400
+    canary_only: true  # Only for canary testing
+
+# Activation Rules
+activation_rules:
+  # Canary rollout stages
+  canary_stages:
+    - percentage: 10
+      max_features: 1
+      require_baseline: true
+
+    - percentage: 50
+      max_features: 2
+      require_baseline: true
+
+    - percentage: 100
+      max_features: 3
+      require_baseline: true
+
+  # Cost limits
+  cost_limits:
+    per_qa_max: 0.005          # $0.005 per QA pair
+    daily_max: 10.0            # $10 per day
+    monthly_max: 300.0         # $300 per month
+
+  # Performance limits
+  performance_limits:
+    latency_p95_ms: 500        # P95 latency <500ms
+    latency_p99_ms: 1000       # P99 latency <1s
+    error_rate_max: 0.05       # <5% error rate
+
+  # Quality requirements
+  quality_requirements:
+    min_improvement: 0.1       # Minimum +10% improvement vs baseline
+    regression_tolerance: 0.05 # Allow <5% regression in other metrics
+
+# Auto-disable Conditions
+auto_disable:
+  # Disable if performance degrades
+  - condition: "latency_p95 > performance_limits.latency_p95_ms"
+    action: disable_all
+    notify: true
+
+  # Disable if cost exceeds limit
+  - condition: "daily_cost > cost_limits.daily_max"
+    action: disable_all
+    notify: true
+
+  # Disable if error rate too high
+  - condition: "error_rate > performance_limits.error_rate_max"
+    action: disable_lowest_priority
+    notify: true
+
+  # Disable if no quality improvement
+  - condition: "improvement < quality_requirements.min_improvement"
+    action: disable_feature
+    notify: true
+
+# Governance Integration
+governance:
+  # Report to Regression Guard
+  rg_integration:
+    gate_c_stability: true    # Report to Gate C (Stability)
+    gate_d_budget: true       # Report to Gate D (Budget)
+
+  # Event logging
+  events:
+    - feature_activated
+    - feature_disabled
+    - conflict_detected
+    - cost_limit_exceeded
+    - performance_degraded
+
+  # Feedback loop
+  feedback:
+    record_improvement: true
+    record_cost: true
+    record_latency: true
+    update_baseline: true
+
+# Default Configuration
+defaults:
+  all_features_off: true      # Start with all features disabled
+  canary_percentage: 0        # Start with 0% canary
+  max_concurrent_features: 1  # Only 1 feature at a time initially
+  require_manual_approval: true

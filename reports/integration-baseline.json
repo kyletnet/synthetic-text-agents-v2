@@ -1,0 +1,112 @@
+{
+  "version": "1.0.0",
+  "tag": "integration-base",
+  "timestamp": "2025-10-08T04:40:00Z",
+  "phase": "Phase 2B Step 2 - Pre-Integration",
+  "description": "Baseline metrics before external technology integration. Used for regression detection when Advanced Checkers are activated.",
+  "quality_metrics": {
+    "entity_coverage": 0.0,
+    "entity_coverage_target": 0.9,
+    "question_type_distribution": {
+      "factual": 0,
+      "conceptual": 0,
+      "procedural": 0,
+      "analytical": 0,
+      "comparative": 0
+    },
+    "evidence_alignment": 0.179,
+    "evidence_alignment_target": 0.379,
+    "evidence_source_counts": {
+      "rule_based": 0
+    },
+    "naturalness": null,
+    "coherence": null,
+    "total_samples": 0
+  },
+  "diversity_metrics": {
+    "entity_coverage_ratio": 0.0,
+    "question_type_balance": 0.0,
+    "evidence_source_diversity": 0.0,
+    "meets_target": false
+  },
+  "advanced_quality_metrics": {
+    "enabled": false,
+    "multiview_alignment": null,
+    "queryside_alignment": null,
+    "translation_naturalness": null,
+    "hybrid_search_coverage": null,
+    "ragas_overall_score": null,
+    "cost_per_qa": 0.0,
+    "total_cost": 0.0,
+    "latency_ms": 0,
+    "error_rate": 0.0,
+    "active_checkers": []
+  },
+  "system_state": {
+    "health_score": 80,
+    "typescript": "PASS",
+    "tests": "PASS",
+    "rg_gates": {
+      "gate_a": "PASS",
+      "gate_b": "PASS",
+      "gate_c": "PASS",
+      "gate_d": "PASS"
+    }
+  },
+  "feature_flags": {
+    "FEATURE_QUALITY_MULTIVIEW_EMBEDDING": false,
+    "FEATURE_QUALITY_QUERYSIDE_EMBEDDING": false,
+    "FEATURE_QUALITY_TRANSLATION_EMBEDDING": false,
+    "FEATURE_QUALITY_HYBRID_SEARCH": false,
+    "FEATURE_QUALITY_RAGAS_EVAL": false
+  },
+  "expected_improvements": {
+    "multiview_embedding": {
+      "target_metric": "evidence_alignment",
+      "baseline": 0.179,
+      "target": 0.294,
+      "improvement": "+15%"
+    },
+    "queryside_embedding": {
+      "target_metric": "evidence_alignment",
+      "baseline": 0.179,
+      "target": 0.269,
+      "improvement": "+10%"
+    },
+    "translation_embedding": {
+      "target_metric": "naturalness",
+      "baseline": null,
+      "target": 0.8,
+      "improvement": "+20%"
+    },
+    "hybrid_search": {
+      "target_metric": "entity_coverage",
+      "baseline": 0.0,
+      "target": 0.9,
+      "improvement": "+25%"
+    },
+    "ragas_evaluation": {
+      "target_metric": "overall",
+      "baseline": 6.0,
+      "target": 8.0,
+      "improvement": "+30%"
+    }
+  },
+  "regression_thresholds": {
+    "performance_degradation_max": 0.15,
+    "cost_increase_max": 0.005,
+    "latency_p95_max_ms": 500,
+    "error_rate_max": 0.05
+  },
+  "notes": [
+    "✅ Integration baseline established before Advanced Checkers activation",
+    "✅ Feature flags all disabled - clean starting point",
+    "✅ System stable: Health 80/100, All RG gates PASS",
+    "✅ Evidence alignment baseline: 17.9% (target: 37.9%)",
+    "📊 Expected improvements documented for each checker",
+    "⚠️  Regression thresholds defined - auto-disable if exceeded",
+    "🔒 Port interface frozen (V1) - adapters can evolve",
+    "🧬 Feature Matrix defines safe activation combinations",
+    "Next: Phase 2B Step 2 (Metrics Refactoring)"
+  ]
+}
