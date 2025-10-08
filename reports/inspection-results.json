@@ -2,23 +2,15 @@
   "schemaVersion": "2025-10-inspect-v1",
   "autoFixable": [
     {
-      "id": "prettier-format",
+      "id": "eslint-warnings",
       "severity": "low",
-      "description": "코드 포매팅 불일치",
-      "command": "npx prettier --write .",
-      "estimatedDuration": 10,
-      "impact": "코드 스타일 일관성 개선"
+      "description": "ESLint 경고 59개",
+      "command": "npm run lint:fix",
+      "estimatedDuration": 15,
+      "impact": "코드 품질 개선, 미사용 변수 정리"
     }
   ],
   "manualApprovalNeeded": [
-    {
-      "id": "eslint-errors",
-      "severity": "high",
-      "description": "ESLint 오류 9개",
-      "count": 9,
-      "impact": "코드 오류 수정 필요",
-      "suggestedAction": "npm run dev:lint로 상세 내용 확인 후 수동 수정"
-    },
     {
       "id": "workarounds",
       "severity": "critical",
@@ -41,16 +33,16 @@
     }
   ],
   "summary": {
-    "totalIssues": 3,
+    "totalIssues": 2,
     "autoFixableCount": 1,
-    "manualApprovalCount": 2,
-    "healthScore": 75,
+    "manualApprovalCount": 1,
+    "healthScore": 85,
     "typescript": "pass",
     "codeStyle": "fail",
     "tests": "fail",
     "security": "fail",
     "integrationScore": 55
   },
-  "timestamp": "2025-10-08T03:45:56.551Z",
+  "timestamp": "2025-10-08T03:56:48.330Z",
   "ttl": 1800
 }
