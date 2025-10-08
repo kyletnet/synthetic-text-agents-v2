@@ -143,7 +143,11 @@ export class MetricsIntegrityLedger {
       return {
         is_anomaly: true,
         severity:
-          entry.change_percent < -50 ? "high" : entry.change_percent < -40 ? "medium" : "low",
+          entry.change_percent < -50
+            ? "high"
+            : entry.change_percent < -40
+            ? "medium"
+            : "low",
         reason: `Sudden drop: ${entry.change_percent.toFixed(1)}%`,
         threshold_exceeded: Math.abs(
           entry.change_percent - this.anomalyThresholds.drop_percent,
@@ -205,7 +209,8 @@ export class MetricsIntegrityLedger {
     const allChanges = this.getRecentChanges(options);
 
     return allChanges.filter(
-      (entry) => entry.metadata?.anomaly && (entry.metadata.anomaly as any).detected,
+      (entry) =>
+        entry.metadata?.anomaly && (entry.metadata.anomaly as any).detected,
     );
   }
 
@@ -226,7 +231,8 @@ export class MetricsIntegrityLedger {
     }
 
     const anomalies = allChanges.filter(
-      (entry) => entry.metadata?.anomaly && (entry.metadata.anomaly as any).detected,
+      (entry) =>
+        entry.metadata?.anomaly && (entry.metadata.anomaly as any).detected,
     );
 
     const lastUpdate =

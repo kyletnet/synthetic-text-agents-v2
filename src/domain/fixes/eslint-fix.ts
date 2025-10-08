@@ -273,7 +273,7 @@ export class ESLintFixCommand extends BaseFixCommand {
     }
 
     // Replace console.log with logger.info
-    let modifiedLine = line
+    const modifiedLine = line
       .replace(/console\.log\(/g, "this.logger.info(")
       .replace(/console\.error\(/g, "this.logger.error(")
       .replace(/console\.warn\(/g, "this.logger.warn(")

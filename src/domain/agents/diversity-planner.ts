@@ -65,7 +65,9 @@ export class DiversityPlanner {
   /**
    * Analyze entity coverage gap
    */
-  private analyzeEntityGap(metrics: CoverageMetrics): DiversityGap["entityGap"] {
+  private analyzeEntityGap(
+    metrics: CoverageMetrics,
+  ): DiversityGap["entityGap"] {
     // Coverage ratio capped at 1.0 (100% achievement)
     const coverageRatio = Math.min(
       1.0,
@@ -171,10 +173,9 @@ export class DiversityPlanner {
     }
 
     // Estimate total samples needed
-    const estimatedSamplesNeeded = Array.from(targetQuestionTypes.values()).reduce(
-      (sum, count) => sum + count,
-      0,
-    );
+    const estimatedSamplesNeeded = Array.from(
+      targetQuestionTypes.values(),
+    ).reduce((sum, count) => sum + count, 0);
 
     // Evidence source preference (use existing sources, then expand)
     const evidenceSourcePreference = [
@@ -263,7 +264,9 @@ export class DiversityPlanner {
     // Entity coverage suggestions
     if (plan.gap.entityGap.coverageRatio < 1.0) {
       suggestions.push(
-        `📊 Entity Coverage: ${(plan.gap.entityGap.coverageRatio * 100).toFixed(1)}% of target`,
+        `📊 Entity Coverage: ${(plan.gap.entityGap.coverageRatio * 100).toFixed(
+          1,
+        )}% of target`,
       );
       if (plan.gap.entityGap.missing.length > 0) {
         suggestions.push(

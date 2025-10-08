@@ -55,7 +55,10 @@ export class FileMetricsAdapter implements MetricsPortV1 {
 
     try {
       await this.ensureDirectory();
-      await fs.writeFile(filePath, JSON.stringify(metrics, this.mapReplacer, 2));
+      await fs.writeFile(
+        filePath,
+        JSON.stringify(metrics, this.mapReplacer, 2),
+      );
 
       this.logger.info("Quality metrics recorded", {
         entityCoverage: metrics.entityCoverage,
@@ -108,7 +111,10 @@ export class FileMetricsAdapter implements MetricsPortV1 {
   async recordAdvancedQualityMetrics(
     metrics: AdvancedQualityMetrics,
   ): Promise<void> {
-    const filePath = join(this.config.storagePath, "advanced-quality-metrics.json");
+    const filePath = join(
+      this.config.storagePath,
+      "advanced-quality-metrics.json",
+    );
 
     try {
       await this.ensureDirectory();
@@ -305,7 +311,10 @@ export class FileMetricsAdapter implements MetricsPortV1 {
   private async readAdvancedQualityMetrics(): Promise<
     AdvancedQualityMetrics | undefined
   > {
-    const filePath = join(this.config.storagePath, "advanced-quality-metrics.json");
+    const filePath = join(
+      this.config.storagePath,
+      "advanced-quality-metrics.json",
+    );
 
     try {
       const content = await fs.readFile(filePath, "utf-8");

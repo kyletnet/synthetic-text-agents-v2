@@ -84,7 +84,10 @@ describe("QAFeedbackManager", () => {
         converged: false,
         cached: false,
       }),
-      generateSuggestions: () => ["Increase entity coverage", "Balance question types"],
+      generateSuggestions: () => [
+        "Increase entity coverage",
+        "Balance question types",
+      ],
     } as any;
 
     // Create Feedback Manager

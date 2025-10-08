@@ -57,16 +57,14 @@ export class GovernancePolicyCleaner {
   private projectRoot: string;
   private policyPath: string;
 
-  constructor(
-    projectRoot?: string,
-    config: Partial<PolicyAgeConfig> = {},
-  ) {
+  constructor(projectRoot?: string, config: Partial<PolicyAgeConfig> = {}) {
     this.projectRoot = projectRoot || process.cwd();
     this.policyPath = join(this.projectRoot, "governance-rules.json");
 
     this.config = {
       external_policy_max_age_days: config.external_policy_max_age_days ?? 90,
-      experimental_policy_max_age_days: config.experimental_policy_max_age_days ?? 30,
+      experimental_policy_max_age_days:
+        config.experimental_policy_max_age_days ?? 30,
       core_policy_never_purge: config.core_policy_never_purge ?? true,
       auto_purge_enabled: config.auto_purge_enabled ?? true,
       dry_run: config.dry_run ?? false,
@@ -136,9 +134,7 @@ export class GovernancePolicyCleaner {
     if (!this.config.dry_run && purgedPolicies.length > 0) {
       policies.policies = keptPolicies;
       writeFileSync(this.policyPath, JSON.stringify(policies, null, 2));
-      console.log(
-        `[Policy Cleaner] Purged ${purgedPolicies.length} policies`,
-      );
+      console.log(`[Policy Cleaner] Purged ${purgedPolicies.length} policies`);
     } else if (this.config.dry_run) {
       console.log(
         `[Policy Cleaner] DRY RUN - would purge ${purgedPolicies.length} policies`,
@@ -157,7 +153,10 @@ export class GovernancePolicyCleaner {
   /**
    * Should purge policy based on age and type
    */
-  private shouldPurgePolicy(metadata: PolicyMetadata, ageDays: number): boolean {
+  private shouldPurgePolicy(
+    metadata: PolicyMetadata,
+    ageDays: number,
+  ): boolean {
     // Core policies never purge
     if (this.config.core_policy_never_purge && metadata.type === "core") {
       return false;

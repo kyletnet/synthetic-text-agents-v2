@@ -97,7 +97,9 @@ export class MetricsService {
         meetsTarget: metrics.meetsTarget,
       });
     } catch (error) {
-      this.logger.error("Failed to record diversity metrics via port", { error });
+      this.logger.error("Failed to record diversity metrics via port", {
+        error,
+      });
 
       if (this.config.enableFallback) {
         this.logger.warn("Using fallback storage for diversity metrics");
@@ -145,10 +147,9 @@ export class MetricsService {
         });
       }
     } catch (error) {
-      this.logger.error(
-        "Failed to record advanced quality metrics via port",
-        { error },
-      );
+      this.logger.error("Failed to record advanced quality metrics via port", {
+        error,
+      });
 
       if (this.config.enableFallback) {
         this.logger.warn("Using fallback storage for advanced quality metrics");
@@ -275,9 +276,9 @@ export class MetricsService {
     const diversity = (this.fallbackStorage.get("diversity-metrics") ||
       this.getDefaultDiversityMetrics()) as DiversityMetrics;
 
-    const advanced = this.fallbackStorage.get(
-      "advanced-quality-metrics",
-    ) as AdvancedQualityMetrics | undefined;
+    const advanced = this.fallbackStorage.get("advanced-quality-metrics") as
+      | AdvancedQualityMetrics
+      | undefined;
 
     return {
       quality,

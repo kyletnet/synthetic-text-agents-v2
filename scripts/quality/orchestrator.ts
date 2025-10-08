@@ -23,7 +23,11 @@
  * Version: 1.0.0
  */
 
-import type { QAPair, QualityReport, QualityChecker } from "./models/quality-domain.js";
+import type {
+  QAPair,
+  QualityReport,
+  QualityChecker,
+} from "./models/quality-domain.js";
 import { RuleBasedChecker } from "./checkers/rule-based-checker.js";
 import { EvidenceAligner } from "./checkers/evidence-aligner.js";
 import { HybridSearchChecker } from "./checkers/hybrid-search-checker.js";
@@ -115,9 +119,7 @@ export class QualityOrchestrator {
         checker.name !== "rule-based-checker" &&
         checker.name !== "evidence-aligner"
       ) {
-        console.log(
-          `Plugin registry disabled, skipping: ${checker.name}`,
-        );
+        console.log(`Plugin registry disabled, skipping: ${checker.name}`);
         return;
       }
     }
@@ -139,9 +141,7 @@ export class QualityOrchestrator {
     // Check if enabled in Feature Matrix
     const pluginConfig = this.featureMatrix.getPluginConfig(checker.name);
     if (pluginConfig && !pluginConfig.enabled) {
-      console.log(
-        `Checker ${checker.name} not enabled in Feature Matrix`,
-      );
+      console.log(`Checker ${checker.name} not enabled in Feature Matrix`);
       return;
     }
 

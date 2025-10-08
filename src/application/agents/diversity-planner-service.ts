@@ -170,9 +170,9 @@ export class DiversityPlannerService {
       questionTypeBalance:
         1.0 -
         Math.max(
-          ...Array.from(plan.gap.questionTypeGap.deviationFromIdeal.values()).map(
-            Math.abs,
-          ),
+          ...Array.from(
+            plan.gap.questionTypeGap.deviationFromIdeal.values(),
+          ).map(Math.abs),
           0,
         ),
       evidenceSourceCount: plan.gap.evidenceSourceGap.currentSources.length,
@@ -219,7 +219,9 @@ export class DiversityPlannerService {
    * Generate cache key from metrics
    */
   private getCacheKey(metrics: CoverageMetrics): string {
-    return `${metrics.entityCoverage.toFixed(2)}-${metrics.totalSamples}-${metrics.questionTypeDistribution.size}-${metrics.evidenceSourceCounts.size}`;
+    return `${metrics.entityCoverage.toFixed(2)}-${metrics.totalSamples}-${
+      metrics.questionTypeDistribution.size
+    }-${metrics.evidenceSourceCounts.size}`;
   }
 
   /**
@@ -261,7 +263,8 @@ export class DiversityPlannerService {
 
     // Calculate average absolute deviation
     const avgDeviation =
-      deviations.reduce((sum, dev) => sum + Math.abs(dev), 0) / deviations.length;
+      deviations.reduce((sum, dev) => sum + Math.abs(dev), 0) /
+      deviations.length;
 
     // Convert to balance score (0 deviation = 1.0 balance)
     return Math.max(0, 1.0 - avgDeviation);

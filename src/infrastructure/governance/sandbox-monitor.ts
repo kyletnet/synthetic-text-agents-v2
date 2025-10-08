@@ -144,7 +144,9 @@ export class SandboxMonitor {
         threshold: this.config.cpu_quota.max_percent,
         actual: cpuPercent,
         action: this.config.cpu_quota.violation_action,
-        message: `CPU usage (${cpuPercent.toFixed(1)}%) exceeds quota (${this.config.cpu_quota.max_percent}%)`,
+        message: `CPU usage (${cpuPercent.toFixed(1)}%) exceeds quota (${
+          this.config.cpu_quota.max_percent
+        }%)`,
       });
     }
 
@@ -158,7 +160,9 @@ export class SandboxMonitor {
         threshold: this.config.memory_quota.max_mb,
         actual: memoryMB,
         action: this.config.memory_quota.violation_action,
-        message: `Memory usage (${memoryMB.toFixed(1)}MB) exceeds quota (${this.config.memory_quota.max_mb}MB)`,
+        message: `Memory usage (${memoryMB.toFixed(1)}MB) exceeds quota (${
+          this.config.memory_quota.max_mb
+        }MB)`,
       });
     }
 
@@ -180,7 +184,8 @@ export class SandboxMonitor {
     this.iterations++;
     if (
       this.config.alerts.infinite_loop_detection.enabled &&
-      this.iterations > this.config.alerts.infinite_loop_detection.max_iterations
+      this.iterations >
+        this.config.alerts.infinite_loop_detection.max_iterations
     ) {
       violations.push({
         type: "infinite_loop",
@@ -192,7 +197,9 @@ export class SandboxMonitor {
     }
 
     // Determine if allowed
-    const terminateViolations = violations.filter((v) => v.action === "terminate");
+    const terminateViolations = violations.filter(
+      (v) => v.action === "terminate",
+    );
     const allowed = terminateViolations.length === 0;
 
     return {
@@ -318,7 +325,9 @@ export async function executeSandboxed<T>(
       if (!status.allowed) {
         clearInterval(monitorInterval);
         throw new Error(
-          `Sandbox violation: ${status.violations.map((v) => v.message).join(", ")}`,
+          `Sandbox violation: ${status.violations
+            .map((v) => v.message)
+            .join(", ")}`,
         );
       }
     }, 100); // Check every 100ms

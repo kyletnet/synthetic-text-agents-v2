@@ -88,9 +88,7 @@ export class PolicyParser {
    *
    * Trust Boundary Protection: Any parsing error triggers immediate rollback.
    */
-  async parse(
-    document: ExternalPolicyDocument,
-  ): Promise<PolicyParserResult> {
+  async parse(document: ExternalPolicyDocument): Promise<PolicyParserResult> {
     return await this.safeParse(document);
   }
 
@@ -257,7 +255,9 @@ export class PolicyParser {
     checks.push({
       check: "valid_policy_type",
       passed: hasValidType,
-      reason: hasValidType ? undefined : `Invalid policy type: ${document.type}`,
+      reason: hasValidType
+        ? undefined
+        : `Invalid policy type: ${document.type}`,
     });
 
     if (!hasValidType) {
@@ -383,7 +383,9 @@ export class PolicyParser {
     reason: string,
   ): Promise<void> {
     console.warn(
-      `[Policy Parser] Rolling back policy: ${document.name || "unknown"} (reason: ${reason})`,
+      `[Policy Parser] Rolling back policy: ${
+        document.name || "unknown"
+      } (reason: ${reason})`,
     );
 
     // Log rollback event to governance

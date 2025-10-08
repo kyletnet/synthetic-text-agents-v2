@@ -13,7 +13,7 @@ policies:
     metadata:
       priority: P0
       impact: Breaks modularity, makes testing impossible
-      fix_guide: "Run: npm run arch:check && follow suggestions"
+      fix_guide: 'Run: npm run arch:check && follow suggestions'
   - name: ddd-boundary-enforcement
     type: architecture
     level: error
@@ -57,7 +57,7 @@ policies:
       impact: May indicate quality degradation or cost spike
       auto_response: Governance will review and suggest rollback if needed
       adaptive_threshold: true
-      last_adapted: "2025-10-07T13:52:40.505Z"
+      last_adapted: '2025-10-08T05:50:21.940Z'
   - name: cost-spike-detection
     type: threshold
     level: error
@@ -124,11 +124,11 @@ actions:
     severity: critical
   notify:slack:
     description: Send Slack notification to governance channel
-    channel: "#architecture-governance"
+    channel: '#architecture-governance'
     severity: high
   notify:security:
     description: Send notification to security team
-    channel: "#security-alerts"
+    channel: '#security-alerts'
     severity: critical
   log:governance:
     description: Record event in governance ledger
@@ -148,8 +148,8 @@ actions:
 context:
   architecture:
     - circular_dependency_count: Number of circular dependencies detected
-    - domain_imports_application: "Boolean: Does domain import from application?"
-    - domain_imports_infrastructure: "Boolean: Does domain import from infrastructure?"
+    - domain_imports_application: 'Boolean: Does domain import from application?'
+    - domain_imports_infrastructure: 'Boolean: Does domain import from infrastructure?'
     - orphan_module_count: Number of unused modules
   threshold:
     - old_value: Previous threshold value
@@ -163,7 +163,7 @@ context:
     - pii_hits: Number of PII instances detected
     - license_violations: Number of license violations
   prediction:
-    - ml_model_available: "Boolean: Is ML model trained and available?"
+    - ml_model_available: 'Boolean: Is ML model trained and available?'
     - predicted_drift_probability: ML-predicted drift probability (0.0-1.0)
     - confidence_score: Model confidence (0.0-1.0)
 rg:

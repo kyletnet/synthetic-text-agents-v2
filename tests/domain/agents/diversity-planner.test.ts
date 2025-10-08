@@ -82,7 +82,9 @@ describe("DiversityPlanner", () => {
 
       expect(plan.meetsTarget).toBe(false);
       expect(plan.gap.questionTypeGap.overrepresented).toContain("factual");
-      expect(plan.gap.questionTypeGap.underrepresented.length).toBeGreaterThan(0);
+      expect(plan.gap.questionTypeGap.underrepresented.length).toBeGreaterThan(
+        0,
+      );
     });
 
     it("should identify evidence source gap", () => {
@@ -171,7 +173,9 @@ describe("DiversityPlanner", () => {
 
       expect(suggestions.length).toBeGreaterThan(0);
       expect(suggestions.some((s) => s.includes("Entity Coverage"))).toBe(true);
-      expect(suggestions.some((s) => s.includes("Evidence Sources"))).toBe(true);
+      expect(suggestions.some((s) => s.includes("Evidence Sources"))).toBe(
+        true,
+      );
     });
 
     it("should congratulate when targets are met", () => {

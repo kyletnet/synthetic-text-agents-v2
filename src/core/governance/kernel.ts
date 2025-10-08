@@ -312,7 +312,9 @@ export class GovernanceKernel {
    * @param policyDoc - External policy document (text, JSON, or parsed)
    * @returns Policy evaluation result with Feature Flag recommendation
    */
-  async evaluateExternalPolicy(policyDoc: ExternalPolicyDocument): Promise<PolicyEvaluation> {
+  async evaluateExternalPolicy(
+    policyDoc: ExternalPolicyDocument,
+  ): Promise<PolicyEvaluation> {
     console.log("[Governance Kernel] Evaluating external policy...");
 
     try {

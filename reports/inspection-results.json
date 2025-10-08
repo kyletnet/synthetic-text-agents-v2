@@ -2,17 +2,9 @@
   "schemaVersion": "2025-10-inspect-v1",
   "autoFixable": [
     {
-      "id": "prettier-format",
-      "severity": "low",
-      "description": "코드 포매팅 불일치",
-      "command": "npx prettier --write .",
-      "estimatedDuration": 10,
-      "impact": "코드 스타일 일관성 개선"
-    },
-    {
       "id": "eslint-warnings",
       "severity": "low",
-      "description": "ESLint 경고 59개",
+      "description": "ESLint 경고 58개",
       "command": "npm run lint:fix",
       "estimatedDuration": 15,
       "impact": "코드 품질 개선, 미사용 변수 정리"
@@ -22,35 +14,35 @@
     {
       "id": "workarounds",
       "severity": "critical",
-      "description": "워크어라운드/TODO 마커 162개",
-      "count": 162,
+      "description": "워크어라운드/TODO 마커 167개",
+      "count": 167,
       "files": [
+        "src/core/governance/kernel.ts",
         "src/scripts/metrics/baselineReportGenerator.ts",
         "src/scripts/metrics/__all__.ts",
+        "src/application/metrics/metrics-service.ts",
         "src/application/agents/diversity-planner-service.ts",
+        "src/application/qa-feedback-manager.ts",
+        "src/infrastructure/metrics/file-metrics-adapter.ts",
         "src/infrastructure/governance/policy-interpreter.ts",
         "src/infrastructure/governance/policy-runtime.ts",
-        "src/domain/fixes/workaround-fix.ts",
-        "scripts/resolve-workarounds.ts",
-        "scripts/refactor-engine.ts",
-        "scripts/ai-fix-engine.ts",
-        "scripts/radar-engine.ts"
+        "src/infrastructure/governance/policy-parser.ts"
       ],
       "impact": "기술 부채 감소, 코드 품질 개선",
       "suggestedAction": "우선순위가 높은 항목부터 순차적으로 해결 (grep으로 검색 가능)"
     }
   ],
   "summary": {
-    "totalIssues": 3,
-    "autoFixableCount": 2,
+    "totalIssues": 2,
+    "autoFixableCount": 1,
     "manualApprovalCount": 1,
-    "healthScore": 80,
+    "healthScore": 85,
     "typescript": "pass",
     "codeStyle": "fail",
     "tests": "fail",
     "security": "fail",
     "integrationScore": 55
   },
-  "timestamp": "2025-10-08T04:54:06.614Z",
+  "timestamp": "2025-10-08T05:49:57.331Z",
   "ttl": 1800
 }

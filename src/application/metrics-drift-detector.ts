@@ -75,7 +75,8 @@ export class MetricsDriftDetector {
       driftThreshold: config.driftThreshold ?? 0.15,
       baselineTag: config.baselineTag ?? "integration-base",
       driftReportPath:
-        config.driftReportPath ?? join(this.projectRoot, "reports", "metrics-drift.json"),
+        config.driftReportPath ??
+        join(this.projectRoot, "reports", "metrics-drift.json"),
       rollingWindowSize: config.rollingWindowSize ?? 3,
       stableThreshold: config.stableThreshold ?? 0.05,
     };
@@ -110,7 +111,8 @@ export class MetricsDriftDetector {
 
     // Detect drift for each metric (with rolling average noise filtering)
     for (const [metricName, currentValue] of Object.entries(currentMetrics)) {
-      const baselineValue = baselineMetrics[metricName as keyof typeof baselineMetrics];
+      const baselineValue =
+        baselineMetrics[metricName as keyof typeof baselineMetrics];
       const drift = currentValue - baselineValue;
 
       // Update drift history for rolling average
@@ -132,10 +134,14 @@ export class MetricsDriftDetector {
       let action = "none";
       if (exceeded && direction === "degradation") {
         action = "alert";
-        autoActions.push(`Alert: ${metricName} degraded by ${(driftAbs * 100).toFixed(1)}%`);
+        autoActions.push(
+          `Alert: ${metricName} degraded by ${(driftAbs * 100).toFixed(1)}%`,
+        );
       } else if (exceeded && direction === "improvement") {
         action = "log";
-        this.logger.info(`Metric improved: ${metricName} +${(drift * 100).toFixed(1)}%`);
+        this.logger.info(
+          `Metric improved: ${metricName} +${(drift * 100).toFixed(1)}%`,
+        );
       }
 
       driftDetected.push({

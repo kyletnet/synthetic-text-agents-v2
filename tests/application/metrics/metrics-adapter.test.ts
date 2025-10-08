@@ -90,12 +90,12 @@ describe("Metrics Adapter (Port/Adapter Pattern)", () => {
     it("should record and retrieve advanced quality metrics", async () => {
       const metrics: AdvancedQualityMetrics = {
         multiViewAlignment: 0.85,
-        querySideAlignment: 0.80,
+        querySideAlignment: 0.8,
         translationNaturalness: 0.78,
-        hybridSearchCoverage: 0.90,
+        hybridSearchCoverage: 0.9,
         ragasOverallScore: 0.82,
         costPerQA: 0.002,
-        totalCost: 0.20,
+        totalCost: 0.2,
         latencyMs: 350,
         errorRate: 0.02,
         activeCheckers: ["hybrid_search", "queryside_embedding"],
@@ -106,7 +106,7 @@ describe("Metrics Adapter (Port/Adapter Pattern)", () => {
 
       const report = await service.getCurrentReport();
 
-      expect(report.advanced?.hybridSearchCoverage).toBe(0.90);
+      expect(report.advanced?.hybridSearchCoverage).toBe(0.9);
       expect(report.advanced?.costPerQA).toBe(0.002);
       expect(report.advanced?.activeCheckers).toHaveLength(2);
     });
@@ -147,19 +147,19 @@ describe("Metrics Adapter (Port/Adapter Pattern)", () => {
     it("should compare current metrics with baseline", async () => {
       // Record baseline
       const baselineMetrics: QualityMetrics = {
-        entityCoverage: 0.70,
+        entityCoverage: 0.7,
         questionTypeDistribution: new Map(),
-        evidenceAlignment: 0.60,
+        evidenceAlignment: 0.6,
         evidenceSourceCounts: new Map(),
         naturalness: 0.65,
-        coherence: 0.60,
+        coherence: 0.6,
         totalSamples: 100,
         timestamp: new Date(),
       };
       const baselineDiversity: DiversityMetrics = {
-        entityCoverageRatio: 0.80,
+        entityCoverageRatio: 0.8,
         questionTypeBalance: 0.75,
-        evidenceSourceDiversity: 0.70,
+        evidenceSourceDiversity: 0.7,
         meetsTarget: false,
         timestamp: new Date(),
       };
@@ -176,7 +176,7 @@ describe("Metrics Adapter (Port/Adapter Pattern)", () => {
       const improvedDiversity: DiversityMetrics = {
         ...baselineDiversity,
         entityCoverageRatio: 0.95, // +15% improvement
-        questionTypeBalance: 0.90, // +15% improvement
+        questionTypeBalance: 0.9, // +15% improvement
       };
 
       await service.recordQualityMetrics(improvedMetrics);

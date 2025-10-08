@@ -147,8 +147,9 @@ export class QAFeedbackManager {
       this.logger.info(
         `📐 Comparing with baseline: ${this.config.baselineTag}`,
       );
-      const baseline =
-        await this.metricsService.getBaselineMetrics(this.config.baselineTag);
+      const baseline = await this.metricsService.getBaselineMetrics(
+        this.config.baselineTag,
+      );
 
       if (!baseline) {
         this.logger.warn(`Baseline not found: ${this.config.baselineTag}`);
@@ -176,8 +177,9 @@ export class QAFeedbackManager {
         const coverageMetrics = this.convertToCoverageMetrics(currentReport);
 
         // Create diversity plan
-        const planResult =
-          await this.diversityPlannerService.createPlan(coverageMetrics);
+        const planResult = await this.diversityPlannerService.createPlan(
+          coverageMetrics,
+        );
         plan = planResult.plan;
 
         this.logger.info("Diversity plan generated", {
@@ -327,7 +329,9 @@ export class QAFeedbackManager {
       adjustments.push({
         type: "threshold",
         action: "Increase entity coverage target",
-        reason: `Entity coverage degraded by ${Math.abs(entityDrift.driftPercentage).toFixed(1)}%`,
+        reason: `Entity coverage degraded by ${Math.abs(
+          entityDrift.driftPercentage,
+        ).toFixed(1)}%`,
         applied: autoEnabled,
       });
     }
@@ -340,7 +344,9 @@ export class QAFeedbackManager {
       adjustments.push({
         type: "planner",
         action: "Rebalance question type distribution",
-        reason: `Question type balance degraded by ${Math.abs(balanceDrift.driftPercentage).toFixed(1)}%`,
+        reason: `Question type balance degraded by ${Math.abs(
+          balanceDrift.driftPercentage,
+        ).toFixed(1)}%`,
         applied: autoEnabled,
       });
     }

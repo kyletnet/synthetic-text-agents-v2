@@ -39,7 +39,7 @@ export class RestoreManager extends EventEmitter {
   private initializeStrategies(): void {
     // Create FileOperations instance for dependency injection
     // Import is allowed from application layer since it's using infrastructure
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+
     const {
       FileOperations,
     } = require("../../infrastructure/backup/file-operations");
