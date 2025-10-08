@@ -205,6 +205,51 @@ export class DiversityPlanner {
   }
 
   /**
+   * Check if plan is converged (no significant changes from previous iteration)
+   *
+   * Prevents oscillation by detecting when metrics are "close enough" to targets.
+   */
+  isPlanConverged(
+    currentPlan: DiversityPlan,
+    previousPlan: DiversityPlan | null,
+  ): boolean {
+    if (!previousPlan) {
+      return false; // First iteration, not converged
+    }
+
+    // Check if coverage ratio changed significantly
+    const coverageChange = Math.abs(
+      currentPlan.gap.entityGap.coverageRatio -
+        previousPlan.gap.entityGap.coverageRatio,
+    );
+    if (coverageChange > this.target.convergenceThreshold) {
+      return false;
+    }
+
+    // Check if question type deviations changed significantly
+    const currentDeviations = Array.from(
+      currentPlan.gap.questionTypeGap.deviationFromIdeal.values(),
+    );
+    const previousDeviations = Array.from(
+      previousPlan.gap.questionTypeGap.deviationFromIdeal.values(),
+    );
+
+    if (currentDeviations.length !== previousDeviations.length) {
+      return false;
+    }
+
+    for (let i = 0; i < currentDeviations.length; i++) {
+      const change = Math.abs(currentDeviations[i] - previousDeviations[i]);
+      if (change > this.target.convergenceThreshold) {
+        return false;
+      }
+    }
+
+    // Converged if all changes are within threshold
+    return true;
+  }
+
+  /**
    * Generate improvement suggestions in human-readable format
    */
   generateSuggestions(plan: DiversityPlan): string[] {

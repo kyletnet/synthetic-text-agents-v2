@@ -201,12 +201,88 @@ describe("DiversityPlanner", () => {
     });
   });
 
+  describe("Convergence Detection", () => {
+    it("should detect convergence when changes are within threshold", () => {
+      const planner = new DiversityPlanner();
+
+      const metrics1: CoverageMetrics = {
+        entityCoverage: 0.85,
+        questionTypeDistribution: new Map([
+          ["factual", 30],
+          ["conceptual", 25],
+        ]),
+        evidenceSourceCounts: new Map([
+          ["web_search", 30],
+          ["knowledge_base", 25],
+        ]),
+        totalSamples: 55,
+      };
+
+      const metrics2: CoverageMetrics = {
+        entityCoverage: 0.86, // Only 1% change (within 2% threshold)
+        questionTypeDistribution: new Map([
+          ["factual", 31],
+          ["conceptual", 24],
+        ]),
+        evidenceSourceCounts: new Map([
+          ["web_search", 31],
+          ["knowledge_base", 24],
+        ]),
+        totalSamples: 55,
+      };
+
+      const plan1 = planner.createPlan(metrics1);
+      const plan2 = planner.createPlan(metrics2);
+
+      expect(planner.isPlanConverged(plan2, plan1)).toBe(true);
+    });
+
+    it("should not detect convergence when changes exceed threshold", () => {
+      const planner = new DiversityPlanner();
+
+      const metrics1: CoverageMetrics = {
+        entityCoverage: 0.7,
+        questionTypeDistribution: new Map([["factual", 100]]),
+        evidenceSourceCounts: new Map([["web_search", 100]]),
+        totalSamples: 100,
+      };
+
+      const metrics2: CoverageMetrics = {
+        entityCoverage: 0.9, // 20% change (exceeds 2% threshold)
+        questionTypeDistribution: new Map([["factual", 100]]),
+        evidenceSourceCounts: new Map([["web_search", 100]]),
+        totalSamples: 100,
+      };
+
+      const plan1 = planner.createPlan(metrics1);
+      const plan2 = planner.createPlan(metrics2);
+
+      expect(planner.isPlanConverged(plan2, plan1)).toBe(false);
+    });
+
+    it("should return false for first iteration (no previous plan)", () => {
+      const planner = new DiversityPlanner();
+
+      const metrics: CoverageMetrics = {
+        entityCoverage: 0.9,
+        questionTypeDistribution: new Map([["factual", 100]]),
+        evidenceSourceCounts: new Map([["web_search", 100]]),
+        totalSamples: 100,
+      };
+
+      const plan = planner.createPlan(metrics);
+
+      expect(planner.isPlanConverged(plan, null)).toBe(false);
+    });
+  });
+
   describe("Custom Targets", () => {
     it("should use custom diversity targets", () => {
       const customTarget: DiversityTarget = {
         entityCoverageMin: 0.95, // Higher than default 0.9
         questionTypeBalanceTolerance: 0.05, // Stricter than default 0.1
         evidenceSourceMinCount: 5, // More than default 3
+        convergenceThreshold: 0.01, // Stricter convergence (1% instead of 2%)
       };
 
       const planner = new DiversityPlanner(customTarget);

@@ -2,6 +2,14 @@
   "schemaVersion": "2025-10-inspect-v1",
   "autoFixable": [
     {
+      "id": "prettier-format",
+      "severity": "low",
+      "description": "코드 포매팅 불일치",
+      "command": "npx prettier --write .",
+      "estimatedDuration": 10,
+      "impact": "코드 스타일 일관성 개선"
+    },
+    {
       "id": "eslint-warnings",
       "severity": "low",
       "description": "ESLint 경고 59개",
@@ -33,16 +41,16 @@
     }
   ],
   "summary": {
-    "totalIssues": 2,
-    "autoFixableCount": 1,
+    "totalIssues": 3,
+    "autoFixableCount": 2,
     "manualApprovalCount": 1,
-    "healthScore": 85,
+    "healthScore": 80,
     "typescript": "pass",
     "codeStyle": "fail",
     "tests": "fail",
     "security": "fail",
     "integrationScore": 55
   },
-  "timestamp": "2025-10-08T04:01:45.154Z",
+  "timestamp": "2025-10-08T04:12:54.028Z",
   "ttl": 1800
 }

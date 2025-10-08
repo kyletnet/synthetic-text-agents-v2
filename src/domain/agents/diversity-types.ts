@@ -14,6 +14,7 @@ export interface DiversityTarget {
   readonly entityCoverageMin: number; // Minimum entity coverage (0-1), e.g., 0.9
   readonly questionTypeBalanceTolerance: number; // Max deviation from ideal distribution, e.g., 0.1
   readonly evidenceSourceMinCount: number; // Minimum distinct evidence sources
+  readonly convergenceThreshold: number; // Convergence detection threshold (0-1), e.g., 0.02
 }
 
 /**
@@ -23,6 +24,7 @@ export const DEFAULT_DIVERSITY_TARGET: DiversityTarget = Object.freeze({
   entityCoverageMin: 0.9,
   questionTypeBalanceTolerance: 0.1,
   evidenceSourceMinCount: 3,
+  convergenceThreshold: 0.02, // 2% convergence threshold to prevent oscillation
 });
 
 /**
