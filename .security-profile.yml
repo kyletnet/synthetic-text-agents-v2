@@ -1,0 +1,135 @@
+# Security Profiles - Environment-specific Security Settings
+#
+# Purpose:
+# - Define different security levels for dev/staging/prod
+# - Progressive enforcement: strict in prod, relaxed in dev
+# - Prevent "Over-Hardened System" while maintaining security
+#
+# Usage:
+#   NODE_ENV=development  → Uses 'dev' profile
+#   NODE_ENV=staging      → Uses 'staging' profile
+#   NODE_ENV=production   → Uses 'prod' profile
+#
+# Override: SECURITY_PROFILE=custom
+
+profiles:
+  # Development: Maximum flexibility
+  dev:
+    name: "Development"
+    description: "Relaxed security for rapid iteration"
+
+    sandbox:
+      enabled: false              # Disable sandbox for dev
+      logOnly: true               # Log violations but don't block
+
+    secretLint:
+      enabled: true               # Still detect secrets
+      failOnDetect: false         # But don't fail build
+
+    sbom:
+      mode: "adaptive"            # Allow ±1 version changes
+      enforceHash: false          # Don't block on hash mismatch
+
+    governance:
+      enforceLevel: "log"         # Log policy violations only
+      deadLockRecovery: true      # Auto-enable SAFE_MODE
+
+    license:
+      verify: false               # Skip license verification
+      warnOnly: true              # Warnings instead of errors
+
+    recommended:
+      - "Fast iteration"
+      - "Minimal security friction"
+      - "Full observability"
+
+  # Staging: Balanced security
+  staging:
+    name: "Staging"
+    description: "Moderate security with monitoring"
+
+    sandbox:
+      enabled: true               # Enable sandbox
+      logOnly: true               # Log violations, don't block yet
+
+    secretLint:
+      enabled: true
+      failOnDetect: true          # Block secrets in staging
+
+    sbom:
+      mode: "adaptive"            # Still adaptive
+      enforceHash: true           # But enforce hash now
+
+    governance:
+      enforceLevel: "warn"        # Warn on policy violations
+      deadLockRecovery: true      # Keep recovery enabled
+
+    license:
+      verify: true
+      warnOnly: true              # Warnings for now
+
+    recommended:
+      - "Pre-production validation"
+      - "Security monitoring"
+      - "Performance testing"
+
+  # Production: Maximum security
+  prod:
+    name: "Production"
+    description: "Strict security enforcement"
+
+    sandbox:
+      enabled: true
+      logOnly: false              # Full enforcement
+
+    secretLint:
+      enabled: true
+      failOnDetect: true
+
+    sbom:
+      mode: "strict"              # No version tolerance
+      enforceHash: true           # Strict hash matching
+
+    governance:
+      enforceLevel: "enforce"     # Full enforcement
+      deadLockRecovery: false     # No auto-recovery in prod
+
+    license:
+      verify: true
+      warnOnly: false             # Fail on license violations
+
+    recommended:
+      - "Maximum security"
+      - "Zero tolerance"
+      - "Audit all operations"
+
+# Feature flags per profile
+features:
+  dev:
+    experimentalAgents: true
+    mutationSandbox: true
+    adaptiveIntegrity: true
+
+  staging:
+    experimentalAgents: true
+    mutationSandbox: false
+    adaptiveIntegrity: true
+
+  prod:
+    experimentalAgents: false
+    mutationSandbox: false
+    adaptiveIntegrity: false
+
+# Metrics and monitoring
+monitoring:
+  dev:
+    level: "debug"
+    sampleRate: 1.0
+
+  staging:
+    level: "info"
+    sampleRate: 0.5
+
+  prod:
+    level: "warn"
+    sampleRate: 0.1
