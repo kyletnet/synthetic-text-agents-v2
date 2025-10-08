@@ -1,5 +1,52 @@
 # Changelog
 
+## 2025-10-08 - Execution Plan (v3.2): "Features → Outcomes" Strategic Shift
+
+- **docs**: **NEW RFC - v3.2 Equilibrium Execution Plan** (30/60/90 roadmap)
+  - **Strategic Shift**: "What to build?" → "What to focus, systematize, and automate?"
+  - **Philosophy**: "Stop building features. Start optimizing outcomes through KPI-driven architecture."
+  - **5 Core Principles** (Non-Negotiable):
+    1. Trust-First Design (Gate + Evidence + Explainability + HIL mandatory)
+    2. Multi-Tenant & Multi-Loop Scalability (namespace isolation, per-tenant SLO/Quota/Cost)
+    3. Outcome-Over-Feature (≥2 KPI improvement or auto-reject)
+    4. Event Spine Decoupling (all modules communicate via Event Spine only)
+    5. Operational Intelligence Embedded (Meta-Gov, Simulator, DP, QoS always-on)
+  - **12 Systematic Initiatives** (DoD-driven):
+    - **Governance**: Autonomous Gate Executor v2, GNS v1, Compliance Template Engine
+    - **Multi-Tenant**: Control Plane, Event Spine QoS Controller, Adaptive Cost Router
+    - **Feedback**: Feedback Intelligence Fabric v1, Retrieval↔Feedback Sync
+    - **Transparency**: Trust Dashboard, Audit Interface + Explainability API
+    - **Intelligence**: Synthetic Simulator, Cross-Tenant Intelligence (ε-DP)
+  - **5 Overlooked Areas** (Critical補完):
+    1. Evidence Traceability (C2PA/Content Signature)
+    2. License Matrix Scanner (weekly)
+    3. Zero Trust Shared Audit (customer-facing)
+    4. Experiment Lifecycle (Exp → Stable → Archived)
+    5. Chaos Runbook (4 critical scenarios)
+  - **4 Growth Levers** (Revenue/Adoption):
+    1. Industry Policy Packs (Healthcare/Finance/Legal)
+    2. Workflow Bridge (Slack/Jira/Email approval)
+    3. ROI Dashboard (before/after auto-calculation)
+    4. SDK/Plugin Marketplace
+  - **KPI Framework**:
+    - Quality: Groundedness ≥85%, Alignment ≥85%
+    - Performance: p95 ≤3.1s, Error <1%
+    - Cost: Cost/1kQA ≤ target
+    - Learning: Feedback Utilization ≥70%
+    - Trust: Evidence Traceability 100%, Compliance ≥95%
+  - **30/60/90 Execution**:
+    - Day 1-30: Feedback Loop + Event Spine + Trust Dashboard Beta
+    - Day 31-60: Feedback Fabric + Multi-Tenant + Audit Interface
+    - Day 61-90: Meta-Gov + Simulator + Compliance Packs
+  - **Stop · Start · Continue Framework** (feature explosion prevention)
+  - **Risk Map**: LLM vendor failure, EU AI Act, RAG poisoning, tenant surge
+
+- **strategy**: Outcome-driven development framework
+  - **Market Position**: "The only AI platform that humans trust to run autonomously"
+  - **Success Criteria**: "I trust this system to make decisions I can defend to regulators"
+  - **Competitive Moat**: 3C System (Cognition + Coordination + Context) + Governance Nervous System
+  - **Go-to-Market**: Regulated PoC → Standard SDK → Ecosystem Platform
+
 ## 2025-10-08 - Equilibrium Evolution (v3.2): "Self-Explaining → Self-Trusting Ecosystem"
 
 - **docs**: **NEW RFC - Governance Nervous System Plan** (Phase 2.6-2.8 + 5 Critical Weaknesses)
