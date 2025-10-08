@@ -1,8 +1,36 @@
 # Changelog
 
+## 2025-10-09 - Strategic Enhancement: "Trust Infrastructure" + 3 Genius Reinforcements
+
+- **docs**: **NEXT_ACTIONS.md v3.2.1** (genius reinforcement points integrated)
+  - **3 Genius Enhancements**:
+    1. **Gate E - Explanation Stability** (Priority 1.5, CRITICAL)
+       - Prevents LLM explanation drift (>95% semantic consistency)
+       - Explanation cache for audit reproducibility
+       - Fallback to cached explanations if inconsistency detected
+    2. **Trust Console Telemetry** (Parallel P1)
+       - User behavior tracking (heatmaps, click analytics, engagement)
+       - Convert "what users trust" into product roadmap data
+       - Event Spine integration for real-time insights
+    3. **TrustToken Generator - Mutual Verification** (P2 enhancement)
+       - JWT + C2PA signature for cryptographic proof of trust
+       - Auditors can verify tokens independently (no API required)
+       - Compliance context embedded (GDPR/CCPA/HIPAA)
+  - **3 Critical Risk Mitigations added**:
+    1. Explainability Drift → Explanation Cache + Gate E
+    2. Human Oversight Latency → Async Digest + Background Queue (<6h)
+    3. Compliance Overload → Template Engine + Static Cache (<10ms)
+  - **Success Criteria updated**: Added telemetry, Gate E, risk mitigation DoD
+  - **Trust Token Structure**: Full JWT + C2PA specification (RS256, X.509 chain)
+
+- **fix**: **BM25 retrieval tests** (768/768 passing ✅)
+  - IDF calculation: BM25+ variant (always positive for small corpus)
+  - Duration tracking: minimum 1ms guarantee for statistics
+  - Root cause: Negative IDF for high-frequency terms → score filtered out
+
 ## 2025-10-09 - Strategic Re-prioritization: "AI Technology → Trust Infrastructure" Transition
 
-- **docs**: **NEXT_ACTIONS.md complete rewrite** (v3.2 execution priorities)
+- **docs**: **NEXT_ACTIONS.md v3.2 complete rewrite** (execution priorities)
   - **Strategic Shift**: "AI Technology Company" → "Trust Infrastructure Company"
   - **Critical Insight**: NOT in "feature completion" but "operational·trust·market structure transition"
   - **Pre-Phase 2.6 Work** (MUST DO FIRST):

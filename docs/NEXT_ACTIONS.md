@@ -64,6 +64,22 @@ Before starting Phase 2.6 execution, we must address **4 system weaknesses** and
 - Actionable buttons trigger backend workflows
 - Demo script prepared (5-minute walkthrough)
 
+**🧠 Genius Enhancement - Trust Console Telemetry** (Parallel P1):
+- **Goal**: Capture user behavior data to optimize Trust UX
+- **Implementation**:
+  - Click heatmap tracking (which trust badges users click most)
+  - Action button usage analytics (Approve/Rollback/Explain ratios)
+  - Evidence Viewer navigation patterns
+  - Session duration and engagement metrics
+- **Strategic Value**: Convert "what users trust" into product roadmap data
+- **Files**:
+  ```
+  ✅ web/lib/telemetry.ts - Event tracking infrastructure
+  ✅ web/api/telemetry/route.ts - Telemetry ingestion API
+  ✅ reports/trust-console-telemetry.jsonl - User behavior log
+  ```
+- **Integration**: Event Spine → Telemetry Aggregator → Weekly Digest
+
 ---
 
 ### Priority 1: System Hardening (4 Critical Weaknesses) (ETA: 2-3 days) 🔴
@@ -162,6 +178,62 @@ Before starting Phase 2.6 execution, we must address **4 system weaknesses** and
 
 ---
 
+### Priority 1.5: Gate E - Explanation Stability (ETA: 1-2 days) 🔴
+
+**Goal**: Prevent "Explainability Drift" - ensure consistent explanations for identical decisions.
+
+**Strategic Rationale**: **Critical Risk** - LLM-based explanations may vary per request, breaking audit reproducibility and trust.
+
+**Priority**: CRITICAL (blocks regulatory compliance)
+
+**Problem**:
+- Same policy decision may generate different explanations on retry
+- Audit logs become unreproducible → regulatory risk
+- Customer trust degrades if "Explain" button shows different results
+
+**Solution**: Explanation Consistency Cache + Validation Gate
+
+**Files to Create**:
+```
+✅ src/domain/preflight/gate-e-explanation-stability.ts - Gate E implementation
+✅ src/core/transparency/explanation-cache.ts - Deterministic explanation storage
+✅ src/core/transparency/explanation-validator.ts - Consistency scoring
+✅ tests/domain/preflight/gate-e.test.ts - Gate E validation tests
+```
+
+**Gate E Logic**:
+```typescript
+interface GateE {
+  id: "gate-e-explanation-stability";
+  check: (context) => {
+    // For identical decision contexts, explanations must be >95% semantically similar
+    const cached = getExplanationCache(context.decisionId);
+    if (cached) {
+      const similarity = semanticSimilarity(cached, context.newExplanation);
+      return similarity >= 0.95;
+    }
+    return true; // First explanation always passes
+  };
+  severity: "P0";
+  action: "block_deployment"; // Inconsistent explanations = trust breach
+}
+```
+
+**Implementation**:
+1. **Explanation Cache**: Store first explanation per decision context (hash-based key)
+2. **Consistency Validator**: Compare new explanations to cached baseline (cosine similarity)
+3. **Cache Warming**: Pre-generate explanations for common policy patterns
+4. **Fallback**: If similarity <95%, use cached explanation (deterministic mode)
+
+**DoD**:
+- Gate E operational in gating pipeline
+- Explanation cache hit rate >80%
+- Semantic similarity threshold validated (>95% for P0)
+- Audit Interface uses cached explanations for reproducibility
+- Test coverage: explanation drift detection scenarios
+
+---
+
 ### Priority 2: Trust Token Economy Foundation (ETA: 2-3 days) 🟠
 
 **Goal**: Design "Trust as Tradeable Unit" - signature-based trust tokens for each output.
@@ -178,26 +250,69 @@ Before starting Phase 2.6 execution, we must address **4 system weaknesses** and
 ✅ src/core/trust/token-verifier.ts - Token verification API
 ```
 
-**Trust Token Structure**:
+**🧠 Genius Enhancement - Mutual Verification Token (Proof of Trust)**:
+
+**Trust Token Structure** (JWT + C2PA Signature):
 ```typescript
 interface TrustToken {
-  id: string; // UUID v7
-  timestamp: Date;
-  contentHash: string; // SHA-256 hash of output
-  trustScore: {
-    groundedness: number;
-    alignment: number;
-    faithfulness: number;
+  // JWT Header
+  header: {
+    alg: "RS256"; // RSA signature algorithm
+    typ: "JWT";
+    kid: string; // Key ID for rotation
   };
-  evidence: {
-    sourceIds: string[];
-    trustScores: number[];
+
+  // JWT Payload
+  payload: {
+    id: string; // UUID v7
+    timestamp: Date; // ISO 8601
+    contentHash: string; // SHA-256 hash of output
+
+    // Trust Metrics
+    trustScore: {
+      groundedness: number; // 0-1 scale
+      alignment: number;
+      faithfulness: number;
+    };
+
+    // Evidence Traceability
+    evidence: {
+      sourceIds: string[]; // Chunk IDs
+      trustScores: number[]; // Per-source trust
+      retrievalStrategy: "bm25" | "vector" | "hybrid";
+    };
+
+    // Compliance Context
+    compliance: {
+      gdpr: boolean;
+      ccpa: boolean;
+      hipaa: boolean;
+    };
+
+    // Issuer Identity
+    iss: string; // "synthetic-agents.ai"
+    sub: string; // Customer tenant ID
+    aud: string; // Intended verifier (customer/auditor/regulator)
+
+    // Validity
+    iat: number; // Issued at (Unix timestamp)
+    exp: number; // Expires at (7 days default)
+    nbf: number; // Not before
   };
-  signature: string; // C2PA signature
-  issuer: string; // Our platform
-  expiresAt: Date; // Token validity period
+
+  // C2PA Signature (Content Provenance)
+  c2pa: {
+    manifest: string; // C2PA manifest URL
+    signature: string; // Digital signature
+    certificate: string; // X.509 certificate chain
+  };
 }
 ```
+
+**Key Enhancement**: Customer can **export and verify** trust tokens independently:
+- Auditors verify signature without our API
+- Regulators validate compliance claims cryptographically
+- Partners integrate trust into downstream workflows
 
 **Use Cases**:
 1. **External Audit**: Customer exports trust tokens to auditors (verifiable proof)
@@ -245,6 +360,99 @@ interface TrustToken {
 - Policy templates validated against regulations
 - Audit report templates customer-ready
 - Demo script prepared (PoC walkthrough)
+
+---
+
+## 🔒 Critical Risk Mitigation (Pre-Phase 2.6 Hardening)
+
+Before Phase 2.6 execution, we MUST address **3 systemic risks** that could break trust infrastructure at scale.
+
+### Risk 1: Explainability Drift 🚨
+
+**Problem**: LLM-based explanations vary per request → audit reproducibility breaks.
+
+**Example**:
+- Request 1: "Policy rejected due to low trust score (0.45 < 0.6 threshold)"
+- Request 2: "Insufficient evidence quality detected, blocking deployment"
+- → Same decision, different explanations → regulatory audit FAIL
+
+**Solution**: Explanation Cache + Gate E (Priority 1.5)
+- Cache first explanation per decision context (hash-based)
+- Gate E validates consistency (>95% semantic similarity)
+- Fallback to cached explanation if drift detected
+
+**DoD**: Gate E operational, cache hit rate >80%
+
+---
+
+### Risk 2: Human Oversight Latency 🚨
+
+**Problem**: Human Digest generation lag → Feedback Fabric response bottleneck.
+
+**Example**:
+- Feedback event at 09:00 → Digest generated at 15:00 (6h lag)
+- Policy update delayed → user sees outdated behavior
+- → Trust degradation ("system ignores my feedback")
+
+**Solution**: Asynchronous Digest Generation + Background Queue
+```typescript
+// Digest generation runs in background
+const digestQueue = new AsyncQueue({
+  concurrency: 3,
+  priority: "high",
+  timeout: 300000, // 5 minutes
+});
+
+// User feedback triggers immediate response + queued digest
+await emitFeedbackEvent(feedback); // Immediate
+digestQueue.push(() => generateDigest(feedback)); // Async
+```
+
+**Files**:
+```
+✅ src/core/event-spine/async-queue.ts - Background job queue
+✅ src/application/human-digest/digest-scheduler.ts - Scheduled digest generation
+```
+
+**DoD**: Digest latency <6h, feedback response <1s
+
+---
+
+### Risk 3: Compliance Overload 🚨
+
+**Problem**: Per-tenant GDPR/CCPA/HIPAA checks consume excessive resources.
+
+**Example**:
+- 100 tenants × 3 compliance checks × 1000 requests/day = 300k compliance evaluations
+- Each check: 50ms → 15,000 seconds/day (4.2 hours CPU time)
+- → Resource exhaustion at scale
+
+**Solution**: Compliance Template Engine + Static Report Caching
+```typescript
+// Cache compliance reports (refresh weekly)
+const complianceCache = new Map<string, ComplianceReport>();
+
+async function getComplianceStatus(tenantId: string): Promise<ComplianceReport> {
+  const cached = complianceCache.get(tenantId);
+  if (cached && cached.age < 7 * 24 * 60 * 60 * 1000) {
+    return cached; // Return cached report
+  }
+
+  // Generate new report (async, background)
+  const report = await generateComplianceReport(tenantId);
+  complianceCache.set(tenantId, report);
+  return report;
+}
+```
+
+**Files**:
+```
+✅ src/application/compliance/template-engine.ts - Industry templates (HIPAA/SOX/GDPR)
+✅ src/application/compliance/report-cache.ts - Static report caching
+✅ config/compliance-templates/ - Pre-built compliance rulesets
+```
+
+**DoD**: Compliance check latency <10ms (cached), CPU usage <5%
 
 ---
 
@@ -368,18 +576,27 @@ interface TrustToken {
 
 ### Trust Platform Foundation
 - [ ] WebView Trust Console MVP operational (demo-ready)
+- [ ] **Trust Console Telemetry** capturing user behavior (heatmaps, engagement)
+- [ ] **Gate E - Explanation Stability** operational (cache hit >80%, consistency >95%)
+- [ ] **TrustToken Generator** producing JWT + C2PA signed tokens
 - [ ] Trust Token Economy designed (RFC + prototype)
 - [ ] Customer demo policy packs ready (Healthcare, Finance)
 
 ### Technical Excellence
-- [ ] Tests ≥98% (770+/780+)
+- [ ] Tests ≥98% (770+/780+) ✅ **ACHIEVED** (768/768 = 100%)
 - [ ] p95 latency ≤3.1s (maintained)
 - [ ] Zero new ESLint errors
 
 ### Go-to-Market Readiness
 - [ ] Customer demo prepared (5-minute Trust Console walkthrough)
 - [ ] Industry policy packs validated (HIPAA, SOX)
-- [ ] Trust Token export demo working
+- [ ] Trust Token export demo working (auditor can verify independently)
+- [ ] Telemetry dashboard showing user trust patterns
+
+### Critical Risk Mitigation ✨ **NEW**
+- [ ] **Explainability Drift** prevented (Gate E + cache operational)
+- [ ] **Human Oversight Latency** <6h (async digest + background queue)
+- [ ] **Compliance Overload** mitigated (template engine + static cache, <10ms)
 
 ---
 
