@@ -1,0 +1,66 @@
+{
+  "version": "1.0.0",
+  "updated": "2025-10-08",
+  "description": "Sandbox Load Monitor configuration for external policy parsing",
+  "cpu_quota": {
+    "enabled": true,
+    "max_percent": 30,
+    "monitoring_interval_ms": 100,
+    "violation_action": "terminate"
+  },
+  "memory_quota": {
+    "enabled": true,
+    "max_mb": 256,
+    "monitoring_interval_ms": 500,
+    "violation_action": "terminate"
+  },
+  "timeout": {
+    "enabled": true,
+    "max_execution_ms": 5000,
+    "violation_action": "terminate"
+  },
+  "network": {
+    "enabled": false,
+    "allow_outbound": false,
+    "allow_inbound": false
+  },
+  "file_system": {
+    "enabled": true,
+    "read_only": true,
+    "allowed_paths": [
+      "/Users/kyle/synthetic-text-agents-v2/configs/governance",
+      "/Users/kyle/synthetic-text-agents-v2/docs/RFC"
+    ],
+    "blocked_paths": [
+      "/Users/kyle/synthetic-text-agents-v2/src",
+      "/Users/kyle/synthetic-text-agents-v2/node_modules"
+    ]
+  },
+  "alerts": {
+    "cpu_spike": {
+      "threshold_percent": 25,
+      "duration_ms": 1000,
+      "action": "warn"
+    },
+    "memory_spike": {
+      "threshold_mb": 200,
+      "duration_ms": 2000,
+      "action": "warn"
+    },
+    "infinite_loop_detection": {
+      "enabled": true,
+      "max_iterations": 10000,
+      "action": "terminate"
+    }
+  },
+  "logging": {
+    "enabled": true,
+    "log_path": "reports/governance/sandbox-monitor.log",
+    "log_level": "info"
+  },
+  "metadata": {
+    "purpose": "Prevent CPU spike, infinite loops, and resource exhaustion during external policy parsing",
+    "phase": "Phase 2B → 2C Transition",
+    "robustness_axis": "Sandbox Load Monitor"
+  }
+}

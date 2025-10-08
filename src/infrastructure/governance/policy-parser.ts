@@ -84,11 +84,22 @@ export class PolicyParser {
   }
 
   /**
-   * Parse external policy document
+   * Parse external policy document (SAFE with automatic rollback)
    *
-   * Safe parsing with Sandbox Boundary protection.
+   * Trust Boundary Protection: Any parsing error triggers immediate rollback.
    */
   async parse(
+    document: ExternalPolicyDocument,
+  ): Promise<PolicyParserResult> {
+    return await this.safeParse(document);
+  }
+
+  /**
+   * Safe parse with automatic rollback on any error
+   *
+   * Trust Boundary: Document structure corruption → immediate rollback
+   */
+  private async safeParse(
     document: ExternalPolicyDocument,
   ): Promise<PolicyParserResult> {
     const errors: string[] = [];
@@ -101,11 +112,14 @@ export class PolicyParser {
       safetyChecks.push(...sandboxCheck.checks);
 
       if (!sandboxCheck.safe) {
+        // Rollback: Safety check failed
+        await this.rollbackPolicy(document, "safety_check_failed");
+
         return {
           success: false,
           parsed: null,
           errors: sandboxCheck.errors,
-          warnings,
+          warnings: ["Policy rolled back due to safety check failure"],
           metadata: {
             mode: this.mode,
             source: document.source ?? "unknown",
@@ -115,8 +129,27 @@ export class PolicyParser {
         };
       }
 
-      // Step 2: Parse document structure
-      const parsed = this.parseDocumentStructure(document);
+      // Step 2: Parse document structure (with try/catch for corruption)
+      let parsed: ParsedPolicy;
+      try {
+        parsed = this.parseDocumentStructure(document);
+      } catch (parseError) {
+        // Rollback: Document structure corrupted
+        await this.rollbackPolicy(document, "structure_corruption");
+
+        return {
+          success: false,
+          parsed: null,
+          errors: [`Document structure corrupted: ${parseError}`],
+          warnings: ["Policy rolled back due to structure corruption"],
+          metadata: {
+            mode: this.mode,
+            source: document.source ?? "unknown",
+            timestamp: new Date(),
+            safetyChecks,
+          },
+        };
+      }
 
       // Step 3: Validate (if mode is "validate" or "full")
       if (this.mode === "validate" || this.mode === "full") {
@@ -338,6 +371,36 @@ export class PolicyParser {
    */
   isExecutionAllowed(): boolean {
     return this.mode === "full" && this.allowExecution;
+  }
+
+  /**
+   * Rollback policy on parsing failure
+   *
+   * Trust Boundary: Immediate rollback prevents partial/corrupted policies.
+   */
+  private async rollbackPolicy(
+    document: ExternalPolicyDocument,
+    reason: string,
+  ): Promise<void> {
+    console.warn(
+      `[Policy Parser] Rolling back policy: ${document.name || "unknown"} (reason: ${reason})`,
+    );
+
+    // Log rollback event to governance
+    const rollbackEvent = {
+      type: "policy_rollback",
+      timestamp: new Date().toISOString(),
+      policy: document.name || "unknown",
+      source: document.source || "unknown",
+      reason,
+    };
+
+    console.log(
+      `[Policy Parser] Rollback event: ${JSON.stringify(rollbackEvent)}`,
+    );
+
+    // TODO: Integrate with Governance Event Bus
+    // await governanceEventBus.emit('policy_rollback', rollbackEvent);
   }
 }
 
