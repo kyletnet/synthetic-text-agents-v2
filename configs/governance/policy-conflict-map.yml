@@ -1,0 +1,254 @@
+# Policy Conflict Map
+#
+# Defines priority and conflict resolution rules for external policies.
+# Prevents system degradation when multiple external policies are applied simultaneously.
+#
+# Phase 2B → 2C Transition: Robustness Patch
+
+version: "1.0.0"
+updated: "2025-10-08"
+
+# ============================================================================
+# Policy Priority Hierarchy
+# ============================================================================
+#
+# Higher priority = Applied first, overrides lower priority policies
+# Range: 1 (highest) to 100 (lowest)
+
+priority_levels:
+  # Core System Policies (1-20)
+  - level: 1
+    name: "critical_architecture"
+    description: "Critical architecture constraints (DDD boundaries, circular deps)"
+    policies:
+      - "no-circular-dependencies"
+      - "ddd-boundary-enforcement"
+
+  - level: 5
+    name: "security"
+    description: "Security policies (PII, license, vulnerability)"
+    policies:
+      - "pii-protection"
+      - "license-compliance"
+      - "vulnerability-gate"
+
+  - level: 10
+    name: "stability"
+    description: "Stability and regression policies"
+    policies:
+      - "threshold-drift-detection"
+      - "baseline-regression-guard"
+      - "gate-c-stability"
+
+  # Quality Policies (21-50)
+  - level: 25
+    name: "quality_baseline"
+    description: "Baseline quality requirements"
+    policies:
+      - "evidence-alignment-threshold"
+      - "entity-coverage-target"
+      - "question-type-balance"
+
+  - level: 30
+    name: "advanced_quality"
+    description: "Advanced quality checkers (experimental)"
+    policies:
+      - "multi-view-embedding"
+      - "hybrid-search"
+      - "ragas-evaluation"
+
+  # External Policies (51-100)
+  - level: 60
+    name: "external_rfc"
+    description: "External RFC policies (Phase 2C integration)"
+    policies:
+      - "rfc-*"
+      - "external-*"
+
+  - level: 80
+    name: "experimental"
+    description: "Experimental policies (lowest priority)"
+    policies:
+      - "experiment-*"
+
+# ============================================================================
+# Conflict Resolution Rules
+# ============================================================================
+
+conflict_resolution:
+  # Strategy: How to resolve conflicts when policies contradict
+  # Options: "priority", "manual", "vote", "fail-safe"
+  strategy: "priority"
+
+  # Fail-safe behavior: What to do when conflict resolution fails
+  # Options: "block", "warn", "allow"
+  fail_safe: "block"
+
+  # Manual approval required for conflicting policies
+  require_approval_on_conflict: true
+
+  # Log all conflict resolutions to governance ledger
+  log_resolutions: true
+
+# ============================================================================
+# Policy Conflict Matrix
+# ============================================================================
+#
+# Explicit conflict declarations between policies.
+# If two policies conflict, only the higher priority one is applied.
+
+conflicts:
+  # Multi-view vs Query-side embedding (cannot run both)
+  - policy_a: "multi-view-embedding"
+    policy_b: "query-side-embedding"
+    reason: "Both modify embedding layer - cannot coexist"
+    resolution: "priority"
+
+  # Strict vs Relaxed evidence alignment
+  - policy_a: "evidence-alignment-strict"
+    policy_b: "evidence-alignment-relaxed"
+    reason: "Contradictory thresholds"
+    resolution: "priority"
+
+  # Feature Flag conflicts
+  - policy_a: "FEATURE_QUALITY_HYBRID_SEARCH"
+    policy_b: "FEATURE_QUALITY_BM25_ONLY"
+    reason: "Hybrid search includes BM25 - redundant"
+    resolution: "priority"
+
+# ============================================================================
+# Policy Dependencies
+# ============================================================================
+#
+# Dependencies between policies (must be applied in order).
+
+dependencies:
+  # Evidence alignment depends on evidence extraction
+  - policy: "evidence-alignment-threshold"
+    depends_on:
+      - "evidence-extraction-enabled"
+    reason: "Cannot measure alignment without extraction"
+
+  # Hybrid search depends on BM25 and vector search
+  - policy: "hybrid-search"
+    depends_on:
+      - "bm25-indexing"
+      - "vector-embedding"
+    reason: "Hybrid search requires both BM25 and vector indices"
+
+  # Advanced quality depends on baseline quality
+  - policy: "multi-view-embedding"
+    depends_on:
+      - "evidence-alignment-threshold"
+    reason: "Advanced quality builds on baseline quality"
+
+# ============================================================================
+# Mutual Exclusion Groups
+# ============================================================================
+#
+# Groups of policies where only ONE can be active at a time.
+
+mutual_exclusion_groups:
+  # Embedding strategies (only one at a time)
+  - name: "embedding_strategy"
+    policies:
+      - "multi-view-embedding"
+      - "query-side-embedding"
+      - "translation-embedding"
+    max_active: 1
+    reason: "Only one embedding strategy can be active"
+
+  # Drift detection modes
+  - name: "drift_mode"
+    policies:
+      - "drift-detection-strict"
+      - "drift-detection-relaxed"
+      - "drift-detection-adaptive"
+    max_active: 1
+    reason: "Only one drift mode can be active"
+
+# ============================================================================
+# Auto-Resolution Rules
+# ============================================================================
+#
+# Automatic resolution rules for common conflict scenarios.
+
+auto_resolution:
+  # If external policy conflicts with core policy, core wins
+  - condition: "external_conflicts_with_core"
+    action: "prefer_core"
+    reason: "Core policies protect system integrity"
+
+  # If two experimental policies conflict, disable both
+  - condition: "experimental_conflicts_with_experimental"
+    action: "disable_both"
+    reason: "Experimental policies should not destabilize system"
+
+  # If quality policy conflicts with security, security wins
+  - condition: "quality_conflicts_with_security"
+    action: "prefer_security"
+    reason: "Security is never compromised for quality"
+
+# ============================================================================
+# Sandbox Integration
+# ============================================================================
+#
+# Integration with Policy Parser Sandbox (Phase 2C).
+
+sandbox:
+  # Require sandbox validation for all external policies
+  require_sandbox_validation: true
+
+  # Sandbox mode for external policies
+  # Options: "parseOnly", "validate", "full"
+  default_mode: "parseOnly"
+
+  # Maximum external policies allowed simultaneously
+  max_external_policies: 3
+
+  # Grace period for experimental policies (days)
+  experimental_grace_period: 30
+
+# ============================================================================
+# Governance Integration
+# ============================================================================
+
+governance:
+  # Log all policy applications to governance ledger
+  log_applications: true
+
+  # Require approval for P0/P1 policy changes
+  require_approval_for_critical: true
+
+  # Auto-rollback on conflict
+  auto_rollback_on_conflict: true
+
+  # Governance event types
+  event_types:
+    - "policy_applied"
+    - "policy_conflict_detected"
+    - "policy_resolution"
+    - "policy_rollback"
+
+# ============================================================================
+# Notes
+# ============================================================================
+
+# Usage:
+# 1. External policy submitted → Parser validates
+# 2. Check policy-conflict-map.yml for conflicts
+# 3. Resolve conflicts using priority hierarchy
+# 4. Apply policy with Feature Flag
+# 5. Monitor for conflicts in real-time
+# 6. Auto-rollback if system degradation detected
+
+# Safety:
+# - Core policies (priority 1-20) ALWAYS win
+# - Security policies (priority 5) override quality
+# - Experimental policies (priority 80+) lowest priority
+# - Sandbox validation required for all external policies
+
+# Phase 2C Integration:
+# - Policy Parser uses this map for conflict detection
+# - Governance Kernel enforces priority hierarchy
+# - Automatic rollback on conflict (Gate C/D)

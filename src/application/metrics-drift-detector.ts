@@ -19,6 +19,8 @@ export interface DriftDetectorConfig {
   driftThreshold?: number; // Default: 0.15 (15%)
   baselineTag?: string; // Default: "integration-base"
   driftReportPath?: string; // Default: reports/metrics-drift.json
+  rollingWindowSize?: number; // Default: 3 (rolling average window)
+  stableThreshold?: number; // Default: 0.05 (5% stable threshold)
 }
 
 /**
@@ -59,6 +61,7 @@ export class MetricsDriftDetector {
   private readonly logger: Logger;
   private readonly config: Required<DriftDetectorConfig>;
   private readonly projectRoot: string;
+  private driftHistory: Map<string, number[]> = new Map(); // Rolling window history
 
   constructor(
     logger: Logger,
@@ -73,6 +76,8 @@ export class MetricsDriftDetector {
       baselineTag: config.baselineTag ?? "integration-base",
       driftReportPath:
         config.driftReportPath ?? join(this.projectRoot, "reports", "metrics-drift.json"),
+      rollingWindowSize: config.rollingWindowSize ?? 3,
+      stableThreshold: config.stableThreshold ?? 0.05,
     };
   }
 
@@ -103,16 +108,25 @@ export class MetricsDriftDetector {
       question_type_balance: baseline.diversity.questionTypeBalance,
     };
 
-    // Detect drift for each metric
+    // Detect drift for each metric (with rolling average noise filtering)
     for (const [metricName, currentValue] of Object.entries(currentMetrics)) {
       const baselineValue = baselineMetrics[metricName as keyof typeof baselineMetrics];
       const drift = currentValue - baselineValue;
-      const driftAbs = Math.abs(drift);
+
+      // Update drift history for rolling average
+      this.updateDriftHistory(metricName, drift);
+
+      // Calculate rolling average drift (noise filtering)
+      const rollingAvgDrift = this.calculateRollingAverage(metricName);
+      const driftAbs = Math.abs(rollingAvgDrift);
+
+      // Determine if drift exceeds threshold
       const exceeded = driftAbs > this.config.driftThreshold;
 
+      // Determine direction with stable threshold (5%)
       let direction: "improvement" | "degradation" | "stable" = "stable";
-      if (driftAbs > 0.01) {
-        direction = drift > 0 ? "improvement" : "degradation";
+      if (driftAbs > this.config.stableThreshold) {
+        direction = rollingAvgDrift > 0 ? "improvement" : "degradation";
       }
 
       let action = "none";
@@ -128,7 +142,7 @@ export class MetricsDriftDetector {
         metric: metricName,
         current: currentValue,
         baseline: baselineValue,
-        drift,
+        drift: rollingAvgDrift, // Use rolling average drift (noise filtered)
         threshold: this.config.driftThreshold,
         exceeded,
         direction,
@@ -196,6 +210,46 @@ export class MetricsDriftDetector {
       this.logger.error("Failed to load drift report", { error });
       return null;
     }
+  }
+
+  /**
+   * Update drift history for rolling average calculation
+   */
+  private updateDriftHistory(metricName: string, drift: number): void {
+    const history = this.driftHistory.get(metricName) || [];
+
+    // Add new drift value
+    history.push(drift);
+
+    // Keep only last N values (rolling window)
+    if (history.length > this.config.rollingWindowSize) {
+      history.shift(); // Remove oldest value
+    }
+
+    this.driftHistory.set(metricName, history);
+  }
+
+  /**
+   * Calculate rolling average drift (noise filtering)
+   */
+  private calculateRollingAverage(metricName: string): number {
+    const history = this.driftHistory.get(metricName) || [];
+
+    if (history.length === 0) {
+      return 0;
+    }
+
+    // Calculate average of last N drift values
+    const sum = history.reduce((acc, val) => acc + val, 0);
+    return sum / history.length;
+  }
+
+  /**
+   * Clear drift history (for testing or reset)
+   */
+  clearDriftHistory(): void {
+    this.driftHistory.clear();
+    this.logger.info("Drift history cleared");
   }
 
   /**
