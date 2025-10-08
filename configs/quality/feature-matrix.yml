@@ -1,154 +1,184 @@
-# Quality Enhancement Feature Matrix
+# Feature Matrix Configuration
 #
-# Defines activation conditions and conflict policies for Advanced Quality Checkers.
-# Prevents over-activation that could cause performance degradation or cost explosion.
+# Defines:
+# - Plugin activation rules
+# - Conflict resolution
+# - Priority ordering
+# - Canary rollout percentages
 #
-# Reference: docs/RFC/2025-10-integration-brief-quality-enhancement.md
+# Phase 2B Step 3: Plugin Integration
 
-version: 1
-created: 2025-10-08T04:40:00Z
+version: "1.0.0"
+updated: "2025-10-08"
 
-# Feature Activation Priority (1 = highest)
-# Lower priority features are disabled if higher priority ones are active
-priority:
-  ragas_evaluation: 1        # Highest - comprehensive evaluation
-  hybrid_search: 2           # Second - best coverage improvement
-  multiview_embedding: 3     # Third - good alignment improvement
-  translation_embedding: 4   # Fourth - naturalness focus
-  queryside_embedding: 5     # Lowest - lightweight fallback
+# ============================================================================
+# Feedback Loop Configuration
+# ============================================================================
 
-# Conflict Matrix - Define incompatible combinations
-# Format: [feature_a, feature_b] = reason
-conflicts:
-  # Performance conflicts (both are heavy)
-  - features: [ragas_evaluation, hybrid_search]
-    reason: "Both are computationally expensive - combined latency >1s"
-    severity: critical
+feedback_loop:
+  enabled: false # Default OFF (Feature Flag: FEATURE_FEEDBACK_LOOP_ENABLED)
+  canary_percentage: 10 # 10% of requests when enabled
+  auto_adjustment: false # Auto-adjust thresholds (Feature Flag: FEATURE_FEEDBACK_AUTO_ADJUSTMENT)
+  drift_threshold: 0.15 # 15% drift triggers feedback loop
+  baseline_tag: "integration-base"
 
-  - features: [ragas_evaluation, multiview_embedding]
-    reason: "Ragas already includes multi-view evaluation"
-    severity: high
+# ============================================================================
+# Plugin Registry Configuration
+# ============================================================================
 
-  # Redundancy conflicts (same goal)
-  - features: [multiview_embedding, queryside_embedding]
-    reason: "Both target alignment - queryside is subset of multiview"
-    severity: medium
+plugin_registry:
+  enabled: false # Default OFF (Feature Flag: FEATURE_PLUGIN_REGISTRY_ENABLED)
+  max_concurrent_plugins: 1 # Run only 1 plugin at a time initially
+  auto_registration: false # Manual registration only
+  priority_order: # Execution order (low to high)
+    - rule_based # Always first (baseline)
+    - evidence_aligner # Phase 2+
+    - hybrid_search # Phase 3+ (canary)
+    - multi_view_embedding # Phase 4+ (experimental)
+    - ragas_eval # Phase 4+ (experimental)
 
-  - features: [multiview_embedding, translation_embedding]
-    reason: "Translation already does multi-view via back-translation"
-    severity: low
+# ============================================================================
+# Advanced Quality Checkers (Plugin Definitions)
+# ============================================================================
 
-# Recommended Combinations (tested and safe)
-recommended_combinations:
-  # Balanced quality improvement
-  - name: "balanced"
-    features: [queryside_embedding, hybrid_search]
-    cost_per_1000_qa: 0.15
-    expected_improvement: "+20% overall"
-    latency_ms: 300
+# Rule-Based Checker (Baseline - Always Active)
+rule_based_checker:
+  name: "rule-based-checker"
+  enabled: true # Always ON
+  phase: "Phase 1"
+  priority: 1
+  conflicts: [] # No conflicts
+  dependencies: []
 
-  # Maximum coverage
-  - name: "coverage_focus"
-    features: [hybrid_search]
-    cost_per_1000_qa: 0.15
-    expected_improvement: "+25% coverage"
-    latency_ms: 200
+# Evidence Aligner (Phase 2+)
+evidence_aligner:
+  name: "evidence-aligner"
+  enabled: true # Always ON in Phase 2+
+  phase: "Phase 2"
+  priority: 2
+  conflicts: []
+  dependencies: []
 
-  # Maximum naturalness
-  - name: "naturalness_focus"
-    features: [translation_embedding]
-    cost_per_1000_qa: 0.20
-    expected_improvement: "+20% naturalness"
-    latency_ms: 250
+# Hybrid Search Checker (Phase 3 - Canary)
+hybrid_search_checker:
+  name: "hybrid-search-checker"
+  enabled: false # OFF by default (Feature Flag: FEATURE_QUALITY_HYBRID_SEARCH)
+  phase: "Phase 3"
+  priority: 3
+  canary_percentage: 10 # 10% canary when enabled
+  conflicts: []
+  dependencies: ["evidence_aligner"]
 
-  # Comprehensive evaluation (expensive)
-  - name: "comprehensive"
-    features: [ragas_evaluation]
-    cost_per_1000_qa: 0.30
-    expected_improvement: "+30% overall"
-    latency_ms: 400
-    canary_only: true  # Only for canary testing
+# Multi-View Embedding (Phase 4 - Experimental)
+multi_view_embedding:
+  name: "multi-view-embedding"
+  enabled: false # OFF by default (Feature Flag: FEATURE_QUALITY_MULTIVIEW_EMBEDDING)
+  phase: "Phase 4"
+  priority: 4
+  conflicts: ["query_side_embedding"] # Cannot run both at same time
+  dependencies: ["evidence_aligner"]
+  cost_per_qa: 0.005 # USD per QA pair
+  max_budget: 1.0 # USD max total cost
 
-# Activation Rules
-activation_rules:
-  # Canary rollout stages
-  canary_stages:
-    - percentage: 10
-      max_features: 1
-      require_baseline: true
+# Query-Side Embedding (Phase 4 - Experimental)
+query_side_embedding:
+  name: "query-side-embedding"
+  enabled: false # OFF by default (Feature Flag: FEATURE_QUALITY_QUERYSIDE_EMBEDDING)
+  phase: "Phase 4"
+  priority: 4
+  conflicts: ["multi_view_embedding"] # Cannot run both at same time
+  dependencies: ["evidence_aligner"]
+  cost_per_qa: 0.003 # USD per QA pair
+  max_budget: 1.0 # USD max total cost
 
-    - percentage: 50
-      max_features: 2
-      require_baseline: true
+# Translation-Based Embedding (Phase 4 - Experimental)
+translation_embedding:
+  name: "translation-embedding"
+  enabled: false # OFF by default (Feature Flag: FEATURE_QUALITY_TRANSLATION_EMBEDDING)
+  phase: "Phase 4"
+  priority: 5
+  conflicts: []
+  dependencies: []
+  cost_per_qa: 0.002 # USD per QA pair
+  max_budget: 0.5 # USD max total cost
 
-    - percentage: 100
-      max_features: 3
-      require_baseline: true
+# Ragas Evaluation (Phase 4 - Experimental)
+ragas_eval:
+  name: "ragas-eval"
+  enabled: false # OFF by default (Feature Flag: FEATURE_QUALITY_RAGAS_EVAL)
+  phase: "Phase 4"
+  priority: 6
+  conflicts: []
+  dependencies: ["evidence_aligner"]
+  cost_per_qa: 0.01 # USD per QA pair (expensive)
+  max_budget: 2.0 # USD max total cost
 
-  # Cost limits
-  cost_limits:
-    per_qa_max: 0.005          # $0.005 per QA pair
-    daily_max: 10.0            # $10 per day
-    monthly_max: 300.0         # $300 per month
+# ============================================================================
+# Conflict Resolution Rules
+# ============================================================================
 
-  # Performance limits
-  performance_limits:
-    latency_p95_ms: 500        # P95 latency <500ms
-    latency_p99_ms: 1000       # P99 latency <1s
-    error_rate_max: 0.05       # <5% error rate
+conflict_resolution:
+  # If multiple conflicting plugins are enabled, use this strategy
+  strategy: "priority" # Options: "priority", "canary", "manual"
 
-  # Quality requirements
-  quality_requirements:
-    min_improvement: 0.1       # Minimum +10% improvement vs baseline
-    regression_tolerance: 0.05 # Allow <5% regression in other metrics
+  # Priority-based: Higher priority wins
+  # Canary-based: Random selection based on canary percentage
+  # Manual: Require explicit selection
 
-# Auto-disable Conditions
-auto_disable:
-  # Disable if performance degrades
-  - condition: "latency_p95 > performance_limits.latency_p95_ms"
-    action: disable_all
-    notify: true
+# ============================================================================
+# Safety Limits
+# ============================================================================
 
-  # Disable if cost exceeds limit
-  - condition: "daily_cost > cost_limits.daily_max"
-    action: disable_all
-    notify: true
+safety_limits:
+  # Max total cost per run (USD)
+  max_total_cost: 5.0
 
-  # Disable if error rate too high
-  - condition: "error_rate > performance_limits.error_rate_max"
-    action: disable_lowest_priority
-    notify: true
+  # Max latency per checker (ms)
+  max_latency_ms: 5000
 
-  # Disable if no quality improvement
-  - condition: "improvement < quality_requirements.min_improvement"
-    action: disable_feature
-    notify: true
+  # Max error rate (0-1)
+  max_error_rate: 0.1
 
-# Governance Integration
-governance:
-  # Report to Regression Guard
-  rg_integration:
-    gate_c_stability: true    # Report to Gate C (Stability)
-    gate_d_budget: true       # Report to Gate D (Budget)
+  # Auto-disable if limits exceeded
+  auto_disable_on_breach: true
 
-  # Event logging
-  events:
-    - feature_activated
-    - feature_disabled
-    - conflict_detected
-    - cost_limit_exceeded
-    - performance_degraded
+# ============================================================================
+# Rollback Configuration
+# ============================================================================
 
-  # Feedback loop
-  feedback:
-    record_improvement: true
-    record_cost: true
-    record_latency: true
-    update_baseline: true
+rollback:
+  # Auto-rollback if quality degrades
+  auto_rollback_enabled: true
 
-# Default Configuration
-defaults:
-  all_features_off: true      # Start with all features disabled
-  canary_percentage: 0        # Start with 0% canary
-  max_concurrent_features: 1  # Only 1 feature at a time initially
-  require_manual_approval: true
+  # Degradation threshold (compared to baseline)
+  degradation_threshold: 0.1 # 10% degradation triggers rollback
+
+  # Baseline tag for comparison
+  baseline_tag: "integration-base"
+
+# ============================================================================
+# Notes
+# ============================================================================
+
+# Feature Flags:
+# - FEATURE_FEEDBACK_LOOP_ENABLED (default: false)
+# - FEATURE_FEEDBACK_AUTO_ADJUSTMENT (default: false)
+# - FEATURE_PLUGIN_REGISTRY_ENABLED (default: false)
+# - FEATURE_QUALITY_HYBRID_SEARCH (default: false)
+# - FEATURE_QUALITY_MULTIVIEW_EMBEDDING (default: false)
+# - FEATURE_QUALITY_QUERYSIDE_EMBEDDING (default: false)
+# - FEATURE_QUALITY_TRANSLATION_EMBEDDING (default: false)
+# - FEATURE_QUALITY_RAGAS_EVAL (default: false)
+
+# Usage:
+# 1. Enable feature flags via environment variables
+# 2. Start with canary percentages
+# 3. Monitor metrics drift
+# 4. Gradually increase canary percentage
+# 5. Full rollout when stable
+
+# Governance Integration:
+# - All plugin activations logged to governance.jsonl
+# - Gate D (Budget) monitors cost limits
+# - Gate C (Stability) monitors quality degradation
+# - Gate B (Autonomy) prevents infinite feedback loops

@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "1.0.0",
+  "timestamp": "2025-10-08T00:00:00Z",
+  "baseline_tag": "integration-base",
+  "drift_threshold": 0.15,
+  "current_metrics": {
+    "entity_coverage": 0.0,
+    "evidence_alignment": 0.0,
+    "question_type_balance": 0.0
+  },
+  "baseline_metrics": {
+    "entity_coverage": 0.0,
+    "evidence_alignment": 0.179,
+    "question_type_balance": 0.0
+  },
+  "drift_detected": [],
+  "auto_actions": [],
+  "metadata": {
+    "description": "Metrics drift detection placeholder",
+    "phase": "Phase 2B Step 3",
+    "note": "Will be populated by QA Feedback Manager on first run"
+  }
+}

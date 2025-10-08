@@ -301,6 +301,172 @@ export class GovernanceKernel {
   }
 
   /**
+   * Evaluate external policy (Phase 2C preparation)
+   *
+   * This hook allows integration of external policy documents/specs
+   * into the governance system.
+   *
+   * Phase 2B Step 3: Hook registration
+   * Phase 2C: Full implementation with Policy Parser + Interpreter
+   *
+   * @param policyDoc - External policy document (text, JSON, or parsed)
+   * @returns Policy evaluation result with Feature Flag recommendation
+   */
+  async evaluateExternalPolicy(policyDoc: ExternalPolicyDocument): Promise<PolicyEvaluation> {
+    console.log("[Governance Kernel] Evaluating external policy...");
+
+    try {
+      // 1. Parse policy document (Phase 2C: auto-parsing)
+      const parsed = this.parseExternalPolicy(policyDoc);
+
+      // 2. Validate against current governance rules
+      const validation = await this.validateExternalPolicy(parsed);
+
+      if (!validation.safe) {
+        console.warn(
+          `[Governance Kernel] Policy validation failed: ${validation.reason}`,
+        );
+        return {
+          approved: false,
+          reason: validation.reason,
+          recommendations: [],
+        };
+      }
+
+      // 3. Generate Feature Flag recommendation
+      const flagRecommendation = this.generateFeatureFlagRecommendation(parsed);
+
+      // 4. Log to governance ledger
+      await this.recordPolicyEvaluation(parsed, flagRecommendation);
+
+      console.log(
+        `[Governance Kernel] ✅ Policy approved: ${flagRecommendation.name}`,
+      );
+
+      return {
+        approved: true,
+        flag: flagRecommendation,
+        recommendations: validation.recommendations,
+      };
+    } catch (error) {
+      console.error("[Governance Kernel] Policy evaluation failed:", error);
+      return {
+        approved: false,
+        reason: String(error),
+        recommendations: [],
+      };
+    }
+  }
+
+  /**
+   * Parse external policy document
+   *
+   * Phase 2B: Simple text parsing
+   * Phase 2C: Advanced DSL parsing with Policy Parser
+   */
+  private parseExternalPolicy(policyDoc: ExternalPolicyDocument): ParsedPolicy {
+    // Simple parsing for Phase 2B (hook registration)
+    return {
+      name: policyDoc.name || "external-policy",
+      type: policyDoc.type || "quality",
+      description: policyDoc.description || "",
+      constraints: policyDoc.constraints || [],
+      featureFlag: policyDoc.suggestedFlag,
+    };
+  }
+
+  /**
+   * Validate external policy against governance rules
+   */
+  private async validateExternalPolicy(
+    policy: ParsedPolicy,
+  ): Promise<PolicyValidation> {
+    const issues: string[] = [];
+    const recommendations: string[] = [];
+
+    // Check 1: Policy type is valid
+    const validTypes = ["architecture", "threshold", "quality", "security"];
+    if (!validTypes.includes(policy.type)) {
+      issues.push(`Invalid policy type: ${policy.type}`);
+    }
+
+    // Check 2: No conflicts with existing policies
+    if (this.policies) {
+      const conflictingPolicies = this.policies.policies.filter(
+        (p) => p.name === policy.name,
+      );
+      if (conflictingPolicies.length > 0) {
+        issues.push(
+          `Policy name conflicts with existing policy: ${policy.name}`,
+        );
+        recommendations.push("Use a different policy name or version suffix");
+      }
+    }
+
+    // Check 3: Feature Flag recommendation
+    if (!policy.featureFlag) {
+      recommendations.push(
+        "Consider adding a Feature Flag for gradual rollout",
+      );
+    }
+
+    return {
+      safe: issues.length === 0,
+      reason: issues.length > 0 ? issues.join("; ") : "Validation passed",
+      recommendations,
+    };
+  }
+
+  /**
+   * Generate Feature Flag recommendation
+   */
+  private generateFeatureFlagRecommendation(
+    policy: ParsedPolicy,
+  ): FeatureFlagRecommendation {
+    return {
+      name:
+        policy.featureFlag?.name ||
+        `FEATURE_${policy.name.toUpperCase().replace(/-/g, "_")}`,
+      defaultValue: policy.featureFlag?.defaultValue ?? false,
+      description:
+        policy.featureFlag?.description ||
+        `Auto-generated flag for ${policy.name}`,
+      phase: "Phase 4", // Default to experimental
+      canaryPercentage: policy.featureFlag?.canaryPercentage ?? 10,
+    };
+  }
+
+  /**
+   * Record policy evaluation to governance ledger
+   */
+  private async recordPolicyEvaluation(
+    policy: ParsedPolicy,
+    flag: FeatureFlagRecommendation,
+  ): Promise<void> {
+    const event = {
+      type: "external_policy_evaluated",
+      timestamp: new Date().toISOString(),
+      policy: {
+        name: policy.name,
+        type: policy.type,
+        description: policy.description,
+      },
+      flag: {
+        name: flag.name,
+        defaultValue: flag.defaultValue,
+      },
+    };
+
+    console.log(
+      "[Governance Kernel] Recording policy evaluation:",
+      JSON.stringify(event),
+    );
+
+    // TODO: Integrate with actual governance event bus
+    // For now, just log the event
+  }
+
+  /**
    * Get current policies
    */
   getPolicies(): GovernancePolicies | null {
@@ -313,6 +479,77 @@ export class GovernanceKernel {
   isStrictMode(): boolean {
     return this.strictMode;
   }
+}
+
+// ============================================================================
+// Additional Types for External Policy Evaluation
+// ============================================================================
+
+/**
+ * External Policy Document
+ *
+ * Input format for external policy documents.
+ */
+export interface ExternalPolicyDocument {
+  name?: string;
+  type?: "architecture" | "threshold" | "quality" | "security";
+  description?: string;
+  constraints?: string[];
+  suggestedFlag?: {
+    name: string;
+    defaultValue: boolean;
+    description?: string;
+    canaryPercentage?: number;
+  };
+  source?: "rfc" | "spec" | "guideline" | "external";
+}
+
+/**
+ * Parsed Policy
+ *
+ * Internal representation after parsing.
+ */
+export interface ParsedPolicy {
+  name: string;
+  type: string;
+  description: string;
+  constraints: string[];
+  featureFlag?: {
+    name: string;
+    defaultValue: boolean;
+    description?: string;
+    canaryPercentage?: number;
+  };
+}
+
+/**
+ * Policy Validation Result
+ */
+export interface PolicyValidation {
+  safe: boolean;
+  reason: string;
+  recommendations: string[];
+}
+
+/**
+ * Policy Evaluation Result
+ */
+export interface PolicyEvaluation {
+  approved: boolean;
+  reason?: string;
+  flag?: FeatureFlagRecommendation;
+  recommendations: string[];
+}
+
+/**
+ * Feature Flag Recommendation
+ */
+export interface FeatureFlagRecommendation {
+  name: string;
+  defaultValue: boolean;
+  description: string;
+  phase: string;
+  canaryPercentage: number;
 }
 
 /**

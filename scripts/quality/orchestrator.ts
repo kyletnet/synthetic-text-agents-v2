@@ -23,13 +23,14 @@
  * Version: 1.0.0
  */
 
-import type { QAPair, QualityReport } from "./models/quality-domain.js";
+import type { QAPair, QualityReport, QualityChecker } from "./models/quality-domain.js";
 import { RuleBasedChecker } from "./checkers/rule-based-checker.js";
 import { EvidenceAligner } from "./checkers/evidence-aligner.js";
 import { HybridSearchChecker } from "./checkers/hybrid-search-checker.js";
 import { ComplianceScoreCalculator } from "./compliance-score.js";
 import { getPhaseStateMachine } from "./phase-state-machine.js";
 import { getQualityLedger } from "./quality-ledger.js";
+import { FeatureMatrixManager } from "./feature-matrix-manager.js";
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from "fs";
 import { join, dirname } from "path";
 
@@ -64,11 +65,106 @@ export class QualityOrchestrator {
   private projectRoot: string;
   private phase: "Phase 1" | "Phase 2" | "Phase 3" | "Phase 4";
   private sessionId: string;
+  private checkers: Map<string, QualityChecker> = new Map();
+  private featureMatrix: FeatureMatrixManager;
+  private pluginRegistryEnabled: boolean;
 
   constructor(options: OrchestratorOptions = {}) {
     this.projectRoot = options.projectRoot ?? process.cwd();
     this.phase = options.phase ?? "Phase 1";
     this.sessionId = options.sessionId ?? `session-${Date.now()}`;
+    this.featureMatrix = new FeatureMatrixManager(this.projectRoot);
+    this.pluginRegistryEnabled =
+      process.env.FEATURE_PLUGIN_REGISTRY_ENABLED === "true";
+
+    // Auto-register default checkers
+    this.registerDefaultCheckers();
+  }
+
+  /**
+   * Register default checkers based on phase
+   */
+  private registerDefaultCheckers(): void {
+    // Phase 1: Rule-based checker (always)
+    const ruleChecker = new RuleBasedChecker(this.projectRoot);
+    this.registerChecker(ruleChecker);
+
+    // Phase 2+: Evidence aligner
+    if (this.phase !== "Phase 1") {
+      const evidenceAligner = new EvidenceAligner();
+      this.registerChecker(evidenceAligner);
+    }
+
+    // Phase 3+: Hybrid search (if enabled)
+    if (this.phase === "Phase 3" || this.phase === "Phase 4") {
+      const hybridSearchChecker = new HybridSearchChecker();
+      this.registerChecker(hybridSearchChecker);
+    }
+  }
+
+  /**
+   * Register a quality checker
+   *
+   * Checks Feature Matrix for conflicts before registration.
+   */
+  registerChecker(checker: QualityChecker): void {
+    // Skip if plugin registry is disabled and checker is not a default
+    if (!this.pluginRegistryEnabled) {
+      // Only register if it's a core checker (rule-based, evidence-aligner)
+      if (
+        checker.name !== "rule-based-checker" &&
+        checker.name !== "evidence-aligner"
+      ) {
+        console.log(
+          `Plugin registry disabled, skipping: ${checker.name}`,
+        );
+        return;
+      }
+    }
+
+    // Check Feature Matrix for conflicts
+    const activeCheckers = Array.from(this.checkers.keys());
+    const canActivateResult = this.featureMatrix.canActivate(
+      checker.name,
+      activeCheckers,
+    );
+
+    if (!canActivateResult.canActivate) {
+      console.warn(
+        `Cannot register checker ${checker.name}: ${canActivateResult.reason}`,
+      );
+      return;
+    }
+
+    // Check if enabled in Feature Matrix
+    const pluginConfig = this.featureMatrix.getPluginConfig(checker.name);
+    if (pluginConfig && !pluginConfig.enabled) {
+      console.log(
+        `Checker ${checker.name} not enabled in Feature Matrix`,
+      );
+      return;
+    }
+
+    // Register
+    this.checkers.set(checker.name, checker);
+    console.log(`✅ Registered checker: ${checker.name} (${checker.version})`);
+  }
+
+  /**
+   * Get checkers in priority order
+   */
+  private getCheckersInPriorityOrder(): QualityChecker[] {
+    const pluginConfigs = this.featureMatrix.getPluginsInPriorityOrder();
+    const orderedCheckers: QualityChecker[] = [];
+
+    for (const pluginConfig of pluginConfigs) {
+      const checker = this.checkers.get(pluginConfig.name);
+      if (checker) {
+        orderedCheckers.push(checker);
+      }
+    }
+
+    return orderedCheckers;
   }
 
   /**
