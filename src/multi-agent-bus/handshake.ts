@@ -129,9 +129,38 @@ function checkCollision(agentId: string, namespace: string): boolean {
 }
 
 /**
- * Register agent identity
+ * Register agent identity (simplified wrapper)
+ *
+ * @param agentId - Agent UUID v7
+ * @param publicKey - Public key
+ * @param namespace - Namespace
+ * @returns Agent identity
  */
 export function registerAgent(
+  agentId: string,
+  publicKey: string,
+  namespace: string,
+): AgentIdentity {
+  const request: HandshakeRequest = {
+    agentId,
+    publicKey,
+    namespace,
+    nonce: createHash("sha256").update(`${agentId}:${Date.now()}`).digest("hex"),
+  };
+
+  const response = registerAgentWithHandshake(request);
+
+  if (!response.success || !response.identity) {
+    throw new Error(response.error || "Agent registration failed");
+  }
+
+  return response.identity;
+}
+
+/**
+ * Register agent identity (full handshake)
+ */
+export function registerAgentWithHandshake(
   request: HandshakeRequest
 ): HandshakeResponse {
   const { agentId, publicKey, namespace, nonce } = request;
@@ -190,7 +219,51 @@ export function registerAgent(
 }
 
 /**
- * Verify agent identity
+ * Verify agent identity (simplified)
+ *
+ * @param identity - Agent identity
+ * @returns Verification result
+ */
+export function verifyAgentIdentity(identity: AgentIdentity): {
+  valid: boolean;
+  error?: string;
+} {
+  // Check signature
+  if (!verifySignature(identity)) {
+    return {
+      valid: false,
+      error: "Signature verification failed",
+    };
+  }
+
+  // Check if registered
+  const registered = agentRegistry.get(identity.agentId);
+  if (!registered) {
+    return {
+      valid: false,
+      error: "Agent not registered",
+    };
+  }
+
+  // Check if matches registered identity
+  if (
+    registered.publicKey !== identity.publicKey ||
+    registered.namespace !== identity.namespace ||
+    registered.signature !== identity.signature
+  ) {
+    return {
+      valid: false,
+      error: "Identity mismatch",
+    };
+  }
+
+  return {
+    valid: true,
+  };
+}
+
+/**
+ * Verify agent identity by ID
  */
 export function verifyAgent(agentId: string): AgentIdentity | null {
   const identity = agentRegistry.get(agentId);
