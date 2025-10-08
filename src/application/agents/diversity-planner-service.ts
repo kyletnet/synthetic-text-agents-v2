@@ -18,6 +18,8 @@ import {
   type DiversityTarget,
   DEFAULT_DIVERSITY_TARGET,
 } from "../../domain/agents/index.js";
+import type { MetricsService } from "../metrics/metrics-service.js";
+import type { DiversityMetrics } from "../../domain/ports/metrics-port.js";
 
 /**
  * Cache entry for diversity plans
@@ -57,6 +59,7 @@ export interface DiversityPlannerServiceConfig {
 export class DiversityPlannerService {
   private readonly planner: DiversityPlanner;
   private readonly logger: Logger;
+  private readonly metricsService: MetricsService | null;
   private readonly cacheTTL: number;
   private readonly limit: ReturnType<typeof pLimit>;
   private planCache: Map<string, PlanCacheEntry> = new Map();
@@ -65,8 +68,10 @@ export class DiversityPlannerService {
   constructor(
     logger: Logger,
     config: DiversityPlannerServiceConfig = {},
+    metricsService?: MetricsService,
   ) {
     this.logger = logger;
+    this.metricsService = metricsService || null;
     this.planner = new DiversityPlanner(
       config.target || DEFAULT_DIVERSITY_TARGET,
     );
@@ -120,6 +125,11 @@ export class DiversityPlannerService {
 
     // Notify governance
     this.notifyGovernance(plan, converged);
+
+    // Record diversity metrics to Metrics Service
+    if (this.metricsService) {
+      await this.recordDiversityMetrics(plan, converged);
+    }
 
     // Update previous plan for next iteration
     this.previousPlan = plan;
@@ -210,5 +220,62 @@ export class DiversityPlannerService {
    */
   private getCacheKey(metrics: CoverageMetrics): string {
     return `${metrics.entityCoverage.toFixed(2)}-${metrics.totalSamples}-${metrics.questionTypeDistribution.size}-${metrics.evidenceSourceCounts.size}`;
+  }
+
+  /**
+   * Record diversity metrics to Metrics Service
+   */
+  private async recordDiversityMetrics(
+    plan: DiversityPlan,
+    converged: boolean,
+  ): Promise<void> {
+    const diversityMetrics: DiversityMetrics = {
+      entityCoverageRatio: plan.gap.entityGap.coverageRatio,
+      questionTypeBalance: this.calculateQuestionTypeBalance(plan),
+      evidenceSourceDiversity: this.calculateEvidenceSourceDiversity(plan),
+      meetsTarget: plan.meetsTarget,
+      timestamp: new Date(),
+    };
+
+    try {
+      await this.metricsService!.recordDiversityMetrics(diversityMetrics);
+      this.logger.info("Diversity metrics recorded to Metrics Service", {
+        meetsTarget: diversityMetrics.meetsTarget,
+        converged,
+      });
+    } catch (error) {
+      this.logger.error("Failed to record diversity metrics", { error });
+      // Don't throw - metrics recording failure shouldn't block plan creation
+    }
+  }
+
+  /**
+   * Calculate question type balance score (0-1)
+   */
+  private calculateQuestionTypeBalance(plan: DiversityPlan): number {
+    const deviations = Array.from(
+      plan.gap.questionTypeGap.deviationFromIdeal.values(),
+    );
+
+    if (deviations.length === 0) return 1.0;
+
+    // Calculate average absolute deviation
+    const avgDeviation =
+      deviations.reduce((sum, dev) => sum + Math.abs(dev), 0) / deviations.length;
+
+    // Convert to balance score (0 deviation = 1.0 balance)
+    return Math.max(0, 1.0 - avgDeviation);
+  }
+
+  /**
+   * Calculate evidence source diversity score (0-1)
+   */
+  private calculateEvidenceSourceDiversity(plan: DiversityPlan): number {
+    const currentSources = plan.gap.evidenceSourceGap.currentSources.length;
+    const targetSources = plan.target.evidenceSourceMinCount;
+
+    if (targetSources === 0) return 1.0;
+
+    return Math.min(1.0, currentSources / targetSources);
   }
 }
