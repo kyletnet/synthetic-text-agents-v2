@@ -17,6 +17,14 @@
 
 **Timeline**: Phase 2.2 (3 weeks) → Phase 2.3 (4 weeks) → Phase 2.4 (4-6 weeks)
 
+**⚠️ CRITICAL UPDATE (v3.1)**: **4 invisible weaknesses identified** - see `docs/RFC/2025-12-transparent-ecosystem-plan.md` for:
+1. Meta-Overload (과도한 자동화) → Human Override Layer
+2. Policy Feedback Explosion (정책 과적응) → Convergence Detector
+3. Cross-Tenant Leakage (데이터 유출) → Differential Privacy
+4. Observability Gap (투명성 부재) → Explainability API
+
+**Phase 2.5 added**: Transparency & Trust Layer - See transparent ecosystem plan for full specification.
+
 ---
 
 ## 🧭 Strategic Diagnosis: Strength vs. Gap

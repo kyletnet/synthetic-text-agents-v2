@@ -481,24 +481,35 @@ Feedback + Retrieval + Planner autonomous learning/correction loop.
 
 ## Future Roadmap (Phase 2.2+)
 
-### ⭐ Phase 2.2-2.4: Adaptive Ecosystem Evolution 🆕 v3
+### ⭐ Phase 2.2-2.5: Adaptive Ecosystem Evolution 🆕 v3.1
 
-**See detailed specification**: `docs/RFC/2025-11-adaptive-ecosystem-development-plan.md`
+**See detailed specifications**:
+- Phase 2.2-2.4: `docs/RFC/2025-11-adaptive-ecosystem-development-plan.md`
+- Phase 2.5 + HIL: `docs/RFC/2025-12-transparent-ecosystem-plan.md` 🆕 v3.1
 
-**Strategic Shift**: "Living Organism → Self-Learning Ecosystem"
+**Strategic Evolution**:
+- v3: "Living Organism → Self-Learning Ecosystem"
+- v3.1: **"Self-Learning → Self-Explaining Ecosystem"** 🆕
 
-**3 Evolution Axes**:
-1. **Meta-Governance Engine** (Phase 2.2) - Self-optimizing policies
-2. **Synthetic Ecosystem Simulator** (Phase 2.3) - Zero-risk expansion
-3. **Cross-Tenant Intelligence Exchange** (Phase 2.4) - Collective learning
+**3 Evolution Axes (Phase 2.2-2.4)**:
+1. **Meta-Governance Engine** (Phase 2.2) - Self-optimizing policies + **Human Override** 🆕
+2. **Synthetic Ecosystem Simulator** (Phase 2.3) - Zero-risk expansion + **Convergence Detector** 🆕
+3. **Cross-Tenant Intelligence Exchange** (Phase 2.4) - Collective learning + **Differential Privacy** 🆕
 
-**Key Capabilities**:
+**NEW: Phase 2.5 - Transparency & Trust Layer** 🆕 v3.1:
+- **Human-in-the-Loop (HIL) Governance Layer**
+- **Transparent Logging + Explainability API**
+- **Audit Interface + Compliance Reporter**
+- **Philosophy**: "Intelligence after, Trust comes" (지능화 이후는 신뢰화)
+
+**5 Self-* Capabilities**:
 - **Self-Correcting**: Each layer diagnoses and repairs itself
 - **Self-Learning**: Continuous improvement from feedback/logs
 - **Self-Protecting**: Proactive security/compliance enforcement
 - **Self-Adaptive**: Auto-adjust to load/domain/tenant changes
+- **Self-Explaining** 🆕 v3.1: Natural language audit trail + human oversight
 
-**Timeline**: 11-13 weeks (Phase 2.2: 3w, Phase 2.3: 4w, Phase 2.4: 4-6w)
+**Timeline**: 19-25 weeks total (Phase 2.2: 3w, Phase 2.3: 4w, Phase 2.4: 4-6w, Phase 2.5: 4-6w)
 
 ---
 

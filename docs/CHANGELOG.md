@@ -1,5 +1,45 @@
 # Changelog
 
+## 2025-10-08 - Transparency Evolution (v3.1): "Self-Learning → Self-Explaining Ecosystem"
+
+- **docs**: **NEW RFC - Transparent Ecosystem Plan** (Phase 2.5 + Human-in-the-Loop)
+  - **4 Critical Weaknesses identified + solutions**:
+    1. **Meta-Overload** (과도한 자동화) → Human Override Layer (approval queue, rollback, emergency stop)
+    2. **Policy Feedback Explosion** (정책 과적응) → Convergence Detector (adaptive cooldown, drift variance monitor)
+    3. **Cross-Tenant Leakage** (데이터 유출) → Differential Privacy (ε-DP guarantee, tenant key rotation)
+    4. **Observability Gap** (투명성 부재) → Explainability API (natural language logs, governance insights)
+  - **Human-in-the-Loop (HIL) Governance Layer**: Human oversight for autonomous systems
+    - Human Control Layer (governance change approval, rollback trigger, emergency stop)
+    - Governance Insight API (natural language policy change logs)
+    - Audit Interface (policy change reasoning, evidence links, timeline viz)
+    - Adaptive Kill-Switch (over-adaptation detection, safe-mode activation)
+  - **Phase 2.5: Transparency & Trust Layer** (4-6 weeks)
+    - Transparent Logging Protocol + Explainability API
+    - Human-in-the-Loop Dashboard (real-time approval, one-click rollback)
+    - Audit Interface + Compliance Reporter (GDPR/CCPA/ISO27001)
+  - **5th Self-* Capability**: Self-Explaining (natural language audit trail)
+  - **Detailed specifications**: 650+ lines comprehensive implementation guide
+
+- **docs**: Adaptive Ecosystem Plan (v3) enhancement
+  - 4 critical weaknesses + solutions added to executive summary
+  - Phase 2.5 reference section added
+
+- **docs**: Integrated Roadmap v2 enhancement
+  - Phase 2.5 + HIL Governance Layer added
+  - 5 Self-* Capabilities (added Self-Explaining)
+  - Timeline extended: 19-25 weeks total (Phase 2.2-2.5)
+
+- **docs**: SESSION_STATE.md v3.1 update
+  - 4 critical weaknesses documented
+  - HIL Governance Layer components tracked
+  - Phase 2.5 component tracking added
+  - Development philosophy: "Intelligence after, Trust comes" (지능화 이후는 신뢰화)
+
+- **strategy**: Strategic evolution from intelligence-driven to trust-driven development
+  - **Market positioning**: "The only AI governance platform you can trust AND understand"
+  - **Competitive differentiation**: While BigTech has powerful models, we offer transparent intelligence + human oversight + regulatory compliance
+  - **Customer value proposition**: Mathematical privacy guarantees + full explainability + human control
+
 ## 2025-10-08 - Adaptive Ecosystem Evolution (v3): "Living Organism → Self-Learning Ecosystem"
 
 - **docs**: **NEW RFC - Adaptive Ecosystem Development Plan** (Phase 2.2-2.4)

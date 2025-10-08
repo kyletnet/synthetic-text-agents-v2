@@ -42,7 +42,7 @@
 - Phase 1.7, 1.8 added (Event Spine + Feedback Fabric)
 - Timeline expanded: Week 1-23 (from Week 1-17)
 
-**v3 Ecosystem Evolution** (current session)
+**v3 Ecosystem Evolution** (commit: 3a54e7c)
 - **Strategic Shift**: "Living Organism → Self-Learning Ecosystem"
 - **3 Evolution Axes** added:
   1. Meta-Governance Engine (self-optimizing policies)
@@ -51,6 +51,18 @@
 - **Phase 2.2-2.4** detailed specification (11-13 weeks)
 - **4 Self-* Capabilities**: Self-Correcting, Self-Learning, Self-Protecting, Self-Adaptive
 - **Philosophy**: "Don't add features, embed intelligence"
+
+**v3.1 Transparency Evolution** (current session)
+- **Strategic Evolution**: "Self-Learning → Self-Explaining Ecosystem"
+- **Philosophy**: "Intelligence after, Trust comes" (지능화 이후는 신뢰화)
+- **4 Critical Weaknesses Identified + Solutions**:
+  1. Meta-Overload (과도한 자동화) → Human Override Layer
+  2. Policy Feedback Explosion (정책 과적응) → Convergence Detector
+  3. Cross-Tenant Leakage (데이터 유출) → Differential Privacy
+  4. Observability Gap (투명성 부재) → Explainability API
+- **Human-in-the-Loop (HIL) Governance Layer** added
+- **Phase 2.5: Transparency & Trust Layer** (4-6 weeks)
+- **5th Self-* Capability**: Self-Explaining (natural language audit trail)
 
 ### Current State Snapshot
 
@@ -129,18 +141,37 @@
       "Cross-Tenant Intelligence Exchange 🆕 v3",
       "Anonymization Pipeline + Aggregation Server",
       "Federated Learning Engine (Optional)"
+    ],
+    "phase2.5": [
+      "Transparency & Trust Layer 🆕 v3.1",
+      "Human-in-the-Loop Dashboard",
+      "Transparent Logging + Explainability API",
+      "Audit Interface + Compliance Reporter"
     ]
   },
+  "criticalWeaknesses": [
+    "Meta-Overload (과도한 자동화 피로)",
+    "Policy Feedback Explosion (정책 과적응)",
+    "Cross-Tenant Leakage (연합 학습 데이터 유출)",
+    "Observability Gap (투명성 부재)"
+  ],
   "evolutionAxes": [
     "Meta-Governance (self-optimizing policies)",
     "Ecosystem Simulator (zero-risk expansion)",
     "Cross-Tenant Intelligence (collective learning)"
   ],
+  "hilGovernanceLayer": [
+    "Human Control Layer (approval queue, rollback, emergency stop)",
+    "Governance Insight API (natural language logs)",
+    "Audit Interface (explainability)",
+    "Adaptive Kill-Switch (over-adaptation detection)"
+  ],
   "selfCapabilities": [
     "Self-Correcting (auto-diagnosis & repair)",
     "Self-Learning (continuous improvement)",
     "Self-Protecting (proactive security)",
-    "Self-Adaptive (auto-adjust to changes)"
+    "Self-Adaptive (auto-adjust to changes)",
+    "Self-Explaining (natural language audit trail) 🆕 v3.1"
   ]
 }
 ```
@@ -402,6 +433,23 @@ git checkout phase1.5-retrieval-complete
 
 ## 📝 Development Log
 
+**2025-10-08 23:30** - v3.1 Transparency Evolution 완료 ("Self-Learning → Self-Explaining Ecosystem")
+- **Transparent Ecosystem Plan RFC** 생성 🆕 v3.1
+  - `docs/RFC/2025-12-transparent-ecosystem-plan.md` (650+ lines)
+  - **4 Critical Weaknesses identified + solutions**:
+    1. Meta-Overload → Human Override Layer
+    2. Policy Feedback Explosion → Convergence Detector
+    3. Cross-Tenant Leakage → Differential Privacy
+    4. Observability Gap → Explainability API
+  - **Human-in-the-Loop (HIL) Governance Layer** 상세 설계
+  - **Phase 2.5: Transparency & Trust Layer** (4-6 weeks)
+  - **5th Self-* Capability**: Self-Explaining
+- **Adaptive Ecosystem Plan** 업데이트 (4 weaknesses + Phase 2.5 reference)
+- **Integrated Roadmap v2** 업데이트 (Phase 2.5 + HIL + 5 Self-* Capabilities)
+- **SESSION_STATE.md** 업데이트 (v3.1 weaknesses + HIL + Phase 2.5)
+- **Philosophy**: "Intelligence after, Trust comes" (지능화 이후는 신뢰화)
+- Next: CHANGELOG.md 업데이트, Git commit
+
 **2025-10-08 23:00** - v3 Ecosystem Evolution 완료 ("Living Organism → Self-Learning Ecosystem")
 - **Adaptive Ecosystem Development Plan RFC** 생성
   - `docs/RFC/2025-11-adaptive-ecosystem-development-plan.md` (550+ lines)
@@ -411,7 +459,6 @@ git checkout phase1.5-retrieval-complete
 - **Integrated Roadmap v2** 업데이트 (Phase 2.2-2.4 reference 추가)
 - **SESSION_STATE.md** 업데이트 (v3 evolution axes + self-capabilities)
 - **Philosophy**: "Don't add features, embed intelligence"
-- Next: CHANGELOG.md 업데이트, Git commit
 
 **2025-10-08 22:00** - v2 Roadmap Enhancement 완료 ("Living DNA → Adaptive Ecosystem")
 - Integrated Roadmap v2 업데이트 완료
