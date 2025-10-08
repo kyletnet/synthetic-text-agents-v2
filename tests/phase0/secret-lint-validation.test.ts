@@ -10,7 +10,7 @@ import { writeFileSync, unlinkSync, mkdirSync, existsSync } from "fs";
 import { join } from "path";
 
 describe("Phase 0: Secret Lint Validation", () => {
-  const testDir = join(process.cwd(), "demo-ui", "test-secrets");
+  const testDir = join(process.cwd(), "demo-ui", "public", "test-secrets");
   const testFile = join(testDir, "test.ts");
 
   beforeEach(() => {
@@ -30,10 +30,10 @@ describe("Phase 0: Secret Lint Validation", () => {
   });
 
   it("should detect high-entropy API key", () => {
-    // Write test file with secret
+    // Write test file with secret (high entropy, random-looking)
     writeFileSync(
       testFile,
-      'const key = "sk-1234567890abcdef1234567890abcdef1234567890";'
+      'const key = "sk-aB3dEfGh1JkLmN0pQrStUvWxYz9AbCdEf1234567890XyZ";'
     );
 
     // Run secret lint

@@ -7,6 +7,7 @@ import { FileBackupStrategy } from "../../../src/domain/backup/backup-strategies
 import { DirectoryBackupStrategy } from "../../../src/domain/backup/backup-strategies/directory-backup";
 import { IncrementalBackupStrategy } from "../../../src/domain/backup/backup-strategies/incremental-backup";
 import type { BackupConfig } from "../../../src/domain/backup/backup-types";
+import { FileOperations } from "../../../src/infrastructure/backup/file-operations.js";
 import * as fs from "fs/promises";
 import * as path from "path";
 import { existsSync } from "fs";
@@ -15,8 +16,11 @@ describe("Backup Strategies", () => {
   let testConfig: BackupConfig;
   let testDir: string;
   let backupDir: string;
+  let fileOps: FileOperations;
 
   beforeEach(async () => {
+    // Create FileOperations instance for all strategies
+    fileOps = new FileOperations();
     // Create test directories
     testDir = path.join("/tmp", `backup-test-${Date.now()}`);
     backupDir = path.join("/tmp", `backup-dest-${Date.now()}`);
@@ -60,13 +64,13 @@ describe("Backup Strategies", () => {
 
   describe("FileBackupStrategy", () => {
     it("should create instance", () => {
-      const strategy = new FileBackupStrategy();
+      const strategy = new FileBackupStrategy(fileOps);
       expect(strategy).toBeDefined();
       expect(strategy.getName()).toBe("file-backup");
     });
 
     it("should collect files from directory", async () => {
-      const strategy = new FileBackupStrategy();
+      const strategy = new FileBackupStrategy(fileOps);
       const files = await strategy.collectFiles([testDir]);
 
       expect(files.length).toBe(2);
@@ -75,7 +79,7 @@ describe("Backup Strategies", () => {
     });
 
     it("should perform backup", async () => {
-      const strategy = new FileBackupStrategy();
+      const strategy = new FileBackupStrategy(fileOps);
       const result = await strategy.backup([testDir], backupDir, testConfig);
 
       expect(result.success).toBe(true);
@@ -85,7 +89,7 @@ describe("Backup Strategies", () => {
     });
 
     it("should restore files", async () => {
-      const strategy = new FileBackupStrategy();
+      const strategy = new FileBackupStrategy(fileOps);
 
       // First create a backup
       const backupResult = await strategy.backup(
@@ -121,7 +125,7 @@ describe("Backup Strategies", () => {
 
   describe("DirectoryBackupStrategy", () => {
     it("should create instance", () => {
-      const strategy = new DirectoryBackupStrategy();
+      const strategy = new DirectoryBackupStrategy(fileOps);
       expect(strategy).toBeDefined();
       expect(strategy.getName()).toBe("directory-backup");
     });
@@ -132,7 +136,7 @@ describe("Backup Strategies", () => {
       await fs.mkdir(subDir, { recursive: true });
       await fs.writeFile(path.join(subDir, "file3.txt"), "test content 3");
 
-      const strategy = new DirectoryBackupStrategy();
+      const strategy = new DirectoryBackupStrategy(fileOps);
       const files = await strategy.collectFiles([testDir]);
 
       expect(files.length).toBe(3);
@@ -140,7 +144,7 @@ describe("Backup Strategies", () => {
     });
 
     it("should perform backup", async () => {
-      const strategy = new DirectoryBackupStrategy();
+      const strategy = new DirectoryBackupStrategy(fileOps);
       const result = await strategy.backup([testDir], backupDir, testConfig);
 
       expect(result.success).toBe(true);
@@ -150,13 +154,13 @@ describe("Backup Strategies", () => {
 
   describe("IncrementalBackupStrategy", () => {
     it("should create instance", () => {
-      const strategy = new IncrementalBackupStrategy();
+      const strategy = new IncrementalBackupStrategy(fileOps);
       expect(strategy).toBeDefined();
       expect(strategy.getName()).toBe("incremental-backup");
     });
 
     it("should perform full backup when no parent", async () => {
-      const strategy = new IncrementalBackupStrategy();
+      const strategy = new IncrementalBackupStrategy(fileOps);
       const result = await strategy.backup([testDir], backupDir, testConfig);
 
       expect(result.success).toBe(true);
@@ -165,7 +169,7 @@ describe("Backup Strategies", () => {
     });
 
     it("should only backup changed files", async () => {
-      const strategy = new IncrementalBackupStrategy();
+      const strategy = new IncrementalBackupStrategy(fileOps);
 
       // First backup
       const firstBackup = await strategy.backup(
@@ -200,7 +204,7 @@ describe("Backup Strategies", () => {
     });
 
     it("should validate backups", async () => {
-      const strategy = new IncrementalBackupStrategy();
+      const strategy = new IncrementalBackupStrategy(fileOps);
 
       const result = await strategy.backup([testDir], backupDir, testConfig);
 
@@ -220,7 +224,7 @@ describe("Backup Strategies", () => {
     });
 
     it("should filter by include pattern", async () => {
-      const strategy = new FileBackupStrategy();
+      const strategy = new FileBackupStrategy(fileOps);
       const files = await strategy.collectFiles([testDir], {
         include: ["*.js", "*.ts"],
       });
@@ -234,7 +238,7 @@ describe("Backup Strategies", () => {
     });
 
     it("should filter by exclude pattern", async () => {
-      const strategy = new FileBackupStrategy();
+      const strategy = new FileBackupStrategy(fileOps);
       const files = await strategy.collectFiles([testDir], {
         exclude: ["*.md"],
       });

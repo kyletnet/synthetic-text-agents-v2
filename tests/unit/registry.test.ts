@@ -8,9 +8,12 @@ describe("AgentRegistry - Smoke Tests", () => {
       expect(typeof AgentRegistry).toBe("function");
     });
 
-    it("should import BaseAgent", async () => {
-      const { BaseAgent } = await import("../../src/shared/registry.js");
-      expect(BaseAgent).toBeDefined();
+    it("should import BaseAgent type", async () => {
+      // BaseAgent is exported as a type, not a runtime value
+      const registry = await import("../../src/shared/registry.js");
+      expect(registry.AgentRegistry).toBeDefined();
+      // Type exports are not available at runtime, so we just verify the module loads
+      expect(registry).toBeDefined();
     });
   });
 
@@ -35,17 +38,18 @@ describe("AgentRegistry - Smoke Tests", () => {
       const registry = new AgentRegistry();
 
       // Try to get a known agent (these are registered in constructor)
-      const agent = registry.getAgent("prompt-architect");
+      const agent = await registry.getAgent("prompt-architect");
 
-      // Agent might exist or not depending on initialization
-      expect(agent === undefined || typeof agent === "object").toBe(true);
+      // Agent should exist after awaiting the promise
+      expect(agent).toBeDefined();
+      expect(typeof agent).toBe("object");
     });
 
     it("should return undefined for non-existent agent", async () => {
       const { AgentRegistry } = await import("../../src/shared/registry.js");
       const registry = new AgentRegistry();
 
-      const agent = registry.getAgent("non-existent-agent-12345");
+      const agent = await registry.getAgent("non-existent-agent-12345");
       expect(agent).toBeUndefined();
     });
   });

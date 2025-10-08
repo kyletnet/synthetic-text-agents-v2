@@ -20,6 +20,7 @@ import { FileBackupStrategy } from "../../domain/backup/backup-strategies/file-b
 import { DirectoryBackupStrategy } from "../../domain/backup/backup-strategies/directory-backup";
 import { IncrementalBackupStrategy } from "../../domain/backup/backup-strategies/incremental-backup";
 import { Logger } from "../../shared/logger";
+import { FileOperations } from "../../infrastructure/backup/file-operations.js";
 
 export interface BackupJobConfig {
   name: string;
@@ -57,10 +58,6 @@ export class BackupManager extends EventEmitter {
   private initializeStrategies(): void {
     // Create FileOperations instance for dependency injection
     // Import is allowed from application layer since it's using infrastructure
-
-    const {
-      FileOperations,
-    } = require("../../infrastructure/backup/file-operations");
     const fileOps = new FileOperations();
 
     this.strategies.set("file", new FileBackupStrategy(fileOps));
