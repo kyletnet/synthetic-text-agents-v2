@@ -1,110 +1,119 @@
 # Next Actions - Detailed Checklist
 
-**Last Updated**: 2025-10-08 18:30 KST
-**Status**: Ready for Phase 1.6 prep
+**Last Updated**: 2025-10-08 20:30 KST
+**Status**: Phase 1.6 Roadmap Integrated
+**Approach**: Evolutionary Expansion (NOT Rewrite)
 
 ---
 
-## 🚨 Critical Path (Must Do First)
+## 🎯 Strategy Overview
 
-### 1. Governance Loop 재결선 (ETA: 1-2 hours) 🔴
+**Current State**: Phase 1.5 complete, Integrated Roadmap documented
+**Next Focus**: Phase 1.6 (Organic Loop Completion, 2 weeks)
+**Approach**: Top-3 Priority + Full Backlog visibility
 
-**Goal**: Connect Retrieval events to Governance kernel for automatic Gate I/P updates.
-
-**Files to Create/Modify**:
-```
-✅ Create: src/application/retrieval-feedback-bridge.ts
-✅ Modify: src/infrastructure/retrieval/bm25-adapter.ts (add event emission)
-✅ Modify: src/core/governance/meta-kernel.ts (add event handler)
-```
-
-**Implementation Steps**:
-1. Create `retrieval-feedback-bridge.ts`:
-   ```typescript
-   export async function reportRetrievalEvent(result: RetrievalResult) {
-     await emitGovernanceEvent({
-       event: "retrieval_assessment",
-       trust_avg: result.metadata.avgTrustScore,
-       poisoned_blocked: result.metadata.poisonedBlocked,
-       timestamp: result.metadata.timestamp.toISOString()
-     });
-   }
-   ```
-
-2. Integrate into BM25Adapter:
-   ```typescript
-   // After retrieval, before return
-   await reportRetrievalEvent(result);
-   return result;
-   ```
-
-3. Add handler in meta-kernel:
-   ```typescript
-   on("retrieval_assessment", (data) => {
-     updateGateStatus("gate-i", data.trust_avg >= 0.6);
-     updateGateStatus("gate-p", data.poisoned_blocked === 0);
-   });
-   ```
-
-**Success Criteria**:
-- [ ] Retrieval events appear in governance logs
-- [ ] Gate I/P status auto-updates
-- [ ] RG report includes retrieval metrics
+**Key Principle**: Current structure is a "living organism with genetic structure" - add layers, don't rebuild foundation.
 
 ---
 
-### 2. Feedback ↔ RetrievalPort 동기화 (ETA: 2-3 hours) 🔴
+## 🚨 Phase 1.6: Top-3 Critical Path (Start Here)
 
-**Goal**: User feedback ("근거 부적절") updates SourceTrust scores dynamically.
+### 1. Feedback Adapter + Source Trust Updater (ETA: 2-3 hours) 🔴
 
-**Files to Create/Modify**:
+**Goal**: User feedback ("incorrect evidence") updates SourceTrust scores dynamically.
+
+**Priority**: CRITICAL (blocks feedback loop = moat value)
+
+**Files to Create**:
 ```
 ✅ Create: src/application/feedback-adapter.ts
+✅ Create: src/application/feedback-labeler.ts
 ✅ Create: src/infrastructure/retrieval/source-trust-updater.ts
-✅ Modify: src/infrastructure/retrieval/source-trust.ts (add update methods)
+✅ Create: src/infrastructure/retrieval/source-trust-persistence.ts
 ```
 
 **Implementation Steps**:
 1. Create `feedback-adapter.ts`:
    ```typescript
-   export async function processFeedback(feedback: UserFeedback) {
-     if (feedback.intent === "evidence_incorrect") {
+   export async function processFeedback(feedback: UserFeedback): Promise<void> {
+     // Intent classification (6 types: evidence_incorrect, answer_wrong, etc.)
+     const intent = await classifyIntent(feedback);
+
+     if (intent === "evidence_incorrect") {
        const { domain, chunkId } = feedback.context;
        await updateSourceTrust({ domain, delta: -0.1 });
+       await emitGovernanceEvent({
+         event: "feedback_processed",
+         intent,
+         trust_delta: -0.1,
+         timestamp: new Date().toISOString()
+       });
      }
    }
    ```
 
-2. Create `source-trust-updater.ts`:
+2. Create `feedback-labeler.ts`:
+   ```typescript
+   export async function classifyIntent(feedback: UserFeedback): Promise<FeedbackIntent> {
+     // Confidence scoring (1-5)
+     const confidence = scoreConfidence(feedback);
+
+     // Intent types: evidence_incorrect, answer_wrong, format_issue,
+     //               request_clarification, positive_feedback, other
+     const intent = await detectIntent(feedback.text, confidence);
+
+     return intent;
+   }
+   ```
+
+3. Create `source-trust-updater.ts`:
    ```typescript
    export async function updateSourceTrust(params: {
      domain?: string;
      author?: string;
      delta: number;
-   }) {
+   }): Promise<void> {
      // Update SourceTrust config
-     // Persist to file/DB
+     const trust = await loadSourceTrust();
+     trust.updateScore(params);
+
+     // Persist to disk
+     await trust.saveToDisk("reports/source-trust.json");
+
      // Emit event
+     await emitEvent("source_trust_updated", params);
    }
    ```
 
-3. Add persistence to SourceTrust:
+4. Create `source-trust-persistence.ts`:
    ```typescript
-   async saveToDisk(path: string): Promise<void>
-   async loadFromDisk(path: string): Promise<void>
+   export class SourceTrustPersistence {
+     async save(trust: SourceTrust, path: string): Promise<void> {
+       const data = trust.serialize();
+       await fs.writeFile(path, JSON.stringify(data, null, 2));
+     }
+
+     async load(path: string): Promise<SourceTrust> {
+       const data = await fs.readFile(path, "utf-8");
+       return SourceTrust.deserialize(JSON.parse(data));
+     }
+   }
    ```
 
 **Success Criteria**:
 - [ ] Feedback intent "evidence_incorrect" detected
-- [ ] SourceTrust domain scores updated (-0.1)
+- [ ] SourceTrust domain scores updated (delta: ±0.1)
 - [ ] Changes persisted to `reports/source-trust.json`
 - [ ] Next retrieval uses updated scores
+- [ ] Governance events include feedback data
 
 ---
 
-### 3. 테스트 체인 통합 (ETA: 1 hour) 🟠
+### 2. Test Chain Integration (ETA: 1 hour) 🟠
 
 **Goal**: Sequential test execution to catch regressions properly.
+
+**Priority**: HIGH (blocks regression detection automation)
 
 **Files to Create**:
 ```
@@ -150,79 +159,22 @@
 
 ---
 
-## 🎯 Phase 1.6 Roadmap (Next)
+### 3. Gate P/I Enhancement (ETA: 2 hours) 🔴
 
-### 4. Phase 1.6 RFC 문서화 (ETA: 1 hour)
+**Goal**: Poisoning/Trust events automatically update Governance metrics and gate status.
 
-**File**: `docs/RFC/2025-10-phase1.6-hybrid-ragas.md`
-
-**Sections**:
-- Purpose & Motivation
-- VectorAdapter design
-- HybridOrchestrator design
-- RAGAS Bridge design
-- Gate P/I specification
-- Rollout strategy (Canary)
-- Success criteria
-
----
-
-### 5. VectorAdapter 구현 (ETA: 4-6 hours)
-
-**Features**:
-- Embedding API integration (OpenAI/Voyage/local)
-- Embedding cache (LRU, TTL, versioned keys)
-- p-limit(4) for parallel requests
-- Cosine similarity scoring
-- Batch support
-
-**Files**:
-- `src/infrastructure/retrieval/vector-adapter.ts`
-- `src/infrastructure/retrieval/embedding-cache.ts`
-- Tests: `tests/integration/vector-adapter.test.ts`
-
----
-
-### 6. HybridOrchestrator 구현 (ETA: 3-4 hours)
-
-**Features**:
-- Weighted fusion: α·BM25 + β·Vector
-- Reciprocal Rank Fusion (RRF) as alternative
-- Feature Flag: `FEATURE_HYBRID_RETRIEVAL`
-- Adaptive weight tuning (Phase 2.2)
-
-**Files**:
-- `src/infrastructure/retrieval/hybrid-orchestrator.ts`
-- Tests: `tests/integration/hybrid-orchestrator.test.ts`
-
----
-
-### 7. RAGAS Bridge 구현 (ETA: 4-6 hours)
-
-**Metrics**:
-- Recall@K (K=1,5,10)
-- MRR (Mean Reciprocal Rank)
-- Groundedness (answer grounded in context)
-- Faithfulness (answer faithful to context)
-
-**Files**:
-- `src/application/evaluation/ragas-bridge.ts`
-- `src/application/evaluation/ragas-metrics.ts`
-- Feature Flag: `FEATURE_RAGAS_EVAL`
-- Tests: `tests/integration/ragas.test.ts`
-
----
-
-### 8. Gate P/I 확장 (ETA: 2 hours)
+**Priority**: CRITICAL (blocks deployment automation)
 
 **Gate P (NEW)**:
 ```typescript
 {
   id: "gate-p-retrieval-poisoning",
   check: (context) => {
+    // FAIL if any poisoned content attempted delivery
     return context.retrieval.poisonedBlocked === 0;
   },
-  severity: "P0"
+  severity: "P0",
+  action: "block_deployment"
 }
 ```
 
@@ -231,84 +183,154 @@
 {
   id: "gate-i-source-trust",
   check: (context) => {
+    // WARNING if trust score below 0.6 threshold
     return context.retrieval.avgTrustScore >= 0.6;
   },
-  severity: "P1"
+  severity: "P1",
+  action: "warning"
 }
 ```
 
-**Files**:
-- `src/domain/preflight/gating-rules.ts` (add Gate P, update Gate I)
-- Tests: `tests/domain/preflight/gates.test.ts`
-
----
-
-### 9. Retrieval Metrics Report (ETA: 2 hours)
-
-**Report**: `reports/retrieval-metrics.json`
-
-**Schema**:
-```json
-{
-  "timestamp": "2025-10-08T10:30:00Z",
-  "strategy": "hybrid",
-  "recallAt10": 0.85,
-  "mrr": 0.72,
-  "groundedness": 0.88,
-  "faithfulness": 0.91,
-  "avgTrustScore": 0.74,
-  "poisonedBlocked": 3,
-  "cacheHitRate": 0.73
-}
+**Files to Modify**:
+```
+✅ Modify: src/domain/preflight/gating-rules.ts (add Gate P, update Gate I)
+✅ Modify: src/core/governance/meta-kernel.ts (add event handlers)
+✅ Create: tests/domain/preflight/gates-retrieval.test.ts
 ```
 
-**Files**:
-- `src/application/reporting/retrieval-reporter.ts`
-- `scripts/generate-retrieval-report.ts`
+**Implementation Steps**:
+1. Add Gate P to gating-rules.ts
+2. Enhance Gate I with trust floor check
+3. Connect governance event handler:
+   ```typescript
+   on("retrieval_assessment", (data) => {
+     updateGateStatus("gate-p", data.poisoned_blocked === 0);
+     updateGateStatus("gate-i", data.trust_avg >= 0.6);
+   });
+   ```
+4. Update RG report to include retrieval metrics
+
+**Success Criteria**:
+- [ ] Gate P defined and operational
+- [ ] Gate I enhanced with trust floor check
+- [ ] Retrieval events auto-update gate status
+- [ ] RG report includes retrieval metrics (trust_avg, poisoned_blocked)
+- [ ] Deployment blocked if Gate P fails
 
 ---
 
-### 10. Evidence Viewer (WebView SSR) (ETA: 8-12 hours)
+## 📋 Phase 1.6: Full Implementation Checklist
 
-**Components**:
-- Evidence snippet display (200-char limit)
-- Trust badge (🟢 High / 🟡 Medium / 🔴 Low)
-- Source link + timestamp
-- "부적절" feedback button
+### Feedback Intelligence Layer
+- [ ] `src/application/feedback-adapter.ts` - Intent classification (6 types)
+- [ ] `src/application/feedback-labeler.ts` - Confidence scoring (1-5)
+- [ ] `src/infrastructure/retrieval/source-trust-updater.ts` - Trust DB updates
+- [ ] `src/infrastructure/retrieval/source-trust-persistence.ts` - Save/load to disk
+- [ ] `reports/source-trust.json` - Trust score history
+- [ ] `reports/feedback-graph.jsonl` - Feedback intelligence log
 
-**Tech Stack**:
-- Next.js 14 (SSR)
-- React Server Components
-- Tailwind CSS
+### Test Chain Integration
+- [ ] `scripts/test-sequence.ts` - Sequential test runner
+- [ ] Update `scripts/guard.ts` - Call test sequence in strict mode
+- [ ] Update `package.json` - Add `test:sequence` script
+- [ ] CI integration - GitHub Actions workflow update
+- [ ] Performance monitoring - Test duration tracking
 
-**Files**:
-- `web/components/EvidenceViewer.tsx`
-- `web/components/TrustBadge.tsx`
-- `web/components/FeedbackButton.tsx`
-- `web/app/evidence/[id]/page.tsx`
+### Gate Enhancement
+- [ ] Update `src/domain/preflight/gating-rules.ts` - Add Gate P
+- [ ] Enhance Gate I - Trust floor check (≥0.6)
+- [ ] `tests/domain/preflight/gates-retrieval.test.ts` - Gate P/I tests
+- [ ] Governance event handler - Update gate status on events
+- [ ] RG report - Include retrieval metrics
+
+### Evidence Viewer (WebView SSR)
+- [ ] `web/components/EvidenceViewer.tsx` - Main viewer
+- [ ] `web/components/TrustBadge.tsx` - Trust indicator (🟢🟡🔴)
+- [ ] `web/components/SourceLink.tsx` - Source attribution
+- [ ] `web/components/FeedbackButton.tsx` - "부적절" button
+- [ ] `web/app/evidence/[id]/page.tsx` - Evidence detail page
+- [ ] API endpoint - `/api/evidence/:id` (SSR data fetch)
+- [ ] API endpoint - `/api/feedback` (POST feedback)
+
+### Metrics & Reporting
+- [ ] `src/application/reporting/retrieval-reporter.ts` - Metrics collector
+- [ ] `reports/retrieval-metrics.json` - Retrieval KPIs
+- [ ] `reports/evidence-trust.jsonl` - Per-chunk trust scores
+- [ ] Dashboard integration - Governance dashboard update
 
 ---
 
-## 🧱 Deeper Enhancements (Phase 2+)
+## 🗺️ Phase 2.0: Multi-Tenant Foundation (3 weeks, ETA: 2025-11-12)
 
-### Data Lineage Ledger
-- `reports/lineage.jsonl` - Complete trace from source to output
-- Schema: `{source_id, query_id, trust_score, feedback_link, timestamp}`
+**Goal**: Support multiple clients/domains/projects with centralized governance.
 
-### Adaptive Cost Router
-- Dynamic model selection (Claude/OpenAI/Mistral)
-- Cost/performance trade-offs
-- Circuit breaker integration
+### Top-3 Priority (Phase 2.0)
 
-### Retrieval Drift Guard
-- 30-day reindex schedule
-- Recall drift detection (>15% triggers alert)
-- Auto re-embedding queue
+1. **Control Plane / Data Plane Architecture** (CRITICAL 🔴)
+   - Tenant Registry + Namespaced Policy DSL
+   - Separate governance (control) from execution (data)
+   - Config-as-Code + GitOps for tenant policies
 
-### Self-Tuning Planner
-- Weekly weight adjustment based on metrics
-- Domain-specific query strategies
-- Reinforcement learning (Phase 3)
+2. **Tenant-Scoped Retrieval Fabric** (HIGH 🔴)
+   - Per-tenant corpus/index/cache isolation
+   - Trust/Poisoning Guard tenant allowlists
+   - Zero data leakage guarantee
+
+3. **Lineage Ledger Enhancement** (HIGH 🔴)
+   - Add tenant/domain/usecase to all traces
+   - Cross-tenant drift map
+   - Per-tenant audit reports
+
+### Key Components (Phase 2.0)
+- `src/core/tenancy/tenant-registry.ts` - Tenant CRUD
+- `tenants/<tenant>/policies/*.yaml` - GitOps policy structure
+- `src/core/governance/namespaced-policy-dsl.ts` - Tenant-aware DSL
+- `src/infrastructure/tenancy/feature-matrix.ts` - Per-tenant FF
+- `src/infrastructure/tenancy/model-router.ts` - Tenant-scoped routing
+
+### Definition of Done (Phase 2.0)
+- Data leakage: 0% (proven via tests)
+- Tenant gate pass rate: ≥95%
+- Lineage trace depth: ≥3 hops
+- All tenant policies in Git
+- PR + signature required for prod
+
+---
+
+## 🤖 Phase 2.1: Hybrid Intelligence (4-6 weeks, ETA: 2025-12-24)
+
+**Goal**: Feedback + Retrieval + Planner autonomous learning/correction loop.
+
+### Top-3 Priority (Phase 2.1)
+
+1. **HybridOrchestrator (BM25+Vector+RAGAS)** (HIGH 🔴)
+   - α·β automatic learning from feedback
+   - "Evidence Quality" driven weight adjustment
+   - Feature Flag: FEATURE_HYBRID_RETRIEVAL
+
+2. **RAGAS Bridge Integration** (HIGH 🔴)
+   - Recall@K, MRR, Groundedness, Faithfulness
+   - Auto-report to governance metrics
+   - Gate C/D connection (stability/cost)
+
+3. **Self-Tuning Planner** (MEDIUM 🟠)
+   - Retrieval results → Planner query strategy adjustment
+   - Periodic feedback-driven weight learning
+   - Weekly auto-tuning cycle
+
+### Key Components (Phase 2.1)
+- `src/infrastructure/retrieval/vector-adapter.ts` - Embedding-based retrieval
+- `src/infrastructure/retrieval/hybrid-orchestrator.ts` - Weighted fusion
+- `src/application/evaluation/ragas-bridge.ts` - RAGAS integration
+- `src/application/planning/self-tuning-planner.ts` - Auto-tuning logic
+
+### Definition of Done (Phase 2.1)
+- Groundedness: ≥85%
+- Faithfulness: ≥85%
+- Recall@10: +10~20% improvement
+- MRR: +10~20% improvement
+- Drift detection latency: <6h
+- Compliance coverage: ≥95%
 
 ---
 
@@ -318,20 +340,21 @@
 - [x] Phase 2C (Policy + Sandbox + Evolution)
 - [x] Phase 1 (MBC: Handshake + Token + Scheduler)
 - [x] Phase 1.5 (Retrieval: Port + Trust + Guard + BM25)
+- [x] Integrated Roadmap Documentation (Phase 1.6 → 2.1)
 
-### In Progress 🚧
-- [ ] Governance Loop 재결선
-- [ ] Feedback 동기화
-- [ ] Test Chain 통합
+### In Progress 🚧 (Phase 1.6)
+- [ ] Feedback Adapter + Source Trust Updater (Top-3 #1)
+- [ ] Test Chain Integration (Top-3 #2)
+- [ ] Gate P/I Enhancement (Top-3 #3)
 
-### Planned 📋
-- [ ] Phase 1.6 RFC
-- [ ] VectorAdapter
-- [ ] HybridOrchestrator
-- [ ] RAGAS Bridge
-- [ ] Gate P/I
-- [ ] Retrieval Metrics
-- [ ] Evidence Viewer
+### Planned 📋 (Phase 1.6)
+- [ ] Evidence Viewer (WebView SSR)
+- [ ] Retrieval Metrics Reporting
+- [ ] Documentation updates (README, SESSION_STATE, NEXT_ACTIONS)
+
+### Future Phases 🔮
+- [ ] Phase 2.0: Multi-Tenant Foundation (3 weeks)
+- [ ] Phase 2.1: Hybrid Intelligence (4-6 weeks)
 
 ---
 
@@ -352,13 +375,58 @@ npm test
 
 ---
 
-## 📞 Contact & Resources
+## 📞 Key Documents & Resources
 
-- **RFC Directory**: `docs/RFC/`
-- **Architecture Docs**: `docs/llm_friendly_summary.md`
-- **Development Standards**: `DEVELOPMENT_STANDARDS.md`
+### Primary References
+- **Integrated Roadmap**: `docs/RFC/2025-10-integrated-roadmap-phase1.6-to-2.1.md` ⭐ **NEW**
+- **Multi-Tenant Architecture**: `docs/ARCHITECTURE_MULTI_TENANT.md` ⭐ **NEW**
+- **Session State**: `docs/SESSION_STATE.md` (updated with roadmap)
 - **Product Plan**: `docs/PRODUCT_PLAN.md`
+
+### Development Standards
+- **Development Contract**: `LLM_DEVELOPMENT_CONTRACT.md`
+- **Development Standards**: `DEVELOPMENT_STANDARDS.md`
+- **TypeScript Guidelines**: `docs/TYPESCRIPT_GUIDELINES.md`
+- **System Philosophy**: `CLAUDE.md`
+
+### Architecture & Design
+- **Architecture Summary**: `docs/llm_friendly_summary.md`
+- **RFC Directory**: `docs/RFC/`
+- **Phase Documentation**: `docs/PHASE_*.md`
+
+### Commands & Tools
+- **Command Guide**: `docs/COMMAND_GUIDE.md`
+- **Super Claude Runbook**: `docs/super_claude_runbook.md`
+
+---
+
+## 💡 Key Principles (Reminder)
+
+1. **Evolutionary Expansion, NOT Rewrite**
+   - Current structure is a "living organism with genetic structure"
+   - Add layers, don't rebuild foundation
+
+2. **Top-3 + Full Backlog**
+   - Top-3 for immediate action
+   - Full checklist for complete visibility
+   - N-point design (not artificially limited)
+
+3. **Control Plane / Data Plane** (Phase 2.0)
+   - Separate governance from execution
+   - Enable multi-tenant without complexity explosion
+
+4. **Governance First, Features Second**
+   - Every feature must pass Gate checks
+   - DNA Lock-In + Adaptive Mode maintained
+   - Security/compliance non-negotiable
+
+5. **Feedback-Driven Evolution**
+   - User feedback → Trust scores → Retrieval quality
+   - Self-tuning loops for continuous improvement
+   - Data becomes competitive moat
 
 ---
 
 **Remember**: Always update `docs/SESSION_STATE.md` after completing a major task!
+
+**Last Updated**: 2025-10-08 20:30 KST

@@ -1,8 +1,9 @@
 # Session State - 2025-10-08
 
-**Last Updated**: 2025-10-08 19:00 KST
+**Last Updated**: 2025-10-08 20:30 KST
 **Branch**: phase2c-launch
-**Session ID**: phase1.5-governance-loop-connected
+**Session ID**: phase1.6-roadmap-integrated
+**Roadmap**: Evolutionary Expansion (Phase 1.6 → 2.1)
 
 ---
 
@@ -29,12 +30,17 @@
 - BM25Adapter (integrated retrieval)
 - Tests: 765/768 PASS (99.6%, 9/12 integration)
 
+**Roadmap Integration** (commit: 5ea06b7)
+- Integrated Development Roadmap (Phase 1.6 → 2.1)
+- Multi-Tenant Governance Architecture
+- Evolutionary Expansion Strategy
+
 ### Current State Snapshot
 
 ```json
 {
   "branch": "phase2c-launch",
-  "lastCommit": "f7788a4",
+  "lastCommit": "5ea06b7",
   "totalTests": 768,
   "passingTests": 765,
   "failingTests": 3,
@@ -42,69 +48,135 @@
   "eslintWarnings": 65,
   "eslintErrors": 0,
   "typescriptErrors": 0,
+  "roadmapStatus": "documented",
+  "approachStrategy": "evolutionary_expansion",
   "componentsImplemented": [
     "RetrievalPort V1",
     "SourceTrust",
     "PoisoningGuard",
     "BM25Adapter"
   ],
-  "componentsPending": [
-    "VectorAdapter",
-    "HybridOrchestrator",
-    "RAGAS Bridge",
-    "Gate P (Retrieval Poisoning)",
-    "Gate I enhancement",
-    "Retrieval Metrics Reports",
-    "Evidence Viewer (WebView SSR)"
-  ]
+  "componentsPending": {
+    "phase1.6": [
+      "Feedback Adapter + Source Trust Updater",
+      "Test Chain Integration",
+      "Gate P/I Enhancement",
+      "Evidence Viewer (WebView SSR)"
+    ],
+    "phase2.0": [
+      "Tenant Registry + Namespaced Policy DSL",
+      "Tenant-Scoped Retrieval Fabric",
+      "Lineage Ledger Enhancement",
+      "RBAC/ABAC + Data Sovereignty"
+    ],
+    "phase2.1": [
+      "VectorAdapter + HybridOrchestrator",
+      "RAGAS Bridge Integration",
+      "Self-Tuning Planner",
+      "Compliance-Aware Evaluator"
+    ]
+  }
 }
 ```
 
 ---
 
-## 🎯 Next Actions (Priority Order)
+## 🎯 Next Actions (Integrated Roadmap - Phase 1.6 Focus)
 
-### Immediate (Today)
+### Strategy
+**Approach**: Evolutionary Expansion (NOT Rewrite)
+- Current structure is a "living organism with genetic structure"
+- Add layers, don't rebuild foundation
+- Top-3 Priority + Full Backlog visibility
 
-1. **Governance Loop 재결선** (HIGH PRIORITY 🔴)
-   - File: `src/application/retrieval-feedback-bridge.ts`
-   - Purpose: Retrieval → Governance 이벤트 연결
-   - Impact: Gate I/P 자동 업데이트, 회귀 탐지 가능
+### Phase 1.6: Organic Loop Completion (2 weeks, ETA: 2025-10-22)
 
-2. **Feedback ↔ RetrievalPort 동기화** (HIGH PRIORITY 🔴)
+**Goal**: Complete Retrieval ↔ Feedback ↔ Governance circular flow.
+
+#### Top-3 Priority (Start Here)
+
+1. **Feedback Adapter + Source Trust Updater** (CRITICAL 🔴)
    - Files:
      - `src/application/feedback-adapter.ts`
      - `src/infrastructure/retrieval/source-trust-updater.ts`
-   - Purpose: "근거 부적절" 피드백 → SourceTrust 업데이트
-   - Impact: Feedback이 Retrieval 품질 향상으로 직결
+     - `src/infrastructure/retrieval/source-trust-persistence.ts`
+   - Purpose: User feedback ("incorrect evidence") → SourceTrust DB
+   - Impact: Trust score delta (±0.1) automatic adjustment, feedback → governance events
+   - ETA: 2-3 hours
 
-3. **테스트 체인 통합** (MEDIUM PRIORITY 🟠)
-   - File: `scripts/test-sequence.ts`
-   - Purpose: Phase별 테스트 순차 실행 + 회귀 검증
-   - Impact: 회귀 누락 제거
+2. **Test Chain Integration** (HIGH 🟠)
+   - Files:
+     - `scripts/test-sequence.ts`
+     - Update `scripts/guard.ts`
+     - Update `package.json`
+   - Purpose: `/guard --strict` auto-runs Phase2C + 1 + 1.5
+   - Impact: Regression detection automation
+   - ETA: 1 hour
 
-### Short-term (This Week)
+3. **Gate P/I Enhancement** (CRITICAL 🔴)
+   - Files:
+     - `src/domain/preflight/gating-rules.ts`
+     - `tests/domain/preflight/gates.test.ts`
+   - Purpose: Poisoning/Trust events → Governance metrics
+   - Impact: Gate P = Retrieval Poisoning FAIL blocks deployment, Gate I = Trust floor <0.4 warning
+   - ETA: 2 hours
 
-4. **Phase 1.6 로드맵 문서화**
-   - File: `docs/RFC/2025-10-phase1.6-hybrid-ragas.md`
-   - Components: VectorAdapter, HybridOrchestrator, RAGAS, Gate P/I
+#### Full Implementation Checklist (Phase 1.6)
 
-5. **VectorAdapter 구현**
-   - Embedding cache (LRU + TTL)
-   - p-limit(4) for parallel requests
-   - Cosine similarity
+**Feedback Intelligence Layer**:
+- [ ] `src/application/feedback-adapter.ts` - Intent classification (6 types)
+- [ ] `src/application/feedback-labeler.ts` - Confidence scoring (1-5)
+- [ ] `src/infrastructure/retrieval/source-trust-updater.ts` - Trust DB updates
+- [ ] `src/infrastructure/retrieval/source-trust-persistence.ts` - Save/load to disk
+- [ ] `reports/source-trust.json` - Trust score history
+- [ ] `reports/feedback-graph.jsonl` - Feedback intelligence log
 
-6. **HybridOrchestrator 구현**
-   - α·BM25 + β·Vector weighted fusion
-   - Feature Flag: FEATURE_HYBRID_RETRIEVAL
+**Test Chain Integration**:
+- [ ] `scripts/test-sequence.ts` - Sequential test runner
+- [ ] Update `scripts/guard.ts` - Call test sequence in strict mode
+- [ ] Update `package.json` - Add `test:sequence` script
+- [ ] CI integration - GitHub Actions workflow update
+- [ ] Performance monitoring - Test duration tracking
 
-7. **RAGAS Bridge 구현**
-   - Recall@K, MRR, Groundedness, Faithfulness
-   - Feature Flag: FEATURE_RAGAS_EVAL
+**Gate Enhancement**:
+- [ ] Update `src/domain/preflight/gating-rules.ts` - Add Gate P
+- [ ] Enhance Gate I - Trust floor check (≥0.6)
+- [ ] `tests/domain/preflight/gates.test.ts` - Gate P/I tests
+- [ ] Governance event handler - Update gate status on events
+- [ ] RG report - Include retrieval metrics
 
-8. **Gate P/I 확장**
-   - Gate P: Retrieval Poisoning check
-   - Gate I: Source Trust floor (≥0.6)
+**Evidence Viewer (WebView SSR)**:
+- [ ] `web/components/EvidenceViewer.tsx` - Main viewer
+- [ ] `web/components/TrustBadge.tsx` - Trust indicator (🟢🟡🔴)
+- [ ] `web/components/SourceLink.tsx` - Source attribution
+- [ ] `web/components/FeedbackButton.tsx` - "부적절" button
+- [ ] `web/app/evidence/[id]/page.tsx` - Evidence detail page
+- [ ] API endpoint - `/api/evidence/:id` (SSR data fetch)
+- [ ] API endpoint - `/api/feedback` (POST feedback)
+
+**Metrics & Reporting**:
+- [ ] `src/application/reporting/retrieval-reporter.ts` - Metrics collector
+- [ ] `reports/retrieval-metrics.json` - Retrieval KPIs
+- [ ] `reports/evidence-trust.jsonl` - Per-chunk trust scores
+- [ ] Dashboard integration - Governance dashboard update
+
+#### Definition of Done (Phase 1.6)
+
+**Quality**:
+- Tests ≥ 98% (target: 770+/780+)
+- p95 latency ≤ 3.1s (maintained)
+- Zero new ESLint errors
+
+**Functionality**:
+- Feedback → Trust update within 24h
+- Gate P/I auto-updates on retrieval events
+- Test chain catches regressions (proven)
+- Evidence Viewer accessible via web
+
+**Documentation**:
+- README updated with Phase 1.6 features
+- `docs/SESSION_STATE.md` updated
+- `docs/NEXT_ACTIONS.md` updated
 
 ---
 
@@ -117,15 +189,28 @@
    - Low impact (core filtering works)
    - Fix priority: P2
 
-2. **Governance Loop 미연결**
+2. **Governance Loop 미연결** (Phase 1.6 blocker)
    - Retrieval events not flowing to Governance
-   - Fix priority: P0 (blocking Phase 1.6)
+   - Fix priority: P0
+   - Solution: Feedback Adapter implementation (Top-3 Priority #1)
 
-3. **Feedback Loop 미연결**
+3. **Feedback Loop 미연결** (Moat value blocker)
    - User feedback not affecting SourceTrust
-   - Fix priority: P0 (blocking Moat value)
+   - Fix priority: P0
+   - Solution: Source Trust Updater implementation (Top-3 Priority #1)
 
-### Risks
+### Critical Weaknesses & Preventive Measures (from Integrated Roadmap)
+
+| Weakness | Risk | Prevention/Mitigation |
+|----------|------|----------------------|
+| Loop complexity explosion | Agent/Governance/Retrieval path duplication | Event Bus queue integration + TraceID-based lineage |
+| Incomplete tenant isolation (Phase 2.0) | Data/policy contamination | Namespace key enforcement + Policy Kernel validation |
+| Over-aggressive poisoning | Dropping legitimate data | Sampling + manual override window |
+| Feedback loop bias | User feedback noise distortion | Weighted decay (feedback half-life: 7 days) |
+| Policy drift | Outdated DSL application | 30-day policy hash validation (Entropy Monitor) |
+| Performance/cost increase | Vector/BM25 parallelization load | p-limit + LRU Cache + Router-level Cost Balancer |
+
+### Risks (Phase 1.6)
 
 - **구조 복잡도 증가**: 연결 루프 추가 시 디버깅 복잡도 상승
   - Mitigation: 구조화된 로깅 + 명확한 이벤트 계보
@@ -135,6 +220,51 @@
 
 - **테스트 불안정성**: 순차 테스트 도입 시 CI 시간 증가
   - Mitigation: Parallel stages (Phase2C || Phase1 || Phase1.5) → RG
+
+---
+
+## 🗺️ Future Phases (Overview)
+
+### Phase 2.0: Multi-Tenant Foundation (3 weeks, ETA: 2025-11-12)
+
+**Goal**: Support multiple clients/domains/projects with centralized governance.
+
+**Top-3 Priority**:
+1. Control Plane / Data Plane Architecture
+2. Tenant-Scoped Retrieval Fabric
+3. Lineage Ledger Enhancement (tenant/domain/usecase)
+
+**Key Components**:
+- Tenant Registry + Namespaced Policy DSL
+- Feature Matrix / Model Router (per-tenant)
+- RBAC/ABAC + Data Sovereignty
+- Per-tenant metrics and dashboards
+
+**DoD**:
+- Data leakage: 0% (proven)
+- Tenant gate pass rate: ≥95%
+- Lineage trace depth: ≥3 hops
+
+### Phase 2.1: Hybrid Intelligence (4-6 weeks, ETA: 2025-12-24)
+
+**Goal**: Feedback + Retrieval + Planner autonomous learning/correction loop.
+
+**Top-3 Priority**:
+1. HybridOrchestrator (BM25+Vector+RAGAS) with α·β automatic learning
+2. RAGAS Bridge Integration (Recall@K, MRR, Groundedness, Faithfulness)
+3. Self-Tuning Planner (retrieval-driven query strategy adjustment)
+
+**Key Components**:
+- VectorAdapter + Embedding Cache
+- HybridOrchestrator (weighted fusion)
+- RAGAS Bridge + Compliance-Aware Evaluator
+- Weekly auto-tuning cycle
+
+**DoD**:
+- Groundedness: ≥85%
+- Recall@10: +10~20% improvement
+- Drift detection latency: <6h
+- Compliance coverage: ≥95%
 
 ---
 
@@ -159,6 +289,8 @@
 - `tests/integration/phase1.5-retrieval.test.ts` - Retrieval tests (9/12 PASS)
 
 ### Documentation
+- `docs/RFC/2025-10-integrated-roadmap-phase1.6-to-2.1.md` - **Integrated Roadmap (NEW)**
+- `docs/ARCHITECTURE_MULTI_TENANT.md` - **Multi-Tenant Architecture (NEW)**
 - `docs/RFC/2025-10-phase1.5-retrieval-integration.md` - Phase 1.5 RFC
 - `docs/PRODUCT_PLAN.md` - Overall roadmap
 - `CLAUDE.md` - System philosophy
@@ -204,17 +336,24 @@ git checkout phase1.5-retrieval-complete
 
 ## 📝 Development Log
 
+**2025-10-08 20:30** - Integrated Roadmap 문서화 완료
+- docs/RFC/2025-10-integrated-roadmap-phase1.6-to-2.1.md 생성
+- docs/ARCHITECTURE_MULTI_TENANT.md 생성
+- Evolutionary Expansion 전략 수립 (NOT Rewrite)
+- Top-3 Priority + Full Backlog 방식 채택
+- Phase 1.6 (2 weeks) → 2.0 (3 weeks) → 2.1 (4-6 weeks) 타임라인 설정
+- SESSION_STATE.md 업데이트 (통합 로드맵 반영)
+- Next: NEXT_ACTIONS.md 업데이트, CHANGELOG.md 업데이트
+
 **2025-10-08 19:00** - Governance Loop 연결 완료
 - Retrieval-Feedback Bridge 구현
 - BM25Adapter → Governance 이벤트 연결
 - 자동 Gate I/P 업데이트 준비 완료
-- Next: Feedback ↔ RetrievalPort 동기화
 
 **2025-10-08 18:30** - Phase 1.5 완성
 - RetrievalPort V1 frozen
 - SourceTrust + PoisoningGuard + BM25Adapter 구현
 - 765/768 tests PASS (99.6%)
-- Next: Governance Loop 재결선
 
 **2025-10-08 18:00** - Phase 1 완성
 - Capability Token + Fairness Scheduler
@@ -250,7 +389,31 @@ git add -A && git commit -m "feat: ..."
 ---
 
 **Last Session Context**:
-- Implementing Retrieval Integration (Phase 1.5)
-- Completed: Port, Trust, Guard, BM25Adapter
-- Pending: Governance Loop, Feedback Sync, Test Chain
-- Next Phase: 1.6 (Vector + Hybrid + RAGAS + Gates)
+- **Current Focus**: Phase 1.6 Preparation (Integrated Roadmap)
+- **Completed**: Phase 1.5 (Retrieval Integration), Integrated Roadmap Documentation
+- **Pending**: Feedback Adapter, Test Chain, Gate P/I Enhancement
+- **Next Phase**: 1.6 (Feedback Loop + Test Chain + Gate Enhancement + Evidence Viewer)
+- **Strategy**: Evolutionary Expansion (NOT Rewrite) - "Living organism with genetic structure"
+- **Approach**: Top-3 Priority + Full Backlog visibility
+
+---
+
+## 📊 Key Metrics Targets (Phase 1.6 → 2.1)
+
+### Phase 1.6 Targets
+- Tests: ≥98% (770+/780+)
+- p95 latency: ≤3.1s
+- Feedback → Trust update: ≤24h
+- Gate P/I auto-update: 100%
+
+### Phase 2.0 Targets
+- Data leakage: 0%
+- Tenant gate pass rate: ≥95%
+- Lineage trace depth: ≥3 hops
+- Policies in Git: 100%
+
+### Phase 2.1 Targets
+- Groundedness: ≥85%
+- Recall@10: +10~20%
+- Drift detection: <6h
+- Compliance coverage: ≥95%
