@@ -24,6 +24,7 @@ import { retrieve, type RetrieveOptions } from "../../rag/retrieve.js";
 import type { Chunk } from "../../rag/chunk.js";
 import { SourceTrust } from "./source-trust.js";
 import { PoisoningGuard } from "./poisoning-guard.js";
+import { reportRetrievalEvent } from "../../application/retrieval-feedback-bridge.js";
 
 /**
  * BM25 Adapter Statistics
@@ -131,7 +132,7 @@ export class BM25Adapter implements RetrievalPort {
     this.adapterStats.totalDuration += duration;
     this.adapterStats.strategyCount.bm25++;
 
-    return {
+    const result: RetrievalResult = {
       query,
       chunks: finalChunks,
       metadata: {
@@ -144,6 +145,13 @@ export class BM25Adapter implements RetrievalPort {
         timestamp: new Date(),
       },
     };
+
+    // Report to governance (async, non-blocking)
+    reportRetrievalEvent(result).catch((error) => {
+      console.warn("[BM25Adapter] Failed to report retrieval event:", error);
+    });
+
+    return result;
   }
 
   /**
