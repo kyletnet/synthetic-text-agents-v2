@@ -1,5 +1,5 @@
 import { randomUUID } from "crypto";
-import { BaseAgent as IBaseAgent } from "../shared/registry.js";
+import { BaseAgent as IBaseAgent } from "../shared/agent-interface.js";
 import {
   AgentResult,
   AgentResultSchema,

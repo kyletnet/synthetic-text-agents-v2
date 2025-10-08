@@ -1,0 +1,184 @@
+version: 1.0.0
+policies:
+  - name: no-circular-dependencies
+    type: architecture
+    level: error
+    description: Zero tolerance for circular dependencies
+    condition: |
+      circular_dependency_count > 0
+    action:
+      - block
+      - notify:slack
+      - log:governance
+    metadata:
+      priority: P0
+      impact: Breaks modularity, makes testing impossible
+      fix_guide: "Run: npm run arch:check && follow suggestions"
+  - name: ddd-boundary-enforcement
+    type: architecture
+    level: error
+    description: Domain layer cannot import from outer layers
+    condition: |
+      domain_imports_application == true OR
+      domain_imports_infrastructure == true
+    action:
+      - block
+      - notify:slack
+      - log:governance
+    metadata:
+      priority: P0
+      impact: Violates Clean Architecture principles
+      fix_guide: Move shared types to domain layer or use dependency injection
+  - name: orphan-module-detection
+    type: architecture
+    level: warn
+    description: Detect unused modules (potential dead code)
+    condition: |
+      orphan_module_count > 5
+    action:
+      - notify:slack
+      - log:governance
+      - suggest:cleanup
+    metadata:
+      priority: P2
+      impact: Increases bundle size, confuses developers
+  - name: threshold-drift-detection
+    type: threshold
+    level: warn
+    description: Detect significant threshold changes (>20%)
+    condition: |
+      abs((new_value - old_value) / old_value) > 0.10
+    action:
+      - notify:slack
+      - log:governance
+      - record:prediction
+    metadata:
+      priority: P1
+      impact: May indicate quality degradation or cost spike
+      auto_response: Governance will review and suggest rollback if needed
+      adaptive_threshold: true
+      last_adapted: "2025-10-07T13:52:40.505Z"
+  - name: cost-spike-detection
+    type: threshold
+    level: error
+    description: Block operations that exceed cost threshold by >50%
+    condition: |
+      new_value > old_value * 1.5 AND
+      metric_type == "cost_per_item"
+    action:
+      - block
+      - notify:slack
+      - log:governance
+      - record:prediction
+    metadata:
+      priority: P0
+      impact: Prevents runaway costs
+      auto_response: Require manual approval for cost increases >50%
+  - name: quality-degradation
+    type: quality
+    level: error
+    description: Block if quality score drops below 80%
+    condition: |
+      new_value < 0.80 AND
+      metric_type == "quality_score"
+    action:
+      - block
+      - notify:slack
+      - log:governance
+      - rollback:suggest
+    metadata:
+      priority: P0
+      impact: Quality below acceptable threshold
+  - name: drift-prediction
+    type: prediction
+    level: info
+    description: Use ML to predict drift before it happens
+    condition: |
+      ml_model_available == true AND
+      predicted_drift_probability > 0.70
+    action:
+      - notify:slack
+      - log:governance
+      - suggest:preemptive-action
+    metadata:
+      priority: P2
+      impact: Enables proactive quality management
+      ml_model: drift_predictor_v1
+      requires_training_data: 100
+  - name: pii-detection
+    type: security
+    level: error
+    description: Block if PII detected in generated output
+    condition: |
+      pii_hits > 0
+    action:
+      - block
+      - notify:security
+      - log:governance
+    metadata:
+      priority: P0
+      impact: GDPR/CCPA compliance violation
+actions:
+  block:
+    description: Prevent operation from completing
+    severity: critical
+  notify:slack:
+    description: Send Slack notification to governance channel
+    channel: "#architecture-governance"
+    severity: high
+  notify:security:
+    description: Send notification to security team
+    channel: "#security-alerts"
+    severity: critical
+  log:governance:
+    description: Record event in governance ledger
+    output: reports/governance/policy-decisions.jsonl
+  record:prediction:
+    description: Record event for ML training
+    output: reports/governance/prediction-train.jsonl
+  rollback:suggest:
+    description: Suggest rollback with previous safe state
+    mechanism: snapshot-based
+  suggest:cleanup:
+    description: Generate cleanup suggestions
+    mechanism: static-analysis
+  suggest:preemptive-action:
+    description: ML-based proactive recommendations
+    mechanism: predictive-model
+context:
+  architecture:
+    - circular_dependency_count: Number of circular dependencies detected
+    - domain_imports_application: "Boolean: Does domain import from application?"
+    - domain_imports_infrastructure: "Boolean: Does domain import from infrastructure?"
+    - orphan_module_count: Number of unused modules
+  threshold:
+    - old_value: Previous threshold value
+    - new_value: New threshold value
+    - metric_type: Type of metric (cost_per_item, quality_score, etc.)
+  quality:
+    - quality_score: Current quality score (0.0-1.0)
+    - test_coverage: Test coverage percentage
+    - duplication_rate: Code duplication rate
+  security:
+    - pii_hits: Number of PII instances detected
+    - license_violations: Number of license violations
+  prediction:
+    - ml_model_available: "Boolean: Is ML model trained and available?"
+    - predicted_drift_probability: ML-predicted drift probability (0.0-1.0)
+    - confidence_score: Model confidence (0.0-1.0)
+rg:
+  stability:
+    window: 10
+    minPass: 9
+    maxConsecutiveWarn: 2
+  budgets:
+    verify:
+      dev: 0.2
+      stage: 0.5
+      prod: 1
+  quarantine:
+    maxFailures24h: 3
+    requireApproval: true
+  bypass:
+    envFlag: BYPASS_RG
+    commitTagPattern: \[ci-bypass-approved:[A-Z]+-\d+\]

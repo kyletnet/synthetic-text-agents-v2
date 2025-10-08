@@ -1,0 +1,16 @@
+{
+  "timestamp": 1759895156551,
+  "healthScore": 75,
+  "details": {
+    "typescript": "pass",
+    "codeStyle": "fail",
+    "tests": "fail",
+    "security": "fail"
+  },
+  "gates": {
+    "typescript": "FAIL",
+    "codeStyle": "FAIL",
+    "tests": "FAIL",
+    "security": "FAIL"
+  }
+}

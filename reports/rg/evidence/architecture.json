@@ -1,0 +1,10 @@
+{
+  "depcruise": {
+    "passed": true,
+    "errors": []
+  },
+  "metaKernel": {
+    "passed": true,
+    "issues": []
+  }
+}

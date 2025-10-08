@@ -1,0 +1,10 @@
+{
+  "decision": "PASS",
+  "gates": {
+    "A_static_dna": true,
+    "B_autonomy": true,
+    "C_stability": true,
+    "D_budget": true
+  },
+  "ts": "2025-10-07T14:27:28.714Z"
+}

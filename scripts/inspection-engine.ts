@@ -444,7 +444,7 @@ class InspectionEngine {
         };
       }
 
-      const output = error.stdout || error.stderr || "";
+      const output = String(error.stdout || error.stderr || "");
       const errorCount = (output.match(/error TS/g) || []).length;
 
       return {

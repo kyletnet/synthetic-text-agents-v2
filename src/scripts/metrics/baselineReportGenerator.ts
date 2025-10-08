@@ -1,3 +1,8 @@
+/**
+ * DEPRECATED: Legacy wrapper for backward compatibility
+ * Please use src/infrastructure/filesystem/report-writer.ts instead
+ */
+
 import {
   writeFileSync,
   readFileSync,
@@ -6,9 +11,12 @@ import {
   readdirSync,
 } from "fs";
 import { promises as fs } from "node:fs";
-import path from "node:path";
+import path, { join } from "path";
 import { createHash } from "crypto";
-import { join } from "path";
+import {
+  prewriteSessionMeta as newPrewriteSessionMeta,
+  type SessionMeta,
+} from "../../infrastructure/filesystem/report-writer.js";
 
 const SESSION_REPORT = path.join(process.cwd(), "reports", "session_report.md");
 
@@ -17,34 +25,14 @@ export async function prewriteSessionMeta(meta: {
   mode: string;
   dryRun: string;
   casesTotal: number;
-}) {
-  try {
-    await fs.mkdir(path.dirname(SESSION_REPORT), { recursive: true });
-    const now = new Date().toISOString();
-    const block = [
-      `PROFILE: ${meta.profile}`,
-      `MODE: ${meta.mode}`,
-      `DRY_RUN: ${meta.dryRun} (source: CLI)`,
-      `CASES_TOTAL: ${meta.casesTotal}`,
-      `TIMESTAMP: ${now}`,
-    ].join("\n");
-    // append or ensure presence without wiping rest of file
-    let prev = "";
-    try {
-      prev = await fs.readFile(SESSION_REPORT, "utf8");
-    } catch {
-      // File doesn't exist - use empty string for prev
-    }
-    const merged = prev.includes("PROFILE:")
-      ? prev
-      : prev
-      ? prev + "\n" + block + "\n"
-      : block + "\n";
-    await fs.writeFile(SESSION_REPORT + ".tmp", merged, "utf8");
-    await fs.rename(SESSION_REPORT + ".tmp", SESSION_REPORT);
-  } catch {
-    // best-effort; don't block pipeline
-  }
+}): Promise<void> {
+  const sessionMeta: SessionMeta = {
+    profile: meta.profile,
+    mode: meta.mode,
+    dryRun: meta.dryRun,
+    casesTotal: meta.casesTotal,
+  };
+  return newPrewriteSessionMeta(sessionMeta, SESSION_REPORT);
 }
 import { calculateAllBaselineMetrics } from "./__all__.js";
 import {

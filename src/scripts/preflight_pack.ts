@@ -1,11 +1,10 @@
 #!/usr/bin/env node
-import * as path from "path";
 /**
- * preflight_pack.ts — Production preflight pack with handoff bundle generation
+ * preflight_pack.ts — Production preflight pack with handoff bundle generation (REFACTORED)
  *
  * Usage: node dist/scripts/preflight_pack.js --profile stage --budget-smoke 2.00 --budget-full 50.00 --run-tags preflight
  *
- * 7-Stage Process:
+ * 7-Stage Pipeline Process:
  * [1] TypeScript validate → GREEN 필요
  * [2] Lint → GREEN
  * [3] Manifest/Seed/Threshold sanity
@@ -14,23 +13,27 @@ import * as path from "path";
  * [6] Observability export (HTML)
  * [7] Full run (Gate 통과 시)
  *
+ * Architecture: Domain-Driven Design + Pipeline Pattern
+ * - Domain: Stage definitions, validation rules, gating rules
+ * - Application: Pipeline executor, stage executor, bundle generator
+ * - Infrastructure: Stage runners (7 concrete implementations)
+ *
  * Outputs handoff bundle with all required artifacts
  */
 
-import { execSync, spawn } from "child_process";
 import { promises as fs } from "fs";
-import { join, resolve } from "path";
 import { parseArgs } from "util";
-import { createHash } from "crypto";
-import { ManifestManager } from "./lib/manifest_manager.js";
-import { SeedManager } from "./lib/seed_manager.js";
-import { ThresholdManager } from "./metrics/thresholdManager.js";
-import { BudgetGuardian } from "./lib/budget_guardian.js";
-import { DLQManager } from "./lib/dlq_manager.js";
-import { ObservabilityExporter } from "./lib/observability_exporter.js";
-import { GatingIntegrator } from "./lib/gating_integrator.js";
-import { SessionReportValidator } from "./lib/session_report_validator.js";
-import { appendJSONL } from "../shared/jsonl.js";
+import { Logger } from "../shared/logger.js";
+import { StageContext } from "../domain/preflight/stage-definitions.js";
+import {
+  createPipelineBuilder,
+  PipelineResult,
+} from "../application/preflight/preflight-pipeline.js";
+import { createAllStages } from "../infrastructure/preflight/stage-runners.js";
+import {
+  BundleGenerator,
+  HandoffBundle,
+} from "../application/preflight/bundle-generator.js";
 
 interface PreflightConfig {
   profile: "dev" | "stage" | "prod";
@@ -44,44 +47,18 @@ interface PreflightConfig {
   dlqDir: string;
 }
 
-interface StageResult {
-  stage: string;
-  success: boolean;
-  duration_ms: number;
-  error?: string;
-  details?: any;
-  outputs?: string[];
-}
-
-interface HandoffBundle {
-  timestamp: string;
-  git_commit_hash: string;
-  profile: string;
-  session_report_path: string;
-  baseline_report_path: string;
-  observability_path: string;
-  data_manifest_path: string;
-  config_snapshot: {
-    env_files: string[];
-    baseline_config: string;
-    tsconfig_files: string[];
-  };
-  run_logs_dir: string;
-  dlq_reports: string[];
-  product_plan_version: string;
-  bundle_hash: string;
-}
-
+/**
+ * PreflightPack - Refactored with Pipeline Pattern
+ *
+ * This class now uses the Domain-Driven Design architecture:
+ * - Domain layer: Stage definitions, validation rules, gating rules
+ * - Application layer: Pipeline executor, stage executor, bundle generator
+ * - Infrastructure layer: Stage runners (7 concrete implementations)
+ */
 export class PreflightPack {
   private config: PreflightConfig;
-  private manifestManager: ManifestManager;
-  private seedManager: SeedManager;
-  private thresholdManager: ThresholdManager;
-  private budgetGuardian: BudgetGuardian;
-  private dlqManager: DLQManager;
-  private obsExporter: ObservabilityExporter;
-  private gatingIntegrator: GatingIntegrator;
-  private sessionValidator: SessionReportValidator;
+  private logger: Logger;
+  private bundleGenerator: BundleGenerator;
 
   constructor(config: Partial<PreflightConfig> = {}) {
     const timestamp = new Date()
@@ -102,843 +79,142 @@ export class PreflightPack {
       ...config,
     };
 
-    this.manifestManager = new ManifestManager();
-    this.seedManager = new SeedManager();
-    this.thresholdManager = new ThresholdManager();
-    this.budgetGuardian = new BudgetGuardian();
-    this.dlqManager = new DLQManager();
-    this.obsExporter = new ObservabilityExporter();
-    this.gatingIntegrator = new GatingIntegrator();
-    this.sessionValidator = new SessionReportValidator();
+    this.logger = new Logger({ level: "info" });
+    this.bundleGenerator = new BundleGenerator();
   }
 
   async run(): Promise<{ success: boolean; handoffBundle: HandoffBundle }> {
+    this.logger.info("Starting preflight pack", {
+      profile: this.config.profile,
+      budgetSmoke: this.config.budgetSmoke,
+      budgetFull: this.config.budgetFull,
+      timestamp: this.config.timestamp,
+    });
+
     console.log(`[PREFLIGHT] Starting with profile: ${this.config.profile}`);
     console.log(
       `[PREFLIGHT] Budgets - Smoke: $${this.config.budgetSmoke}, Full: $${this.config.budgetFull}`,
     );
     console.log(`[PREFLIGHT] Timestamp: ${this.config.timestamp}`);
 
-    await this.ensureDirectories();
-    const stages: StageResult[] = [];
-
     try {
-      // 1) TypeScript validate → GREEN 필요
-      const tsStage = await this.runStage("[1] TypeScript validate", () =>
-        this.validateTypeScript(),
+      // Ensure directories exist
+      await this.ensureDirectories();
+
+      // Create stage context
+      const context: StageContext = {
+        profile: this.config.profile,
+        budgetSmoke: this.config.budgetSmoke,
+        budgetFull: this.config.budgetFull,
+        runTags: this.config.runTags,
+        timestamp: this.config.timestamp,
+        reportDir: this.config.reportDir,
+        runLogsDir: this.config.runLogsDir,
+        obsDir: this.config.obsDir,
+        dlqDir: this.config.dlqDir,
+      };
+
+      // Create all stages
+      const stages = createAllStages();
+
+      // Build and execute pipeline
+      const pipeline = createPipelineBuilder()
+        .withStages(stages)
+        .withContext(context)
+        .withConfig({
+          stopOnBlockingFailure: true,
+          enableGating: true,
+        })
+        .build();
+
+      const pipelineResult = await pipeline.execute();
+
+      // Generate handoff bundle
+      const handoffBundle = await this.bundleGenerator.generateHandoffBundle(
+        pipelineResult.stagesCompleted,
+        context,
+        pipelineResult.success,
       );
-      stages.push(tsStage);
-      if (!tsStage.success) {
-        throw new Error("TypeScript validation failed - GREEN required");
-      }
 
-      // 2) Lint → GREEN
-      const lintStage = await this.runStage("[2] Lint", () =>
-        this.validateLint(),
-      );
-      stages.push(lintStage);
-      if (!lintStage.success) {
-        throw new Error("Lint validation failed - GREEN required");
-      }
+      // Display results
+      this.displayResults(pipelineResult, handoffBundle);
 
-      // 3) Manifest/Seed/Threshold sanity
-      stages.push(
-        await this.runStage("[3] Manifest/Seed/Threshold sanity", () =>
-          this.runSanityChecks(),
-        ),
-      );
-
-      // 4) Paid smoke (DRY_RUN=false)
-      const smokeStage = await this.runStage("[4] Paid smoke", () =>
-        this.runPaidSmoke(),
-      );
-      stages.push(smokeStage);
-
-      // 5) Gating (P0/P1/P2 정책 일치)
-      const gatingStage = await this.runStage("[5] Gating", () =>
-        this.evaluateGating(),
-      );
-      stages.push(gatingStage);
-
-      // 6) Observability export (HTML)
-      const obsStage = await this.runStage("[6] Observability export", () =>
-        this.exportObservability(),
-      );
-      stages.push(obsStage);
-
-      // Gate 체크
-      const canProceed = gatingStage.details?.canProceed || false;
-      if (!canProceed) {
-        console.log(`[GATE] ❌ Cannot proceed: ${gatingStage.details?.reason}`);
-        const partialBundle = await this.generateHandoffBundle(stages, false);
-        return { success: false, handoffBundle: partialBundle };
-      }
-
-      console.log(`[GATE] ✅ Proceeding to full run...`);
-
-      // 7) Full run (Gate 통과 시)
-      const fullStage = await this.runStage("[7] Full run", () =>
-        this.runFullRun(),
-      );
-      stages.push(fullStage);
-
-      // Generate complete handoff bundle
-      const success = stages.every((s) => s.success);
-      const handoffBundle = await this.generateHandoffBundle(stages, success);
-
-      console.log(`[PREFLIGHT] ${success ? "✅ SUCCESS" : "❌ FAILED"}`);
-      console.log(`[HANDOFF] Bundle: ${handoffBundle.bundle_hash}`);
-
-      return { success, handoffBundle };
+      return {
+        success: pipelineResult.success,
+        handoffBundle,
+      };
     } catch (error) {
+      this.logger.error("Preflight pack failed", {
+        error: error instanceof Error ? error.message : String(error),
+      });
+
       console.error(`[PREFLIGHT] Fatal error: ${error}`);
-      const handoffBundle = await this.generateHandoffBundle(stages, false);
+
+      // Generate partial bundle with empty stages
+      const context: StageContext = {
+        profile: this.config.profile,
+        budgetSmoke: this.config.budgetSmoke,
+        budgetFull: this.config.budgetFull,
+        runTags: this.config.runTags,
+        timestamp: this.config.timestamp,
+        reportDir: this.config.reportDir,
+        runLogsDir: this.config.runLogsDir,
+        obsDir: this.config.obsDir,
+        dlqDir: this.config.dlqDir,
+      };
+
+      const handoffBundle = await this.bundleGenerator.generateHandoffBundle(
+        [],
+        context,
+        false,
+      );
+
       return { success: false, handoffBundle };
     }
   }
 
-  private async runStage(
-    stageName: string,
-    stageFunction: () => Promise<any>,
-  ): Promise<StageResult> {
-    const startTime = Date.now();
-    console.log(`\n${stageName} Starting...`);
-
-    try {
-      const details = await stageFunction();
-      const duration_ms = Date.now() - startTime;
-      console.log(`${stageName} ✅ Completed in ${duration_ms}ms`);
-
-      return {
-        stage: stageName,
-        success: true,
-        duration_ms,
-        details,
-        outputs: details?.outputs || [],
-      };
-    } catch (error) {
-      const duration_ms = Date.now() - startTime;
-      const errorMessage =
-        error instanceof Error ? error.message : String(error);
-      console.error(`${stageName} ❌ Failed: ${errorMessage}`);
-
-      return {
-        stage: stageName,
-        success: false,
-        duration_ms,
-        error: errorMessage,
-      };
-    }
-  }
-
-  private async validateTypeScript(): Promise<{ outputs: string[] }> {
-    console.log("npx tsc --noEmit");
-
-    try {
-      execSync("npx tsc --noEmit", {
-        encoding: "utf8",
-        stdio: "pipe",
-      });
-
-      return { outputs: ["TypeScript validation passed"] };
-    } catch (error: any) {
-      throw new Error(
-        `TypeScript compilation failed:\n${error.stdout || error.stderr}`,
-      );
-    }
-  }
-
-  private async validateLint(): Promise<{ outputs: string[] }> {
-    // Check for flat config presence
-    const hasFlat =
-      (await fs
-        .access(resolve(process.cwd(), "eslint.config.cjs"))
-        .then(() => true)
-        .catch(() => false)) ||
-      (await fs
-        .access(resolve(process.cwd(), "eslint.config.js"))
-        .then(() => true)
-        .catch(() => false));
-
-    if (!hasFlat) {
-      console.log("⚠️  ESLint flat config not found; skipping lint");
-      return { outputs: ["ESLint flat config not found; skipping lint"] };
-    }
-
-    console.log('npx eslint "src/**/*.ts" --max-warnings=0');
-
-    try {
-      execSync('npx eslint "src/**/*.ts" --max-warnings=0', {
-        encoding: "utf8",
-        stdio: "pipe",
-      });
-
-      return { outputs: ["Lint validation passed with 0 warnings"] };
-    } catch (error: any) {
-      throw new Error(`Lint failed:\n${error.stdout || error.stderr}`);
-    }
-  }
-
-  private async runSanityChecks(): Promise<{ outputs: string[] }> {
-    const outputs: string[] = [];
-
-    // Manifest validation - auto-create if missing
-    try {
-      const manifestResult = await this.manifestManager.validateManifest(
-        "current",
-      );
-      if (!manifestResult.valid) {
-        throw new Error(
-          `Manifest validation failed: ${manifestResult.issues.join(", ")}`,
-        );
-      }
-      outputs.push(`Manifest: ${manifestResult.valid ? "VALID" : "INVALID"}`);
-    } catch (error) {
-      // Check if manifest file is missing and auto-create
-      try {
-        await fs.access(
-          path.join(this.config.reportDir, "manifest_current.json"),
-        );
-      } catch {
-        console.log(
-          "[SANITY] No current manifest → auto-created data_manifest.json",
-        );
-        try {
-          execSync(
-            "node dist/scripts/lib/manifest_manager.js --out reports/data_manifest.json",
-            {
-              encoding: "utf8",
-              stdio: "pipe",
-            },
-          );
-          outputs.push("Manifest: AUTO-CREATED → VALID");
-          // Continue to other sanity checks instead of failing
-        } catch (createError) {
-          outputs.push(
-            `Manifest: ERROR - Could not auto-create: ${createError}`,
-          );
-          throw new Error(
-            `Manifest validation failed and auto-creation failed: ${createError}`,
-          );
-        }
-      }
-      if (!outputs.some((o) => o.includes("AUTO-CREATED"))) {
-        outputs.push(`Manifest: ERROR - ${error}`);
-        throw error;
-      }
-    }
-
-    // Seed check
-    try {
-      const currentSeed = await this.seedManager.getCurrentSeed();
-      outputs.push(`Current seed: ${currentSeed}`);
-    } catch (error) {
-      outputs.push(`Seed: ERROR - ${error}`);
-      throw error;
-    }
-
-    // Threshold check
-    try {
-      const p0Thresholds = this.thresholdManager.getP0Thresholds();
-      const status = await this.thresholdManager.getCalibrationStatus(
-        this.config.profile,
-      );
-      outputs.push(
-        `Thresholds: P0=${
-          Object.keys(p0Thresholds).length
-        } rules, Calibration=${status.lastCalibration ? "CURRENT" : "NEEDED"}`,
-      );
-    } catch (error) {
-      outputs.push(`Thresholds: ERROR - ${error}`);
-      throw error;
-    }
-
-    return { outputs };
-  }
-
-  private resolveSmokeCmd(profile: string, budgetSmoke: number): string {
-    // 1) Check environment variable first
-    if (process.env.SMOKE_RUN_CMD) {
-      return process.env.SMOKE_RUN_CMD;
-    }
-
-    // 2) Try baseline_config.json
-    try {
-      const baselineConfigPath = resolve(process.cwd(), "baseline_config.json");
-      const baselineConfig = JSON.parse(
-        require("fs").readFileSync(baselineConfigPath, "utf8"),
-      );
-      if (baselineConfig.runners?.smoke) {
-        return baselineConfig.runners.smoke
-          .replace("${profile}", profile)
-          .replace("${budgetSmoke}", budgetSmoke.toString());
-      }
-    } catch {
-      // baseline_config.json doesn't exist or doesn't have runners.smoke
-    }
-
-    // 3) Fallback
-    return `bash run_v3.sh baseline --smoke --profile ${profile} --budget ${budgetSmoke}`;
-  }
-
-  private async runPaidSmoke(): Promise<{ outputs: string[] }> {
-    const outputs: string[] = [];
-
-    const env = {
-      ...process.env,
-      DRY_RUN: "false",
-      MODE: "smoke",
-      PROFILE: this.config.profile,
-      BUDGET_USD: this.config.budgetSmoke.toString(),
-      RUN_TAGS: this.config.runTags,
-      RUN_ID: `smoke-${this.config.timestamp}`,
-    };
-
-    // Resolve smoke command
-    const smokeCmd = this.resolveSmokeCmd(
-      this.config.profile,
-      this.config.budgetSmoke,
+  private displayResults(
+    pipelineResult: PipelineResult,
+    handoffBundle: HandoffBundle,
+  ): void {
+    console.log("\n" + "=".repeat(80));
+    console.log(
+      `🎯 PREFLIGHT ${pipelineResult.success ? "SUCCESS" : "FAILED"}`,
     );
-    if (!smokeCmd) {
-      throw new Error(
-        "[SMOKE] No smoke command resolved; set SMOKE_RUN_CMD or baseline_config.runners.smoke",
-      );
-    }
+    console.log("=".repeat(80));
 
-    console.log(`[SMOKE] Executing: ${smokeCmd}`);
-
-    // Parse command and execute
-    const cmdParts = smokeCmd.split(" ");
-    const command = cmdParts[0];
-    const args = cmdParts.slice(1);
-
-    return new Promise((resolve, reject) => {
-      const child = spawn(command, args, { env, stdio: "pipe" });
-
-      let stdout = "";
-      let stderr = "";
-
-      child.stdout.on("data", (data) => {
-        stdout += data.toString();
-        process.stdout.write(data);
-      });
-
-      child.stderr.on("data", (data) => {
-        stderr += data.toString();
-        process.stderr.write(data);
-      });
-
-      child.on("close", (code) => {
-        if (code === 0) {
-          outputs.push(`Smoke run completed with exit code ${code}`);
-          outputs.push(`Output: ${stdout.slice(-200)}...`);
-          resolve({ outputs });
-        } else {
-          reject(
-            new Error(`Smoke run failed with exit code ${code}: ${stderr}`),
-          );
-        }
-      });
-
-      child.on("error", (error) => {
-        reject(new Error(`Failed to start smoke run: ${error.message}`));
-      });
-    });
-  }
-
-  private async evaluateGating(): Promise<{
-    canProceed: boolean;
-    reason: string;
-    outputs: string[];
-  }> {
-    const outputs: string[] = [];
-
-    // Schema validation
-    const sessionReportPath = join(this.config.reportDir, "session_report.md");
-    try {
-      const schemaResult =
-        await this.sessionValidator.validateWithBuiltinSchema(
-          sessionReportPath,
-          "session_report",
-        );
-      outputs.push(
-        `Schema validation: ${schemaResult.valid ? "PASS" : "FAIL"}`,
-      );
-      if (!schemaResult.valid) {
-        outputs.push(
-          `Schema errors: ${schemaResult.errors.slice(0, 3).join("; ")}`,
-        );
-      }
-    } catch (error) {
-      outputs.push(`Schema validation: ERROR - ${error}`);
-    }
-
-    // Gating evaluation
-    try {
-      const gatingResult = await this.gatingIntegrator.evaluateSession(
-        sessionReportPath,
-        {
-          minCases: 5,
-          requireCostGt: 0,
-          maxWarn: 1,
-          enforceResult: ["PASS", "PARTIAL"],
-        },
-      );
-
-      outputs.push(`Gating: ${gatingResult.decision.gateStatus}`);
-      outputs.push(
-        `Score: ${(gatingResult.decision.overallScore * 100).toFixed(1)}%`,
-      );
-
-      if (gatingResult.violations.length > 0) {
-        outputs.push(`Violations: ${gatingResult.violations.join("; ")}`);
-      }
-
-      return {
-        canProceed: gatingResult.canProceed,
-        reason: gatingResult.reason,
-        outputs,
-      };
-    } catch (error) {
-      outputs.push(`Gating evaluation: ERROR - ${error}`);
-      return {
-        canProceed: false,
-        reason: `Gating evaluation failed: ${error}`,
-        outputs,
-      };
-    }
-  }
-
-  private async exportObservability(): Promise<{ outputs: string[] }> {
-    const outputs: string[] = [];
-
-    try {
-      // Read canonical run_id from session report
-      let canonicalRunId: string | undefined;
-      try {
-        const sessionReportPath = join(
-          this.config.reportDir,
-          "session_report.md",
-        );
-        const sessionContent = await fs.readFile(sessionReportPath, "utf-8");
-        const jsonMatch = sessionContent.match(/```json\s*\n([\s\S]*?)\n```/);
-        if (jsonMatch) {
-          const sessionData = JSON.parse(jsonMatch[1]);
-          canonicalRunId = sessionData.run_id;
-        }
-      } catch (error) {
-        console.warn(
-          "Could not read canonical run_id from session report:",
-          error,
-        );
-      }
-
-      // Export trace data
-      const opts: any = {
-        format: "json",
-        includeMetrics: true,
-        includeTimeline: true,
-      };
-      if (canonicalRunId) opts.canonicalRunId = canonicalRunId;
-      const traceData = await this.obsExporter.exportTrace(
-        this.config.runLogsDir,
-        opts,
-      );
-
-      const tracePath = join(this.config.obsDir, "trace_tree.json");
-      await fs.writeFile(tracePath, JSON.stringify(traceData, null, 2));
-      outputs.push(`Trace data: ${tracePath}`);
-
-      // Generate HTML report
-      const htmlContent = await this.obsExporter.renderHTML(traceData, {
-        title: `${this.config.profile.toUpperCase()} Preflight Observability`,
-        includeStats: true,
-        includeTimeline: true,
-      });
-
-      const htmlPath = join(this.config.obsDir, "index.html");
-      await fs.writeFile(htmlPath, htmlContent);
-      outputs.push(`HTML report: ${htmlPath}`);
-
-      return { outputs };
-    } catch (error) {
-      throw new Error(`Observability export failed: ${error}`);
-    }
-  }
-
-  private async runFullRun(): Promise<{ outputs: string[] }> {
-    const outputs: string[] = [];
-
-    const env = {
-      ...process.env,
-      DRY_RUN: "false",
-      MODE: "full",
-      PROFILE: this.config.profile,
-      BUDGET_USD: this.config.budgetFull.toString(),
-      RUN_TAGS: `full-${this.config.timestamp}`,
-      RUN_ID: `full-${this.config.timestamp}`,
-    };
-
-    // Check if full runner exists
-    const fullRunnerPath = "scripts/run_full.js";
-    try {
-      await fs.access(fullRunnerPath);
-    } catch {
-      // Fallback: simulate full run
-      console.log("⚠️  No full runner found, simulating...");
-      await new Promise((resolve) => setTimeout(resolve, 5000));
-
-      const mockResults = {
-        casesProcessed: 50,
-        costUsd: this.config.budgetFull * 0.8, // Use 80% of budget
-        result: "PASS",
-        warnings: 1,
-        errors: 0,
-      };
-
-      outputs.push(
-        `Full run completed: ${
-          mockResults.casesProcessed
-        } cases, $${mockResults.costUsd.toFixed(4)}`,
-      );
-      outputs.push(`Result: ${mockResults.result}`);
-      return { outputs };
-    }
-
-    return new Promise((resolve, reject) => {
-      const child = spawn("node", [fullRunnerPath], { env, stdio: "pipe" });
-
-      let stdout = "";
-      let stderr = "";
-
-      child.stdout.on("data", (data) => {
-        stdout += data.toString();
-        process.stdout.write(data);
-      });
-
-      child.stderr.on("data", (data) => {
-        stderr += data.toString();
-        process.stderr.write(data);
-      });
-
-      child.on("close", (code) => {
-        if (code === 0) {
-          outputs.push(`Full run completed with exit code ${code}`);
-          outputs.push(`Output: ${stdout.slice(-200)}...`);
-          resolve({ outputs });
-        } else {
-          reject(
-            new Error(`Full run failed with exit code ${code}: ${stderr}`),
-          );
-        }
-      });
-
-      child.on("error", (error) => {
-        reject(new Error(`Failed to start full run: ${error.message}`));
-      });
-    });
-  }
-
-  private async generateHandoffBundle(
-    stages: StageResult[],
-    success: boolean,
-  ): Promise<HandoffBundle> {
-    console.log("\n[HANDOFF] Generating bundle...");
-
-    // Get git commit hash
-    let gitCommitHash = "unknown";
-    try {
-      gitCommitHash = execSync("git rev-parse HEAD", {
-        encoding: "utf8",
-      }).trim();
-    } catch {
-      console.log("⚠️  Could not get git commit hash");
-    }
-
-    // Get PRODUCT_PLAN version - try multiple paths
-    let productPlanVersion = "unknown";
-    let productPlanPath: string | null = null;
-
-    // Try ./PRODUCT_PLAN.md first, then ./docs/PRODUCT_PLAN.md
-    const productPlanPaths = ["PRODUCT_PLAN.md", "docs/PRODUCT_PLAN.md"];
-
-    for (const path of productPlanPaths) {
-      try {
-        const productPlan = await fs.readFile(path, "utf8");
-
-        // Parse the 4-key header (Title/Version/Commit/Profile)
-        const versionMatch = productPlan.match(/version[:\s]*([^\n\r]+)/i);
-        // const _____titleMatch = productPlan.match(/title[:\s]*([^\n\r]+)/i);
-        // const _____commitMatch = productPlan.match(/commit[:\s]*([^\n\r]+)/i);
-        // const _____profileMatch = productPlan.match(/profile[:\s]*([^\n\r]+)/i);
-
-        productPlanVersion = versionMatch ? versionMatch[1].trim() : "v1.0";
-        productPlanPath = path;
-        break;
-      } catch {
-        // File doesn't exist, try next path
+    // Display stage results
+    console.log("\nStage Results:");
+    for (const stage of pipelineResult.stagesCompleted) {
+      const icon = stage.success ? "✅" : "❌";
+      console.log(`  ${icon} ${stage.stage} (${stage.duration_ms}ms)`);
+      if (!stage.success && stage.error) {
+        console.log(`     Error: ${stage.error}`);
       }
     }
 
-    if (!productPlanPath) {
+    console.log("\n" + "=".repeat(80));
+    console.log("📦 HANDOFF BUNDLE");
+    console.log("=".repeat(80));
+    console.log(`Bundle Hash: ${handoffBundle.bundle_hash}`);
+    console.log(`Profile: ${handoffBundle.profile}`);
+    console.log(`Git Hash: ${handoffBundle.git_commit_hash.slice(0, 8)}`);
+    console.log(`Product Plan: ${handoffBundle.product_plan_version}`);
+    console.log(
+      `Stages: ${handoffBundle.stages_summary.successful}/${handoffBundle.stages_summary.total} succeeded`,
+    );
+    console.log("=".repeat(80));
+
+    if (!pipelineResult.canProceedToFullRun) {
       console.log(
-        `⚠️  Could not read PRODUCT_PLAN.md from paths: ${productPlanPaths.join(
-          ", ",
-        )}`,
+        `\n[GATE] ❌ ${pipelineResult.gatingReason || "Gate check failed"}`,
       );
     }
-
-    // Create data manifest
-    const manifestPath = join(this.config.reportDir, "manifest_current.json");
-    try {
-      const manifest = await this.manifestManager.createManifest(
-        `Preflight ${this.config.profile} ${this.config.timestamp}`,
-        ["src/**/*.ts", "scripts/**/*.ts"],
-        ["reports/**/*"],
-        ["*.json", "tsconfig*.json", ".env*"],
-        true,
-        typeof this.seedManager.getCurrentSeed === "function"
-          ? this.seedManager.getCurrentSeed()
-          : 0,
-      );
-      await fs.writeFile(manifestPath, JSON.stringify(manifest, null, 2));
-    } catch (error) {
-      console.log(`⚠️  Could not create data manifest: ${error}`);
-    }
-
-    // Collect config snapshot
-    const configSnapshot = await this.collectConfigSnapshot();
-
-    // Collect DLQ reports
-    const dlqReports = await this.collectDLQReports();
-
-    // Create bundle metadata
-    const bundle: HandoffBundle = {
-      timestamp: this.config.timestamp,
-      git_commit_hash: gitCommitHash,
-      profile: this.config.profile,
-      session_report_path: join(this.config.reportDir, "session_report.md"),
-      baseline_report_path: join(
-        this.config.reportDir,
-        "baseline_report.jsonl",
-      ),
-      observability_path: join(this.config.obsDir, "index.html"),
-      data_manifest_path: manifestPath,
-      config_snapshot: configSnapshot,
-      run_logs_dir: this.config.runLogsDir,
-      dlq_reports: dlqReports,
-      product_plan_version: productPlanVersion,
-      bundle_hash: "",
-    };
-
-    // Generate bundle hash
-    bundle.bundle_hash = createHash("sha256")
-      .update(
-        JSON.stringify({
-          timestamp: bundle.timestamp,
-          git_commit_hash: bundle.git_commit_hash,
-          profile: bundle.profile,
-          stages: stages.map((s) => ({
-            stage: s.stage,
-            success: s.success,
-            duration_ms: s.duration_ms,
-          })),
-        }),
-      )
-      .digest("hex")
-      .slice(0, 16);
-
-    // Save bundle metadata
-    const bundlePath = join(this.config.reportDir, "handoff_bundle.json");
-    await fs.writeFile(bundlePath, JSON.stringify(bundle, null, 2));
-
-    // Create symlink for PRODUCT_PLAN.md if needed
-    try {
-      await fs.access("./PRODUCT_PLAN.md");
-    } catch {
-      // PRODUCT_PLAN.md doesn't exist at repo root
-      try {
-        await fs.access("./docs/PRODUCT_PLAN.md");
-        // docs/PRODUCT_PLAN.md exists, create symlink
-        const { execSync } = await import("child_process");
-        execSync("ln -sf docs/PRODUCT_PLAN.md PRODUCT_PLAN.md");
-        console.log(
-          "[HANDOFF] Created symlink: PRODUCT_PLAN.md -> docs/PRODUCT_PLAN.md",
-        );
-      } catch {
-        // Neither file exists, skip symlink creation
-      }
-    }
-
-    console.log(`[HANDOFF] Bundle metadata: ${bundlePath}`);
-    console.log(`[HANDOFF] Bundle hash: ${bundle.bundle_hash}`);
-
-    // Log bundle for observability
-    const bundleLogEntry = {
-      timestamp: new Date().toISOString(),
-      component: "preflight_pack",
-      operation: "generate_handoff_bundle",
-      bundle_hash: bundle.bundle_hash,
-      success,
-      profile: this.config.profile,
-      stages_completed: stages.length,
-      stages_successful: stages.filter((s) => s.success).length,
-      bundle_metadata: bundle,
-    };
-
-    const logPath = join(
-      this.config.runLogsDir,
-      `handoff_bundle_${this.config.timestamp}.jsonl`,
-    );
-    await appendJSONL(logPath, bundleLogEntry);
-
-    return bundle;
   }
 
-  private async collectConfigSnapshot(): Promise<
-    HandoffBundle["config_snapshot"]
-  > {
-    const snapshot: HandoffBundle["config_snapshot"] = {
-      env_files: [],
-      baseline_config: "",
-      tsconfig_files: [],
-    };
-
-    // Collect .env files
-    const envFiles = [".env", ".env.local", ".env.production", ".env.staging"];
-    for (const envFile of envFiles) {
-      try {
-        await fs.access(envFile);
-        snapshot.env_files.push(envFile);
-      } catch {
-        // File doesn't exist, skip
-      }
-    }
-
-    // Collect baseline config
-    try {
-      await fs.access("baseline_config.json");
-      snapshot.baseline_config = "baseline_config.json";
-    } catch {
-      console.log("⚠️  No baseline_config.json found");
-    }
-
-    // Collect tsconfig files
-    const tsconfigFiles = ["tsconfig.json", "tsconfig.export.json"];
-    for (const tsconfigFile of tsconfigFiles) {
-      try {
-        await fs.access(tsconfigFile);
-        snapshot.tsconfig_files.push(tsconfigFile);
-      } catch {
-        // File doesn't exist, skip
-      }
-    }
-
-    return snapshot;
-  }
-
-  private async collectDLQReports(): Promise<string[]> {
-    const dlqReports: string[] = [];
-
-    try {
-      const dlqFiles = await fs.readdir(this.config.dlqDir);
-      for (const file of dlqFiles) {
-        if (file.endsWith(".jsonl") || file.endsWith(".json")) {
-          dlqReports.push(join(this.config.dlqDir, file));
-        }
-      }
-    } catch {
-      // DLQ directory doesn't exist or is empty
-    }
-
-    return dlqReports;
-  }
-
-  private async generateMockSessionReport(results: any): Promise<void> {
-    const sessionReport = {
-      session_summary: {
-        session_id: `session-${this.config.timestamp}`,
-        run_id: `smoke-${this.config.timestamp}`,
-        target: "preflight_smoke",
-        profile: this.config.profile,
-        mode: "smoke",
-        result: results.result,
-        timestamp: new Date().toISOString(),
-        cases_total: results.casesProcessed,
-        cost_usd: Math.round(results.costUsd * 100) / 100,
-        duration_ms: 45000,
-      },
-      baseline_summary: {
-        baseline_report_path: join(
-          this.config.reportDir,
-          "baseline_report.jsonl",
-        ),
-        baseline_report_hash: "mock-hash-" + this.config.timestamp.slice(-8),
-        sample_count: results.casesProcessed,
-        quality_score_summary: {
-          overall_score: 0.89,
-          recommendation_level: "green" as const,
-          total_alerts: results.warnings,
-          metric_scores: {
-            duplication_rate: 0.05,
-            evidence_presence_rate: 0.95,
-            hallucination_rate: 0.02,
-            pii_violations: 0,
-            coverage_score: 0.88,
-          },
-        },
-        threshold_validation: {
-          enabled: true,
-          gate_status: results.result,
-          can_proceed: results.result === "PASS",
-          p0_violations: [],
-          p1_warnings: [],
-          p2_issues: [],
-        },
-      },
-    };
-
-    const reportPath = join(this.config.reportDir, "session_report.md");
-    const reportContent = `# Session Report
-
-Generated: ${new Date().toISOString()}
-
-## Session Summary
-
-\`\`\`json
-${JSON.stringify(sessionReport.session_summary, null, 2)}
-\`\`\`
-
-## Baseline Summary
-
-\`\`\`json
-${JSON.stringify(sessionReport.baseline_summary, null, 2)}
-\`\`\`
-
-## Results
-
-- **Profile**: ${this.config.profile}
-- **Cases Total**: ${results.casesProcessed}
-- **Cost USD**: $${results.costUsd.toFixed(4)}
-- **Result**: ${results.result}
-- **Warnings**: ${results.warnings}
-- **Errors**: ${results.errors}
-
-## Artifacts
-
-- Session report: ${reportPath}
-- Run logs: ${this.config.runLogsDir}
-- Observability: ${this.config.obsDir}
-`;
-
-    await fs.writeFile(reportPath, reportContent);
-
-    // Also create JSON version for easier parsing
-    await fs.writeFile(
-      join(this.config.reportDir, "session_report.json"),
-      JSON.stringify(sessionReport, null, 2),
-    );
-  }
+  /**
+   * Ensure all required directories exist
+   */
 
   private async ensureDirectories(): Promise<void> {
     const dirs = [

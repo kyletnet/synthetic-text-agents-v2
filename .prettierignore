@@ -33,3 +33,6 @@ test-results.json
 .contextual-triggers.json
 .strategy-matrix.yaml
 .self-designing-roadmap.md
+
+# Malformed or legacy files
+evaluation_sample_100.json

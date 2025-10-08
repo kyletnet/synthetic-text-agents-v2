@@ -1,0 +1,1147 @@
+{
+  "timestamp": "2025-10-07T13:52:31.291Z",
+  "violations": [
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/core/baseAgent.ts",
+      "to": "crypto",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/shared/logger.ts",
+      "to": "crypto",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/shared/logger.ts",
+      "to": "fs/promises",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/rag/service.ts",
+      "to": "fs/promises",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/rag/service.ts",
+      "to": "path",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/rag/python-env-manager.ts",
+      "to": "child_process",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/rag/python-env-manager.ts",
+      "to": "fs",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/rag/python-env-manager.ts",
+      "to": "path",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/rag/python-process-manager.ts",
+      "to": "child_process",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/rag/python-process-manager.ts",
+      "to": "crypto",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/rag/python-process-manager.ts",
+      "to": "path",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/application/backup/backup-manager.ts",
+      "to": "events",
+      "comment": ""
+    },
+    {
+      "rule": "domain-cannot-import-infrastructure",
+      "severity": "error",
+      "from": "src/domain/backup/backup-strategies/base-backup-strategy.ts",
+      "to": "src/infrastructure/backup/file-operations.ts",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/domain/backup/backup-strategies/base-backup-strategy.ts",
+      "to": "path",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/infrastructure/backup/file-operations.ts",
+      "to": "crypto",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/infrastructure/backup/file-operations.ts",
+      "to": "fs",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/infrastructure/backup/file-operations.ts",
+      "to": "fs/promises",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/infrastructure/backup/file-operations.ts",
+      "to": "path",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/infrastructure/backup/file-operations.ts",
+      "to": "stream/promises",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/infrastructure/backup/file-operations.ts",
+      "to": "zlib",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/application/backup/restore-manager.ts",
+      "to": "events",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/application/fixes/fix-orchestrator.ts",
+      "to": "events",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/domain/fixes/fix-command.ts",
+      "to": "crypto",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/domain/fixes/fix-command.ts",
+      "to": "fs/promises",
+      "comment": ""
+    },
+    {
+      "rule": "application-cannot-import-infrastructure-details",
+      "severity": "warn",
+      "from": "src/application/metrics/threshold-manager-service.ts",
+      "to": "src/infrastructure/filesystem/report-writer.ts",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/application/metrics/threshold-manager-service.ts",
+      "to": "path",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/infrastructure/filesystem/report-writer.ts",
+      "to": "crypto",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/infrastructure/filesystem/report-writer.ts",
+      "to": "fs",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/infrastructure/filesystem/report-writer.ts",
+      "to": "path",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/application/preflight/bundle-generator.ts",
+      "to": "child_process",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/application/preflight/bundle-generator.ts",
+      "to": "crypto",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/application/preflight/bundle-generator.ts",
+      "to": "fs",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/application/preflight/bundle-generator.ts",
+      "to": "path",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/shared/jsonl.ts",
+      "to": "fs",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/shared/jsonl.ts",
+      "to": "path",
+      "comment": ""
+    },
+    {
+      "rule": "application-cannot-import-infrastructure-details",
+      "severity": "warn",
+      "from": "src/application/refactoring/audit-orchestrator.ts",
+      "to": "src/infrastructure/refactoring/file-scanner.ts",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/application/refactoring/audit-orchestrator.ts",
+      "to": "child_process",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/infrastructure/refactoring/file-scanner.ts",
+      "to": "fs",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/infrastructure/refactoring/file-scanner.ts",
+      "to": "path",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/application/system/system-coordinator.ts",
+      "to": "events",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/cli/abTestRunner.ts",
+      "to": "fs",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/shared/bus.ts",
+      "to": "crypto",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/shared/bus.ts",
+      "to": "events",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/shared/apmIntegration.ts",
+      "to": "events",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/shared/performanceMonitoring.ts",
+      "to": "events",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/shared/performanceMonitoring.ts",
+      "to": "fs",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/shared/performanceMonitoring.ts",
+      "to": "os",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/shared/backupSystem.ts",
+      "to": "crypto",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/shared/backupSystem.ts",
+      "to": "events",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/shared/backupSystem.ts",
+      "to": "fs",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/shared/backupSystem.ts",
+      "to": "fs/promises",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/shared/backupSystem.ts",
+      "to": "path",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/shared/backupSystem.ts",
+      "to": "stream/promises",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/shared/backupSystem.ts",
+      "to": "zlib",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/shared/logAggregation.ts",
+      "to": "events",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/shared/logAggregation.ts",
+      "to": "fs/promises",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/shared/logAggregation.ts",
+      "to": "path",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/shared/logForwarder.ts",
+      "to": "events",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/scripts/metrics/baselineReportGenerator.ts",
+      "to": "crypto",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/scripts/metrics/baselineReportGenerator.ts",
+      "to": "fs",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/scripts/metrics/baselineReportGenerator.ts",
+      "to": "path",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/scripts/metrics/__all__.ts",
+      "to": "fs",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/scripts/metrics/coverageMetrics.ts",
+      "to": "fs",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/scripts/metrics/duplicationMetrics.ts",
+      "to": "fs",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/scripts/metrics/evidenceQuality.ts",
+      "to": "fs",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/scripts/metrics/hallucinationRules.ts",
+      "to": "fs",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/scripts/metrics/piiLicenseScan.ts",
+      "to": "fs",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/scripts/metrics/qtypeDistribution.ts",
+      "to": "fs",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/clients/anthropicAdapter.js",
+      "to": "child_process",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/clients/anthropicAdapter.js",
+      "to": "fs",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/clients/anthropicAdapter.js",
+      "to": "path",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/clients/anthropicAdapter.ts",
+      "to": "child_process",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/core/governance/bootloader.ts",
+      "to": "fs",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/core/governance/bootloader.ts",
+      "to": "path",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/infrastructure/governance/policy-interpreter.ts",
+      "to": "fs",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/infrastructure/governance/policy-interpreter.ts",
+      "to": "path",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/infrastructure/governance/self-correction.ts",
+      "to": "fs",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/infrastructure/governance/self-correction.ts",
+      "to": "path",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/core/governance/meta-kernel.ts",
+      "to": "fs",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/core/governance/meta-kernel.ts",
+      "to": "path",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/infrastructure/governance/adaptive-objective.ts",
+      "to": "fs",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/infrastructure/governance/adaptive-objective.ts",
+      "to": "path",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/infrastructure/governance/feedback-symmetry.ts",
+      "to": "fs",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/infrastructure/governance/feedback-symmetry.ts",
+      "to": "path",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/core/governance/kernel.ts",
+      "to": "child_process",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/core/governance/kernel.ts",
+      "to": "fs",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/core/governance/kernel.ts",
+      "to": "path",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/infrastructure/governance/predictive-feedback.ts",
+      "to": "fs",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/infrastructure/governance/predictive-feedback.ts",
+      "to": "path",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/shared/config.ts",
+      "to": "fs/promises",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/domain/fixes/documentation-fix.ts",
+      "to": "fs",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/domain/fixes/eslint-fix.ts",
+      "to": "child_process",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/domain/fixes/eslint-fix.ts",
+      "to": "fs",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/domain/fixes/import-fix.ts",
+      "to": "fs",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/domain/fixes/import-fix.ts",
+      "to": "path",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/domain/fixes/typescript-fix.ts",
+      "to": "child_process",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/domain/fixes/typescript-fix.ts",
+      "to": "fs",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/domain/fixes/workaround-fix.ts",
+      "to": "fs",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/domain/preflight/validation-rules.ts",
+      "to": "fs",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/domain/preflight/validation-rules.ts",
+      "to": "path",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/infrastructure/governance/governance-event-subscriber.ts",
+      "to": "fs",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/infrastructure/governance/governance-event-subscriber.ts",
+      "to": "path",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/infrastructure/preflight/stage-runners.ts",
+      "to": "child_process",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/infrastructure/preflight/stage-runners.ts",
+      "to": "fs",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/infrastructure/preflight/stage-runners.ts",
+      "to": "fs",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/infrastructure/preflight/stage-runners.ts",
+      "to": "path",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/scripts/lib/gating_integrator.ts",
+      "to": "fs",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/scripts/lib/manifest_manager.ts",
+      "to": "crypto",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/scripts/lib/manifest_manager.ts",
+      "to": "fs",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/scripts/lib/manifest_manager.ts",
+      "to": "fs",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/scripts/lib/manifest_manager.ts",
+      "to": "path",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/scripts/lib/observability_exporter.ts",
+      "to": "fs",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/scripts/lib/observability_exporter.ts",
+      "to": "path",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/scripts/lib/session_report_validator.ts",
+      "to": "fs",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/infrastructure/scanning/file-gap-scanner.ts",
+      "to": "child_process",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/infrastructure/scanning/file-gap-scanner.ts",
+      "to": "fs",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/infrastructure/scanning/file-gap-scanner.ts",
+      "to": "fs/promises",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/infrastructure/scanning/file-gap-scanner.ts",
+      "to": "path",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/scripts/ci/check_observability_consistency.ts",
+      "to": "fs",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/scripts/ci/check_observability_consistency.ts",
+      "to": "path",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/scripts/ci/check_observability_consistency.ts",
+      "to": "util",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/scripts/ci/verify_bundle_contents.ts",
+      "to": "fs",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/scripts/ci/verify_ops_brief.ts",
+      "to": "child_process",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/scripts/ci/verify_ops_brief.ts",
+      "to": "fs",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/scripts/ci/verify_ops_brief.ts",
+      "to": "path",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/scripts/lib/agent_logger.ts",
+      "to": "crypto",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/scripts/lib/agent_logger.ts",
+      "to": "fs",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/scripts/lib/agent_logger.ts",
+      "to": "fs",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/scripts/lib/agent_logger.ts",
+      "to": "path",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/scripts/lib/budget_guardian.ts",
+      "to": "fs",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/scripts/lib/budget_guardian.ts",
+      "to": "fs",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/scripts/lib/budget_guardian.ts",
+      "to": "path",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/scripts/lib/checkpoint_manager.ts",
+      "to": "crypto",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/scripts/lib/checkpoint_manager.ts",
+      "to": "fs",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/scripts/lib/checkpoint_manager.ts",
+      "to": "fs",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/scripts/lib/checkpoint_manager.ts",
+      "to": "path",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/scripts/lib/dlq.cjs",
+      "to": "fs",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/scripts/lib/dlq.cjs",
+      "to": "path",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/scripts/lib/dlq.ts",
+      "to": "fs",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/scripts/lib/dlq.ts",
+      "to": "path",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/scripts/lib/dlq_manager.ts",
+      "to": "fs",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/scripts/lib/dlq_manager.ts",
+      "to": "fs",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/scripts/lib/dlq_manager.ts",
+      "to": "path",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/scripts/lib/export_enhanced.ts",
+      "to": "fs",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/scripts/lib/export_enhanced.ts",
+      "to": "path",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/scripts/lib/export_enhanced.ts",
+      "to": "stream",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/scripts/lib/export_enhanced.ts",
+      "to": "stream/promises",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/scripts/lib/session_report.cjs",
+      "to": "child_process",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/scripts/lib/session_report.cjs",
+      "to": "fs",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/scripts/lib/session_report.cjs",
+      "to": "path",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/scripts/lib/session_report.ts",
+      "to": "child_process",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/scripts/lib/session_report.ts",
+      "to": "fs",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/scripts/lib/session_report.ts",
+      "to": "path",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/scripts/metrics/baselineCli.ts",
+      "to": "fs",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/scripts/preflight_integration.ts",
+      "to": "fs",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/scripts/preflight_integration.ts",
+      "to": "path",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/scripts/preflight_pack.ts",
+      "to": "fs",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/scripts/preflight_pack.ts",
+      "to": "util",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/shared/deadLetterQueue.ts",
+      "to": "fs/promises",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/shared/deadLetterQueue.ts",
+      "to": "path",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/utils/log.ts",
+      "to": "fs",
+      "comment": ""
+    },
+    {
+      "rule": "no-deprecated-core",
+      "severity": "warn",
+      "from": "src/utils/log.ts",
+      "to": "path",
+      "comment": ""
+    }
+  ],
+  "summary": {
+    "errors": 1,
+    "warnings": 161,
+    "info": 0,
+    "circularDependencies": 0,
+    "dddViolations": 3
+  },
+  "status": "fail"
+}

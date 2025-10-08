@@ -86,7 +86,7 @@ export class Orchestrator {
         this.logger.warn(
           "Auditor suggested retry — running QA generator once more",
         );
-        const gen = this.registry.getAgent("qa-generator");
+        const gen = await this.registry.getAgent("qa-generator");
         if (gen) {
           const retry = await gen.receive(request, context);
           results.push(retry);
@@ -169,7 +169,7 @@ export class Orchestrator {
 
     for (const agentId of agentIds) {
       try {
-        const agent = this.registry.getAgent(agentId);
+        const agent = await this.registry.getAgent(agentId);
         if (!agent) {
           this.logger.warn(`Agent ${agentId} not found in registry, skipping`);
           continue;

@@ -1,6 +1,19 @@
 /**
- * Backup and Disaster Recovery System
+ * Backup and Disaster Recovery System (LEGACY)
  * Provides automated backup, recovery, and disaster recovery capabilities
+ *
+ * @deprecated This monolithic backup system is deprecated in favor of the new
+ * modular architecture using Strategy pattern. See docs/backup-system-migration-guide.md
+ *
+ * New architecture:
+ * - src/domain/backup/ - Core strategies and types
+ * - src/application/backup/ - BackupManager and RestoreManager
+ * - src/infrastructure/backup/ - FileOperations
+ *
+ * For new code, use:
+ * ```typescript
+ * import { BackupManager, RestoreManager } from '../application/backup';
+ * ```
  */
 
 import { EventEmitter } from "events";
@@ -153,6 +166,10 @@ export interface RecoveryStep {
   dependencies: string[];
 }
 
+/**
+ * @deprecated Use BackupManager and RestoreManager from src/application/backup instead.
+ * See docs/backup-system-migration-guide.md for migration instructions.
+ */
 export class BackupSystem extends EventEmitter {
   private config: BackupConfig;
   private logger: Logger;
@@ -166,6 +183,12 @@ export class BackupSystem extends EventEmitter {
     this.setMaxListeners(50);
     this.config = config;
     this.logger = new Logger({ level: "info" });
+
+    // Log deprecation warning
+    this.logger.warn(
+      "BackupSystem is deprecated. Use BackupManager/RestoreManager from src/application/backup. " +
+        "See docs/backup-system-migration-guide.md",
+    );
 
     if (config.enabled) {
       this.loadExistingBackups();

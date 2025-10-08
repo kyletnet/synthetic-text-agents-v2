@@ -1,0 +1,12 @@
+{
+  "pass": true,
+  "warn": false,
+  "failReasons": [],
+  "profile": "dev",
+  "latencyMs": 1837,
+  "cost": 0,
+  "hashes": {
+    "before": "",
+    "after": ""
+  }
+}

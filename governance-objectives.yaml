@@ -1,0 +1,21 @@
+version: 1.0.0
+objectives:
+  - name: minimize_cost
+    description: Minimize operational cost per item
+    formula: min(cost_per_item)
+    priority: 1
+    adaptable: true
+    constraints: []
+  - name: maintain_quality
+    description: Maintain quality score above threshold
+    formula: quality_score >= 0.80
+    priority: 1
+    adaptable: true
+    constraints:
+      - quality_score >= 0.70
+  - name: enforce_stability
+    description: Keep metric changes within acceptable range
+    formula: abs(delta) < 0.20
+    priority: 2
+    adaptable: true
+    constraints: []

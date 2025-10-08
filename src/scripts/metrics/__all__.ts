@@ -401,13 +401,30 @@ export async function calculateAllBaselineMetrics(
       },
 
       qtype: {
-        classified_type: qtypeMetrics.distributions[
-          Object.keys(qtypeMetrics.distributions)[0]
-        ]?.examples.includes(item.qa.q)
-          ? Object.keys(qtypeMetrics.distributions)[0]
-          : null,
-        confidence: 0.8, // Mock confidence
-        unclassified: false, // Will be properly calculated
+        // ✅ 수정: 각 아이템을 직접 분류 (버그 수정)
+        classified_type: (() => {
+          // 모든 분포를 순회하여 현재 질문 찾기
+          for (const [qtype, data] of Object.entries(
+            qtypeMetrics.distributions,
+          )) {
+            if ((data as any).examples.includes(item.qa.q)) {
+              return qtype;
+            }
+          }
+          return null; // 분류되지 않은 경우
+        })(),
+        confidence: 0.8,
+        unclassified: (() => {
+          // 분류되지 않은 경우 unclassified = true
+          for (const [_qtype, data] of Object.entries(
+            qtypeMetrics.distributions,
+          )) {
+            if ((data as any).examples.includes(item.qa.q)) {
+              return false;
+            }
+          }
+          return true;
+        })(),
       },
 
       coverage: {
