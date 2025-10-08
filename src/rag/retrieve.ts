@@ -154,8 +154,9 @@ function bm25Score(
 
     if (tf === 0) continue;
 
-    // IDF calculation: log((N - df + 0.5) / (df + 0.5))
-    const idf = Math.log((corpusSize - df + 0.5) / (df + 0.5));
+    // IDF calculation (BM25+ variant): log(1 + (N - df + 0.5) / (df + 0.5))
+    // This ensures non-negative IDF for all cases, including small corpus
+    const idf = Math.log(1 + (corpusSize - df + 0.5) / (df + 0.5));
 
     // BM25 term score: IDF * (tf * (k1 + 1)) / (tf + k1 * (1 - b + b * (|D| / avgdl)))
     const termScore =

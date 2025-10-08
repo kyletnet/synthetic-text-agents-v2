@@ -1,24 +1,258 @@
-# Next Actions - Detailed Checklist
+# Next Actions - v3.2 Execution Plan
 
-**Last Updated**: 2025-10-08 20:30 KST
-**Status**: Phase 1.6 Roadmap Integrated
-**Approach**: Evolutionary Expansion (NOT Rewrite)
-
----
-
-## 🎯 Strategy Overview
-
-**Current State**: Phase 1.5 complete, Integrated Roadmap documented
-**Next Focus**: Phase 1.6 (Organic Loop Completion, 2 weeks)
-**Approach**: Top-3 Priority + Full Backlog visibility
-
-**Key Principle**: Current structure is a "living organism with genetic structure" - add layers, don't rebuild foundation.
+**Last Updated**: 2025-10-09 00:30 KST
+**Status**: Trust Infrastructure Transition (v3.2 Execution Mode)
+**Strategic Shift**: "AI Technology Company" → "Trust Infrastructure Company"
+**Approach**: Outcome-Driven Development (≥2 KPI improvement or auto-reject)
 
 ---
 
-## 🚨 Phase 1.6: Top-3 Critical Path (Start Here)
+## 🎯 Strategic Context
 
-### 1. Feedback Adapter + Source Trust Updater (ETA: 2-3 hours) 🔴
+**Current State**: v3.2 Equilibrium Evolution complete, technical apex achieved
+
+**Critical Insight**: We are NOT in "feature completion stage" but in **"operational·trust·market structure transition"**
+
+**Philosophy**: "Stop building features. Start systematizing growth through predictable, trust-driven outcomes."
+
+**v3.2 Execution Plan**: Not about "building more" but "systematically scaling what we built"
+
+---
+
+## 🚨 Pre-Phase 2.6: Critical Foundation (MUST DO FIRST)
+
+Before starting Phase 2.6 execution, we must address **4 system weaknesses** and establish **customer-facing trust infrastructure**.
+
+### Priority 0: WebView Trust Console MVP (ETA: 3-4 days) 🔴
+
+**Goal**: Demo-ready customer visualization for sales/investor demos.
+
+**Strategic Rationale**: "Trust Infrastructure 상용화"의 첫 고객 접점. 영업·투자 대응의 핵심 자산.
+
+**Priority**: CRITICAL (blocks go-to-market readiness)
+
+**Files to Create**:
+```
+✅ web/components/TrustConsole.tsx - Main console dashboard
+✅ web/components/TrustBadge.tsx - Real-time trust indicators
+✅ web/components/EvidenceViewer.tsx - Evidence traceability
+✅ web/components/ComplianceBadge.tsx - Compliance status
+✅ web/components/ActionButtons.tsx - Approve/Rollback/Explain
+✅ web/app/trust/page.tsx - Trust Console page
+✅ web/api/trust/route.ts - Trust data API
+```
+
+**MVP Features**:
+1. **Trust Badge Display**: Real-time Groundedness/Alignment/Faithfulness scores
+2. **Evidence Viewer**: Click-to-trace evidence sources (with SourceTrust scores)
+3. **Compliance Status**: GDPR/CCPA/HIPAA badges (color-coded: 🟢/🟡/🔴)
+4. **Actionable Trust**: Approve/Rollback/Explain buttons (not just visualization)
+5. **Audit Trail**: Policy change timeline with natural language explanations
+
+**Success Criteria**:
+- [ ] Trust Dashboard accessible at `/trust` (SSR <1s)
+- [ ] Real-time trust scores displayed (WebSocket updates)
+- [ ] Evidence traceability click-through works (source links)
+- [ ] Compliance badges accurate (based on compliance engine)
+- [ ] Action buttons functional (Approve → HIL queue, Explain → API)
+- [ ] Demo-ready for customer presentations (polished UI)
+
+**DoD**:
+- Trust Console operational with live data
+- Evidence Viewer shows SourceTrust scores + links
+- Compliance badges reflect real compliance state
+- Actionable buttons trigger backend workflows
+- Demo script prepared (5-minute walkthrough)
+
+---
+
+### Priority 1: System Hardening (4 Critical Weaknesses) (ETA: 2-3 days) 🔴
+
+**Goal**: Address operational efficiency and control weaknesses before multi-tenant scale.
+
+**Strategic Rationale**: Current weaknesses are NOT about "accuracy" but "operational efficiency and control". These MUST be fixed before Phase 2.6.
+
+**Priority**: CRITICAL (blocks production-scale operations)
+
+#### A. Observability Overhead Mitigation
+
+**Problem**: Automated logging/metrics/events may cause overload in real operations.
+
+**Solution**: Event Spine QoS Controller enhancement
+
+**Files**:
+```
+✅ src/core/event-spine/rate-limiter.ts - Unnecessary event rate limiting
+✅ src/core/event-spine/cold-storage-policy.ts - Archive old events
+✅ config/event-spine/qos-rules.json - Rate limit configuration
+```
+
+**Implementation**:
+- Event rate limiting (max 1000 events/sec per module)
+- Cold storage policy (archive events >7 days old)
+- Event priority queue (critical events bypass rate limit)
+
+**DoD**: Event Spine CPU usage <10%, event backlog = 0
+
+---
+
+#### B. Policy Explosion Prevention
+
+**Problem**: Multi-tenant + Meta-Governance may create thousands of policies → management chaos.
+
+**Solution**: Policy Hierarchy + Tag-based Inheritance
+
+**Files**:
+```
+✅ src/core/governance/policy-hierarchy.ts - Hierarchical policy structure
+✅ src/core/governance/policy-inheritance.ts - Tag-based inheritance
+✅ config/policy-templates/ - Reusable policy templates
+```
+
+**Implementation**:
+- Policy hierarchy (base → tenant → project → feature)
+- Tag-based inheritance (inherit from templates)
+- Policy deduplication (merge identical rules)
+
+**DoD**: Policy count <100 (from potential thousands), policy resolution time <50ms
+
+---
+
+#### C. Feedback Data Quality Drift Prevention
+
+**Problem**: User feedback log noise increases over time (duplicates, unclear feedback).
+
+**Solution**: Feedback Quality Scorer + Weighted Labeler
+
+**Files**:
+```
+✅ src/application/feedback-intelligence/quality-scorer.ts - Feedback quality assessment
+✅ src/application/feedback-intelligence/weighted-labeler.ts - Trust-based weighting
+✅ src/application/feedback-intelligence/deduplication.ts - Duplicate detection
+```
+
+**Implementation**:
+- Feedback quality scoring (1-5 scale: clarity, specificity, actionability)
+- Weighted labeler (high-trust users' feedback weighted higher)
+- Deduplication (semantic similarity detection)
+
+**DoD**: Feedback Utilization ≥70%, noise ratio <20%
+
+---
+
+#### D. Real-time Governance Latency Optimization
+
+**Problem**: Explainability API + Audit Interface traffic surge may exceed SLA.
+
+**Solution**: Lazy Audit Rendering + Incremental Explain Cache
+
+**Files**:
+```
+✅ src/core/transparency/lazy-audit-renderer.ts - On-demand audit rendering
+✅ src/core/transparency/explain-cache.ts - Incremental explanation cache
+✅ src/core/transparency/cache-warming.ts - Predictive cache warming
+```
+
+**Implementation**:
+- Lazy rendering (generate audit reports on-demand, not upfront)
+- Incremental explain cache (cache explanation fragments)
+- Cache warming (pre-generate for high-traffic queries)
+
+**DoD**: Explainability API p95 <500ms, Audit Interface load time <2s
+
+---
+
+### Priority 2: Trust Token Economy Foundation (ETA: 2-3 days) 🟠
+
+**Goal**: Design "Trust as Tradeable Unit" - signature-based trust tokens for each output.
+
+**Strategic Rationale**: **Genius Insight** - Trust Token Economy transforms trust from abstract concept to tradeable asset. Customers can transfer trust to partners/auditors/regulators.
+
+**Priority**: HIGH (strategic differentiation, not operational blocker)
+
+**Files to Create**:
+```
+✅ docs/RFC/2025-16-trust-token-economy.md - Trust Token design spec
+✅ src/core/trust/trust-token-generator.ts - Token generation
+✅ src/core/trust/token-signature.ts - C2PA + hash signature
+✅ src/core/trust/token-verifier.ts - Token verification API
+```
+
+**Trust Token Structure**:
+```typescript
+interface TrustToken {
+  id: string; // UUID v7
+  timestamp: Date;
+  contentHash: string; // SHA-256 hash of output
+  trustScore: {
+    groundedness: number;
+    alignment: number;
+    faithfulness: number;
+  };
+  evidence: {
+    sourceIds: string[];
+    trustScores: number[];
+  };
+  signature: string; // C2PA signature
+  issuer: string; // Our platform
+  expiresAt: Date; // Token validity period
+}
+```
+
+**Use Cases**:
+1. **External Audit**: Customer exports trust tokens to auditors (verifiable proof)
+2. **Partner Integration**: Trust tokens transferred to downstream systems
+3. **Regulatory Compliance**: Auditors verify token authenticity independently
+
+**DoD**:
+- Trust Token RFC documented
+- Token generation + signature working
+- Verification API operational
+- Demo: Generate token → Export → Verify externally
+
+---
+
+### Priority 3: Customer Demo Policy Packs (ETA: 1-2 days) 🟡
+
+**Goal**: Industry-specific policy templates (Healthcare/Finance) for immediate PoC deployment.
+
+**Strategic Rationale**: Regulated industry PoC requires ready-to-use compliance templates. This accelerates sales cycle.
+
+**Priority**: MEDIUM (GTM enabler, not technical blocker)
+
+**Files to Create**:
+```
+✅ config/industry-packs/healthcare/hipaa-policy.json - HIPAA compliance template
+✅ config/industry-packs/finance/sox-policy.json - SOX compliance template
+✅ config/industry-packs/healthcare/hipaa-audit-template.md - HIPAA audit report
+✅ config/industry-packs/finance/sox-audit-template.md - SOX audit report
+```
+
+**Healthcare Policy Pack (HIPAA)**:
+- PII detection + masking rules
+- Data retention policies (7-year minimum)
+- Access control requirements (role-based)
+- Audit trail requirements (immutable logs)
+
+**Finance Policy Pack (SOX)**:
+- Financial data accuracy requirements
+- Change control policies (approval workflow)
+- Audit trail requirements (transaction logging)
+- Separation of duties enforcement
+
+**DoD**:
+- 2 industry packs operational (Healthcare, Finance)
+- Policy templates validated against regulations
+- Audit report templates customer-ready
+- Demo script prepared (PoC walkthrough)
+
+---
+
+## 📅 Phase 1.6-1.7: Organic Loop Completion (After Pre-Work)
+
+### Week 1-2: Feedback Intelligence Foundation
+
+#### 1. Feedback Adapter + Source Trust Updater (ETA: 2-3 hours) 🔴
 
 **Goal**: User feedback ("incorrect evidence") updates SourceTrust scores dynamically.
 
@@ -26,407 +260,198 @@
 
 **Files to Create**:
 ```
-✅ Create: src/application/feedback-adapter.ts
-✅ Create: src/application/feedback-labeler.ts
-✅ Create: src/infrastructure/retrieval/source-trust-updater.ts
-✅ Create: src/infrastructure/retrieval/source-trust-persistence.ts
+✅ src/application/feedback-adapter.ts
+✅ src/application/feedback-labeler.ts
+✅ src/infrastructure/retrieval/source-trust-updater.ts
+✅ src/infrastructure/retrieval/source-trust-persistence.ts
 ```
 
-**Implementation Steps**:
-1. Create `feedback-adapter.ts`:
-   ```typescript
-   export async function processFeedback(feedback: UserFeedback): Promise<void> {
-     // Intent classification (6 types: evidence_incorrect, answer_wrong, etc.)
-     const intent = await classifyIntent(feedback);
+**Implementation** (from original Phase 1.6 plan):
+- Intent classification (6 types)
+- Confidence scoring (1-5)
+- SourceTrust delta update (±0.1)
+- Persistence to disk
 
-     if (intent === "evidence_incorrect") {
-       const { domain, chunkId } = feedback.context;
-       await updateSourceTrust({ domain, delta: -0.1 });
-       await emitGovernanceEvent({
-         event: "feedback_processed",
-         intent,
-         trust_delta: -0.1,
-         timestamp: new Date().toISOString()
-       });
-     }
-   }
-   ```
-
-2. Create `feedback-labeler.ts`:
-   ```typescript
-   export async function classifyIntent(feedback: UserFeedback): Promise<FeedbackIntent> {
-     // Confidence scoring (1-5)
-     const confidence = scoreConfidence(feedback);
-
-     // Intent types: evidence_incorrect, answer_wrong, format_issue,
-     //               request_clarification, positive_feedback, other
-     const intent = await detectIntent(feedback.text, confidence);
-
-     return intent;
-   }
-   ```
-
-3. Create `source-trust-updater.ts`:
-   ```typescript
-   export async function updateSourceTrust(params: {
-     domain?: string;
-     author?: string;
-     delta: number;
-   }): Promise<void> {
-     // Update SourceTrust config
-     const trust = await loadSourceTrust();
-     trust.updateScore(params);
-
-     // Persist to disk
-     await trust.saveToDisk("reports/source-trust.json");
-
-     // Emit event
-     await emitEvent("source_trust_updated", params);
-   }
-   ```
-
-4. Create `source-trust-persistence.ts`:
-   ```typescript
-   export class SourceTrustPersistence {
-     async save(trust: SourceTrust, path: string): Promise<void> {
-       const data = trust.serialize();
-       await fs.writeFile(path, JSON.stringify(data, null, 2));
-     }
-
-     async load(path: string): Promise<SourceTrust> {
-       const data = await fs.readFile(path, "utf-8");
-       return SourceTrust.deserialize(JSON.parse(data));
-     }
-   }
-   ```
-
-**Success Criteria**:
-- [ ] Feedback intent "evidence_incorrect" detected
-- [ ] SourceTrust domain scores updated (delta: ±0.1)
-- [ ] Changes persisted to `reports/source-trust.json`
-- [ ] Next retrieval uses updated scores
-- [ ] Governance events include feedback data
+**DoD**:
+- Feedback → Trust update <24h
+- SourceTrust scores persist
+- Next retrieval uses updated scores
 
 ---
 
-### 2. Test Chain Integration (ETA: 1 hour) 🟠
+#### 2. Event Spine Infrastructure (ETA: 2 days) 🔴
 
-**Goal**: Sequential test execution to catch regressions properly.
+**Goal**: Central event backbone with QoS control (from v3.2 execution plan).
 
-**Priority**: HIGH (blocks regression detection automation)
+**Priority**: CRITICAL (foundation for all modules)
 
 **Files to Create**:
 ```
-✅ Create: scripts/test-sequence.ts
-✅ Modify: package.json (add test:sequence script)
-✅ Modify: scripts/guard.ts (call test:sequence)
+✅ src/core/event-spine/event-bus.ts - Central event bus
+✅ src/core/event-spine/qos-controller.ts - QoS controller (from hardening work)
+✅ src/core/event-spine/loop-scheduler.ts - Loop scheduling
+✅ src/core/event-spine/resource-monitor.ts - CPU/memory monitoring
 ```
 
-**Implementation Steps**:
-1. Create `test-sequence.ts`:
-   ```typescript
-   async function runTestSequence() {
-     console.log("Running Phase 2C tests...");
-     await exec("npm test -- tests/phase0 tests/governance");
-
-     console.log("Running Phase 1 tests...");
-     await exec("npm test -- tests/integration/phase1-mbc.test.ts");
-
-     console.log("Running Phase 1.5 tests...");
-     await exec("npm test -- tests/integration/phase1.5-retrieval.test.ts");
-
-     console.log("Running RG...");
-     await exec("npm run rg:run");
-   }
-   ```
-
-2. Add to package.json:
-   ```json
-   "test:sequence": "tsx scripts/test-sequence.ts"
-   ```
-
-3. Integrate into guard:
-   ```typescript
-   if (strict) {
-     await runTestSequence();
-   }
-   ```
-
-**Success Criteria**:
-- [ ] Tests run sequentially (Phase2C → 1 → 1.5)
-- [ ] RG detects regressions
-- [ ] `/guard --strict` includes sequence
+**DoD**:
+- Event Spine operational (backlog = 0)
+- QoS Controller prevents resource overload
+- All modules communicate via Event Spine only
 
 ---
 
-### 3. Gate P/I Enhancement (ETA: 2 hours) 🔴
+#### 3. Gate P/I Enhancement (ETA: 2 hours) 🟠
 
-**Goal**: Poisoning/Trust events automatically update Governance metrics and gate status.
+**Goal**: Retrieval poisoning/trust events trigger Gate P/I auto-update.
 
-**Priority**: CRITICAL (blocks deployment automation)
-
-**Gate P (NEW)**:
-```typescript
-{
-  id: "gate-p-retrieval-poisoning",
-  check: (context) => {
-    // FAIL if any poisoned content attempted delivery
-    return context.retrieval.poisonedBlocked === 0;
-  },
-  severity: "P0",
-  action: "block_deployment"
-}
-```
-
-**Gate I (ENHANCE)**:
-```typescript
-{
-  id: "gate-i-source-trust",
-  check: (context) => {
-    // WARNING if trust score below 0.6 threshold
-    return context.retrieval.avgTrustScore >= 0.6;
-  },
-  severity: "P1",
-  action: "warning"
-}
-```
+**Priority**: HIGH (governance integration)
 
 **Files to Modify**:
 ```
-✅ Modify: src/domain/preflight/gating-rules.ts (add Gate P, update Gate I)
-✅ Modify: src/core/governance/meta-kernel.ts (add event handlers)
-✅ Create: tests/domain/preflight/gates-retrieval.test.ts
+✅ src/domain/preflight/gating-rules.ts - Add Gate P/I rules
+✅ tests/domain/preflight/gates.test.ts - Gate P/I tests
 ```
 
-**Implementation Steps**:
-1. Add Gate P to gating-rules.ts
-2. Enhance Gate I with trust floor check
-3. Connect governance event handler:
-   ```typescript
-   on("retrieval_assessment", (data) => {
-     updateGateStatus("gate-p", data.poisoned_blocked === 0);
-     updateGateStatus("gate-i", data.trust_avg >= 0.6);
-   });
-   ```
-4. Update RG report to include retrieval metrics
-
-**Success Criteria**:
-- [ ] Gate P defined and operational
-- [ ] Gate I enhanced with trust floor check
-- [ ] Retrieval events auto-update gate status
-- [ ] RG report includes retrieval metrics (trust_avg, poisoned_blocked)
-- [ ] Deployment blocked if Gate P fails
+**DoD**:
+- Gate P = Retrieval Poisoning FAIL blocks deployment
+- Gate I = Trust floor <0.4 warning
 
 ---
 
-## 📋 Phase 1.6: Full Implementation Checklist
+### Week 3-4: Trust Platform MVP Launch
 
-### Feedback Intelligence Layer
-- [ ] `src/application/feedback-adapter.ts` - Intent classification (6 types)
-- [ ] `src/application/feedback-labeler.ts` - Confidence scoring (1-5)
-- [ ] `src/infrastructure/retrieval/source-trust-updater.ts` - Trust DB updates
-- [ ] `src/infrastructure/retrieval/source-trust-persistence.ts` - Save/load to disk
-- [ ] `reports/source-trust.json` - Trust score history
-- [ ] `reports/feedback-graph.jsonl` - Feedback intelligence log
+#### 4. Trust Dashboard Production Release (ETA: 2 days) 🔴
 
-### Test Chain Integration
-- [ ] `scripts/test-sequence.ts` - Sequential test runner
-- [ ] Update `scripts/guard.ts` - Call test sequence in strict mode
-- [ ] Update `package.json` - Add `test:sequence` script
-- [ ] CI integration - GitHub Actions workflow update
-- [ ] Performance monitoring - Test duration tracking
+**Goal**: Production-ready Trust Console with live data integration.
 
-### Gate Enhancement
-- [ ] Update `src/domain/preflight/gating-rules.ts` - Add Gate P
-- [ ] Enhance Gate I - Trust floor check (≥0.6)
-- [ ] `tests/domain/preflight/gates-retrieval.test.ts` - Gate P/I tests
-- [ ] Governance event handler - Update gate status on events
-- [ ] RG report - Include retrieval metrics
+**Priority**: CRITICAL (customer-facing trust interface)
 
-### Evidence Viewer (WebView SSR)
-- [ ] `web/components/EvidenceViewer.tsx` - Main viewer
-- [ ] `web/components/TrustBadge.tsx` - Trust indicator (🟢🟡🔴)
-- [ ] `web/components/SourceLink.tsx` - Source attribution
-- [ ] `web/components/FeedbackButton.tsx` - "부적절" button
-- [ ] `web/app/evidence/[id]/page.tsx` - Evidence detail page
-- [ ] API endpoint - `/api/evidence/:id` (SSR data fetch)
-- [ ] API endpoint - `/api/feedback` (POST feedback)
+**Enhancement from MVP**:
+- WebSocket real-time updates
+- Multi-tenant support (tenant filtering)
+- Export functionality (PDF reports, Trust Tokens)
 
-### Metrics & Reporting
-- [ ] `src/application/reporting/retrieval-reporter.ts` - Metrics collector
-- [ ] `reports/retrieval-metrics.json` - Retrieval KPIs
-- [ ] `reports/evidence-trust.jsonl` - Per-chunk trust scores
-- [ ] Dashboard integration - Governance dashboard update
+**DoD**:
+- Trust Dashboard production-ready
+- Multi-tenant data isolation
+- Export functionality operational
 
 ---
 
-## 🗺️ Phase 2.0: Multi-Tenant Foundation (3 weeks, ETA: 2025-11-12)
+#### 5. Federated ROI Analytics Design (ETA: 3 days) 🟠
 
-**Goal**: Support multiple clients/domains/projects with centralized governance.
+**Goal**: Design cross-tenant learning revenue model (from genius insight).
 
-### Top-3 Priority (Phase 2.0)
+**Strategic Rationale**: **Genius Insight #2** - Federated ROI Analytics creates industry benchmark datasets → thought leadership + revenue stream.
 
-1. **Control Plane / Data Plane Architecture** (CRITICAL 🔴)
-   - Tenant Registry + Namespaced Policy DSL
-   - Separate governance (control) from execution (data)
-   - Config-as-Code + GitOps for tenant policies
-
-2. **Tenant-Scoped Retrieval Fabric** (HIGH 🔴)
-   - Per-tenant corpus/index/cache isolation
-   - Trust/Poisoning Guard tenant allowlists
-   - Zero data leakage guarantee
-
-3. **Lineage Ledger Enhancement** (HIGH 🔴)
-   - Add tenant/domain/usecase to all traces
-   - Cross-tenant drift map
-   - Per-tenant audit reports
-
-### Key Components (Phase 2.0)
-- `src/core/tenancy/tenant-registry.ts` - Tenant CRUD
-- `tenants/<tenant>/policies/*.yaml` - GitOps policy structure
-- `src/core/governance/namespaced-policy-dsl.ts` - Tenant-aware DSL
-- `src/infrastructure/tenancy/feature-matrix.ts` - Per-tenant FF
-- `src/infrastructure/tenancy/model-router.ts` - Tenant-scoped routing
-
-### Definition of Done (Phase 2.0)
-- Data leakage: 0% (proven via tests)
-- Tenant gate pass rate: ≥95%
-- Lineage trace depth: ≥3 hops
-- All tenant policies in Git
-- PR + signature required for prod
-
----
-
-## 🤖 Phase 2.1: Hybrid Intelligence (4-6 weeks, ETA: 2025-12-24)
-
-**Goal**: Feedback + Retrieval + Planner autonomous learning/correction loop.
-
-### Top-3 Priority (Phase 2.1)
-
-1. **HybridOrchestrator (BM25+Vector+RAGAS)** (HIGH 🔴)
-   - α·β automatic learning from feedback
-   - "Evidence Quality" driven weight adjustment
-   - Feature Flag: FEATURE_HYBRID_RETRIEVAL
-
-2. **RAGAS Bridge Integration** (HIGH 🔴)
-   - Recall@K, MRR, Groundedness, Faithfulness
-   - Auto-report to governance metrics
-   - Gate C/D connection (stability/cost)
-
-3. **Self-Tuning Planner** (MEDIUM 🟠)
-   - Retrieval results → Planner query strategy adjustment
-   - Periodic feedback-driven weight learning
-   - Weekly auto-tuning cycle
-
-### Key Components (Phase 2.1)
-- `src/infrastructure/retrieval/vector-adapter.ts` - Embedding-based retrieval
-- `src/infrastructure/retrieval/hybrid-orchestrator.ts` - Weighted fusion
-- `src/application/evaluation/ragas-bridge.ts` - RAGAS integration
-- `src/application/planning/self-tuning-planner.ts` - Auto-tuning logic
-
-### Definition of Done (Phase 2.1)
-- Groundedness: ≥85%
-- Faithfulness: ≥85%
-- Recall@10: +10~20% improvement
-- MRR: +10~20% improvement
-- Drift detection latency: <6h
-- Compliance coverage: ≥95%
-
----
-
-## 📊 Progress Tracking
-
-### Completed ✅
-- [x] Phase 2C (Policy + Sandbox + Evolution)
-- [x] Phase 1 (MBC: Handshake + Token + Scheduler)
-- [x] Phase 1.5 (Retrieval: Port + Trust + Guard + BM25)
-- [x] Integrated Roadmap Documentation (Phase 1.6 → 2.1)
-
-### In Progress 🚧 (Phase 1.6)
-- [ ] Feedback Adapter + Source Trust Updater (Top-3 #1)
-- [ ] Test Chain Integration (Top-3 #2)
-- [ ] Gate P/I Enhancement (Top-3 #3)
-
-### Planned 📋 (Phase 1.6)
-- [ ] Evidence Viewer (WebView SSR)
-- [ ] Retrieval Metrics Reporting
-- [ ] Documentation updates (README, SESSION_STATE, NEXT_ACTIONS)
-
-### Future Phases 🔮
-- [ ] Phase 2.0: Multi-Tenant Foundation (3 weeks)
-- [ ] Phase 2.1: Hybrid Intelligence (4-6 weeks)
-
----
-
-## 🆘 Emergency Rollback
-
-**If Phase 1.6 breaks tests**:
-```bash
-git checkout phase1.5-retrieval-complete
-npm install
-npm test
+**Files to Create**:
+```
+✅ docs/RFC/2025-17-federated-roi-analytics.md - FedROI design spec
+✅ src/core/federated/roi-aggregator.ts - Cross-tenant ROI aggregation
+✅ src/core/federated/differential-privacy-engine.ts - ε-DP implementation
 ```
 
-**Recovery checklist**:
-1. Read `docs/SESSION_STATE.md`
-2. Check `git log --oneline -10`
-3. Review `docs/NEXT_ACTIONS.md` (this file)
-4. Start from Critical Path item #1
+**DoD**:
+- FedROI RFC documented
+- ε-DP pipeline designed (ε <1.0)
+- ROI aggregation algorithm specified
 
 ---
 
-## 📞 Key Documents & Resources
+## 🎯 Success Criteria (Pre-Phase 2.6 Completion)
 
-### Primary References
-- **Integrated Roadmap**: `docs/RFC/2025-10-integrated-roadmap-phase1.6-to-2.1.md` ⭐ **NEW**
-- **Multi-Tenant Architecture**: `docs/ARCHITECTURE_MULTI_TENANT.md` ⭐ **NEW**
-- **Session State**: `docs/SESSION_STATE.md` (updated with roadmap)
-- **Product Plan**: `docs/PRODUCT_PLAN.md`
+### System Hardening
+- [ ] Observability overhead mitigated (Event Spine CPU <10%)
+- [ ] Policy explosion prevented (policy count <100)
+- [ ] Feedback quality maintained (utilization ≥70%, noise <20%)
+- [ ] Governance latency optimized (Explain API p95 <500ms)
 
-### Development Standards
-- **Development Contract**: `LLM_DEVELOPMENT_CONTRACT.md`
-- **Development Standards**: `DEVELOPMENT_STANDARDS.md`
-- **TypeScript Guidelines**: `docs/TYPESCRIPT_GUIDELINES.md`
-- **System Philosophy**: `CLAUDE.md`
+### Trust Platform Foundation
+- [ ] WebView Trust Console MVP operational (demo-ready)
+- [ ] Trust Token Economy designed (RFC + prototype)
+- [ ] Customer demo policy packs ready (Healthcare, Finance)
 
-### Architecture & Design
-- **Architecture Summary**: `docs/llm_friendly_summary.md`
-- **RFC Directory**: `docs/RFC/`
-- **Phase Documentation**: `docs/PHASE_*.md`
+### Technical Excellence
+- [ ] Tests ≥98% (770+/780+)
+- [ ] p95 latency ≤3.1s (maintained)
+- [ ] Zero new ESLint errors
 
-### Commands & Tools
-- **Command Guide**: `docs/COMMAND_GUIDE.md`
-- **Super Claude Runbook**: `docs/super_claude_runbook.md`
-
----
-
-## 💡 Key Principles (Reminder)
-
-1. **Evolutionary Expansion, NOT Rewrite**
-   - Current structure is a "living organism with genetic structure"
-   - Add layers, don't rebuild foundation
-
-2. **Top-3 + Full Backlog**
-   - Top-3 for immediate action
-   - Full checklist for complete visibility
-   - N-point design (not artificially limited)
-
-3. **Control Plane / Data Plane** (Phase 2.0)
-   - Separate governance from execution
-   - Enable multi-tenant without complexity explosion
-
-4. **Governance First, Features Second**
-   - Every feature must pass Gate checks
-   - DNA Lock-In + Adaptive Mode maintained
-   - Security/compliance non-negotiable
-
-5. **Feedback-Driven Evolution**
-   - User feedback → Trust scores → Retrieval quality
-   - Self-tuning loops for continuous improvement
-   - Data becomes competitive moat
+### Go-to-Market Readiness
+- [ ] Customer demo prepared (5-minute Trust Console walkthrough)
+- [ ] Industry policy packs validated (HIPAA, SOX)
+- [ ] Trust Token export demo working
 
 ---
 
-**Remember**: Always update `docs/SESSION_STATE.md` after completing a major task!
+## 🛑 Stop · Start · Continue (v3.2 Enforcement)
 
-**Last Updated**: 2025-10-08 20:30 KST
+### 🛑 STOP (Immediate)
+- ❌ New model/agent development (core algorithms sufficient)
+- ❌ Duplicate KPI dashboards (keep only ROI + Trust)
+- ❌ Feature PRs without ≥2 KPI improvement targets
+- ❌ Experimental features with permanent ON state
+
+### ✅ START (Now)
+- ✅ Trust Token generation for all outputs
+- ✅ Event Spine registration for all new modules
+- ✅ KPI improvement targets for every feature
+- ✅ WebView Trust Console as primary customer interface
+
+### 🔄 CONTINUE (Reinforce)
+- ✅ Event Spine-only communication
+- ✅ Gate automation (A-O gates)
+- ✅ KPI-driven development
+- ✅ DoD enforcement for all initiatives
+
+---
+
+## 📊 KPI Targets (Pre-Phase 2.6)
+
+| Category | KPI | Current | Target | Alert Threshold |
+|----------|-----|---------|--------|----------------|
+| **Quality** | Groundedness | N/A | ≥85% | <80% for 24h |
+| **Quality** | Alignment | N/A | ≥85% | <80% for 24h |
+| **Performance** | p95 Latency | ~2.8s | ≤3.1s | >3.3s (2x) |
+| **Performance** | Error Rate | <1% | <1% | >2% |
+| **Cost** | Cost/1kQA | N/A | ≤$X | 90% budget |
+| **Learning** | Feedback Utilization | 0% | ≥70% | <50% |
+| **Trust** | Evidence Traceability | 0% | 100% | <100% |
+| **Trust** | Compliance Score | N/A | ≥95% | <90% |
+
+---
+
+## 🔮 Strategic Vision (v3.2 → v3.3)
+
+**From**: "AI Technology Company" (feature-driven)
+**To**: "Trust Infrastructure Company" (outcome-driven)
+
+**Market Position**: "The only AI platform that humans trust to run autonomously"
+
+**Success Criteria**: When customers say **"I trust this system to make decisions I can defend to regulators"**
+
+**Competitive Moat**:
+- **BigTech**: Powerful models → **We offer**: Governance Nervous System
+- **Enterprise AI**: Compliance focus → **We offer**: 3C System (Cognition + Coordination + Context)
+- **AI Platforms**: Feature breadth → **We offer**: Trust Infrastructure (verifiable, tradeable trust)
+
+---
+
+## 📚 References
+
+- **v3.2 Execution Plan**: `docs/RFC/2025-15-equilibrium-execution-plan.md`
+- **Governance Nervous System**: `docs/RFC/2025-13-governance-nervous-system-plan.md`
+- **Transparent Ecosystem Plan**: `docs/RFC/2025-12-transparent-ecosystem-plan.md`
+- **Session State**: `docs/SESSION_STATE.md`
+
+---
+
+## 💡 One-Line Philosophy
+
+**"Stop building features. Start earning trust through predictable, verifiable, tradeable outcomes."**
+
+If we layer trust (Event Spine · Trust Tokens · FedROI) and evolve by KPIs alone,
+we achieve rapid growth across Technology, Operations, Compliance, and Market. 🚀
+
+---
+
+**Next Immediate Action**: Start **Priority 0: WebView Trust Console MVP** (demo-ready in 3-4 days)

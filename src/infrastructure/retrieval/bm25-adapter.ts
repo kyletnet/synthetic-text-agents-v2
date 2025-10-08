@@ -125,7 +125,8 @@ export class BM25Adapter implements RetrievalPort {
 
     const poisonedBlocked = bm25Results.length - scoredChunks.length;
 
-    const duration = Date.now() - start;
+    // Ensure minimum duration of 1ms for statistics tracking
+    const duration = Math.max(1, Date.now() - start);
 
     // Update stats
     this.adapterStats.totalQueries++;

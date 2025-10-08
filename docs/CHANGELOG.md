@@ -1,5 +1,34 @@
 # Changelog
 
+## 2025-10-09 - Strategic Re-prioritization: "AI Technology → Trust Infrastructure" Transition
+
+- **docs**: **NEXT_ACTIONS.md complete rewrite** (v3.2 execution priorities)
+  - **Strategic Shift**: "AI Technology Company" → "Trust Infrastructure Company"
+  - **Critical Insight**: NOT in "feature completion" but "operational·trust·market structure transition"
+  - **Pre-Phase 2.6 Work** (MUST DO FIRST):
+    - **Priority 0**: WebView Trust Console MVP (demo-ready in 3-4 days) 🔴
+    - **Priority 1**: System Hardening (4 critical weaknesses) 🔴
+    - **Priority 2**: Trust Token Economy (tradeable trust units) 🟠
+    - **Priority 3**: Customer Demo Policy Packs (Healthcare/Finance) 🟡
+  - **4 System Weaknesses identified + solutions**:
+    1. Observability Overhead → Event Spine QoS enhancement (rate limiting, cold storage)
+    2. Policy Explosion → Policy Hierarchy + Tag-based Inheritance
+    3. Feedback Data Quality Drift → Quality Scorer + Weighted Labeler
+    4. Real-time Governance Latency → Lazy Audit Rendering + Explain Cache
+  - **3 Genius Insights integrated**:
+    1. Trust Token Economy (trust as tradeable, verifiable asset)
+    2. Federated ROI Analytics (cross-tenant benchmarks → revenue stream)
+    3. Actionable Trust (not just visualization, but Approve/Rollback/Explain actions)
+  - **Phase 1.6-1.7 restructured** (after pre-work completion)
+  - **KPI Framework defined** (Quality/Performance/Cost/Learning/Trust)
+  - **Stop·Start·Continue enforcement** (feature explosion prevention)
+
+- **strategy**: Trust Infrastructure commercialization
+  - **Market Position**: "The only AI platform that humans trust to run autonomously"
+  - **Success Criteria**: "I trust this system to make decisions I can defend to regulators"
+  - **Competitive Moat**: Trust Infrastructure (verifiable, tradeable trust) vs BigTech (model power)
+  - **GTM Priority**: WebView Trust Console MVP (sales/investor demo asset)
+
 ## 2025-10-08 - Execution Plan (v3.2): "Features → Outcomes" Strategic Shift
 
 - **docs**: **NEW RFC - v3.2 Equilibrium Execution Plan** (30/60/90 roadmap)
