@@ -1,0 +1,33 @@
+{
+  "windowId": "window_2025-10-08T17-51-04-929Z_2025-10-08T18-51-04-929Z",
+  "startTime": "2025-10-08T17:51:04.929Z",
+  "endTime": "2025-10-08T18:51:04.929Z",
+  "evidenceHashChain": "af316ecb91a8ee7ae99210702b2d4758f30cdde3bf61e3d8e787d74681f90a6e",
+  "trustScoreStats": {
+    "min": 0.9,
+    "max": 0.9,
+    "avg": 0.9,
+    "stddev": 0
+  },
+  "totalEvidence": 1,
+  "uniqueEvidence": 1,
+  "duplicateCount": 0,
+  "sampleEvidence": [
+    {
+      "evidenceId": "e1",
+      "evidenceHash": "hash1",
+      "trustScore": 0.9,
+      "timestamp": "2025-10-08T18:51:04.929Z"
+    }
+  ],
+  "provenanceSummary": {
+    "totalRuns": 1,
+    "totalCitations": 1,
+    "avgNliVerified": 1
+  },
+  "compressionRatio": 2.206896551724138,
+  "storageReduction": 560,
+  "retentionExpiry": "2026-01-06T18:51:04.929Z",
+  "legalHold": false,
+  "timestamp": "2025-10-08T18:51:04.929Z"
+}

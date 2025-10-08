@@ -58,31 +58,58 @@ Before starting Phase 2.6 execution, we must address **4 system weaknesses** and
 - [ ] Demo-ready for customer presentations (polished UI)
 
 **DoD**:
-- Trust Console operational with live data
-- Evidence Viewer shows SourceTrust scores + links
-- Compliance badges reflect real compliance state
-- Actionable buttons trigger backend workflows
-- Demo script prepared (5-minute walkthrough)
+- [ ] API routes operational (5 endpoints)
+- [ ] UI components functional (5 components)
+- [ ] Integration tests passing
+- [ ] E2E tests passing
+- [ ] Lighthouse score ≥90
+- [ ] SSR latency ≤3s
 
-**🧠 Genius Enhancement - Trust Console Telemetry** (Parallel P1):
-- **Goal**: Capture user behavior data to optimize Trust UX
-- **Implementation**:
-  - Click heatmap tracking (which trust badges users click most)
-  - Action button usage analytics (Approve/Rollback/Explain ratios)
-  - Evidence Viewer navigation patterns
-  - Session duration and engagement metrics
-- **Strategic Value**: Convert "what users trust" into product roadmap data
-- **Files**:
-  ```
-  ✅ web/lib/telemetry.ts - Event tracking infrastructure
-  ✅ web/api/telemetry/route.ts - Telemetry ingestion API
-  ✅ reports/trust-console-telemetry.jsonl - User behavior log
-  ```
-- **Integration**: Event Spine → Telemetry Aggregator → Weekly Digest
+**구현 시작 명령어**:
+```bash
+# 1. 문서 읽기
+cat docs/TRUST_CONSOLE_IMPLEMENTATION.md
+
+# 2. API 구현
+mkdir -p apps/fe-web/app/api/trust/{evidence,compliance,telemetry,snapshot}
+
+# 3. 컴포넌트 구현
+mkdir -p apps/fe-web/app/trust/components
+
+# 4. 테스트
+npm test -- trust-console
+```
 
 ---
 
-### Priority 1: System Hardening (4 Critical Weaknesses) (ETA: 2-3 days) 🔴
+## 📚 Required Reading for Continuation
+
+다음 작업을 시작하기 전 **반드시 읽어야 할 문서**:
+
+1. **`docs/TRUST_INFRASTRUCTURE.md`** ⭐ **CRITICAL**
+   - P0-P2-3 완전한 기술 문서
+   - 구현된 모든 모듈의 API, 사용법, 예제
+   - 74개 테스트 결과 및 커버리지
+
+2. **`docs/TRUST_CONSOLE_IMPLEMENTATION.md`** (P3 구현 시)
+   - Trust Console 완전한 구현 가이드
+   - API + UI 코드 예제 (복사-붙여넣기 가능)
+   - 단계별 체크리스트
+
+3. **`CLAUDE.md`** (항상)
+   - 시스템 철학 및 개발 원칙
+   - Development Safety Rules
+   - Quality Gates
+
+---
+
+## 🎯 Phase 2.6 Ready (권장 다음 단계)
+
+### Phase 2.6: Reflective Governance (11-13주)
+
+**Goal**: Human-in-the-Loop (HIL) + Explainability Layer
+
+**Components**:
 
 **Goal**: Address operational efficiency and control weaknesses before multi-tenant scale.
 
