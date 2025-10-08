@@ -1,0 +1,255 @@
+{
+  "metadata": {
+    "tool": "generate-sbom.ts",
+    "version": "1.0.0",
+    "timestamp": "2025-10-08T08:07:47.763Z",
+    "project": "meta-adaptive-expert-orchestration",
+    "projectVersion": "1.1.2"
+  },
+  "dependencies": [
+    {
+      "name": "@anthropic-ai/sdk",
+      "version": "unknown",
+      "license": "MIT",
+      "repository": "github:anthropics/anthropic-sdk-typescript"
+    },
+    {
+      "name": "@types/js-yaml",
+      "version": "unknown",
+      "license": "MIT",
+      "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped.git"
+    },
+    {
+      "name": "ai",
+      "version": "unknown",
+      "license": "Apache-2.0",
+      "repository": "git+https://github.com/vercel/ai.git"
+    },
+    {
+      "name": "ajv-formats",
+      "version": "unknown",
+      "license": "MIT",
+      "repository": "git+https://github.com/ajv-validator/ajv-formats.git"
+    },
+    {
+      "name": "commander",
+      "version": "unknown",
+      "license": "MIT",
+      "repository": "https://github.com/tj/commander.js.git"
+    },
+    {
+      "name": "dd-trace",
+      "version": "unknown",
+      "license": "(Apache-2.0 OR BSD-3-Clause)",
+      "repository": "git+https://github.com/DataDog/dd-trace-js.git"
+    },
+    {
+      "name": "glob",
+      "version": "unknown",
+      "license": "ISC",
+      "repository": "git://github.com/isaacs/node-glob.git"
+    },
+    {
+      "name": "js-yaml",
+      "version": "unknown",
+      "license": "MIT",
+      "repository": "nodeca/js-yaml"
+    },
+    {
+      "name": "newrelic",
+      "version": "unknown",
+      "license": "Apache-2.0",
+      "repository": "https://github.com/newrelic/node-newrelic.git"
+    },
+    {
+      "name": "openai",
+      "version": "unknown",
+      "license": "Apache-2.0",
+      "repository": "github:openai/openai-node"
+    },
+    {
+      "name": "pino",
+      "version": "unknown",
+      "license": "MIT",
+      "repository": "git+https://github.com/pinojs/pino.git"
+    },
+    {
+      "name": "pino-pretty",
+      "version": "unknown",
+      "license": "MIT",
+      "repository": "git+ssh://git@github.com/pinojs/pino-pretty.git"
+    },
+    {
+      "name": "prom-client",
+      "version": "unknown",
+      "license": "Apache-2.0",
+      "repository": "git@github.com:siimon/prom-client.git"
+    },
+    {
+      "name": "undici",
+      "version": "unknown",
+      "license": "MIT",
+      "repository": "git+https://github.com/nodejs/undici.git"
+    },
+    {
+      "name": "uuid",
+      "version": "unknown",
+      "license": "MIT",
+      "repository": "https://github.com/uuidjs/uuid.git"
+    },
+    {
+      "name": "yaml",
+      "version": "unknown",
+      "license": "ISC",
+      "repository": "github:eemeli/yaml"
+    },
+    {
+      "name": "yargs",
+      "version": "unknown",
+      "license": "MIT",
+      "repository": "https://github.com/yargs/yargs.git"
+    },
+    {
+      "name": "zod",
+      "version": "unknown",
+      "license": "MIT",
+      "repository": "git+https://github.com/colinhacks/zod.git"
+    }
+  ],
+  "devDependencies": [
+    {
+      "name": "@ai-sdk/openai",
+      "version": "unknown",
+      "license": "Apache-2.0",
+      "repository": "git+https://github.com/vercel/ai.git"
+    },
+    {
+      "name": "@eslint/js",
+      "version": "unknown",
+      "license": "MIT",
+      "repository": "https://github.com/eslint/eslint.git"
+    },
+    {
+      "name": "@types/node",
+      "version": "unknown",
+      "license": "MIT",
+      "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped.git"
+    },
+    {
+      "name": "@types/uuid",
+      "version": "unknown",
+      "license": "MIT",
+      "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped.git"
+    },
+    {
+      "name": "@types/yargs",
+      "version": "unknown",
+      "license": "MIT",
+      "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped.git"
+    },
+    {
+      "name": "@typescript-eslint/eslint-plugin",
+      "version": "unknown",
+      "license": "MIT",
+      "repository": "https://github.com/typescript-eslint/typescript-eslint.git"
+    },
+    {
+      "name": "@typescript-eslint/parser",
+      "version": "unknown",
+      "license": "MIT",
+      "repository": "https://github.com/typescript-eslint/typescript-eslint.git"
+    },
+    {
+      "name": "@vitest/coverage-v8",
+      "version": "unknown",
+      "license": "MIT",
+      "repository": "git+https://github.com/vitest-dev/vitest.git"
+    },
+    {
+      "name": "@vitest/ui",
+      "version": "unknown",
+      "license": "MIT",
+      "repository": "git+https://github.com/vitest-dev/vitest.git"
+    },
+    {
+      "name": "ajv",
+      "version": "unknown",
+      "license": "MIT",
+      "repository": "ajv-validator/ajv"
+    },
+    {
+      "name": "async-mutex",
+      "version": "unknown",
+      "license": "MIT",
+      "repository": "https://github.com/DirtyHairy/async-mutex"
+    },
+    {
+      "name": "dependency-cruiser",
+      "version": "unknown",
+      "license": "MIT",
+      "repository": "git+https://github.com/sverweij/dependency-cruiser.git"
+    },
+    {
+      "name": "dotenv",
+      "version": "unknown",
+      "license": "BSD-2-Clause",
+      "repository": "git://github.com/motdotla/dotenv.git"
+    },
+    {
+      "name": "esbuild",
+      "version": "unknown",
+      "license": "MIT",
+      "repository": "git+https://github.com/evanw/esbuild.git"
+    },
+    {
+      "name": "eslint",
+      "version": "unknown",
+      "license": "MIT",
+      "repository": "eslint/eslint"
+    },
+    {
+      "name": "husky",
+      "version": "unknown",
+      "license": "MIT",
+      "repository": "typicode/husky"
+    },
+    {
+      "name": "madge",
+      "version": "unknown",
+      "license": "MIT",
+      "repository": "git://github.com/pahen/madge"
+    },
+    {
+      "name": "prettier",
+      "version": "unknown",
+      "license": "MIT",
+      "repository": "prettier/prettier"
+    },
+    {
+      "name": "ts-node",
+      "version": "unknown",
+      "license": "MIT",
+      "repository": "git://github.com/TypeStrong/ts-node.git"
+    },
+    {
+      "name": "tsx",
+      "version": "unknown",
+      "license": "MIT",
+      "repository": "privatenumber/tsx"
+    },
+    {
+      "name": "typescript",
+      "version": "unknown",
+      "license": "Apache-2.0",
+      "repository": "https://github.com/microsoft/TypeScript.git"
+    },
+    {
+      "name": "vitest",
+      "version": "unknown",
+      "license": "MIT",
+      "repository": "git+https://github.com/vitest-dev/vitest.git"
+    }
+  ],
+  "totalCount": 40,
+  "hash": "ce310bccec42d186365115ba6b445899369a85f96922b6d3dda222b72ca15b18"
+}

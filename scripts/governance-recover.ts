@@ -20,7 +20,9 @@ import { join } from "path";
 import { execSync } from "child_process";
 
 const SAFE_MODE_FLAG = join(process.cwd(), ".governance-safe-mode");
+const SAFE_MODE_COUNTER = join(process.cwd(), ".governance-safe-mode-counter");
 const GOVERNANCE_RULES = join(process.cwd(), "governance-rules.yaml");
+const MAX_SAFE_MODE_COUNT = 3; // Max 3 consecutive SAFE_MODE entries
 
 interface RecoveryResult {
   deadlockDetected: boolean;
@@ -102,10 +104,69 @@ function detectDeadLock(): boolean {
 }
 
 /**
+ * Get SAFE_MODE counter
+ */
+function getSafeModeCounter(): number {
+  if (!existsSync(SAFE_MODE_COUNTER)) {
+    return 0;
+  }
+
+  try {
+    const content = readFileSync(SAFE_MODE_COUNTER, "utf8");
+    return parseInt(content.trim(), 10) || 0;
+  } catch {
+    return 0;
+  }
+}
+
+/**
+ * Increment SAFE_MODE counter
+ */
+function incrementSafeModeCounter(): number {
+  const count = getSafeModeCounter() + 1;
+  writeFileSync(SAFE_MODE_COUNTER, count.toString(), "utf8");
+  return count;
+}
+
+/**
+ * Reset SAFE_MODE counter
+ */
+function resetSafeModeCounter(): void {
+  if (existsSync(SAFE_MODE_COUNTER)) {
+    execSync(`rm ${SAFE_MODE_COUNTER}`);
+  }
+}
+
+/**
  * Enable SAFE_MODE
  */
 function enableSafeMode(): void {
   console.log("🔧 Enabling SAFE_MODE...\n");
+
+  // Check counter
+  const currentCount = getSafeModeCounter();
+  const newCount = currentCount + 1;
+
+  console.log(`📊 SAFE_MODE History:`);
+  console.log(`   Previous count: ${currentCount}`);
+  console.log(`   New count:      ${newCount}`);
+  console.log(`   Threshold:      ${MAX_SAFE_MODE_COUNT}\n`);
+
+  // Check if exceeds threshold
+  if (newCount >= MAX_SAFE_MODE_COUNT) {
+    console.log("🚨 SAFE_MODE FATIGUE DETECTED!\n");
+    console.log(`   ⚠️  SAFE_MODE has been activated ${newCount} times`);
+    console.log(`   ⚠️  This indicates recurring governance issues\n`);
+    console.log("⛔ Admin approval required:");
+    console.log("   1. Investigate root cause of repeated dead-locks");
+    console.log("   2. Fix underlying governance policy issues");
+    console.log("   3. Approve: npm run governance:recover -- --admin-approve\n");
+    console.log("🔒 SAFE_MODE activation blocked - admin approval needed\n");
+    process.exit(1);
+  }
+
+  // Increment counter
+  incrementSafeModeCounter();
 
   // Create safe mode flag file
   writeFileSync(
@@ -113,6 +174,7 @@ function enableSafeMode(): void {
     `# Governance SAFE_MODE
 # Created: ${new Date().toISOString()}
 # Reason: Dead-lock prevention
+# Activation count: ${newCount}/${MAX_SAFE_MODE_COUNT}
 
 # Effects:
 # - Sandbox bypass (log-only)
@@ -128,10 +190,16 @@ function enableSafeMode(): void {
 
   console.log("✅ SAFE_MODE enabled");
   console.log(`   Flag file created: ${SAFE_MODE_FLAG}`);
-  console.log("\n   ⚠️  Effects:");
+  console.log(`   Activation count: ${newCount}/${MAX_SAFE_MODE_COUNT}\n`);
+  console.log("   ⚠️  Effects:");
   console.log("   - Sandbox: BYPASS (log-only)");
   console.log("   - Policy validation: RELAXED");
   console.log("   - Governance: LOG mode\n");
+
+  if (newCount === MAX_SAFE_MODE_COUNT - 1) {
+    console.log("⚠️  WARNING: This is the last automatic SAFE_MODE activation");
+    console.log("   Next time will require admin approval\n");
+  }
 }
 
 /**
@@ -147,6 +215,10 @@ function disableSafeMode(): void {
   } else {
     console.log("⚠️  SAFE_MODE was not active\n");
   }
+
+  // Reset counter on successful restore
+  resetSafeModeCounter();
+  console.log("✅ SAFE_MODE counter reset\n");
 }
 
 /**
@@ -156,6 +228,28 @@ function main() {
   const args = process.argv.slice(2);
   const fix = args.includes("--fix");
   const restore = args.includes("--restore");
+  const adminApprove = args.includes("--admin-approve");
+
+  // Admin approval - force enable SAFE_MODE bypassing counter
+  if (adminApprove) {
+    console.log("🔐 Admin approval granted - bypassing counter\n");
+
+    const currentCount = getSafeModeCounter();
+    console.log(`📊 Current SAFE_MODE count: ${currentCount}/${MAX_SAFE_MODE_COUNT}\n`);
+
+    // Reset counter
+    resetSafeModeCounter();
+    console.log("✅ Counter reset by admin\n");
+
+    // Enable SAFE_MODE (will now have count=1)
+    enableSafeMode();
+
+    console.log("📋 Next steps:");
+    console.log("   1. Fix underlying policy issues");
+    console.log("   2. Test: npm run governance:check");
+    console.log("   3. Restore: npm run governance:recover -- --restore\n");
+    return;
+  }
 
   if (restore) {
     disableSafeMode();
