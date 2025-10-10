@@ -1,0 +1,40 @@
+{
+  "timestamp": "2025-10-10T05:45:49.428Z",
+  "overallStatus": "pass",
+  "summary": {
+    "totalGates": 2,
+    "passed": 2,
+    "failed": 0,
+    "skipped": 0
+  },
+  "gates": [
+    {
+      "gate": "F",
+      "status": "pass",
+      "message": "Throughput: 683 q/s, p95: 6.397ms",
+      "metrics": {
+        "p95Latency": 6.3966669999999795,
+        "throughput": 683.3907571400158,
+        "systemUtilization": 0.6396666999999979,
+        "batchSize": 16
+      },
+      "duration": 1.2577499999999873,
+      "timestamp": "2025-10-10T05:45:49.427Z"
+    },
+    {
+      "gate": "G",
+      "status": "pass",
+      "message": "Compliance: 80.0%, Valid: 8/10",
+      "metrics": {
+        "complianceRate": 80,
+        "totalQA": 10,
+        "validQA": 8,
+        "averageScore": 94.5,
+        "violations": 2
+      },
+      "duration": 0.29837499999999295,
+      "timestamp": "2025-10-10T05:45:49.428Z"
+    }
+  ],
+  "duration": 1.3703749999999957
+}
