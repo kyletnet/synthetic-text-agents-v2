@@ -1,0 +1,333 @@
+{
+  "metadata": {
+    "documentId": "test-document-001",
+    "generatedAt": "2025-10-10T05:29:01.074Z",
+    "totalGenerated": 20,
+    "totalValid": 20,
+    "complianceRate": 100,
+    "duration": 2.7854580000000624
+  },
+  "qaPairs": [
+    {
+      "id": "qa-chunk-6-0",
+      "question": "연차유급휴가 청구권은 며칠인가요?",
+      "answer": "연차유급휴가 청구권은 1년입니다.",
+      "sourceChunks": [
+        "chunk-6"
+      ],
+      "metadata": {
+        "domain": "hr",
+        "questionType": "기본 정보 확인형",
+        "difficulty": "하",
+        "generatedAt": "2025-10-10T05:29:01.072Z",
+        "validationScore": 95,
+        "violations": 0
+      }
+    },
+    {
+      "id": "qa-chunk-0-1",
+      "question": "연차유급휴가은 며칠인가요?",
+      "answer": "연차유급휴가은 1년입니다.",
+      "sourceChunks": [
+        "chunk-0"
+      ],
+      "metadata": {
+        "domain": "hr",
+        "questionType": "기본 정보 확인형",
+        "difficulty": "하",
+        "generatedAt": "2025-10-10T05:29:01.073Z",
+        "validationScore": 95,
+        "violations": 0
+      }
+    },
+    {
+      "id": "qa-chunk-1-2",
+      "question": "보건휴가는 여성 직원이 청구하은 며칠인가요?",
+      "answer": "보건휴가는 여성 직원이 청구하은 1일입니다.",
+      "sourceChunks": [
+        "chunk-1"
+      ],
+      "metadata": {
+        "domain": "hr",
+        "questionType": "기본 정보 확인형",
+        "difficulty": "하",
+        "generatedAt": "2025-10-10T05:29:01.073Z",
+        "validationScore": 95,
+        "violations": 0
+      }
+    },
+    {
+      "id": "qa-chunk-5-3",
+      "question": "가족돌봄휴가는은 며칠인가요?",
+      "answer": "가족돌봄휴가는은 10일입니다.",
+      "sourceChunks": [
+        "chunk-5"
+      ],
+      "metadata": {
+        "domain": "hr",
+        "questionType": "기본 정보 확인형",
+        "difficulty": "하",
+        "generatedAt": "2025-10-10T05:29:01.073Z",
+        "validationScore": 95,
+        "violations": 0
+      }
+    },
+    {
+      "id": "qa-chunk-3-4",
+      "question": "육아휴직에 대해 설명해주세요.",
+      "answer": "육아휴직은 만 8세 이하 또는 초등학교 2학년 이하의 자녀를 가진 직원이 자녀 양육을 위해 청구할 수 있습니다.",
+      "sourceChunks": [
+        "chunk-3"
+      ],
+      "metadata": {
+        "domain": "hr",
+        "questionType": "기타",
+        "difficulty": "하",
+        "generatedAt": "2025-10-10T05:29:01.073Z",
+        "validationScore": 92.5,
+        "violations": 1
+      }
+    },
+    {
+      "id": "qa-chunk-2-5",
+      "question": "배우자출산휴가는 직원의 배우자은 며칠인가요?",
+      "answer": "배우자출산휴가는 직원의 배우자은 10일입니다.",
+      "sourceChunks": [
+        "chunk-2"
+      ],
+      "metadata": {
+        "domain": "hr",
+        "questionType": "기본 정보 확인형",
+        "difficulty": "하",
+        "generatedAt": "2025-10-10T05:29:01.073Z",
+        "validationScore": 95,
+        "violations": 0
+      }
+    },
+    {
+      "id": "qa-chunk-6-6",
+      "question": "연차유급휴가를 사용하고자 할 경우에는 부득이한 사유가 없은 며칠인가요?",
+      "answer": "연차유급휴가를 사용하고자 할 경우에는 부득이한 사유가 없은 5일입니다.",
+      "sourceChunks": [
+        "chunk-6"
+      ],
+      "metadata": {
+        "domain": "hr",
+        "questionType": "기본 정보 확인형",
+        "difficulty": "중",
+        "generatedAt": "2025-10-10T05:29:01.073Z",
+        "validationScore": 100,
+        "violations": 0
+      }
+    },
+    {
+      "id": "qa-chunk-0-7",
+      "question": "연차유급휴가은 며칠인가요?",
+      "answer": "연차유급휴가은 1년입니다.",
+      "sourceChunks": [
+        "chunk-0"
+      ],
+      "metadata": {
+        "domain": "hr",
+        "questionType": "기본 정보 확인형",
+        "difficulty": "하",
+        "generatedAt": "2025-10-10T05:29:01.073Z",
+        "validationScore": 95,
+        "violations": 0
+      }
+    },
+    {
+      "id": "qa-chunk-1-8",
+      "question": "보건휴가는 여성 직원이 청구하은 며칠인가요?",
+      "answer": "보건휴가는 여성 직원이 청구하은 1일입니다.",
+      "sourceChunks": [
+        "chunk-1"
+      ],
+      "metadata": {
+        "domain": "hr",
+        "questionType": "기본 정보 확인형",
+        "difficulty": "하",
+        "generatedAt": "2025-10-10T05:29:01.073Z",
+        "validationScore": 95,
+        "violations": 0
+      }
+    },
+    {
+      "id": "qa-chunk-8-9",
+      "question": "난임치료휴은 며칠인가요?",
+      "answer": "난임치료휴은 1일입니다.",
+      "sourceChunks": [
+        "chunk-8"
+      ],
+      "metadata": {
+        "domain": "hr",
+        "questionType": "기본 정보 확인형",
+        "difficulty": "하",
+        "generatedAt": "2025-10-10T05:29:01.073Z",
+        "validationScore": 95,
+        "violations": 0
+      }
+    },
+    {
+      "id": "qa-chunk-6-10",
+      "question": "연차유급휴가를 사용하고자 할 경우에는 부득이한 사유가 없은 며칠인가요?",
+      "answer": "연차유급휴가를 사용하고자 할 경우에는 부득이한 사유가 없은 5일입니다.",
+      "sourceChunks": [
+        "chunk-6"
+      ],
+      "metadata": {
+        "domain": "hr",
+        "questionType": "기본 정보 확인형",
+        "difficulty": "중",
+        "generatedAt": "2025-10-10T05:29:01.073Z",
+        "validationScore": 100,
+        "violations": 0
+      }
+    },
+    {
+      "id": "qa-chunk-0-11",
+      "question": "연차유급휴가은 며칠인가요?",
+      "answer": "연차유급휴가은 1년입니다.",
+      "sourceChunks": [
+        "chunk-0"
+      ],
+      "metadata": {
+        "domain": "hr",
+        "questionType": "기본 정보 확인형",
+        "difficulty": "하",
+        "generatedAt": "2025-10-10T05:29:01.073Z",
+        "validationScore": 95,
+        "violations": 0
+      }
+    },
+    {
+      "id": "qa-chunk-0-12",
+      "question": "년 이상 계속 근로한 직원은 며칠인가요?",
+      "answer": "년 이상 계속 근로한 직원은 3년입니다.",
+      "sourceChunks": [
+        "chunk-0"
+      ],
+      "metadata": {
+        "domain": "hr",
+        "questionType": "기본 정보 확인형",
+        "difficulty": "중",
+        "generatedAt": "2025-10-10T05:29:01.073Z",
+        "validationScore": 95,
+        "violations": 0
+      }
+    },
+    {
+      "id": "qa-chunk-9-13",
+      "question": "병가에 대해 설명해주세요.",
+      "answer": "병가는 유급으로 처리되며, 진단서 또는 소견서를 제출해야 합니다.",
+      "sourceChunks": [
+        "chunk-9"
+      ],
+      "metadata": {
+        "domain": "hr",
+        "questionType": "기타",
+        "difficulty": "하",
+        "generatedAt": "2025-10-10T05:29:01.073Z",
+        "validationScore": 97.5,
+        "violations": 0
+      }
+    },
+    {
+      "id": "qa-chunk-9-14",
+      "question": "병가에 대해 설명해주세요.",
+      "answer": "병가는 유급으로 처리되며, 진단서 또는 소견서를 제출해야 합니다.",
+      "sourceChunks": [
+        "chunk-9"
+      ],
+      "metadata": {
+        "domain": "hr",
+        "questionType": "기타",
+        "difficulty": "하",
+        "generatedAt": "2025-10-10T05:29:01.073Z",
+        "validationScore": 97.5,
+        "violations": 0
+      }
+    },
+    {
+      "id": "qa-chunk-3-15",
+      "question": "육아휴직을 시작하려는 날의 전날까지 계속 근로기간은 며칠인가요?",
+      "answer": "육아휴직을 시작하려는 날의 전날까지 계속 근로기간은 6개월입니다.",
+      "sourceChunks": [
+        "chunk-3"
+      ],
+      "metadata": {
+        "domain": "hr",
+        "questionType": "기본 정보 확인형",
+        "difficulty": "하",
+        "generatedAt": "2025-10-10T05:29:01.073Z",
+        "validationScore": 95,
+        "violations": 1
+      }
+    },
+    {
+      "id": "qa-chunk-7-16",
+      "question": "임신 중인 여성 직원에게은 며칠인가요?",
+      "answer": "임신 중인 여성 직원에게은 90일입니다.",
+      "sourceChunks": [
+        "chunk-7"
+      ],
+      "metadata": {
+        "domain": "hr",
+        "questionType": "기본 정보 확인형",
+        "difficulty": "하",
+        "generatedAt": "2025-10-10T05:29:01.074Z",
+        "validationScore": 95,
+        "violations": 0
+      }
+    },
+    {
+      "id": "qa-chunk-1-17",
+      "question": "보건휴가는 연차유급휴가와 별도로 사용에 대해 설명해주세요.",
+      "answer": "보건휴가는 연차유급휴가와 별도로 사용 가능합니다.",
+      "sourceChunks": [
+        "chunk-1"
+      ],
+      "metadata": {
+        "domain": "hr",
+        "questionType": "기타",
+        "difficulty": "하",
+        "generatedAt": "2025-10-10T05:29:01.074Z",
+        "validationScore": 97.5,
+        "violations": 0
+      }
+    },
+    {
+      "id": "qa-chunk-5-18",
+      "question": "가족돌봄휴가는은 며칠인가요?",
+      "answer": "가족돌봄휴가는은 10일입니다.",
+      "sourceChunks": [
+        "chunk-5"
+      ],
+      "metadata": {
+        "domain": "hr",
+        "questionType": "기본 정보 확인형",
+        "difficulty": "하",
+        "generatedAt": "2025-10-10T05:29:01.074Z",
+        "validationScore": 95,
+        "violations": 0
+      }
+    },
+    {
+      "id": "qa-chunk-9-19",
+      "question": "병가는 업무 외의 사유로 인한 부상 또는 질병으로 치료은 며칠인가요?",
+      "answer": "병가는 업무 외의 사유로 인한 부상 또는 질병으로 치료은 30일입니다.",
+      "sourceChunks": [
+        "chunk-9"
+      ],
+      "metadata": {
+        "domain": "hr",
+        "questionType": "기본 정보 확인형",
+        "difficulty": "하",
+        "generatedAt": "2025-10-10T05:29:01.074Z",
+        "validationScore": 100,
+        "violations": 0
+      }
+    }
+  ],
+  "errors": []
+}

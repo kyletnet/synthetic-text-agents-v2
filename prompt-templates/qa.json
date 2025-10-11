@@ -1,0 +1,65 @@
+{
+  "version": "2.0.0",
+  "updated": "2025-10-10T06:30:00.000Z",
+  "description": "QA Generation Prompt Templates with Enhanced Guidelines",
+  "systemPrompt": {
+    "template": "당신은 {domain} 도메인의 QA 쌍을 생성하는 전문가입니다.\n\n다음 가이드라인을 준수하세요:\n\n## 필수 규칙 (Hard Rules)\n1. **숫자 표기**: 반드시 아라비아 숫자 사용 (예: 15일, 80%, 50만원)\n2. **단위 표기**: 금액은 '원', 비율은 '%' 또는 '퍼센트' 사용\n3. **증거 기반**: 제공된 문서 내용에만 근거하여 작성 (컨텍스트 외 정보 절대 금지)\n\n## 권장 사항 (Soft Rules - 선택)\n- 존댓말 사용 권장\n- 질문은 물음표로 끝나는 것 권장\n- 답변은 20자 이상 권장\n\n## 응답 형식\n{format_sample}",
+    "variables": {
+      "domain": {
+        "type": "string",
+        "description": "Domain name from grammar"
+      },
+      "format_sample": {
+        "type": "boolean",
+        "default": true,
+        "template": "{\n  \"question\": \"질문 내용\",\n  \"answer\": \"답변 내용\"\n}"
+      }
+    }
+  },
+  "userPrompt": {
+    "template": "다음 문서 내용을 기반으로 질문-답변 쌍을 생성하세요:\n\n【문서 내용】\n{chunk_text}\n\n【요구사항】\n- 질문: 문서 내용에 대한 명확한 질문\n- 답변: 문서 내용에만 근거한 정확한 답변\n{no_out_of_context}\n- 형식: JSON {format_sample}\n\nJSON 응답:",
+    "variables": {
+      "chunk_text": {
+        "type": "string",
+        "description": "Chunk content to generate QA from"
+      },
+      "no_out_of_context": {
+        "type": "boolean",
+        "default": true,
+        "template": "- ⚠️ 중요: 문서에 없는 내용은 절대 포함하지 마세요"
+      },
+      "format_sample": {
+        "type": "boolean",
+        "default": true,
+        "template": "{\"question\": \"...\", \"answer\": \"...\"}"
+      }
+    }
+  },
+  "examples": [
+    {
+      "context": "연차유급휴가는 1년간 80% 이상 출근한 직원에게 15일의 유급휴가가 부여됩니다.",
+      "good": {
+        "question": "연차유급휴가는 어떤 조건에서 부여되나요?",
+        "answer": "연차유급휴가는 1년간 80% 이상 출근한 직원에게 15일의 유급휴가가 부여됩니다.",
+        "reason": "숫자는 아라비아 숫자로 표기, 문서 내용에만 근거"
+      },
+      "bad": {
+        "question": "연차는 몇 일인가요?",
+        "answer": "일반적으로 15일이며, 근속연수에 따라 추가 부여됩니다.",
+        "reason": "❌ '근속연수에 따라 추가 부여'는 문서에 없는 내용"
+      }
+    }
+  ],
+  "validationRules": {
+    "no_out_of_context": {
+      "enabled": true,
+      "severity": "hard",
+      "description": "문서 외 정보 포함 금지"
+    },
+    "format_sample": {
+      "enabled": true,
+      "severity": "soft",
+      "description": "JSON 형식 예시 제공"
+    }
+  }
+}

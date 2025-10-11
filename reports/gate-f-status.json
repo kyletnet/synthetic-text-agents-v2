@@ -1,0 +1,208 @@
+{
+  "enabled": true,
+  "status": "cooldown",
+  "metrics": {
+    "p95Latency": 60631.537458,
+    "throughput": 0.1842372481497745,
+    "systemUtilization": 1,
+    "batchSize": 10
+  },
+  "thresholds": {
+    "maxP95Latency": 1,
+    "minThroughput": 1000,
+    "maxUtilization": 0.8
+  },
+  "cooldown": {
+    "active": true,
+    "duration": 5000,
+    "startTime": "2025-10-10T07:25:45.768Z",
+    "reason": "p95_latency exceeded threshold: 12086.613 > 10000"
+  },
+  "history": [
+    {
+      "timestamp": "2025-10-10T05:38:28.135Z",
+      "type": "cooldown",
+      "metric": "p95_latency",
+      "value": 7.731958000000077,
+      "threshold": 1,
+      "action": "Batch size reduced to 10"
+    },
+    {
+      "timestamp": "2025-10-10T05:41:50.065Z",
+      "type": "cooldown",
+      "metric": "p95_latency",
+      "value": 7.593417000000045,
+      "threshold": 1,
+      "action": "Batch size reduced to 10"
+    },
+    {
+      "timestamp": "2025-10-10T05:45:07.756Z",
+      "type": "batch_adjust",
+      "metric": "batch_size",
+      "value": 12,
+      "threshold": 10,
+      "action": "Batch size increased: 10 → 12"
+    },
+    {
+      "timestamp": "2025-10-10T05:45:07.759Z",
+      "type": "batch_adjust",
+      "metric": "batch_size",
+      "value": 14,
+      "threshold": 12,
+      "action": "Batch size increased: 12 → 14"
+    },
+    {
+      "timestamp": "2025-10-10T05:45:07.760Z",
+      "type": "batch_adjust",
+      "metric": "batch_size",
+      "value": 16,
+      "threshold": 14,
+      "action": "Batch size increased: 14 → 16"
+    },
+    {
+      "timestamp": "2025-10-10T06:06:37.010Z",
+      "type": "cooldown",
+      "metric": "p95_latency",
+      "value": 108.23808299999996,
+      "threshold": 10,
+      "action": "Batch size reduced to 10"
+    },
+    {
+      "timestamp": "2025-10-10T06:07:27.925Z",
+      "type": "cooldown",
+      "metric": "p95_latency",
+      "value": 78.33304200000009,
+      "threshold": 10,
+      "action": "Batch size reduced to 10"
+    },
+    {
+      "timestamp": "2025-10-10T06:08:20.851Z",
+      "type": "cooldown",
+      "metric": "p95_latency",
+      "value": 24.26466700000003,
+      "threshold": 10,
+      "action": "Batch size reduced to 10"
+    },
+    {
+      "timestamp": "2025-10-10T06:09:29.361Z",
+      "type": "batch_adjust",
+      "metric": "batch_size",
+      "value": 12,
+      "threshold": 10,
+      "action": "Batch size increased: 10 → 12"
+    },
+    {
+      "timestamp": "2025-10-10T06:09:29.385Z",
+      "type": "batch_adjust",
+      "metric": "batch_size",
+      "value": 14,
+      "threshold": 12,
+      "action": "Batch size increased: 12 → 14"
+    },
+    {
+      "timestamp": "2025-10-10T06:09:29.405Z",
+      "type": "batch_adjust",
+      "metric": "batch_size",
+      "value": 16,
+      "threshold": 14,
+      "action": "Batch size increased: 14 → 16"
+    },
+    {
+      "timestamp": "2025-10-10T06:09:29.433Z",
+      "type": "batch_adjust",
+      "metric": "batch_size",
+      "value": 19,
+      "threshold": 16,
+      "action": "Batch size increased: 16 → 19"
+    },
+    {
+      "timestamp": "2025-10-10T06:09:29.462Z",
+      "type": "batch_adjust",
+      "metric": "batch_size",
+      "value": 22,
+      "threshold": 19,
+      "action": "Batch size increased: 19 → 22"
+    },
+    {
+      "timestamp": "2025-10-10T06:25:06.213Z",
+      "type": "batch_adjust",
+      "metric": "batch_size",
+      "value": 26,
+      "threshold": 22,
+      "action": "Batch size increased: 22 → 26"
+    },
+    {
+      "timestamp": "2025-10-10T06:27:40.061Z",
+      "type": "cooldown",
+      "metric": "p95_latency",
+      "value": 5457.348291999999,
+      "threshold": 50,
+      "action": "Batch size reduced to 10"
+    },
+    {
+      "timestamp": "2025-10-10T06:51:39.616Z",
+      "type": "batch_adjust",
+      "metric": "batch_size",
+      "value": 12,
+      "threshold": 10,
+      "action": "Batch size increased: 10 → 12"
+    },
+    {
+      "timestamp": "2025-10-10T06:51:45.363Z",
+      "type": "cooldown",
+      "metric": "p95_latency",
+      "value": 12120.778833,
+      "threshold": 10000,
+      "action": "Batch size reduced to 10"
+    },
+    {
+      "timestamp": "2025-10-10T07:14:03.579Z",
+      "type": "batch_adjust",
+      "metric": "batch_size",
+      "value": 12,
+      "threshold": 10,
+      "action": "Batch size increased: 10 → 12"
+    },
+    {
+      "timestamp": "2025-10-10T07:14:10.336Z",
+      "type": "cooldown",
+      "metric": "p95_latency",
+      "value": 12951.770208,
+      "threshold": 10000,
+      "action": "Batch size reduced to 10"
+    },
+    {
+      "timestamp": "2025-10-10T07:16:20.878Z",
+      "type": "batch_adjust",
+      "metric": "batch_size",
+      "value": 12,
+      "threshold": 10,
+      "action": "Batch size increased: 10 → 12"
+    },
+    {
+      "timestamp": "2025-10-10T07:16:26.663Z",
+      "type": "cooldown",
+      "metric": "p95_latency",
+      "value": 12421.078083,
+      "threshold": 10000,
+      "action": "Batch size reduced to 10"
+    },
+    {
+      "timestamp": "2025-10-10T07:25:40.035Z",
+      "type": "batch_adjust",
+      "metric": "batch_size",
+      "value": 12,
+      "threshold": 10,
+      "action": "Batch size increased: 10 → 12"
+    },
+    {
+      "timestamp": "2025-10-10T07:25:45.768Z",
+      "type": "cooldown",
+      "metric": "p95_latency",
+      "value": 12086.612875,
+      "threshold": 10000,
+      "action": "Batch size reduced to 10"
+    }
+  ],
+  "lastUpdated": "2025-10-10T07:26:34.311Z"
+}

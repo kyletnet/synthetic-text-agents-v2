@@ -1,0 +1,88 @@
+{
+  "config": {
+    "k": 5,
+    "timestamp": "2025-10-11T03:46:32.237Z",
+    "datasetPath": "reports/hybrid-benchmark/real-benchmark-ragas.json"
+  },
+  "results": [
+    {
+      "queryId": "q1",
+      "ndcg": 1,
+      "map": 1,
+      "f1": 0.6666666666666666,
+      "mrr": 1,
+      "precision": 0.5,
+      "recall": 1,
+      "hit": true,
+      "k": 5
+    },
+    {
+      "queryId": "q2",
+      "ndcg": 1,
+      "map": 1,
+      "f1": 0.6666666666666666,
+      "mrr": 1,
+      "precision": 0.5,
+      "recall": 1,
+      "hit": true,
+      "k": 5
+    },
+    {
+      "queryId": "q3",
+      "ndcg": 1,
+      "map": 1,
+      "f1": 0.6666666666666666,
+      "mrr": 1,
+      "precision": 0.5,
+      "recall": 1,
+      "hit": true,
+      "k": 5
+    },
+    {
+      "queryId": "q4",
+      "ndcg": 1,
+      "map": 1,
+      "f1": 0.6666666666666666,
+      "mrr": 1,
+      "precision": 0.5,
+      "recall": 1,
+      "hit": true,
+      "k": 5
+    },
+    {
+      "queryId": "q5",
+      "ndcg": 1,
+      "map": 1,
+      "f1": 0.6666666666666666,
+      "mrr": 1,
+      "precision": 0.5,
+      "recall": 1,
+      "hit": true,
+      "k": 5
+    }
+  ],
+  "summary": {
+    "totalQueries": 5,
+    "avgNDCG": 1,
+    "avgMAP": 1,
+    "avgF1": 0.6666666666666666,
+    "avgMRR": 1,
+    "avgPrecision": 0.5,
+    "avgRecall": 1,
+    "hitRate": 1,
+    "k": 5,
+    "durationMs": 0
+  },
+  "gatePassRates": {
+    "ndcgPass": true,
+    "mapPass": true,
+    "f1Pass": true,
+    "mrrPass": true
+  },
+  "successCriteria": {
+    "ndcgThreshold": 0.7,
+    "mapThreshold": 0.6,
+    "f1Threshold": 0.65,
+    "mrrThreshold": 0.75
+  }
+}

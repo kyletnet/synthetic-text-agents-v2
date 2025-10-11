@@ -1,0 +1,564 @@
+{
+  "metadata": {
+    "timestamp": "2025-10-11T03:05:06.483Z",
+    "config": {
+      "useRealClients": true,
+      "elasticsearchUrl": "http://localhost:9200",
+      "faissIndexPath": "data/faiss-index-adversarial",
+      "visionChunkedPath": "reports/pdf-vision/test-5-10-chunked.json",
+      "outputPath": "reports/adversarial/adversarial-results.json"
+    },
+    "successThreshold": 0.7
+  },
+  "summary": {
+    "totalTests": 20,
+    "passed": 15,
+    "failed": 5,
+    "passRate": 0.75,
+    "byCategory": {
+      "OOV Legal Terms": {
+        "total": 2,
+        "passed": 0,
+        "passRate": 0
+      },
+      "Unit Confusion": {
+        "total": 2,
+        "passed": 2,
+        "passRate": 1
+      },
+      "Synonym Collapse": {
+        "total": 2,
+        "passed": 2,
+        "passRate": 1
+      },
+      "Version Conflict": {
+        "total": 2,
+        "passed": 1,
+        "passRate": 0.5
+      },
+      "Table-Only": {
+        "total": 2,
+        "passed": 2,
+        "passRate": 1
+      },
+      "Korean/English Mixed": {
+        "total": 2,
+        "passed": 1,
+        "passRate": 0.5
+      },
+      "Noisy Queries": {
+        "total": 2,
+        "passed": 2,
+        "passRate": 1
+      },
+      "Long-Form": {
+        "total": 2,
+        "passed": 2,
+        "passRate": 1
+      },
+      "Edge Case": {
+        "total": 4,
+        "passed": 3,
+        "passRate": 0.75
+      }
+    },
+    "byDifficulty": {
+      "hard": {
+        "total": 7,
+        "passed": 5,
+        "passRate": 0.7142857142857143
+      },
+      "medium": {
+        "total": 6,
+        "passed": 4,
+        "passRate": 0.6666666666666666
+      },
+      "easy": {
+        "total": 6,
+        "passed": 5,
+        "passRate": 0.8333333333333334
+      },
+      "extreme": {
+        "total": 1,
+        "passed": 1,
+        "passRate": 1
+      }
+    },
+    "averageCost": {
+      "tokens": 1610.45,
+      "costUSD": 0.01866353838538386
+    },
+    "averageLatencyMs": 17.325922900000045
+  },
+  "results": [
+    {
+      "testCase": {
+        "id": "adv-001",
+        "category": "OOV Legal Terms",
+        "query": "�X1��Y \u0004\u0018 �@�?",
+        "expectedBehavior": "decline",
+        "challenge": "Domain-specific legal terminology not in training data",
+        "difficulty": "hard"
+      },
+      "passed": false,
+      "actualBehavior": "answer",
+      "answer": "## 제1장 사업 개요\n\n제1장 사업 개요",
+      "confidence": 0.7,
+      "cost": {
+        "tokens": 78,
+        "costUSD": 0.0009600027000270003
+      },
+      "performance": {
+        "latencyMs": 35.361625000000004,
+        "iterations": 1,
+        "finalK": 2
+      },
+      "failureReason": "Expected decline, got answer"
+    },
+    {
+      "testCase": {
+        "id": "adv-002",
+        "category": "OOV Legal Terms",
+        "query": "Dt�\u0004 �}X )$ 4� pt@?",
+        "expectedBehavior": "partial",
+        "challenge": "Legal concept ()$ 4�) may not be in documents",
+        "difficulty": "medium"
+      },
+      "passed": false,
+      "actualBehavior": "answer",
+      "answer": "Table (9 rows × 4 cols)",
+      "confidence": 0.7,
+      "cost": {
+        "tokens": 155,
+        "costUSD": 0.0018500045000450003
+      },
+      "performance": {
+        "latencyMs": 14.765458000000308,
+        "iterations": 1,
+        "finalK": 2
+      },
+      "failureReason": "Expected partial, got answer"
+    },
+    {
+      "testCase": {
+        "id": "adv-003",
+        "category": "Unit Confusion",
+        "query": "�\bt ��x\u0000� �$��x\u0000�?",
+        "expectedBehavior": "answer",
+        "expectedAnswer": "Must disambiguate: 0�\u0015 11,630�, �i\u0015 15,110�",
+        "challenge": "Number disambiguation in Korean",
+        "difficulty": "medium"
+      },
+      "passed": true,
+      "actualBehavior": "answer",
+      "answer": "**주요 변경 내용**\n\nTable (6 rows × 3 cols)",
+      "confidence": 1,
+      "cost": {
+        "tokens": 233,
+        "costUSD": 0.0028500078000780007
+      },
+      "performance": {
+        "latencyMs": 9.673249999999825,
+        "iterations": 1,
+        "finalK": 2
+      }
+    },
+    {
+      "testCase": {
+        "id": "adv-004",
+        "category": "Unit Confusion",
+        "query": "1�\u0004 �\b� 2�\u0004 �\b (t�?",
+        "expectedBehavior": "answer",
+        "challenge": "Unit-based comparison",
+        "difficulty": "easy"
+      },
+      "passed": true,
+      "actualBehavior": "answer",
+      "answer": "## 제1장 사업 개요\n\n제1장 사업 개요",
+      "confidence": 1,
+      "cost": {
+        "tokens": 311,
+        "costUSD": 0.003810010500105001
+      },
+      "performance": {
+        "latencyMs": 14.965375000000222,
+        "iterations": 1,
+        "finalK": 2
+      }
+    },
+    {
+      "testCase": {
+        "id": "adv-005",
+        "category": "Synonym Collapse",
+        "query": "�\u0004P�@ �\u0004 ��X (t�?",
+        "expectedBehavior": "answer",
+        "expectedAnswer": "Same role, different terminology",
+        "challenge": "Synonym handling in Korean",
+        "difficulty": "medium"
+      },
+      "passed": true,
+      "actualBehavior": "answer",
+      "answer": "Table (5 rows × 3 cols)",
+      "confidence": 0.85,
+      "cost": {
+        "tokens": 379,
+        "costUSD": 0.004610012300123001
+      },
+      "performance": {
+        "latencyMs": 12.855583000000024,
+        "iterations": 1,
+        "finalK": 2
+      }
+    },
+    {
+      "testCase": {
+        "id": "adv-006",
+        "category": "Synonym Collapse",
+        "query": "Dt�\u0004� !D�\u0004X (t�?",
+        "expectedBehavior": "answer",
+        "challenge": "Subtle synonym differences",
+        "difficulty": "hard"
+      },
+      "passed": true,
+      "actualBehavior": "answer",
+      "answer": "Table (5 rows × 3 cols)",
+      "confidence": 0.7,
+      "cost": {
+        "tokens": 610,
+        "costUSD": 0.007040014100141002
+      },
+      "performance": {
+        "latencyMs": 36.88724999999977,
+        "iterations": 3,
+        "finalK": 6
+      }
+    },
+    {
+      "testCase": {
+        "id": "adv-007",
+        "category": "Version Conflict",
+        "query": "2023D� 2024D �\b DP",
+        "expectedBehavior": "partial",
+        "challenge": "Temporal disambiguation",
+        "difficulty": "hard"
+      },
+      "passed": false,
+      "actualBehavior": "answer",
+      "answer": "null\n\n2024년도 아이돌봄 지원사업 안내\n\n6\n\n주요 변경 내용\n\n○ 기본수당 : 9,630원\n○ 가산수당\n- 시간제 종합형 : 3,320원\n- 질병감염아동 : 2,890원\n- 기관연계 : 7,220원 등\n\n○ 기본수당 : 10,110원\n○ 가산수당\n- 시간제 종합형 : 3,480원\n·질병감염아동 : 3,040원\n- 기관연계 : 7,580원 등",
+      "confidence": 0.7,
+      "cost": {
+        "tokens": 802,
+        "costUSD": 0.010320034500345004
+      },
+      "performance": {
+        "latencyMs": 12.792457999999897,
+        "iterations": 1,
+        "finalK": 2
+      },
+      "failureReason": "Expected partial, got answer"
+    },
+    {
+      "testCase": {
+        "id": "adv-008",
+        "category": "Version Conflict",
+        "query": "� �\b� �\u001c �pt�\u0018Ș�?",
+        "expectedBehavior": "answer",
+        "challenge": "Document version tracking",
+        "difficulty": "medium"
+      },
+      "passed": true,
+      "actualBehavior": "answer",
+      "answer": "Table (5 rows × 3 cols)",
+      "confidence": 0.7,
+      "cost": {
+        "tokens": 1034,
+        "costUSD": 0.012760036300363006
+      },
+      "performance": {
+        "latencyMs": 26.74850000000015,
+        "iterations": 3,
+        "finalK": 6
+      }
+    },
+    {
+      "testCase": {
+        "id": "adv-009",
+        "category": "Table-Only",
+        "query": "�\b \u0004�| ��\u0018",
+        "expectedBehavior": "answer",
+        "expectedAnswer": "Must return complete table",
+        "challenge": "Table extraction integrity",
+        "difficulty": "easy"
+      },
+      "passed": true,
+      "actualBehavior": "answer",
+      "answer": "Table (5 rows × 3 cols)",
+      "confidence": 0.85,
+      "cost": {
+        "tokens": 1102,
+        "costUSD": 0.013560038100381007
+      },
+      "performance": {
+        "latencyMs": 6.815375000000131,
+        "iterations": 1,
+        "finalK": 2
+      }
+    },
+    {
+      "testCase": {
+        "id": "adv-010",
+        "category": "Table-Only",
+        "query": "\u0015� �� \baD \\ \u0015�t\u0018",
+        "expectedBehavior": "answer",
+        "challenge": "Table synthesis from multiple sources",
+        "difficulty": "hard"
+      },
+      "passed": true,
+      "actualBehavior": "answer",
+      "answer": "Table (5 rows × 3 cols)",
+      "confidence": 0.595,
+      "cost": {
+        "tokens": 1517,
+        "costUSD": 0.01783003990039901
+      },
+      "performance": {
+        "latencyMs": 21.872959000000264,
+        "iterations": 5,
+        "finalK": 6
+      }
+    },
+    {
+      "testCase": {
+        "id": "adv-011",
+        "category": "Korean/English Mixed",
+        "query": "COVID-19 0\u0004 Dt�\u0004 policy�?",
+        "expectedBehavior": "partial",
+        "challenge": "Code-switching between Korean and English",
+        "difficulty": "medium"
+      },
+      "passed": false,
+      "actualBehavior": "answer",
+      "answer": "# 주요 변경 내용\n\n주요 변경 내용\n\n3",
+      "confidence": 0.7,
+      "cost": {
+        "tokens": 1596,
+        "costUSD": 0.01880004260042601
+      },
+      "performance": {
+        "latencyMs": 9.30179199999975,
+        "iterations": 1,
+        "finalK": 2
+      },
+      "failureReason": "Expected partial, got answer"
+    },
+    {
+      "testCase": {
+        "id": "adv-012",
+        "category": "Korean/English Mixed",
+        "query": "emergency �i�\u001c urgent �\u0004 � )�",
+        "expectedBehavior": "answer",
+        "challenge": "Mixed language query understanding",
+        "difficulty": "hard"
+      },
+      "passed": true,
+      "actualBehavior": "answer",
+      "answer": "## 제2장 정부지원 신청 및 결정\n\n제2장 정부지원 신청 및 결정",
+      "confidence": 0.7,
+      "cost": {
+        "tokens": 1687,
+        "costUSD": 0.02001004710047101
+      },
+      "performance": {
+        "latencyMs": 8.015124999999898,
+        "iterations": 1,
+        "finalK": 2
+      }
+    },
+    {
+      "testCase": {
+        "id": "adv-013",
+        "category": "Noisy Queries",
+        "query": "Dt� \u0004.\u001c D� ?�\b?",
+        "expectedBehavior": "answer",
+        "expectedAnswer": "Should still understand despite typos",
+        "challenge": "Noise robustness (typos, punctuation)",
+        "difficulty": "easy"
+      },
+      "passed": true,
+      "actualBehavior": "answer",
+      "answer": "# 주요 변경 내용\n\n주요 변경 내용\n\n3",
+      "confidence": 0.7,
+      "cost": {
+        "tokens": 1766,
+        "costUSD": 0.02098004980049801
+      },
+      "performance": {
+        "latencyMs": 9.209374999999909,
+        "iterations": 1,
+        "finalK": 2
+      }
+    },
+    {
+      "testCase": {
+        "id": "adv-014",
+        "category": "Noisy Queries",
+        "query": "DGc�\u0004 \u001cD�a �\b   @ ???",
+        "expectedBehavior": "answer",
+        "challenge": "Severe noise and jamo errors",
+        "difficulty": "hard"
+      },
+      "passed": true,
+      "actualBehavior": "answer",
+      "answer": "# 주요 변경 내용\n\n주요 변경 내용\n\n3",
+      "confidence": 0.7,
+      "cost": {
+        "tokens": 1845,
+        "costUSD": 0.021950052500525008
+      },
+      "performance": {
+        "latencyMs": 11.828459000000294,
+        "iterations": 1,
+        "finalK": 2
+      }
+    },
+    {
+      "testCase": {
+        "id": "adv-015",
+        "category": "Long-Form",
+        "query": "ތt \u0000\u0015xp Dt\u0000 2�t� X�� \u0001D X��  Dxp \u0015� ��D \u001bD \u0018 ���, \u001bD \u0018 ��t �Ș \u001bD \u0018 ���, ��� �@ ��� X�� L$�8�.",
+        "expectedBehavior": "answer",
+        "challenge": "Multi-faceted question, complex intent",
+        "difficulty": "hard"
+      },
+      "passed": true,
+      "actualBehavior": "answer",
+      "answer": "## 제2장 정부지원 신청 및 결정\n\n제2장 정부지원 신청 및 결정",
+      "confidence": 0.63,
+      "cost": {
+        "tokens": 2882,
+        "costUSD": 0.03262005700057001
+      },
+      "performance": {
+        "latencyMs": 56.86341700000003,
+        "iterations": 5,
+        "finalK": 6
+      }
+    },
+    {
+      "testCase": {
+        "id": "adv-016",
+        "category": "Long-Form",
+        "query": "Dt�\u0004 \u001cD�| �L t�X$� X�p �� �X\u0000 ���, \u0001\u0001X �\b@ ��x�, � ��@ 4�x�, ��� �\u0014� �Xt \u0018�� \u0004�\u0001x \b(| L$�8�.",
+        "expectedBehavior": "answer",
+        "challenge": "Comprehensive overview request",
+        "difficulty": "extreme"
+      },
+      "passed": true,
+      "actualBehavior": "answer",
+      "answer": "Table (9 rows × 4 cols)",
+      "confidence": 0.7,
+      "cost": {
+        "tokens": 2959,
+        "costUSD": 0.033510058800588015
+      },
+      "performance": {
+        "latencyMs": 14.4926660000001,
+        "iterations": 1,
+        "finalK": 2
+      }
+    },
+    {
+      "testCase": {
+        "id": "adv-017",
+        "category": "Edge Case",
+        "query": "",
+        "expectedBehavior": "decline",
+        "challenge": "Empty query",
+        "difficulty": "easy"
+      },
+      "passed": true,
+      "actualBehavior": "decline",
+      "answer": "Table (9 rows × 4 cols)",
+      "confidence": 0.85,
+      "cost": {
+        "tokens": 3027,
+        "costUSD": 0.03431006060060602
+      },
+      "performance": {
+        "latencyMs": 4.838333000000148,
+        "iterations": 1,
+        "finalK": 2
+      }
+    },
+    {
+      "testCase": {
+        "id": "adv-018",
+        "category": "Edge Case",
+        "query": "?",
+        "expectedBehavior": "decline",
+        "challenge": "Single character query",
+        "difficulty": "easy"
+      },
+      "passed": true,
+      "actualBehavior": "decline",
+      "answer": "**주요 변경 내용**\n\nTable (6 rows × 3 cols)",
+      "confidence": 1,
+      "cost": {
+        "tokens": 3105,
+        "costUSD": 0.03531006390063902
+      },
+      "performance": {
+        "latencyMs": 6.111291000000165,
+        "iterations": 1,
+        "finalK": 2
+      }
+    },
+    {
+      "testCase": {
+        "id": "adv-019",
+        "category": "Edge Case",
+        "query": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "expectedBehavior": "decline",
+        "challenge": "Gibberish query",
+        "difficulty": "easy"
+      },
+      "passed": false,
+      "actualBehavior": "answer",
+      "answer": "Table (5 rows × 3 cols)",
+      "confidence": 0.595,
+      "cost": {
+        "tokens": 3520,
+        "costUSD": 0.03958006570065702
+      },
+      "performance": {
+        "latencyMs": 19.952625000000353,
+        "iterations": 5,
+        "finalK": 6
+      },
+      "failureReason": "Expected decline, got answer"
+    },
+    {
+      "testCase": {
+        "id": "adv-020",
+        "category": "Edge Case",
+        "query": "Dt�\u0004 �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b �\b",
+        "expectedBehavior": "answer",
+        "challenge": "Extremely long repetitive query",
+        "difficulty": "medium"
+      },
+      "passed": true,
+      "actualBehavior": "answer",
+      "answer": "**주요 변경 내용**\n\nTable (6 rows × 3 cols)",
+      "confidence": 0.7,
+      "cost": {
+        "tokens": 3601,
+        "costUSD": 0.04061006900069002
+      },
+      "performance": {
+        "latencyMs": 13.167541999999685,
+        "iterations": 1,
+        "finalK": 2
+      }
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "timestamp": "2025-10-10T06:30:00.000Z",
+  "source": {
+    "document": "2024년_아이돌봄지원사업_안내.pdf",
+    "path": "datasets/qa-guideline-test/documents/2024년_아이돌봄지원사업_안내.pdf",
+    "documentId": "2024년-아이돌봄지원사업-안내-f053e1ab9c93"
+  },
+  "extraction": {
+    "totalPages": 320,
+    "totalChunks": 282,
+    "totalCharacters": 268381,
+    "averageChunkSize": 951,
+    "extractionDuration": "562ms"
+  },
+  "chunkDistribution": {
+    "bySize": {
+      "small (<500)": 42,
+      "medium (500-1000)": 168,
+      "large (1000-2000)": 72
+    },
+    "byType": {
+      "paragraph": 245,
+      "table": 18,
+      "list": 12,
+      "code": 2,
+      "unknown": 5
+    }
+  },
+  "sampleChunks": [
+    {
+      "id": "2024년-아이돌봄지원사업-안내-f053e1ab9c93-chunk-0-2bc5112f780db8ca",
+      "pageNumber": 1,
+      "length": 859,
+      "type": "paragraph",
+      "preview": "2024년\n주요 변경 내용 1\n \n제\n1장\n사업 개요11\n1.  법적  근거13..."
+    },
+    {
+      "id": "2024년-아이돌봄지원사업-안내-f053e1ab9c93-chunk-1-7c521528c073f008",
+      "pageNumber": 1,
+      "length": 919,
+      "type": "paragraph",
+      "preview": "3\n▸ 아이돌봄  지원법･시행령･시행규칙    255\n2024년도 \n아이돌봄 지원사업 안내..."
+    },
+    {
+      "id": "2024년-아이돌봄지원사업-안내-f053e1ab9c93-chunk-5-07627f8f47793ffe",
+      "pageNumber": 1,
+      "length": 1053,
+      "type": "table",
+      "preview": "유선통보 후 서면보고) → 시･군･구 \n및 광역지원센터(즉시) → 시･도, \n여성가족부..."
+    }
+  ],
+  "quality": {
+    "completeness": "100%",
+    "readability": "high",
+    "structureDetection": "85%"
+  }
+}

@@ -1,0 +1,209 @@
+{
+  "timestamp": "2025-10-10T07:26:34.313Z",
+  "configuration": {
+    "inputDirectory": "/Users/kyle/synthetic-text-agents-v2/datasets/qa-guideline-test/documents",
+    "guidelinePath": "/Users/kyle/synthetic-text-agents-v2/datasets/qa-guideline-test/guideline/문서별 QA 생성 가이드라인 27258518f3ab809f925eff15d6ecd1ac.md",
+    "qaPerChunk": 10,
+    "llmProvider": "claude",
+    "llmModel": "claude-3-5-sonnet-20241022"
+  },
+  "summary": {
+    "totalPDFs": 1,
+    "processedPDFs": 1,
+    "failedPDFs": 0,
+    "totalQA": 10,
+    "totalValid": 10,
+    "overallCompliance": "100.0",
+    "duration": "60.37s"
+  },
+  "gates": {
+    "gateF": {
+      "status": "FAIL",
+      "p95Latency": "60631.54ms",
+      "throughput": "0.18 q/s"
+    },
+    "gateG": {
+      "targetCompliance": "80%",
+      "achievedCompliance": "100.0%"
+    }
+  },
+  "results": [
+    {
+      "file": "2024년_아이돌봄지원사업_안내.pdf",
+      "filePath": "/Users/kyle/synthetic-text-agents-v2/datasets/qa-guideline-test/documents/2024년_아이돌봄지원사업_안내.pdf",
+      "ingestion": {
+        "pages": 320,
+        "chunks": 282,
+        "duration": 519.07375
+      },
+      "qaGeneration": {
+        "attempted": 10,
+        "generated": 10,
+        "valid": 10,
+        "complianceRate": 100
+      },
+      "qaPairs": [
+        {
+          "id": "qa-2024-------------------------------37b9c007e202-chunk-0-2bc5112f780db8ca-1",
+          "question": "2024년도 아이돌봄 지원사업 안내 문서는 총 몇 개의 장으로 구성되어 있습니까?",
+          "answer": "총 8개의 장으로 구성되어 있습니다. 제1장 사업 개요부터 제8장 부록까지 구성되어 있습니다.",
+          "sourceChunks": [
+            "2024-------------------------------37b9c007e202-chunk-0-2bc5112f780db8ca"
+          ],
+          "metadata": {
+            "domain": "hr",
+            "questionType": "general",
+            "difficulty": "medium",
+            "generatedAt": "2025-10-10T07:25:40.035Z",
+            "validationScore": 92.5,
+            "violations": 0
+          }
+        },
+        {
+          "id": "qa-2024-------------------------------37b9c007e202-chunk-1-7c521528c073f008-2",
+          "question": "2024년도 시간제 돌봄 기본형의 서비스 이용요금은 얼마인가요?",
+          "answer": "2024년도 시간제 돌봄 기본형의 서비스 이용요금은 11,630원입니다.",
+          "sourceChunks": [
+            "2024-------------------------------37b9c007e202-chunk-1-7c521528c073f008"
+          ],
+          "metadata": {
+            "domain": "hr",
+            "questionType": "general",
+            "difficulty": "medium",
+            "generatedAt": "2025-10-10T07:25:45.768Z",
+            "validationScore": 97.5,
+            "violations": 0
+          }
+        },
+        {
+          "id": "qa-2024-------------------------------37b9c007e202-chunk-2-844754a29bde86ca-3",
+          "question": "2024년도 아이돌봄 지원사업에서 쌍둥이 가정의 육아휴직과 관련하여 어떤 변경사항이 있나요?",
+          "answer": "2024년도부터 쌍둥이(12개월 이하) 이상 다태아 가정의 경우, 부모 모두 육아휴직을 사용하더라도 양육공백 가정에 포함되도록 변경되었습니다. 이는 정부합동 다둥이 맞춤 지원 대책(",
+          "sourceChunks": [
+            "2024-------------------------------37b9c007e202-chunk-2-844754a29bde86ca"
+          ],
+          "metadata": {
+            "domain": "hr",
+            "questionType": "general",
+            "difficulty": "medium",
+            "generatedAt": "2025-10-10T07:25:52.658Z",
+            "validationScore": 97.5,
+            "violations": 0
+          }
+        },
+        {
+          "id": "qa-2024-------------------------------37b9c007e202-chunk-3-61bc31b76cef3598-4",
+          "question": "2024년도에 아이돌보미 면접은 월 최대 몇 회까지 가능하며, 면접 취소는 언제까지 가능한가요?",
+          "answer": "2024년도에는 월 최대 3회까지 아이돌보미 면접이 가능하며, 면접 전 4시간 전까지 면접 취소가 가능합니다. 4시간 이후 취소 시에는 면접비가 지급됩니다.",
+          "sourceChunks": [
+            "2024-------------------------------37b9c007e202-chunk-3-61bc31b76cef3598"
+          ],
+          "metadata": {
+            "domain": "hr",
+            "questionType": "when",
+            "difficulty": "medium",
+            "generatedAt": "2025-10-10T07:25:58.659Z",
+            "validationScore": 92.5,
+            "violations": 0
+          }
+        },
+        {
+          "id": "qa-2024-------------------------------37b9c007e202-chunk-4-8494269faf1f09b6-5",
+          "question": "2024년도에 코로나19 감염 아동의 경우 질병감염아동지원 서비스 이용이 가능한가요?",
+          "answer": "네, 2024년도부터는 코로나19의 경우 연계 아이돌보미와 협의 시 질병감염아동지원 서비스를 이용할 수 있습니다.",
+          "sourceChunks": [
+            "2024-------------------------------37b9c007e202-chunk-4-8494269faf1f09b6"
+          ],
+          "metadata": {
+            "domain": "hr",
+            "questionType": "general",
+            "difficulty": "medium",
+            "generatedAt": "2025-10-10T07:26:04.713Z",
+            "validationScore": 95,
+            "violations": 0
+          }
+        },
+        {
+          "id": "qa-2024-------------------------------37b9c007e202-chunk-5-07627f8f47793ffe-6",
+          "question": "2024년도 아이돌보미 양성체계에서 ",
+          "answer": "선교육 단계에서는 교육기관이 교육생을 모집하고 양성교육(실습포함)을 진행하며, 후채용 단계에서는 서비스제공기관이 교육 수료자 모집 → 서류 심사 → 인·적성 검사 및 면접심사 → 결격사유 조회 → 근로계약체결 → 돌봄활동(매년 보수교육 이수 및 건강진단서 제출) 순으로 진행됩니다.",
+          "sourceChunks": [
+            "2024-------------------------------37b9c007e202-chunk-5-07627f8f47793ffe"
+          ],
+          "metadata": {
+            "domain": "hr",
+            "questionType": "general",
+            "difficulty": "medium",
+            "generatedAt": "2025-10-10T07:26:11.055Z",
+            "validationScore": 97.5,
+            "violations": 0
+          }
+        },
+        {
+          "id": "qa-2024-------------------------------37b9c007e202-chunk-6-6d39fbdc3faaafc1-7",
+          "question": "2024년도 아이돌보미 양성교육의 수료 기준은 무엇인가요?",
+          "answer": "출석과 실습평가 모두 해당 기준 이상을 통과해야 합니다. 구체적으로 출석은 소정 훈련일수의 80% 이상을 출석해야 하며(단, 현장실습은 100% 참석 필수), 실습평가는 현장실습 평가에서 60점 이상을 득해야 합니다.",
+          "sourceChunks": [
+            "2024-------------------------------37b9c007e202-chunk-6-6d39fbdc3faaafc1"
+          ],
+          "metadata": {
+            "domain": "hr",
+            "questionType": "what",
+            "difficulty": "medium",
+            "generatedAt": "2025-10-10T07:26:16.800Z",
+            "validationScore": 87.5,
+            "violations": 1
+          }
+        },
+        {
+          "id": "qa-2024-------------------------------37b9c007e202-chunk-7-3c7f1cab5fae638d-8",
+          "question": "아동학대 관련 처분을 받은 아이돌보미가 복귀하기 위해서는 몇 시간의 교육을 이수해야 하나요?",
+          "answer": "아동학대 관련 처분을 받은 아이돌보미는 복귀 전 공통교육 2시간, 기초교육 6시간, 심층교육 4시간 등 총 12시간의 복귀자 교육 과정을 이수해야 합니다.",
+          "sourceChunks": [
+            "2024-------------------------------37b9c007e202-chunk-7-3c7f1cab5fae638d"
+          ],
+          "metadata": {
+            "domain": "hr",
+            "questionType": "general",
+            "difficulty": "medium",
+            "generatedAt": "2025-10-10T07:26:21.725Z",
+            "validationScore": 90,
+            "violations": 0
+          }
+        },
+        {
+          "id": "qa-2024-------------------------------37b9c007e202-chunk-8-1f5354b195977220-9",
+          "question": "2024년도부터 아이돌봄 교육기관의 교육 수행 업무에 새롭게 추가된 내용은 무엇인가요?",
+          "answer": "아이돌보미 교육 수강생 모집 및 홍보 업무가 새롭게 추가되었습니다.",
+          "sourceChunks": [
+            "2024-------------------------------37b9c007e202-chunk-8-1f5354b195977220"
+          ],
+          "metadata": {
+            "domain": "hr",
+            "questionType": "what",
+            "difficulty": "medium",
+            "generatedAt": "2025-10-10T07:26:28.023Z",
+            "validationScore": 100,
+            "violations": 0
+          }
+        },
+        {
+          "id": "qa-2024-------------------------------37b9c007e202-chunk-9-38689c53a487f71a-10",
+          "question": "2024년도 서비스제공기관의 운영비 편성 기준은 전체 예산의 몇 % 범위 내입니까?",
+          "answer": "서비스제공기관의 운영비(기관종사자 인건비, 행정경비)는 전체 예산(시･도)의 5.2% 범위 내에서 편성･집행하도록 되어있습니다.",
+          "sourceChunks": [
+            "2024-------------------------------37b9c007e202-chunk-9-38689c53a487f71a"
+          ],
+          "metadata": {
+            "domain": "hr",
+            "questionType": "general",
+            "difficulty": "medium",
+            "generatedAt": "2025-10-10T07:26:34.311Z",
+            "validationScore": 95,
+            "violations": 0
+          }
+        }
+      ]
+    }
+  ]
+}

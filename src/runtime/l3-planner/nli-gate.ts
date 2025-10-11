@@ -13,7 +13,6 @@
  * @see RFC 2025-17, Section 1.4
  */
 
-// @ts-expect-error - @xenova/transformers not installed yet
 import { pipeline } from '@xenova/transformers';
 import type { Evidence } from '../types';
 

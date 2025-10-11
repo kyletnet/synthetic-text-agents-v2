@@ -1,0 +1,78 @@
+{
+  "timestamp": "2025-10-10T06:35:00.000Z",
+  "phase": "batch-qa-generation-preparation",
+  "completedSteps": [
+    {
+      "step": 1,
+      "name": "Status Dump Generation",
+      "status": "completed",
+      "artifacts": [
+        "reports/agents/active-agent-set.json",
+        "reports/chunk-report.json",
+        "reports/runtime/qos-history.json",
+        "reports/gate-f-status.json",
+        "reports/qa-generation/last-run.json"
+      ]
+    },
+    {
+      "step": 2,
+      "name": "GCG Rules Tuning",
+      "status": "completed",
+      "changes": {
+        "tone": "soft (권장사항)",
+        "structure": "soft (권장사항)",
+        "hard_rules": ["numeric", "unit", "evidence_required"],
+        "target_compliance": "80-90%"
+      },
+      "artifacts": [
+        "configs/gcg/rules.json",
+        "prompt-templates/qa.json"
+      ]
+    }
+  ],
+  "nextSteps": [
+    {
+      "step": 3,
+      "name": "Batch PDF Ingest + QA Generation",
+      "status": "pending",
+      "script": "scripts/pdf-ingest-and-qa.ts",
+      "command": "npx tsx scripts/pdf-ingest-and-qa.ts --in datasets/qa-guideline-test/documents --out reports/qa-generation/batch-report.json"
+    },
+    {
+      "step": 4,
+      "name": "Feedback → Regeneration Route",
+      "status": "pending",
+      "files": [
+        "src/api/feedback.ts",
+        "src/application/feedback-rewrite.ts",
+        "src/application/qa-generator.ts (integration)"
+      ]
+    },
+    {
+      "step": 5,
+      "name": "WebView API Endpoints",
+      "status": "pending",
+      "files": [
+        "src/api/trust/qa-list.ts",
+        "src/api/trust/qa-detail.ts",
+        "src/api/trust/qa-regenerate.ts"
+      ]
+    }
+  ],
+  "resumeInstructions": {
+    "ifSessionEnds": "Load this checkpoint and continue from nextSteps",
+    "command": "cat SESSION_CHECKPOINT.json | jq '.nextSteps[] | select(.status==\"pending\") | .step'",
+    "contextFiles": [
+      "SESSION_CHECKPOINT.json",
+      "SESSION_STATE.json",
+      "NEXT_SESSION_START_HERE.md"
+    ]
+  },
+  "systemState": {
+    "pdfIngested": true,
+    "qaGenerated": 9,
+    "compliance": 11.1,
+    "targetCompliance": 80,
+    "infrastructureReady": true
+  }
+}

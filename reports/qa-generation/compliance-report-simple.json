@@ -1,0 +1,17 @@
+{
+  "timestamp": "2025-10-10T05:29:01.078Z",
+  "test": "simplified (no PDF)",
+  "documentId": "test-document-001",
+  "metrics": {
+    "totalGenerated": 20,
+    "totalValid": 20,
+    "complianceRate": 100,
+    "duration": 2.7854580000000624
+  },
+  "gateG": {
+    "status": "PASS",
+    "target": 90,
+    "actual": 100
+  },
+  "sampleCount": 10
+}

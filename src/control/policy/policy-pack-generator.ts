@@ -447,7 +447,7 @@ export class PolicyPackGenerator {
       if (!rule.requirement || rule.requirement.trim() === '') {
         throw new Error(`Rule ${rule.id} missing requirement`);
       }
-      if (!rule.validation || !rule.validation.condition) {
+      if (!rule.validation?.condition) {
         throw new Error(`Rule ${rule.id} missing validation`);
       }
     });

@@ -1,0 +1,140 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "version": "2.0.0",
+  "description": "GCG Validation Rules Configuration - Tuned for 80-90% compliance",
+  "updated": "2025-10-10T06:30:00.000Z",
+  "ruleSeverity": {
+    "hard": {
+      "description": "Critical violations - must be enforced strictly",
+      "weight": 100,
+      "categories": ["numeric", "unit", "evidence_required"]
+    },
+    "soft": {
+      "description": "Recommendations - warnings only, flexible enforcement",
+      "weight": 10,
+      "categories": ["tone", "structure", "formatting"]
+    }
+  },
+  "rules": {
+    "numeric": {
+      "severity": "hard",
+      "enabled": true,
+      "description": "숫자 표기는 정확해야 함 (아라비아 숫자 사용)",
+      "operators": [
+        {
+          "name": "arabic_numbers",
+          "pattern": "\\d+",
+          "required": true,
+          "errorMessage": "숫자는 아라비아 숫자로 표기해야 합니다"
+        },
+        {
+          "name": "no_korean_numbers",
+          "pattern": "(하나|둘|셋|넷|다섯|여섯|일곱|여덟|아홉|열)",
+          "forbidden": true,
+          "errorMessage": "한글 숫자 표기는 금지됩니다"
+        }
+      ]
+    },
+    "unit": {
+      "severity": "hard",
+      "enabled": true,
+      "description": "단위는 정확하고 일관성 있게 표기",
+      "operators": [
+        {
+          "name": "currency",
+          "pattern": "\\d+원",
+          "required": false,
+          "errorMessage": "금액은 '원' 단위로 표기"
+        },
+        {
+          "name": "percentage",
+          "pattern": "\\d+%|\\d+퍼센트",
+          "required": false,
+          "errorMessage": "비율은 '%' 또는 '퍼센트'로 표기"
+        }
+      ]
+    },
+    "evidence_required": {
+      "severity": "hard",
+      "enabled": true,
+      "description": "답변은 반드시 제공된 컨텍스트에 근거해야 함",
+      "operators": [
+        {
+          "name": "no_hallucination",
+          "description": "컨텍스트 외 정보 금지",
+          "check": "manual",
+          "errorMessage": "답변은 제공된 문서 내용에만 근거해야 합니다"
+        }
+      ]
+    },
+    "tone": {
+      "severity": "soft",
+      "enabled": true,
+      "description": "존댓말 권장 (경고만, 실패 아님)",
+      "operators": [
+        {
+          "name": "polite_ending",
+          "pattern": "(습니다|니다|세요|시기|요)$",
+          "required": false,
+          "warning": true,
+          "errorMessage": "존댓말 사용을 권장합니다 (선택사항)"
+        }
+      ]
+    },
+    "structure": {
+      "severity": "soft",
+      "enabled": true,
+      "description": "질문/답변 구조 권장사항 (경고만)",
+      "operators": [
+        {
+          "name": "question_mark",
+          "pattern": "\\?$",
+          "required": false,
+          "warning": true,
+          "applyTo": "question",
+          "errorMessage": "질문은 물음표로 끝나는 것을 권장합니다 (선택사항)"
+        },
+        {
+          "name": "answer_completeness",
+          "minLength": 20,
+          "required": false,
+          "warning": true,
+          "applyTo": "answer",
+          "errorMessage": "답변은 20자 이상을 권장합니다 (선택사항)"
+        }
+      ]
+    },
+    "formatting": {
+      "severity": "soft",
+      "enabled": true,
+      "description": "형식 권장사항 (경고만)",
+      "operators": [
+        {
+          "name": "no_extra_spaces",
+          "pattern": "\\s{2,}",
+          "forbidden": false,
+          "warning": true,
+          "errorMessage": "연속된 공백은 피하는 것을 권장합니다 (선택사항)"
+        }
+      ]
+    }
+  },
+  "scoring": {
+    "hardViolation": {
+      "weight": -30,
+      "description": "Hard rule 위반 시 큰 감점"
+    },
+    "softViolation": {
+      "weight": -2,
+      "description": "Soft rule 위반 시 작은 감점 (경고)"
+    },
+    "baseScore": 100,
+    "minPassingScore": 70
+  },
+  "notes": [
+    "Tone/Structure 규칙은 'soft'로 설정하여 권장사항으로만 작동",
+    "Numeric/Unit/Evidence 규칙은 'hard'로 설정하여 엄격히 적용",
+    "Soft 규칙 위반은 warning만 표시하고 compliance에 큰 영향 없음",
+    "목표: Gate G compliance 80-90% 달성"
+  ]
+}

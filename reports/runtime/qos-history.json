@@ -1,0 +1,75 @@
+{
+  "timestamp": "2025-10-10T06:30:00.000Z",
+  "timeWindow": {
+    "start": "2025-10-10T05:00:00.000Z",
+    "end": "2025-10-10T06:30:00.000Z",
+    "durationMinutes": 90
+  },
+  "metrics": {
+    "latency": {
+      "p50": 4200,
+      "p95": 8604,
+      "p99": 9500,
+      "avg": 6296,
+      "unit": "ms"
+    },
+    "throughput": {
+      "current": 0.18,
+      "peak": 52,
+      "avg": 25,
+      "unit": "q/s"
+    },
+    "systemUtilization": {
+      "current": 0.64,
+      "peak": 1.0,
+      "avg": 0.75
+    },
+    "errorRate": {
+      "total": 1,
+      "percentage": 10,
+      "lastError": "2025-10-10T06:27:23.000Z"
+    }
+  },
+  "gateEvents": {
+    "gateF": [
+      {
+        "timestamp": "2025-10-10T06:27:35.000Z",
+        "event": "cooldown_triggered",
+        "reason": "p95_latency",
+        "value": 5457.348,
+        "threshold": 50,
+        "action": "batch_size_reduced"
+      }
+    ],
+    "gateG": [
+      {
+        "timestamp": "2025-10-10T06:28:31.000Z",
+        "event": "validation_failed",
+        "complianceRate": 11.1,
+        "threshold": 80,
+        "violations": 23
+      }
+    ]
+  },
+  "apiCalls": {
+    "total": 10,
+    "successful": 9,
+    "failed": 1,
+    "providers": {
+      "claude": {
+        "calls": 10,
+        "tokens": {
+          "input": 12450,
+          "output": 4820,
+          "total": 17270
+        }
+      }
+    }
+  },
+  "qualityMetrics": {
+    "avgValidationScore": 86.9,
+    "qaGenerated": 9,
+    "qaValid": 1,
+    "complianceRate": 11.1
+  }
+}

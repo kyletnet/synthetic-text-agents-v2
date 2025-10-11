@@ -1,0 +1,97 @@
+{
+  "timestamp": "2025-10-10T07:14:17.742Z",
+  "configuration": {
+    "inputDirectory": "/Users/kyle/synthetic-text-agents-v2/datasets/qa-guideline-test/documents",
+    "guidelinePath": "/Users/kyle/synthetic-text-agents-v2/datasets/qa-guideline-test/guideline/문서별 QA 생성 가이드라인 27258518f3ab809f925eff15d6ecd1ac.md",
+    "qaPerChunk": 10,
+    "llmProvider": "claude",
+    "llmModel": "claude-3-5-sonnet-20241022"
+  },
+  "summary": {
+    "totalPDFs": 1,
+    "processedPDFs": 1,
+    "failedPDFs": 0,
+    "totalQA": 3,
+    "totalValid": 3,
+    "overallCompliance": "100.0",
+    "duration": "20.09s"
+  },
+  "gates": {
+    "gateF": {
+      "status": "FAIL",
+      "p95Latency": "20357.11ms",
+      "throughput": "0.21 q/s"
+    },
+    "gateG": {
+      "targetCompliance": "80%",
+      "achievedCompliance": "100.0%"
+    }
+  },
+  "results": [
+    {
+      "file": "2024년_아이돌봄지원사업_안내.pdf",
+      "filePath": "/Users/kyle/synthetic-text-agents-v2/datasets/qa-guideline-test/documents/2024년_아이돌봄지원사업_안내.pdf",
+      "ingestion": {
+        "pages": 320,
+        "chunks": 282,
+        "duration": 513.8663750000001
+      },
+      "qaGeneration": {
+        "attempted": 3,
+        "generated": 3,
+        "valid": 3,
+        "complianceRate": 100
+      },
+      "qaPairs": [
+        {
+          "id": "qa-2024-------------------------------37b9c007e202-chunk-0-2bc5112f780db8ca-1",
+          "question": "이 문서의 제목과 발행연도는 무엇인가요?",
+          "answer": "이 문서는 ",
+          "sourceChunks": [
+            "2024-------------------------------37b9c007e202-chunk-0-2bc5112f780db8ca"
+          ],
+          "metadata": {
+            "domain": "hr",
+            "questionType": "what",
+            "difficulty": "medium",
+            "generatedAt": "2025-10-10T07:14:03.579Z",
+            "validationScore": 95,
+            "violations": 0
+          }
+        },
+        {
+          "id": "qa-2024-------------------------------37b9c007e202-chunk-1-7c521528c073f008-2",
+          "question": "2024년도 아이돌봄 시간제 서비스의 기본형과 종합형 이용요금은 각각 얼마인가요?",
+          "answer": "2024년도 시간제 서비스의 기본형은 11,630원이고, 종합형은 15,110원입니다.",
+          "sourceChunks": [
+            "2024-------------------------------37b9c007e202-chunk-1-7c521528c073f008"
+          ],
+          "metadata": {
+            "domain": "hr",
+            "questionType": "general",
+            "difficulty": "medium",
+            "generatedAt": "2025-10-10T07:14:10.336Z",
+            "validationScore": 90,
+            "violations": 2
+          }
+        },
+        {
+          "id": "qa-2024-------------------------------37b9c007e202-chunk-2-844754a29bde86ca-3",
+          "question": "2024년도 아이돌봄 지원사업에서 쌍둥이 가정의 육아휴직과 관련하여 새롭게 변경된 내용은 무엇인가요?",
+          "answer": "2024년도부터 쌍둥이(12개월 이하) 이상 다태아 가정의 경우, 부모 모두 육아휴직을 사용하더라도 양육공백 가정에 포함됩니다. 이는 정부합동 다둥이 맞춤 지원 대책(",
+          "sourceChunks": [
+            "2024-------------------------------37b9c007e202-chunk-2-844754a29bde86ca"
+          ],
+          "metadata": {
+            "domain": "hr",
+            "questionType": "what",
+            "difficulty": "medium",
+            "generatedAt": "2025-10-10T07:14:17.741Z",
+            "validationScore": 95,
+            "violations": 1
+          }
+        }
+      ]
+    }
+  ]
+}

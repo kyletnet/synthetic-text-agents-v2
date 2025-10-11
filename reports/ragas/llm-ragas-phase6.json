@@ -1,0 +1,95 @@
+{
+  "metadata": {
+    "timestamp": "2025-10-11T04:01:42.185Z",
+    "config": {
+      "provider": "anthropic",
+      "model": "claude-3-5-sonnet-20241022",
+      "samplingRate": 0.2,
+      "batchSize": 5,
+      "seed": 42,
+      "secondaryRate": 0.1
+    },
+    "duration": 2245.9788750000002
+  },
+  "summary": {
+    "totalQueries": 5,
+    "sampledQueries": 1,
+    "samplingRate": 0.2,
+    "averageMetrics": {
+      "contextRecall": 0,
+      "contextPrecision": 0.33,
+      "answerRelevance": 0,
+      "answerFaithfulness": 1,
+      "overall": 0
+    },
+    "gatePassRates": {
+      "B": 0,
+      "D": 0,
+      "E": 0,
+      "G": 1
+    },
+    "cost": {
+      "totalTokens": 2692,
+      "totalCostUSD": 0.0114,
+      "averageTokensPerQuery": 2692,
+      "averageCostPerQuery": 0.0114
+    },
+    "performance": {
+      "averageLatencyMs": 2244.871959,
+      "totalTimeMs": 2244.871959
+    }
+  },
+  "results": [
+    {
+      "input": {
+        "question": "독립형 아이돌봄 서비스의 가격은 얼마인가?",
+        "answer": "# 제3장 아이돌봄서비스 이용 및 연계\n\n제3장 아이돌봄서비스 이용 및 연계\n\n3",
+        "contexts": [
+          "# 제3장 아이돌봄서비스 이용 및 연계\n\n제3장 아이돌봄서비스 이용 및 연계\n\n3",
+          "null\n\n2024년도 아이돌봄 지원사업 안내\n\n6\n\n주요 변경 내용\n\n○ 기본수당 : 9,630원\n○ 가산수당\n- 시간제 종합형 : 3,320원\n- 질병감염아동 : 2,890원\n- 기관연계 : 7,220원 등\n\n○ 기본수당 : 10,110원\n○ 가산수당\n- 시간제 종합형 : 3,480원\n·질병감염아동 : 3,040원\n- 기관연계 : 7,580원 등",
+          "null\n\n2. 아이돌봄 인력 교육\n\n6\n\n주요 변경 내용\n\n○ 기본수당 : 9,630원\n○ 가산수당\n- 시간제 종합형 : 3,320원\n- 질병감염아동 : 2,890원\n- 기관연계 : 7,220원 등\n\n○ 기본수당 : 10,110원\n○ 가산수당\n- 시간제 종합형 : 3,480원\n·질병감염아동 : 3,040원\n- 기관연계 : 7,580원 등",
+          "**주요 변경 내용**\n\nTable (6 rows × 3 cols)",
+          "# 주요 변경 내용\n\n주요 변경 내용",
+          "## 제1장 사업 개요\n\n제1장 사업 개요"
+        ],
+        "groundTruth": "0세아는 시간당 11,630원, 영아는 시간당 15,110원입니다."
+      },
+      "metrics": {
+        "contextRecall": 0,
+        "contextPrecision": 0.33,
+        "answerRelevance": 0,
+        "answerFaithfulness": 1,
+        "overall": 0
+      },
+      "details": {
+        "contextRecall": {
+          "score": 0,
+          "reasoning": "The ground truth mentions specific prices for 0세아 (11,630원) and 영아 (15,110원), but none of these rates appear in the retrieved contexts. The contexts only show different rates like basic pay (10,110원) and additional payments, but not the independent childcare service rates mentioned in the ground truth."
+        },
+        "contextPrecision": {
+          "score": 0.33,
+          "reasoning": "Only contexts 2 and 3 contain relevant pricing information about childcare services (showing basic and additional rates). The other contexts are either section headers or empty tables without any pricing details."
+        },
+        "answerRelevance": {
+          "score": 0,
+          "reasoning": "The answer completely fails to address the question about the price of independent childcare services. It only shows a chapter title/heading about childcare services in general without providing any price information."
+        },
+        "answerFaithfulness": {
+          "score": 1,
+          "reasoning": "The answer is an exact word-for-word match with Context #1, containing no additional or modified information. Every element in the answer is directly supported by the context without any hallucination."
+        }
+      },
+      "cost": {
+        "tokens": 2692,
+        "costUSD": 0.0114
+      },
+      "latencyMs": 2244.871959,
+      "gateMapping": {
+        "contextRecall": "Gate B (Evidence Hit)",
+        "contextPrecision": "Gate D (Diversity)",
+        "answerFaithfulness": "Gate G (Compliance)",
+        "answerRelevance": "Gate E (Explanation)"
+      }
+    }
+  ]
+}

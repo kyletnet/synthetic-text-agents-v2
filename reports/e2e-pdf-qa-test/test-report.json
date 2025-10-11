@@ -1,0 +1,188 @@
+{
+  "timestamp": "2025-10-10T06:28:31.272Z",
+  "config": {
+    "guidelinePath": "/Users/kyle/synthetic-text-agents-v2/datasets/qa-guideline-test/guideline/문서별 QA 생성 가이드라인 27258518f3ab809f925eff15d6ecd1ac.md",
+    "pdfPath": "/Users/kyle/synthetic-text-agents-v2/datasets/qa-guideline-test/documents/2024년_아이돌봄지원사업_안내.pdf",
+    "outputPath": "/Users/kyle/synthetic-text-agents-v2/reports/e2e-pdf-qa-test",
+    "qaPerDocument": 10,
+    "maxRetries": 3,
+    "minValidationScore": 80,
+    "gateG": {
+      "minCompliance": 80,
+      "minScore": 80
+    },
+    "gateF": {
+      "maxP95Latency": 50,
+      "minThroughput": 20
+    }
+  },
+  "results": {
+    "qaGeneration": {
+      "requested": 10,
+      "generated": 9,
+      "avgLatency": "6295.95ms"
+    },
+    "gateG": {
+      "status": "FAIL",
+      "complianceRate": 11.11111111111111,
+      "validQA": 1,
+      "totalQA": 9,
+      "averageScore": 86.94444444444444,
+      "violations": 23
+    },
+    "gateF": {
+      "status": "FAIL",
+      "p95Latency": 8604.065916,
+      "throughput": 0.1757408283223216,
+      "systemUtilization": 1
+    },
+    "overallStatus": "FAIL",
+    "duration": "68225.61ms"
+  },
+  "qaPairs": [
+    {
+      "id": "qa-2024년-아이돌봄지원사업-안내-f053e1ab9c93-chunk-1-7c521528c073f008-2",
+      "question": "2024년도 아이돌봄 서비스의 시간제 기본형과 종합형의 이용요금은 각각 얼마인가요?",
+      "answer": "2024년도 아이돌봄 서비스의 시간제 이용요금은 기본형이 11,630원이며, 종합형이 15,110원입니다.",
+      "sourceChunks": [
+        "2024년-아이돌봄지원사업-안내-f053e1ab9c93-chunk-1-7c521528c073f008"
+      ],
+      "metadata": {
+        "domain": "hr",
+        "questionType": "general",
+        "difficulty": "medium",
+        "generatedAt": "2025-10-10T06:27:40.061Z",
+        "validationScore": 90,
+        "violations": 2
+      }
+    },
+    {
+      "id": "qa-2024년-아이돌봄지원사업-안내-f053e1ab9c93-chunk-2-844754a29bde86ca-3",
+      "question": "2024년도 아이돌봄 지원사업에서 쌍둥이 가정의 육아휴직과 관련하여 새롭게 변경된 내용은 무엇인가요?",
+      "answer": "2024년도부터는 쌍둥이(12개월 이하) 이상 다태아 가정의 경우, 부모 모두가 육아휴직을 사용하더라도 양육공백 가정에 포함되도록 변경되었습니다. 이는 정부합동 다둥이 맞춤 지원 대책(",
+      "sourceChunks": [
+        "2024년-아이돌봄지원사업-안내-f053e1ab9c93-chunk-2-844754a29bde86ca"
+      ],
+      "metadata": {
+        "domain": "hr",
+        "questionType": "what",
+        "difficulty": "medium",
+        "generatedAt": "2025-10-10T06:27:45.899Z",
+        "validationScore": 95,
+        "violations": 1
+      }
+    },
+    {
+      "id": "qa-2024년-아이돌봄지원사업-안내-f053e1ab9c93-chunk-3-61bc31b76cef3598-4",
+      "question": "2024년도에 변경된 아이돌보미 면접 관련 주요 내용은 무엇인가요?",
+      "answer": "2024년도에는 아이돌보미 면접 횟수가 월 2회에서 월 3회로 확대되었습니다. 또한 면접 후 이용자 귀책사유가 없는데도 연계가 이루어지지 않은 경우에는 면접 횟수를 차감하지 않으며, 면접 4시간 전까지 취소가 가능하고 그 이후 취소 시에는 면접비가 지급됩니다.",
+      "sourceChunks": [
+        "2024년-아이돌봄지원사업-안내-f053e1ab9c93-chunk-3-61bc31b76cef3598"
+      ],
+      "metadata": {
+        "domain": "hr",
+        "questionType": "what",
+        "difficulty": "medium",
+        "generatedAt": "2025-10-10T06:27:53.688Z",
+        "validationScore": 85,
+        "violations": 3
+      }
+    },
+    {
+      "id": "qa-2024년-아이돌봄지원사업-안내-f053e1ab9c93-chunk-4-8494269faf1f09b6-5",
+      "question": "2024년도부터 변경된 질병감염아동지원 서비스의 주요 변경사항 중 코로나19 관련 내용은 무엇인가요?",
+      "answer": "2023년에는 코로나19 등 격리가 필요한 감염병의 경우 서비스 이용이 불가할 수 있었으나, 2024년부터는 코로나19의 경우 연계 아이돌보미와 협의 시 질병감염아동지원 서비스를 이용할 수 있도록 변경되었습니다.",
+      "sourceChunks": [
+        "2024년-아이돌봄지원사업-안내-f053e1ab9c93-chunk-4-8494269faf1f09b6"
+      ],
+      "metadata": {
+        "domain": "hr",
+        "questionType": "what",
+        "difficulty": "medium",
+        "generatedAt": "2025-10-10T06:28:01.633Z",
+        "validationScore": 85,
+        "violations": 3
+      }
+    },
+    {
+      "id": "qa-2024년-아이돌봄지원사업-안내-f053e1ab9c93-chunk-5-07627f8f47793ffe-6",
+      "question": "2024년도 아이돌보미 양성체계의 '선교육-후채용' 방식에서 교육기관의 역할은 무엇인가요?",
+      "answer": "교육기관은 '선교육' 단계에서 교육생을 모집하고 양성교육(실습 포함)을 실시합니다. 구체적으로 Step ①에서 교육생 모집 및 등록, Step ②에서 교육 및 실습을 진행하며, Step ③에서 교육 수료증을 발급하는 역할을 담당합니다. 또한 자격 유지를 위한 Step ⑤에서 보수교육을 실시하는 역할도 수행합니다.",
+      "sourceChunks": [
+        "2024년-아이돌봄지원사업-안내-f053e1ab9c93-chunk-5-07627f8f47793ffe"
+      ],
+      "metadata": {
+        "domain": "hr",
+        "questionType": "what",
+        "difficulty": "medium",
+        "generatedAt": "2025-10-10T06:28:05.223Z",
+        "validationScore": 100,
+        "violations": 0
+      }
+    },
+    {
+      "id": "qa-2024년-아이돌봄지원사업-안내-f053e1ab9c93-chunk-6-6d39fbdc3faaafc1-7",
+      "question": "2024년도 아이돌보미 양성교육의 수료 기준은 어떻게 되나요?",
+      "answer": "2024년도 아이돌보미 양성교육의 수료 기준은 출석과 실습평가 모두 기준 이상을 통과해야 합니다. 구체적으로 출석은 소정 훈련일수의 80% 이상을 출석해야 하며(단, 현장실습은 100% 참석 필수), 실습평가는 현장실습 평가에서 60점 이상을 득해야 수료증이 수여됩니다.",
+      "sourceChunks": [
+        "2024년-아이돌봄지원사업-안내-f053e1ab9c93-chunk-6-6d39fbdc3faaafc1"
+      ],
+      "metadata": {
+        "domain": "hr",
+        "questionType": "how",
+        "difficulty": "medium",
+        "generatedAt": "2025-10-10T06:28:11.303Z",
+        "validationScore": 80,
+        "violations": 4
+      }
+    },
+    {
+      "id": "qa-2024년-아이돌봄지원사업-안내-f053e1ab9c93-chunk-7-3c7f1cab5fae638d-8",
+      "question": "2024년도 아이돌보미 활동정지 후 아동학대 관련 처분을 받은 경우, 복귀를 위해 이수해야 하는 교육 시간은 총 몇 시간이며 어떤 교육들로 구성되어 있나요?",
+      "answer": "아동학대 관련 처분을 받은 아이돌보미의 경우, 복귀 전 총 12시간의 복귀자 교육 과정을 이수해야 합니다. 교육은 공통교육(2시간), 기초교육(6시간), 심층교육(4시간)으로 구성되어 있습니다. 또한 복귀자 교육과 보수교육은 별개이므로, 복귀자 교육을 이수하더라도 보수교육은 반드시 별도로 이수해야 합니다.",
+      "sourceChunks": [
+        "2024년-아이돌봄지원사업-안내-f053e1ab9c93-chunk-7-3c7f1cab5fae638d"
+      ],
+      "metadata": {
+        "domain": "hr",
+        "questionType": "general",
+        "difficulty": "medium",
+        "generatedAt": "2025-10-10T06:28:19.907Z",
+        "validationScore": 80,
+        "violations": 4
+      }
+    },
+    {
+      "id": "qa-2024년-아이돌봄지원사업-안내-f053e1ab9c93-chunk-8-1f5354b195977220-9",
+      "question": "2024년도부터 교육기관의 아이돌보미 교육과 관련하여 어떤 변경사항이 있나요?",
+      "answer": "2024년도부터는 모든 교육기관이 국민내일배움카드 활용을 권고받게 되었습니다. 이에 따라 시·도지사는 교육기관 지정 시 관련 내용을 확인해야 하며, 교육기관의 주요 업무는 아이돌보미 교육 수강생 모집 및 홍보, 양성교육(실습포함) 및 보수교육 수행으로 구체화되었습니다. 또한 강사 자격요건도 아이돌봄지원법 시행규칙 제4조와 함께 국민평생직업능력개발법 제33조 관련 규정도 충족해야 합니다.",
+      "sourceChunks": [
+        "2024년-아이돌봄지원사업-안내-f053e1ab9c93-chunk-8-1f5354b195977220"
+      ],
+      "metadata": {
+        "domain": "hr",
+        "questionType": "general",
+        "difficulty": "medium",
+        "generatedAt": "2025-10-10T06:28:24.101Z",
+        "validationScore": 87.5,
+        "violations": 2
+      }
+    },
+    {
+      "id": "qa-2024년-아이돌봄지원사업-안내-f053e1ab9c93-chunk-9-38689c53a487f71a-10",
+      "question": "2024년도 서비스제공기관의 운영비(기관종사자 인건비, 행정경비) 편성 기준은 어떻게 변경되었나요?",
+      "answer": "2024년도에는 서비스제공기관의 운영비(기관종사자 인건비, 행정경비)를 전체 예산(시･도) 대비 5.2% 범위 내에서 편성･집행하도록 변경되었습니다. 이는 2023년도의 7.5% 기준에서 하향 조정된 것입니다.",
+      "sourceChunks": [
+        "2024년-아이돌봄지원사업-안내-f053e1ab9c93-chunk-9-38689c53a487f71a"
+      ],
+      "metadata": {
+        "domain": "hr",
+        "questionType": "how",
+        "difficulty": "medium",
+        "generatedAt": "2025-10-10T06:28:31.271Z",
+        "validationScore": 80,
+        "violations": 4
+      }
+    }
+  ]
+}

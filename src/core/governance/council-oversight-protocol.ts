@@ -341,7 +341,7 @@ export class CouncilOversightProtocol {
 
     // Get member voting power
     const member = this.members.get(voterId);
-    if (!member || !member.active) {
+    if (!member?.active) {
       throw new Error('Invalid or inactive member');
     }
 

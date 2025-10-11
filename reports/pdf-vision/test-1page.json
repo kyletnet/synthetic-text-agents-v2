@@ -1,0 +1,48 @@
+{
+  "timestamp": "2025-10-10T11:47:41.050Z",
+  "inputPDF": "/Users/kyle/synthetic-text-agents-v2/datasets/qa-guideline-test/documents/2024년_아이돌봄지원사업_안내.pdf",
+  "totalPages": 320,
+  "processedPages": 1,
+  "failedPages": [],
+  "duration": 5867.057958,
+  "cost": {
+    "totalImages": 1,
+    "estimatedCost": 0.0025
+  },
+  "visionAnalysis": [
+    {
+      "pageNumber": 1,
+      "sections": [],
+      "tables": [],
+      "lists": [],
+      "paragraphs": [
+        {
+          "text": "발간등록번호\n11-1383000-000229-10"
+        },
+        {
+          "text": "www.mogef.go kr"
+        },
+        {
+          "text": "2024년도 아이돌봄 지원사업 안내"
+        },
+        {
+          "text": "2024년도\n● 아이돌봄 지원사업 안내"
+        },
+        {
+          "text": "여성가족부"
+        },
+        {
+          "text": "여성가족부"
+        }
+      ],
+      "figures": []
+    }
+  ],
+  "summary": {
+    "totalSections": 0,
+    "totalTables": 0,
+    "totalLists": 0,
+    "totalParagraphs": 6,
+    "totalFigures": 0
+  }
+}

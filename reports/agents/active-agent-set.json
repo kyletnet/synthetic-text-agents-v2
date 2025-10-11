@@ -1,0 +1,78 @@
+{
+  "timestamp": "2025-10-10T06:30:00.000Z",
+  "session": "phase-2.7-complete-e2e-validation",
+  "activeComponents": {
+    "infrastructure": {
+      "pdfIngestor": {
+        "status": "operational",
+        "version": "1.0.0",
+        "lastUsed": "2025-10-10T06:28:23.000Z",
+        "performance": {
+          "lastIngestion": {
+            "pages": 320,
+            "chunks": 282,
+            "duration": "562ms"
+          }
+        }
+      },
+      "evidenceStore": {
+        "status": "operational",
+        "totalEvidence": 282,
+        "lastUpdate": "2025-10-10T06:28:23.000Z"
+      }
+    },
+    "runtime": {
+      "gcgCompiler": {
+        "status": "operational",
+        "domain": "hr",
+        "rulesCount": 5,
+        "lastCompilation": "2025-10-10T06:27:23.000Z"
+      },
+      "gcgValidator": {
+        "status": "operational",
+        "lastValidation": "2025-10-10T06:28:31.000Z",
+        "averageScore": 86.9
+      },
+      "llmProvider": {
+        "status": "operational",
+        "provider": "claude",
+        "model": "claude-3-5-sonnet-20241022",
+        "ready": true,
+        "lastCall": "2025-10-10T06:28:31.000Z"
+      }
+    },
+    "gates": {
+      "gateF": {
+        "status": "monitoring",
+        "enabled": true,
+        "thresholds": {
+          "maxP95Latency": 50,
+          "minThroughput": 20
+        },
+        "lastCheck": "2025-10-10T06:28:31.000Z"
+      },
+      "gateG": {
+        "status": "monitoring",
+        "enabled": true,
+        "thresholds": {
+          "minCompliance": 80,
+          "minScore": 80
+        },
+        "lastCheck": "2025-10-10T06:28:31.000Z"
+      }
+    },
+    "orchestrators": {
+      "completeE2E": {
+        "status": "operational",
+        "layers": ["L1:Retrieval", "L2:Synthesis", "L3:Planning", "L4:Optimization"],
+        "lastExecution": "2025-10-10T05:45:07.000Z"
+      }
+    }
+  },
+  "metrics": {
+    "totalQAGenerated": 9,
+    "totalChunksProcessed": 282,
+    "totalAPIsCalled": 10,
+    "uptime": "operational"
+  }
+}

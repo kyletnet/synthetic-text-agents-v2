@@ -1,0 +1,159 @@
+{
+  "enabled": true,
+  "status": "pass",
+  "metrics": {
+    "complianceRate": 100,
+    "totalQA": 10,
+    "validQA": 10,
+    "averageScore": 94.5,
+    "violations": 1
+  },
+  "thresholds": {
+    "minCompliance": 90,
+    "minScore": 80,
+    "maxViolations": 0
+  },
+  "history": [
+    {
+      "timestamp": "2025-10-10T05:38:28.148Z",
+      "type": "fail",
+      "complianceRate": 80,
+      "violations": 2,
+      "message": "Gate G: FAIL (80.0% compliance, target: 90%)"
+    },
+    {
+      "timestamp": "2025-10-10T05:38:28.150Z",
+      "type": "pass",
+      "complianceRate": 90,
+      "violations": 1,
+      "message": "Gate G: PASS (90.0% compliance)"
+    },
+    {
+      "timestamp": "2025-10-10T05:41:50.080Z",
+      "type": "fail",
+      "complianceRate": 70,
+      "violations": 3,
+      "message": "Gate G: FAIL (70.0% compliance, target: 90%)"
+    },
+    {
+      "timestamp": "2025-10-10T05:41:50.082Z",
+      "type": "pass",
+      "complianceRate": 90,
+      "violations": 1,
+      "message": "Gate G: PASS (90.0% compliance)"
+    },
+    {
+      "timestamp": "2025-10-10T05:43:41.874Z",
+      "type": "fail",
+      "complianceRate": 80,
+      "violations": 2,
+      "message": "Gate G: FAIL (80.0% compliance, target: 90%)"
+    },
+    {
+      "timestamp": "2025-10-10T05:43:41.878Z",
+      "type": "fail",
+      "complianceRate": 80,
+      "violations": 2,
+      "message": "Gate G: FAIL (80.0% compliance, target: 90%)"
+    },
+    {
+      "timestamp": "2025-10-10T05:44:11.041Z",
+      "type": "pass",
+      "complianceRate": 80,
+      "violations": 2,
+      "message": "Gate G: PASS (80.0% compliance)"
+    },
+    {
+      "timestamp": "2025-10-10T05:44:11.043Z",
+      "type": "fail",
+      "complianceRate": 70,
+      "violations": 3,
+      "message": "Gate G: FAIL (70.0% compliance, target: 80%)"
+    },
+    {
+      "timestamp": "2025-10-10T05:45:07.764Z",
+      "type": "pass",
+      "complianceRate": 80,
+      "violations": 2,
+      "message": "Gate G: PASS (80.0% compliance)"
+    },
+    {
+      "timestamp": "2025-10-10T06:06:37.423Z",
+      "type": "fail",
+      "complianceRate": 0,
+      "violations": 10,
+      "message": "Gate G: FAIL (0.0% compliance, target: 90%)"
+    },
+    {
+      "timestamp": "2025-10-10T06:07:28.333Z",
+      "type": "fail",
+      "complianceRate": 0,
+      "violations": 10,
+      "message": "Gate G: FAIL (0.0% compliance, target: 90%)"
+    },
+    {
+      "timestamp": "2025-10-10T06:08:20.948Z",
+      "type": "fail",
+      "complianceRate": 80,
+      "violations": 1,
+      "message": "Gate G: FAIL (80.0% compliance, target: 90%)"
+    },
+    {
+      "timestamp": "2025-10-10T06:09:29.463Z",
+      "type": "pass",
+      "complianceRate": 80,
+      "violations": 1,
+      "message": "Gate G: PASS (80.0% compliance)"
+    },
+    {
+      "timestamp": "2025-10-10T06:25:06.474Z",
+      "type": "fail",
+      "complianceRate": 0,
+      "violations": 3,
+      "message": "Gate G: FAIL (0.0% compliance, target: 80%)"
+    },
+    {
+      "timestamp": "2025-10-10T06:28:31.272Z",
+      "type": "fail",
+      "complianceRate": 11.11111111111111,
+      "violations": 23,
+      "message": "Gate G: FAIL (11.1% compliance, target: 80%)"
+    },
+    {
+      "timestamp": "2025-10-10T06:52:33.747Z",
+      "type": "fail",
+      "complianceRate": 20,
+      "violations": 19,
+      "message": "Gate G: FAIL (20.0% compliance, target: 80%)"
+    },
+    {
+      "timestamp": "2025-10-10T07:12:13.774Z",
+      "type": "fail",
+      "complianceRate": 0,
+      "violations": 0,
+      "message": "Gate G: FAIL (0.0% compliance, target: 70%)"
+    },
+    {
+      "timestamp": "2025-10-10T07:14:17.742Z",
+      "type": "pass",
+      "complianceRate": 100,
+      "violations": 3,
+      "message": "Gate G: PASS (100.0% compliance)"
+    },
+    {
+      "timestamp": "2025-10-10T07:17:15.100Z",
+      "type": "pass",
+      "complianceRate": 80,
+      "violations": 17,
+      "message": "Gate G: PASS (80.0% compliance)"
+    },
+    {
+      "timestamp": "2025-10-10T07:26:34.312Z",
+      "type": "pass",
+      "complianceRate": 100,
+      "violations": 1,
+      "message": "Gate G: PASS (100.0% compliance)"
+    }
+  ],
+  "lastUpdated": "2025-10-10T07:26:34.312Z"
+}

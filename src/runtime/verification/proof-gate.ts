@@ -386,7 +386,7 @@ export class ProofGate {
 
     // Execute
     try {
-      // eslint-disable-next-line no-eval
+       
       return eval(safeExpression);
     } catch {
       throw new Error('QAXL execution failed');

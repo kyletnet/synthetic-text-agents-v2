@@ -1,0 +1,56 @@
+version: 1.0.0
+domain: hr
+rules:
+  number_format:
+    pattern: ^[0-9,]+$
+    unit_required: true
+    allowed_units:
+      - 일
+      - 년
+      - 퍼센트
+    format: mixed
+  structure:
+    type: svo
+    max_sentence_length: 100
+    bullet_max: 5
+    min_sentences: 1
+    max_sentences: 2
+  forbidden:
+    ngrams:
+      - 제 상황에서 휴가를 받을 수 있을까요?
+      - 이런 경우 승인이 날까요?
+      - 다른 회사는 어떤가요?
+      - 법적으로 문제가 되나요?
+      - 앞으로 이 규정이 바뀔까요?
+      - 내년에도 동일한가요?
+      - 십오일
+      - 오십만원
+      - 80%
+    patterns:
+      - 제 상황에서 휴가를 받을 수 있을까요?
+      - 이런 경우 승인이 날까요?
+      - 다른 회사는 어떤가요?
+      - 법적으로 문제가 되나요?
+      - 앞으로 이 규정이 바뀔까요?
+      - 내년에도 동일한가요?
+  question_types:
+    allowed_types:
+      - 기본 정보 확인형
+      - 판단/평가 요구형
+      - 문서 범위 초과형
+      - 미래 예측형
+    difficulty_levels:
+      - 하
+      - 중
+      - 상
+    forbidden_patterns: []
+  answer_format:
+    min_length: 30
+    max_length: 200
+    structure: direct-first
+    required_elements: []
+metadata:
+  source: /Users/kyle/synthetic-text-agents-v2/datasets/qa-guideline-test/guideline/문서별
+    QA 생성 가이드라인 27258518f3ab809f925eff15d6ecd1ac.md
+  created_at: 2025-10-10T05:27:56.641Z
+  author: system

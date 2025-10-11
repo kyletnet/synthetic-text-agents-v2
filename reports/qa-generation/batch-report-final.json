@@ -1,0 +1,209 @@
+{
+  "timestamp": "2025-10-10T07:17:15.101Z",
+  "configuration": {
+    "inputDirectory": "/Users/kyle/synthetic-text-agents-v2/datasets/qa-guideline-test/documents",
+    "guidelinePath": "/Users/kyle/synthetic-text-agents-v2/datasets/qa-guideline-test/guideline/문서별 QA 생성 가이드라인 27258518f3ab809f925eff15d6ecd1ac.md",
+    "qaPerChunk": 10,
+    "llmProvider": "claude",
+    "llmModel": "claude-3-5-sonnet-20241022"
+  },
+  "summary": {
+    "totalPDFs": 1,
+    "processedPDFs": 1,
+    "failedPDFs": 0,
+    "totalQA": 10,
+    "totalValid": 8,
+    "overallCompliance": "80.0",
+    "duration": "60.57s"
+  },
+  "gates": {
+    "gateF": {
+      "status": "FAIL",
+      "p95Latency": "60856.92ms",
+      "throughput": "0.18 q/s"
+    },
+    "gateG": {
+      "targetCompliance": "80%",
+      "achievedCompliance": "80.0%"
+    }
+  },
+  "results": [
+    {
+      "file": "2024년_아이돌봄지원사업_안내.pdf",
+      "filePath": "/Users/kyle/synthetic-text-agents-v2/datasets/qa-guideline-test/documents/2024년_아이돌봄지원사업_안내.pdf",
+      "ingestion": {
+        "pages": 320,
+        "chunks": 282,
+        "duration": 523.560125
+      },
+      "qaGeneration": {
+        "attempted": 10,
+        "generated": 10,
+        "valid": 8,
+        "complianceRate": 80
+      },
+      "qaPairs": [
+        {
+          "id": "qa-2024-------------------------------37b9c007e202-chunk-0-2bc5112f780db8ca-1",
+          "question": "이 문서의 제목과 발행 연도는 무엇인가요?",
+          "answer": "이 문서는 ",
+          "sourceChunks": [
+            "2024-------------------------------37b9c007e202-chunk-0-2bc5112f780db8ca"
+          ],
+          "metadata": {
+            "domain": "hr",
+            "questionType": "what",
+            "difficulty": "medium",
+            "generatedAt": "2025-10-10T07:16:20.878Z",
+            "validationScore": 95,
+            "violations": 0
+          }
+        },
+        {
+          "id": "qa-2024-------------------------------37b9c007e202-chunk-1-7c521528c073f008-2",
+          "question": "2024년도 아이돌봄 서비스의 시간제 기본형 이용요금은 얼마인가요?",
+          "answer": "2024년도 시간제 기본형 이용요금은 11,630원입니다.",
+          "sourceChunks": [
+            "2024-------------------------------37b9c007e202-chunk-1-7c521528c073f008"
+          ],
+          "metadata": {
+            "domain": "hr",
+            "questionType": "general",
+            "difficulty": "medium",
+            "generatedAt": "2025-10-10T07:16:26.662Z",
+            "validationScore": 95,
+            "violations": 1
+          }
+        },
+        {
+          "id": "qa-2024-------------------------------37b9c007e202-chunk-2-844754a29bde86ca-3",
+          "question": "2024년도 아이돌봄 지원사업에서 쌍둥이 가정의 육아휴직과 관련하여 새롭게 변경된 내용은 무엇인가요?",
+          "answer": "2024년도부터 쌍둥이(12개월 이하) 이상 다태아 가정이 부, 모 모두 육아휴직을 사용한 경우에도 양육공백 가정에 포함되도록 변경되었습니다.",
+          "sourceChunks": [
+            "2024-------------------------------37b9c007e202-chunk-2-844754a29bde86ca"
+          ],
+          "metadata": {
+            "domain": "hr",
+            "questionType": "what",
+            "difficulty": "medium",
+            "generatedAt": "2025-10-10T07:16:33.331Z",
+            "validationScore": 95,
+            "violations": 1
+          }
+        },
+        {
+          "id": "qa-2024-------------------------------37b9c007e202-chunk-3-61bc31b76cef3598-4",
+          "question": "2024년도에 아이돌보미 면접은 월 최대 몇 회까지 가능하며, 면접 취소는 언제까지 해야 하나요?",
+          "answer": "2024년도에는 월 최대 3회까지 아이돌보미 면접이 가능하며, 면접 취소는 면접 전 4시간 전까지 가능합니다. 4시간 이후 취소 시에는 면접비가 지급됩니다.",
+          "sourceChunks": [
+            "2024-------------------------------37b9c007e202-chunk-3-61bc31b76cef3598"
+          ],
+          "metadata": {
+            "domain": "hr",
+            "questionType": "when",
+            "difficulty": "medium",
+            "generatedAt": "2025-10-10T07:16:39.230Z",
+            "validationScore": 85,
+            "violations": 3
+          }
+        },
+        {
+          "id": "qa-2024-------------------------------37b9c007e202-chunk-4-8494269faf1f09b6-5",
+          "question": "2024년도에 코로나19 감염 아동의 경우 질병감염아동지원 서비스 이용이 가능한가요?",
+          "answer": "네, 2024년도부터는 코로나19의 경우 연계 아이돌보미와 협의 시 질병감염아동지원 서비스를 이용할 수 있습니다.",
+          "sourceChunks": [
+            "2024-------------------------------37b9c007e202-chunk-4-8494269faf1f09b6"
+          ],
+          "metadata": {
+            "domain": "hr",
+            "questionType": "general",
+            "difficulty": "medium",
+            "generatedAt": "2025-10-10T07:16:44.989Z",
+            "validationScore": 90,
+            "violations": 2
+          }
+        },
+        {
+          "id": "qa-2024-------------------------------37b9c007e202-chunk-5-07627f8f47793ffe-6",
+          "question": "2024년도 아이돌보미 양성체계의 주요 절차는 어떻게 변경되었나요?",
+          "answer": "2024년도에는 ",
+          "sourceChunks": [
+            "2024-------------------------------37b9c007e202-chunk-5-07627f8f47793ffe"
+          ],
+          "metadata": {
+            "domain": "hr",
+            "questionType": "how",
+            "difficulty": "medium",
+            "generatedAt": "2025-10-10T07:16:52.401Z",
+            "validationScore": 97.5,
+            "violations": 0
+          }
+        },
+        {
+          "id": "qa-2024-------------------------------37b9c007e202-chunk-6-6d39fbdc3faaafc1-7",
+          "question": "2024년도 아이돌보미 양성교육의 수료 기준은 어떻게 되나요?",
+          "answer": "2024년도 아이돌보미 양성교육의 수료 기준은 출석과 실습평가 모두 해당 기준 이상을 통과해야 합니다. 출석은 소정 훈련일수의 80% 이상을 출석해야 하며, 현장실습은 100% 참석이 필수입니다. 실습평가는 현장실습 평가에서 60점 이상을 득해야 합니다.",
+          "sourceChunks": [
+            "2024-------------------------------37b9c007e202-chunk-6-6d39fbdc3faaafc1"
+          ],
+          "metadata": {
+            "domain": "hr",
+            "questionType": "how",
+            "difficulty": "medium",
+            "generatedAt": "2025-10-10T07:16:58.213Z",
+            "validationScore": 80,
+            "violations": 4
+          }
+        },
+        {
+          "id": "qa-2024-------------------------------37b9c007e202-chunk-7-3c7f1cab5fae638d-8",
+          "question": "아동학대 관련 처분을 받은 아이돌보미가 복귀하기 위해서는 몇 시간의 교육을 이수해야 하나요?",
+          "answer": "아동학대 관련 처분을 받은 아이돌보미는 복귀 전 공통교육 2시간, 기초교육 6시간, 심층교육 4시간 등 총 12시간의 복귀자 교육 과정을 이수해야 합니다.",
+          "sourceChunks": [
+            "2024-------------------------------37b9c007e202-chunk-7-3c7f1cab5fae638d"
+          ],
+          "metadata": {
+            "domain": "hr",
+            "questionType": "general",
+            "difficulty": "medium",
+            "generatedAt": "2025-10-10T07:17:04.506Z",
+            "validationScore": 80,
+            "violations": 4
+          }
+        },
+        {
+          "id": "qa-2024-------------------------------37b9c007e202-chunk-8-1f5354b195977220-9",
+          "question": "2024년도부터 아이돌봄 교육기관의 운영과 관련하여 어떤 새로운 권고사항이 추가되었나요?",
+          "answer": "2024년부터 모든 교육기관이 국민내일배움카드 활용을 권고받게 되었으며, 이에 따라 시·도지사는 교육기관 지정 시 관련 내용을 확인해야 합니다.",
+          "sourceChunks": [
+            "2024-------------------------------37b9c007e202-chunk-8-1f5354b195977220"
+          ],
+          "metadata": {
+            "domain": "hr",
+            "questionType": "general",
+            "difficulty": "medium",
+            "generatedAt": "2025-10-10T07:17:09.641Z",
+            "validationScore": 100,
+            "violations": 0
+          }
+        },
+        {
+          "id": "qa-2024-------------------------------37b9c007e202-chunk-9-38689c53a487f71a-10",
+          "question": "2024년도 서비스제공기관의 운영비(기관종사자 인건비, 행정경비)는 전체 예산의 몇 % 범위 내에서 편성･집행해야 하나요?",
+          "answer": "서비스제공기관의 운영비는 전체 예산(시･도)의 5.2% 범위 내에서 편성･집행해야 합니다.",
+          "sourceChunks": [
+            "2024-------------------------------37b9c007e202-chunk-9-38689c53a487f71a"
+          ],
+          "metadata": {
+            "domain": "hr",
+            "questionType": "general",
+            "difficulty": "medium",
+            "generatedAt": "2025-10-10T07:17:15.097Z",
+            "validationScore": 90,
+            "violations": 2
+          }
+        }
+      ]
+    }
+  ]
+}

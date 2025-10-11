@@ -142,7 +142,8 @@ export class FeedbackInterpreter {
    * Get cache key for feedback
    */
   private getCacheKey(feedback: UserFeedback): string {
-    return `${feedback.intent}_${feedback.modifiers.sort().join('_')}`;
+    const modifiers = feedback.modifiers || [];
+    return `${feedback.intent}_${modifiers.sort().join('_')}`;
   }
 
   /**

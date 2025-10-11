@@ -1,0 +1,76 @@
+{
+  "timestamp": "2025-10-10T12:24:30.001Z",
+  "phase": "Phase 3 Week 3",
+  "testType": "E2E Vision + Hybrid Search",
+  "visionInput": {
+    "pages": 6,
+    "tables": 6,
+    "sections": 10
+  },
+  "chunking": {
+    "totalChunks": 16,
+    "avgChunkSize": 47.8125,
+    "preservationRate": 100,
+    "breakdown": {
+      "sections": 10,
+      "tables": 6,
+      "lists": 0,
+      "paragraphs": 0,
+      "figures": 0
+    }
+  },
+  "search": {
+    "indexedDocuments": 16,
+    "testQueries": 5,
+    "metrics": {
+      "totalQueries": 5,
+      "elasticTime": 0.7593749999999773,
+      "faissTime": 0.2987900000000252,
+      "mergeTime": 0.12025000000002706,
+      "cacheHits": 0,
+      "cacheMisses": 5,
+      "averageLatency": 0.18942539999999894
+    },
+    "queryResults": [
+      {
+        "query": "아이돌봄 서비스 요금은 얼마인가요?",
+        "results": 5,
+        "topResult": "# 제3장 아이돌봄서비스 이용 및 연계\n\n제3장 아이돌봄서비스 이용 및 연계\n\n3...",
+        "avgScore": null
+      },
+      {
+        "query": "정부 지원금은 어떻게 받나요?",
+        "results": 5,
+        "topResult": "## 제2장 정부지원 신청 및 결정\n\n제2장 정부지원 신청 및 결정...",
+        "avgScore": null
+      },
+      {
+        "query": "신청 대상은 누구인가요?",
+        "results": 5,
+        "topResult": "## 제2장 정부지원 신청 및 결정\n\n제2장 정부지원 신청 및 결정...",
+        "avgScore": null
+      },
+      {
+        "query": "서비스 이용 시간은 어떻게 되나요?",
+        "results": 5,
+        "topResult": "# 제3장 아이돌봄서비스 이용 및 연계\n\n제3장 아이돌봄서비스 이용 및 연계\n\n3...",
+        "avgScore": null
+      },
+      {
+        "query": "소득 기준은 무엇인가요?",
+        "results": 5,
+        "topResult": "**주요 변경 내용**\n\nTable (6 rows × 3 cols)...",
+        "avgScore": null
+      }
+    ]
+  },
+  "performance": {
+    "totalDuration": "3.07ms",
+    "avgQueryLatency": "0.19ms"
+  },
+  "quality": {
+    "tablePreservation": "100%",
+    "sectionAlignment": "100.0%",
+    "avgResultsPerQuery": "5.0"
+  }
+}

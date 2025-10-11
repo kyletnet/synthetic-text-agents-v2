@@ -25,8 +25,7 @@ import { FeedbackNoiseFilter } from '../l4-optimizer/feedback-noise-filter';
 import { FeedbackInterpreter } from '../l4-optimizer/feedback-interpreter';
 import { BanditPolicy } from '../l4-optimizer/bandit-policy';
 import { GateFController } from '../optimization/gate-f-throughput';
-import type { Chunk, Evidence } from '../types';
-import type { UserFeedback } from '../types';
+import type { Chunk, Evidence, UserFeedback } from '../types';
 
 /**
  * Query input with full context

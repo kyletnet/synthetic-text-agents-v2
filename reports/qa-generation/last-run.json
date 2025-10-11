@@ -1,0 +1,31 @@
+{
+  "timestamp": "2025-10-10T06:28:31.272Z",
+  "config": {
+    "pdfPath": null,
+    "qaPerDocument": null
+  },
+  "results": {
+    "qaGeneration": {
+      "requested": 10,
+      "generated": 9,
+      "avgLatency": "6295.95ms"
+    },
+    "gateG": {
+      "status": "FAIL",
+      "complianceRate": 11.11111111111111,
+      "validQA": 1,
+      "totalQA": 9,
+      "averageScore": 86.94444444444444,
+      "violations": 23
+    },
+    "gateF": {
+      "status": "FAIL",
+      "p95Latency": 8604.065916,
+      "throughput": 0.1757408283223216,
+      "systemUtilization": 1
+    },
+    "overallStatus": "FAIL",
+    "duration": "68225.61ms"
+  },
+  "qaPairs": 9
+}

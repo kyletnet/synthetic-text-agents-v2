@@ -1,0 +1,1284 @@
+{
+  "metadata": {
+    "timestamp": "2025-10-11T04:22:09.668Z",
+    "config": {
+      "useRealClients": true,
+      "elasticsearchUrl": "http://localhost:9200",
+      "faissIndexPath": "data/faiss-index",
+      "visionResultsPath": "reports/pdf-vision/test-5-10-chunked.json",
+      "outputPath": "reports/hybrid-benchmark/real-benchmark-ragas.json"
+    },
+    "totalQueries": 5,
+    "encoding": "utf-8",
+    "phase": "Phase 6 Day 3 - Encoding Fixed"
+  },
+  "summary": {
+    "adaptiveRAG": {
+      "totalQueries": 5,
+      "totalTokens": 27430,
+      "totalCostUSD": 0.28328013470134705,
+      "averageK": 4.4,
+      "averageIterations": 3.4,
+      "averageConfidence": 0.6980000000000001,
+      "savings": {
+        "tokensSaved": -2430,
+        "percentageSaved": -9.719999999999999,
+        "costSavedUSD": -0.000243
+      },
+      "kDistribution": {
+        "2": 2,
+        "6": 3
+      },
+      "successRates": {
+        "highConfidence": 0.2,
+        "mediumConfidence": 0.8,
+        "lowConfidence": 0
+      }
+    },
+    "hybridSearch": {
+      "totalQueries": 17,
+      "elasticTime": 221.96058200000107,
+      "faissTime": 146.34537400000045,
+      "mergeTime": 0.8210830000007263,
+      "cacheHits": 6,
+      "cacheMisses": 11,
+      "averageLatency": 22.055543799773822
+    },
+    "ragas": {
+      "contextRecall": 0.2668398268398268,
+      "contextPrecision": 0.09666666666666668,
+      "answerFaithfulness": 1,
+      "answerRelevance": 0.04,
+      "overall": 0.06253749952553471
+    },
+    "gates": {
+      "gatePassRates": {
+        "B": 0,
+        "D": 0,
+        "E": 0,
+        "F": 1,
+        "G": 1
+      },
+      "averageScores": {
+        "B": 0.2668398268398268,
+        "D": 0.09666666666666668,
+        "E": 0.04,
+        "F": 5486,
+        "G": 1
+      },
+      "overallPassRate": 0
+    }
+  },
+  "results": [
+    {
+      "query": {
+        "id": "q1",
+        "query": "독립형 아이돌봄 서비스의 가격은 얼마인가?",
+        "groundTruth": "0세아는 시간당 11,630원, 영아는 시간당 15,110원입니다."
+      },
+      "ragResult": {
+        "answer": "# 제3장 아이돌봄서비스 이용 및 연계\n\n제3장 아이돌봄서비스 이용 및 연계\n\n3",
+        "context": [
+          {
+            "id": "section-7-7",
+            "content": "# 제3장 아이돌봄서비스 이용 및 연계\n\n제3장 아이돌봄서비스 이용 및 연계\n\n3",
+            "score": 23.175837,
+            "metadata": {
+              "page": 7,
+              "sectionTitle": "제3장 아이돌봄서비스 이용 및 연계",
+              "sectionLevel": 1,
+              "startChar": 0,
+              "endChar": 45,
+              "enriched": true,
+              "enrichmentType": "section",
+              "enrichmentLevel": "full",
+              "childCount": 0
+            }
+          },
+          {
+            "id": "section-9-11",
+            "content": "# 제4장 아이돌보미 및 돌봄활동\n\n제4장 아이돌보미 및 돌봄활동",
+            "score": 6.8583283,
+            "metadata": {
+              "page": 9,
+              "sectionTitle": "제4장 아이돌보미 및 돌봄활동",
+              "sectionLevel": 1,
+              "startChar": 0,
+              "endChar": 36,
+              "enriched": true,
+              "enrichmentType": "section",
+              "enrichmentLevel": "full",
+              "childCount": 0
+            }
+          },
+          {
+            "id": "table-5-0",
+            "content": "**주요 변경 내용**\n\n\n| 구분 | 2023년도 | 2024년도 | 비고 |\n| 서비스\n이용요금 | ○ 서비스 이용요금과 돌봄수당\n- (영아종일제) 11,080원\n- (시간제) 기본형 11,080원\n 종합형 14,400원\n- (질병감염아동) 13,290원\n- (기관연계) 18,480원 | ○ 서비스 이용요금과 돌봄수당\n- (영아종일제) 11,630원\n- (시간제) 기본형 11,630원\n 종합형 15,110원\n- (질병감염아동) 13,950원\n- (기관연계) 18,600원 |  |\n| 정부지원 | - | ○ ('가~다'형)2자녀 이상 다자녀 가구\n 본인부담금의 10% 추가 지원\n○ 중위소득 150% 이하 청소년부모,\n 청소년한부모 0~1세 자녀 가정\n 정부지원비율 90% 지원 | 정부지원 확대 |\n| 부모급여 중\n복지원 금지 | - | ○ 부모급여와 영아종일제 아이돌봄\n 서비스 정부지원금 간 차액 발생 시\n 차액 지급 |  |\n| 장애아동\n범위 | ○「장애인복지법」에 따른 장애의\n 정도가 심하지 않은 장애인에\n 해당 | ○「장애인복지법」에 따른 장애의\n 정도가 심하지 않은 장애인(장애\n소견 의사진단, 특수교육대상자\n진단아동 포함)에 해당 | 장애아동 인정범위\n확대 |\n| 양육공백\n인정\n구비서류 | ○ 자영업자\n- 부가가치세신고서\n\n○ 기타양육부담가정\n(장기부재·입원 등)\n- 추가 | ○ 자영업자\n- 부가가치세신고서\n* 신규사업자의 경우 소득확인이 가능한\n 서류(매출장부, 매출전표 등)\n\n○ 기타양육부담가정(장기부재·입원 등)\n- 출입국사실확인증명서(해외 장기\n 체류 시(90일 이상) | 제도 보완\n\n양육공백 인정 사유\n추가 |",
+            "score": 4.7973065,
+            "metadata": {
+              "page": 5,
+              "tableInfo": {
+                "caption": "주요 변경 내용",
+                "rows": 6,
+                "cols": 3
+              },
+              "startChar": 0,
+              "endChar": 0
+            }
+          },
+          {
+            "id": "section-10-14",
+            "content": "null\n\n2024년도 아이돌봄 지원사업 안내\n\n6\n\n주요 변경 내용\n\n○ 기본수당 : 9,630원\n○ 가산수당\n- 시간제 종합형 : 3,320원\n- 질병감염아동 : 2,890원\n- 기관연계 : 7,220원 등\n\n○ 기본수당 : 10,110원\n○ 가산수당\n- 시간제 종합형 : 3,480원\n·질병감염아동 : 3,040원\n- 기관연계 : 7,580원 등",
+            "score": 3.6284924,
+            "metadata": {
+              "page": 10,
+              "sectionTitle": null,
+              "sectionLevel": 0,
+              "startChar": 0,
+              "endChar": 196
+            }
+          },
+          {
+            "id": "section-10-15",
+            "content": "null\n\n2. 아이돌봄 인력 교육\n\n6\n\n주요 변경 내용\n\n○ 기본수당 : 9,630원\n○ 가산수당\n- 시간제 종합형 : 3,320원\n- 질병감염아동 : 2,890원\n- 기관연계 : 7,220원 등\n\n○ 기본수당 : 10,110원\n○ 가산수당\n- 시간제 종합형 : 3,480원\n·질병감염아동 : 3,040원\n- 기관연계 : 7,580원 등",
+            "score": 1.6284027,
+            "metadata": {
+              "page": 10,
+              "sectionTitle": null,
+              "sectionLevel": 0,
+              "startChar": 0,
+              "endChar": 190
+            }
+          },
+          {
+            "id": "section-5-2",
+            "content": "## 제1장 사업 개요\n\n제1장 사업 개요",
+            "score": 0.8151377828419388,
+            "metadata": {
+              "page": 5,
+              "sectionTitle": "제1장 사업 개요",
+              "sectionLevel": 2,
+              "startChar": 0,
+              "endChar": 23
+            }
+          }
+        ],
+        "finalK": 6,
+        "iterations": 5,
+        "confidence": 0.63,
+        "cost": {
+          "totalTokens": 2172,
+          "retrievalTokens": 2153,
+          "generationTokens": 19,
+          "costUSD": 0.022100005700057
+        },
+        "performance": {
+          "totalTimeMs": 91.59883300000001,
+          "retrievalTimeMs": 86.9388329999997,
+          "generationTimeMs": 0.08199999999987995,
+          "confidenceCheckTimeMs": 0
+        },
+        "trace": [
+          {
+            "iteration": 1,
+            "k": 2,
+            "contextsRetrieved": 2,
+            "confidence": 0.63,
+            "action": "expand_k",
+            "timestamp": 1760156529466
+          },
+          {
+            "iteration": 2,
+            "k": 4,
+            "contextsRetrieved": 4,
+            "confidence": 0.63,
+            "action": "expand_k",
+            "timestamp": 1760156529492
+          },
+          {
+            "iteration": 3,
+            "k": 6,
+            "contextsRetrieved": 6,
+            "confidence": 0.63,
+            "action": "expand_k",
+            "timestamp": 1760156529516
+          },
+          {
+            "iteration": 4,
+            "k": 6,
+            "contextsRetrieved": 6,
+            "confidence": 0.63,
+            "action": "expand_k",
+            "timestamp": 1760156529517
+          },
+          {
+            "iteration": 5,
+            "k": 6,
+            "contextsRetrieved": 6,
+            "confidence": 0.63,
+            "action": "expand_k",
+            "timestamp": 1760156529518
+          }
+        ]
+      },
+      "ragasResult": {
+        "input": {
+          "question": "독립형 아이돌봄 서비스의 가격은 얼마인가?",
+          "answer": "# 제3장 아이돌봄서비스 이용 및 연계\n\n제3장 아이돌봄서비스 이용 및 연계\n\n3",
+          "contexts": [
+            "# 제3장 아이돌봄서비스 이용 및 연계\n\n제3장 아이돌봄서비스 이용 및 연계\n\n3",
+            "# 제4장 아이돌보미 및 돌봄활동\n\n제4장 아이돌보미 및 돌봄활동",
+            "**주요 변경 내용**\n\n\n| 구분 | 2023년도 | 2024년도 | 비고 |\n| 서비스\n이용요금 | ○ 서비스 이용요금과 돌봄수당\n- (영아종일제) 11,080원\n- (시간제) 기본형 11,080원\n 종합형 14,400원\n- (질병감염아동) 13,290원\n- (기관연계) 18,480원 | ○ 서비스 이용요금과 돌봄수당\n- (영아종일제) 11,630원\n- (시간제) 기본형 11,630원\n 종합형 15,110원\n- (질병감염아동) 13,950원\n- (기관연계) 18,600원 |  |\n| 정부지원 | - | ○ ('가~다'형)2자녀 이상 다자녀 가구\n 본인부담금의 10% 추가 지원\n○ 중위소득 150% 이하 청소년부모,\n 청소년한부모 0~1세 자녀 가정\n 정부지원비율 90% 지원 | 정부지원 확대 |\n| 부모급여 중\n복지원 금지 | - | ○ 부모급여와 영아종일제 아이돌봄\n 서비스 정부지원금 간 차액 발생 시\n 차액 지급 |  |\n| 장애아동\n범위 | ○「장애인복지법」에 따른 장애의\n 정도가 심하지 않은 장애인에\n 해당 | ○「장애인복지법」에 따른 장애의\n 정도가 심하지 않은 장애인(장애\n소견 의사진단, 특수교육대상자\n진단아동 포함)에 해당 | 장애아동 인정범위\n확대 |\n| 양육공백\n인정\n구비서류 | ○ 자영업자\n- 부가가치세신고서\n\n○ 기타양육부담가정\n(장기부재·입원 등)\n- 추가 | ○ 자영업자\n- 부가가치세신고서\n* 신규사업자의 경우 소득확인이 가능한\n 서류(매출장부, 매출전표 등)\n\n○ 기타양육부담가정(장기부재·입원 등)\n- 출입국사실확인증명서(해외 장기\n 체류 시(90일 이상) | 제도 보완\n\n양육공백 인정 사유\n추가 |",
+            "null\n\n2024년도 아이돌봄 지원사업 안내\n\n6\n\n주요 변경 내용\n\n○ 기본수당 : 9,630원\n○ 가산수당\n- 시간제 종합형 : 3,320원\n- 질병감염아동 : 2,890원\n- 기관연계 : 7,220원 등\n\n○ 기본수당 : 10,110원\n○ 가산수당\n- 시간제 종합형 : 3,480원\n·질병감염아동 : 3,040원\n- 기관연계 : 7,580원 등",
+            "null\n\n2. 아이돌봄 인력 교육\n\n6\n\n주요 변경 내용\n\n○ 기본수당 : 9,630원\n○ 가산수당\n- 시간제 종합형 : 3,320원\n- 질병감염아동 : 2,890원\n- 기관연계 : 7,220원 등\n\n○ 기본수당 : 10,110원\n○ 가산수당\n- 시간제 종합형 : 3,480원\n·질병감염아동 : 3,040원\n- 기관연계 : 7,580원 등",
+            "## 제1장 사업 개요\n\n제1장 사업 개요"
+          ],
+          "groundTruth": "0세아는 시간당 11,630원, 영아는 시간당 15,110원입니다."
+        },
+        "metrics": {
+          "contextRecall": 0,
+          "contextPrecision": 0.10000000000000002,
+          "answerFaithfulness": 1,
+          "answerRelevance": 0,
+          "overall": 0.00019989006046674328
+        },
+        "details": {
+          "contextRecall": {
+            "score": 0,
+            "coverage": 0,
+            "missingConcepts": []
+          },
+          "contextPrecision": {
+            "score": 0.10000000000000002,
+            "relevantContexts": 1,
+            "irrelevantContexts": 5
+          },
+          "answerFaithfulness": {
+            "score": 1,
+            "groundedStatements": 1,
+            "ungroundedStatements": 0,
+            "hallucinationRisk": "low"
+          },
+          "answerRelevance": {
+            "score": 0,
+            "questionIntent": "auto-detected",
+            "answerIntent": "auto-detected",
+            "alignment": 0
+          }
+        },
+        "gateMapping": {
+          "contextRecall": "Gate B (Evidence Hit)",
+          "contextPrecision": "Gate D (Diversity)",
+          "answerFaithfulness": "Gate G (Compliance)",
+          "answerRelevance": "Gate E (Explanation)"
+        }
+      },
+      "gateReport": {
+        "timestamp": "2025-10-11T04:22:09.520Z",
+        "queryId": "q1",
+        "gates": {
+          "B": {
+            "gate": "B",
+            "name": "Evidence Hit",
+            "score": 0,
+            "threshold": 0.7,
+            "passed": false,
+            "timestamp": 1760156529523,
+            "metadata": {
+              "retrievedContexts": 6,
+              "coverage": 0
+            }
+          },
+          "D": {
+            "gate": "D",
+            "name": "Faithfulness",
+            "score": 0.10000000000000002,
+            "threshold": 0.75,
+            "passed": false,
+            "timestamp": 1760156529523,
+            "metadata": {
+              "relevantContexts": 1,
+              "irrelevantContexts": 5
+            }
+          },
+          "E": {
+            "gate": "E",
+            "name": "Utility",
+            "score": 0,
+            "threshold": 0.85,
+            "passed": false,
+            "timestamp": 1760156529523,
+            "metadata": {
+              "alignment": 0
+            }
+          },
+          "F": {
+            "gate": "F",
+            "name": "Throughput",
+            "score": 2172,
+            "threshold": 8000,
+            "passed": true,
+            "timestamp": 1760156529523,
+            "metadata": {
+              "totalTokens": 2172,
+              "costUSD": 0.022100005700057,
+              "finalK": 6,
+              "iterations": 5
+            }
+          },
+          "G": {
+            "gate": "G",
+            "name": "Groundedness",
+            "score": 1,
+            "threshold": 0.8,
+            "passed": true,
+            "timestamp": 1760156529523,
+            "metadata": {
+              "groundedStatements": 1,
+              "ungroundedStatements": 0,
+              "hallucinationRisk": "low"
+            }
+          }
+        },
+        "summary": {
+          "totalPassed": 2,
+          "totalFailed": 3,
+          "overallStatus": "FAIL"
+        }
+      }
+    },
+    {
+      "query": {
+        "id": "q2",
+        "query": "아이돌봄 서비스의 유형에는 어떤 것들이 있나?",
+        "groundTruth": "시간제 서비스, 종일제 서비스, 영아 종일제 서비스 등이 있습니다."
+      },
+      "ragResult": {
+        "answer": "# 제3장 아이돌봄서비스 이용 및 연계\n\n제3장 아이돌봄서비스 이용 및 연계\n\n3",
+        "context": [
+          {
+            "id": "section-7-7",
+            "content": "# 제3장 아이돌봄서비스 이용 및 연계\n\n제3장 아이돌봄서비스 이용 및 연계\n\n3",
+            "score": 23.175837,
+            "metadata": {
+              "page": 7,
+              "sectionTitle": "제3장 아이돌봄서비스 이용 및 연계",
+              "sectionLevel": 1,
+              "startChar": 0,
+              "endChar": 45,
+              "enriched": true,
+              "enrichmentType": "section",
+              "enrichmentLevel": "full",
+              "childCount": 0
+            }
+          },
+          {
+            "id": "section-9-11",
+            "content": "# 제4장 아이돌보미 및 돌봄활동\n\n제4장 아이돌보미 및 돌봄활동",
+            "score": 6.8583283,
+            "metadata": {
+              "page": 9,
+              "sectionTitle": "제4장 아이돌보미 및 돌봄활동",
+              "sectionLevel": 1,
+              "startChar": 0,
+              "endChar": 36,
+              "enriched": true,
+              "enrichmentType": "section",
+              "enrichmentLevel": "full",
+              "childCount": 0
+            }
+          },
+          {
+            "id": "table-5-0",
+            "content": "**주요 변경 내용**\n\n\n| 구분 | 2023년도 | 2024년도 | 비고 |\n| 서비스\n이용요금 | ○ 서비스 이용요금과 돌봄수당\n- (영아종일제) 11,080원\n- (시간제) 기본형 11,080원\n 종합형 14,400원\n- (질병감염아동) 13,290원\n- (기관연계) 18,480원 | ○ 서비스 이용요금과 돌봄수당\n- (영아종일제) 11,630원\n- (시간제) 기본형 11,630원\n 종합형 15,110원\n- (질병감염아동) 13,950원\n- (기관연계) 18,600원 |  |\n| 정부지원 | - | ○ ('가~다'형)2자녀 이상 다자녀 가구\n 본인부담금의 10% 추가 지원\n○ 중위소득 150% 이하 청소년부모,\n 청소년한부모 0~1세 자녀 가정\n 정부지원비율 90% 지원 | 정부지원 확대 |\n| 부모급여 중\n복지원 금지 | - | ○ 부모급여와 영아종일제 아이돌봄\n 서비스 정부지원금 간 차액 발생 시\n 차액 지급 |  |\n| 장애아동\n범위 | ○「장애인복지법」에 따른 장애의\n 정도가 심하지 않은 장애인에\n 해당 | ○「장애인복지법」에 따른 장애의\n 정도가 심하지 않은 장애인(장애\n소견 의사진단, 특수교육대상자\n진단아동 포함)에 해당 | 장애아동 인정범위\n확대 |\n| 양육공백\n인정\n구비서류 | ○ 자영업자\n- 부가가치세신고서\n\n○ 기타양육부담가정\n(장기부재·입원 등)\n- 추가 | ○ 자영업자\n- 부가가치세신고서\n* 신규사업자의 경우 소득확인이 가능한\n 서류(매출장부, 매출전표 등)\n\n○ 기타양육부담가정(장기부재·입원 등)\n- 출입국사실확인증명서(해외 장기\n 체류 시(90일 이상) | 제도 보완\n\n양육공백 인정 사유\n추가 |",
+            "score": 4.7973065,
+            "metadata": {
+              "page": 5,
+              "tableInfo": {
+                "caption": "주요 변경 내용",
+                "rows": 6,
+                "cols": 3
+              },
+              "startChar": 0,
+              "endChar": 0
+            }
+          },
+          {
+            "id": "section-10-14",
+            "content": "null\n\n2024년도 아이돌봄 지원사업 안내\n\n6\n\n주요 변경 내용\n\n○ 기본수당 : 9,630원\n○ 가산수당\n- 시간제 종합형 : 3,320원\n- 질병감염아동 : 2,890원\n- 기관연계 : 7,220원 등\n\n○ 기본수당 : 10,110원\n○ 가산수당\n- 시간제 종합형 : 3,480원\n·질병감염아동 : 3,040원\n- 기관연계 : 7,580원 등",
+            "score": 3.6284924,
+            "metadata": {
+              "page": 10,
+              "sectionTitle": null,
+              "sectionLevel": 0,
+              "startChar": 0,
+              "endChar": 196
+            }
+          },
+          {
+            "id": "section-10-15",
+            "content": "null\n\n2. 아이돌봄 인력 교육\n\n6\n\n주요 변경 내용\n\n○ 기본수당 : 9,630원\n○ 가산수당\n- 시간제 종합형 : 3,320원\n- 질병감염아동 : 2,890원\n- 기관연계 : 7,220원 등\n\n○ 기본수당 : 10,110원\n○ 가산수당\n- 시간제 종합형 : 3,480원\n·질병감염아동 : 3,040원\n- 기관연계 : 7,580원 등",
+            "score": 1.6284027,
+            "metadata": {
+              "page": 10,
+              "sectionTitle": null,
+              "sectionLevel": 0,
+              "startChar": 0,
+              "endChar": 190
+            }
+          },
+          {
+            "id": "section-9-12",
+            "content": "## 1. 양성체계 변경\n\n1. 양성체계 변경",
+            "score": 0.8080705473327269,
+            "metadata": {
+              "page": 9,
+              "sectionTitle": "1. 양성체계 변경",
+              "sectionLevel": 2,
+              "startChar": 0,
+              "endChar": 25
+            }
+          }
+        ],
+        "finalK": 6,
+        "iterations": 5,
+        "confidence": 0.63,
+        "cost": {
+          "totalTokens": 4347,
+          "retrievalTokens": 4309,
+          "generationTokens": 38,
+          "costUSD": 0.044230011400114004
+        },
+        "performance": {
+          "totalTimeMs": 51.620916999999736,
+          "retrievalTimeMs": 50.04670799999985,
+          "generationTimeMs": 0.0039999999999054126,
+          "confidenceCheckTimeMs": 0
+        },
+        "trace": [
+          {
+            "iteration": 1,
+            "k": 2,
+            "contextsRetrieved": 2,
+            "confidence": 0.63,
+            "action": "expand_k",
+            "timestamp": 1760156529541
+          },
+          {
+            "iteration": 2,
+            "k": 4,
+            "contextsRetrieved": 4,
+            "confidence": 0.63,
+            "action": "expand_k",
+            "timestamp": 1760156529558
+          },
+          {
+            "iteration": 3,
+            "k": 6,
+            "contextsRetrieved": 6,
+            "confidence": 0.63,
+            "action": "expand_k",
+            "timestamp": 1760156529574
+          },
+          {
+            "iteration": 4,
+            "k": 6,
+            "contextsRetrieved": 6,
+            "confidence": 0.63,
+            "action": "expand_k",
+            "timestamp": 1760156529575
+          },
+          {
+            "iteration": 5,
+            "k": 6,
+            "contextsRetrieved": 6,
+            "confidence": 0.63,
+            "action": "expand_k",
+            "timestamp": 1760156529575
+          }
+        ]
+      },
+      "ragasResult": {
+        "input": {
+          "question": "아이돌봄 서비스의 유형에는 어떤 것들이 있나?",
+          "answer": "# 제3장 아이돌봄서비스 이용 및 연계\n\n제3장 아이돌봄서비스 이용 및 연계\n\n3",
+          "contexts": [
+            "# 제3장 아이돌봄서비스 이용 및 연계\n\n제3장 아이돌봄서비스 이용 및 연계\n\n3",
+            "# 제4장 아이돌보미 및 돌봄활동\n\n제4장 아이돌보미 및 돌봄활동",
+            "**주요 변경 내용**\n\n\n| 구분 | 2023년도 | 2024년도 | 비고 |\n| 서비스\n이용요금 | ○ 서비스 이용요금과 돌봄수당\n- (영아종일제) 11,080원\n- (시간제) 기본형 11,080원\n 종합형 14,400원\n- (질병감염아동) 13,290원\n- (기관연계) 18,480원 | ○ 서비스 이용요금과 돌봄수당\n- (영아종일제) 11,630원\n- (시간제) 기본형 11,630원\n 종합형 15,110원\n- (질병감염아동) 13,950원\n- (기관연계) 18,600원 |  |\n| 정부지원 | - | ○ ('가~다'형)2자녀 이상 다자녀 가구\n 본인부담금의 10% 추가 지원\n○ 중위소득 150% 이하 청소년부모,\n 청소년한부모 0~1세 자녀 가정\n 정부지원비율 90% 지원 | 정부지원 확대 |\n| 부모급여 중\n복지원 금지 | - | ○ 부모급여와 영아종일제 아이돌봄\n 서비스 정부지원금 간 차액 발생 시\n 차액 지급 |  |\n| 장애아동\n범위 | ○「장애인복지법」에 따른 장애의\n 정도가 심하지 않은 장애인에\n 해당 | ○「장애인복지법」에 따른 장애의\n 정도가 심하지 않은 장애인(장애\n소견 의사진단, 특수교육대상자\n진단아동 포함)에 해당 | 장애아동 인정범위\n확대 |\n| 양육공백\n인정\n구비서류 | ○ 자영업자\n- 부가가치세신고서\n\n○ 기타양육부담가정\n(장기부재·입원 등)\n- 추가 | ○ 자영업자\n- 부가가치세신고서\n* 신규사업자의 경우 소득확인이 가능한\n 서류(매출장부, 매출전표 등)\n\n○ 기타양육부담가정(장기부재·입원 등)\n- 출입국사실확인증명서(해외 장기\n 체류 시(90일 이상) | 제도 보완\n\n양육공백 인정 사유\n추가 |",
+            "null\n\n2024년도 아이돌봄 지원사업 안내\n\n6\n\n주요 변경 내용\n\n○ 기본수당 : 9,630원\n○ 가산수당\n- 시간제 종합형 : 3,320원\n- 질병감염아동 : 2,890원\n- 기관연계 : 7,220원 등\n\n○ 기본수당 : 10,110원\n○ 가산수당\n- 시간제 종합형 : 3,480원\n·질병감염아동 : 3,040원\n- 기관연계 : 7,580원 등",
+            "null\n\n2. 아이돌봄 인력 교육\n\n6\n\n주요 변경 내용\n\n○ 기본수당 : 9,630원\n○ 가산수당\n- 시간제 종합형 : 3,320원\n- 질병감염아동 : 2,890원\n- 기관연계 : 7,220원 등\n\n○ 기본수당 : 10,110원\n○ 가산수당\n- 시간제 종합형 : 3,480원\n·질병감염아동 : 3,040원\n- 기관연계 : 7,580원 등",
+            "## 1. 양성체계 변경\n\n1. 양성체계 변경"
+          ],
+          "groundTruth": "시간제 서비스, 종일제 서비스, 영아 종일제 서비스 등이 있습니다."
+        },
+        "metrics": {
+          "contextRecall": 0.6666666666666666,
+          "contextPrecision": 0.08333333333333333,
+          "answerFaithfulness": 1,
+          "answerRelevance": 0,
+          "overall": 0.0003994208397823156
+        },
+        "details": {
+          "contextRecall": {
+            "score": 0.6666666666666666,
+            "coverage": 0.6666666666666666,
+            "missingConcepts": []
+          },
+          "contextPrecision": {
+            "score": 0.08333333333333333,
+            "relevantContexts": 1,
+            "irrelevantContexts": 5
+          },
+          "answerFaithfulness": {
+            "score": 1,
+            "groundedStatements": 1,
+            "ungroundedStatements": 0,
+            "hallucinationRisk": "low"
+          },
+          "answerRelevance": {
+            "score": 0,
+            "questionIntent": "auto-detected",
+            "answerIntent": "auto-detected",
+            "alignment": 0
+          }
+        },
+        "gateMapping": {
+          "contextRecall": "Gate B (Evidence Hit)",
+          "contextPrecision": "Gate D (Diversity)",
+          "answerFaithfulness": "Gate G (Compliance)",
+          "answerRelevance": "Gate E (Explanation)"
+        }
+      },
+      "gateReport": {
+        "timestamp": "2025-10-11T04:22:09.575Z",
+        "queryId": "q2",
+        "gates": {
+          "B": {
+            "gate": "B",
+            "name": "Evidence Hit",
+            "score": 0.6666666666666666,
+            "threshold": 0.7,
+            "passed": false,
+            "timestamp": 1760156529575,
+            "metadata": {
+              "retrievedContexts": 6,
+              "coverage": 0.6666666666666666
+            }
+          },
+          "D": {
+            "gate": "D",
+            "name": "Faithfulness",
+            "score": 0.08333333333333333,
+            "threshold": 0.75,
+            "passed": false,
+            "timestamp": 1760156529575,
+            "metadata": {
+              "relevantContexts": 1,
+              "irrelevantContexts": 5
+            }
+          },
+          "E": {
+            "gate": "E",
+            "name": "Utility",
+            "score": 0,
+            "threshold": 0.85,
+            "passed": false,
+            "timestamp": 1760156529575,
+            "metadata": {
+              "alignment": 0
+            }
+          },
+          "F": {
+            "gate": "F",
+            "name": "Throughput",
+            "score": 4347,
+            "threshold": 8000,
+            "passed": true,
+            "timestamp": 1760156529575,
+            "metadata": {
+              "totalTokens": 4347,
+              "costUSD": 0.044230011400114004,
+              "finalK": 6,
+              "iterations": 5
+            }
+          },
+          "G": {
+            "gate": "G",
+            "name": "Groundedness",
+            "score": 1,
+            "threshold": 0.8,
+            "passed": true,
+            "timestamp": 1760156529575,
+            "metadata": {
+              "groundedStatements": 1,
+              "ungroundedStatements": 0,
+              "hallucinationRisk": "low"
+            }
+          }
+        },
+        "summary": {
+          "totalPassed": 2,
+          "totalFailed": 3,
+          "overallStatus": "FAIL"
+        }
+      }
+    },
+    {
+      "query": {
+        "id": "q3",
+        "query": "긴급 돌봄 서비스는 어떻게 신청하나?",
+        "groundTruth": "긴급 돌봄은 전화나 온라인을 통해 사전 신청 없이 즉시 이용 가능합니다."
+      },
+      "ragResult": {
+        "answer": "# 제3장 아이돌봄서비스 이용 및 연계\n\n제3장 아이돌봄서비스 이용 및 연계\n\n3",
+        "context": [
+          {
+            "id": "section-7-7",
+            "content": "# 제3장 아이돌봄서비스 이용 및 연계\n\n제3장 아이돌봄서비스 이용 및 연계\n\n3",
+            "score": 15.05089,
+            "metadata": {
+              "page": 7,
+              "sectionTitle": "제3장 아이돌봄서비스 이용 및 연계",
+              "sectionLevel": 1,
+              "startChar": 0,
+              "endChar": 45,
+              "enriched": true,
+              "enrichmentType": "section",
+              "enrichmentLevel": "full",
+              "childCount": 0
+            }
+          },
+          {
+            "id": "section-5-3",
+            "content": "# 주요 변경 내용\n\n주요 변경 내용\n\n## 제2장 정부지원 신청 및 결정\n\n제2장 정부지원 신청 및 결정",
+            "score": 10.252065,
+            "metadata": {
+              "page": 5,
+              "sectionTitle": "제2장 정부지원 신청 및 결정",
+              "sectionLevel": 2,
+              "startChar": 0,
+              "endChar": 37,
+              "enriched": true,
+              "enrichmentType": "section",
+              "enrichmentLevel": "full",
+              "parentSection": "주요 변경 내용",
+              "childCount": 0
+            }
+          },
+          {
+            "id": "section-9-11",
+            "content": "# 제4장 아이돌보미 및 돌봄활동\n\n제4장 아이돌보미 및 돌봄활동",
+            "score": 6.8583283,
+            "metadata": {
+              "page": 9,
+              "sectionTitle": "제4장 아이돌보미 및 돌봄활동",
+              "sectionLevel": 1,
+              "startChar": 0,
+              "endChar": 36,
+              "enriched": true,
+              "enrichmentType": "section",
+              "enrichmentLevel": "full",
+              "childCount": 0
+            }
+          },
+          {
+            "id": "table-5-0",
+            "content": "**주요 변경 내용**\n\n\n| 구분 | 2023년도 | 2024년도 | 비고 |\n| 서비스\n이용요금 | ○ 서비스 이용요금과 돌봄수당\n- (영아종일제) 11,080원\n- (시간제) 기본형 11,080원\n 종합형 14,400원\n- (질병감염아동) 13,290원\n- (기관연계) 18,480원 | ○ 서비스 이용요금과 돌봄수당\n- (영아종일제) 11,630원\n- (시간제) 기본형 11,630원\n 종합형 15,110원\n- (질병감염아동) 13,950원\n- (기관연계) 18,600원 |  |\n| 정부지원 | - | ○ ('가~다'형)2자녀 이상 다자녀 가구\n 본인부담금의 10% 추가 지원\n○ 중위소득 150% 이하 청소년부모,\n 청소년한부모 0~1세 자녀 가정\n 정부지원비율 90% 지원 | 정부지원 확대 |\n| 부모급여 중\n복지원 금지 | - | ○ 부모급여와 영아종일제 아이돌봄\n 서비스 정부지원금 간 차액 발생 시\n 차액 지급 |  |\n| 장애아동\n범위 | ○「장애인복지법」에 따른 장애의\n 정도가 심하지 않은 장애인에\n 해당 | ○「장애인복지법」에 따른 장애의\n 정도가 심하지 않은 장애인(장애\n소견 의사진단, 특수교육대상자\n진단아동 포함)에 해당 | 장애아동 인정범위\n확대 |\n| 양육공백\n인정\n구비서류 | ○ 자영업자\n- 부가가치세신고서\n\n○ 기타양육부담가정\n(장기부재·입원 등)\n- 추가 | ○ 자영업자\n- 부가가치세신고서\n* 신규사업자의 경우 소득확인이 가능한\n 서류(매출장부, 매출전표 등)\n\n○ 기타양육부담가정(장기부재·입원 등)\n- 출입국사실확인증명서(해외 장기\n 체류 시(90일 이상) | 제도 보완\n\n양육공백 인정 사유\n추가 |",
+            "score": 4.0605674,
+            "metadata": {
+              "page": 5,
+              "tableInfo": {
+                "caption": "주요 변경 내용",
+                "rows": 6,
+                "cols": 3
+              },
+              "startChar": 0,
+              "endChar": 0
+            }
+          },
+          {
+            "id": "section-10-15",
+            "content": "null\n\n2. 아이돌봄 인력 교육\n\n6\n\n주요 변경 내용\n\n○ 기본수당 : 9,630원\n○ 가산수당\n- 시간제 종합형 : 3,320원\n- 질병감염아동 : 2,890원\n- 기관연계 : 7,220원 등\n\n○ 기본수당 : 10,110원\n○ 가산수당\n- 시간제 종합형 : 3,480원\n·질병감염아동 : 3,040원\n- 기관연계 : 7,580원 등",
+            "score": 1.6284027,
+            "metadata": {
+              "page": 10,
+              "sectionTitle": null,
+              "sectionLevel": 0,
+              "startChar": 0,
+              "endChar": 190
+            }
+          },
+          {
+            "id": "section-10-14",
+            "content": "null\n\n2024년도 아이돌봄 지원사업 안내\n\n6\n\n주요 변경 내용\n\n○ 기본수당 : 9,630원\n○ 가산수당\n- 시간제 종합형 : 3,320원\n- 질병감염아동 : 2,890원\n- 기관연계 : 7,220원 등\n\n○ 기본수당 : 10,110원\n○ 가산수당\n- 시간제 종합형 : 3,480원\n·질병감염아동 : 3,040원\n- 기관연계 : 7,580원 등",
+            "score": 1.5599452,
+            "metadata": {
+              "page": 10,
+              "sectionTitle": null,
+              "sectionLevel": 0,
+              "startChar": 0,
+              "endChar": 196
+            }
+          }
+        ],
+        "finalK": 6,
+        "iterations": 5,
+        "confidence": 0.63,
+        "cost": {
+          "totalTokens": 6520,
+          "retrievalTokens": 6463,
+          "generationTokens": 57,
+          "costUSD": 0.066340017100171
+        },
+        "performance": {
+          "totalTimeMs": 46.31370799999968,
+          "retrievalTimeMs": 43.5844589999997,
+          "generationTimeMs": 0.00766600000042672,
+          "confidenceCheckTimeMs": 0
+        },
+        "trace": [
+          {
+            "iteration": 1,
+            "k": 2,
+            "contextsRetrieved": 2,
+            "confidence": 0.63,
+            "action": "expand_k",
+            "timestamp": 1760156529589
+          },
+          {
+            "iteration": 2,
+            "k": 4,
+            "contextsRetrieved": 4,
+            "confidence": 0.63,
+            "action": "expand_k",
+            "timestamp": 1760156529603
+          },
+          {
+            "iteration": 3,
+            "k": 6,
+            "contextsRetrieved": 6,
+            "confidence": 0.63,
+            "action": "expand_k",
+            "timestamp": 1760156529620
+          },
+          {
+            "iteration": 4,
+            "k": 6,
+            "contextsRetrieved": 6,
+            "confidence": 0.63,
+            "action": "expand_k",
+            "timestamp": 1760156529621
+          },
+          {
+            "iteration": 5,
+            "k": 6,
+            "contextsRetrieved": 6,
+            "confidence": 0.63,
+            "action": "expand_k",
+            "timestamp": 1760156529622
+          }
+        ]
+      },
+      "ragasResult": {
+        "input": {
+          "question": "긴급 돌봄 서비스는 어떻게 신청하나?",
+          "answer": "# 제3장 아이돌봄서비스 이용 및 연계\n\n제3장 아이돌봄서비스 이용 및 연계\n\n3",
+          "contexts": [
+            "# 제3장 아이돌봄서비스 이용 및 연계\n\n제3장 아이돌봄서비스 이용 및 연계\n\n3",
+            "# 주요 변경 내용\n\n주요 변경 내용\n\n## 제2장 정부지원 신청 및 결정\n\n제2장 정부지원 신청 및 결정",
+            "# 제4장 아이돌보미 및 돌봄활동\n\n제4장 아이돌보미 및 돌봄활동",
+            "**주요 변경 내용**\n\n\n| 구분 | 2023년도 | 2024년도 | 비고 |\n| 서비스\n이용요금 | ○ 서비스 이용요금과 돌봄수당\n- (영아종일제) 11,080원\n- (시간제) 기본형 11,080원\n 종합형 14,400원\n- (질병감염아동) 13,290원\n- (기관연계) 18,480원 | ○ 서비스 이용요금과 돌봄수당\n- (영아종일제) 11,630원\n- (시간제) 기본형 11,630원\n 종합형 15,110원\n- (질병감염아동) 13,950원\n- (기관연계) 18,600원 |  |\n| 정부지원 | - | ○ ('가~다'형)2자녀 이상 다자녀 가구\n 본인부담금의 10% 추가 지원\n○ 중위소득 150% 이하 청소년부모,\n 청소년한부모 0~1세 자녀 가정\n 정부지원비율 90% 지원 | 정부지원 확대 |\n| 부모급여 중\n복지원 금지 | - | ○ 부모급여와 영아종일제 아이돌봄\n 서비스 정부지원금 간 차액 발생 시\n 차액 지급 |  |\n| 장애아동\n범위 | ○「장애인복지법」에 따른 장애의\n 정도가 심하지 않은 장애인에\n 해당 | ○「장애인복지법」에 따른 장애의\n 정도가 심하지 않은 장애인(장애\n소견 의사진단, 특수교육대상자\n진단아동 포함)에 해당 | 장애아동 인정범위\n확대 |\n| 양육공백\n인정\n구비서류 | ○ 자영업자\n- 부가가치세신고서\n\n○ 기타양육부담가정\n(장기부재·입원 등)\n- 추가 | ○ 자영업자\n- 부가가치세신고서\n* 신규사업자의 경우 소득확인이 가능한\n 서류(매출장부, 매출전표 등)\n\n○ 기타양육부담가정(장기부재·입원 등)\n- 출입국사실확인증명서(해외 장기\n 체류 시(90일 이상) | 제도 보완\n\n양육공백 인정 사유\n추가 |",
+            "null\n\n2. 아이돌봄 인력 교육\n\n6\n\n주요 변경 내용\n\n○ 기본수당 : 9,630원\n○ 가산수당\n- 시간제 종합형 : 3,320원\n- 질병감염아동 : 2,890원\n- 기관연계 : 7,220원 등\n\n○ 기본수당 : 10,110원\n○ 가산수당\n- 시간제 종합형 : 3,480원\n·질병감염아동 : 3,040원\n- 기관연계 : 7,580원 등",
+            "null\n\n2024년도 아이돌봄 지원사업 안내\n\n6\n\n주요 변경 내용\n\n○ 기본수당 : 9,630원\n○ 가산수당\n- 시간제 종합형 : 3,320원\n- 질병감염아동 : 2,890원\n- 기관연계 : 7,220원 등\n\n○ 기본수당 : 10,110원\n○ 가산수당\n- 시간제 종합형 : 3,480원\n·질병감염아동 : 3,040원\n- 기관연계 : 7,580원 등"
+          ],
+          "groundTruth": "긴급 돌봄은 전화나 온라인을 통해 사전 신청 없이 즉시 이용 가능합니다."
+        },
+        "metrics": {
+          "contextRecall": 0.18181818181818182,
+          "contextPrecision": 0,
+          "answerFaithfulness": 1,
+          "answerRelevance": 0,
+          "overall": 0.0001999350211181366
+        },
+        "details": {
+          "contextRecall": {
+            "score": 0.18181818181818182,
+            "coverage": 0.18181818181818182,
+            "missingConcepts": []
+          },
+          "contextPrecision": {
+            "score": 0,
+            "relevantContexts": 0,
+            "irrelevantContexts": 6
+          },
+          "answerFaithfulness": {
+            "score": 1,
+            "groundedStatements": 1,
+            "ungroundedStatements": 0,
+            "hallucinationRisk": "low"
+          },
+          "answerRelevance": {
+            "score": 0,
+            "questionIntent": "auto-detected",
+            "answerIntent": "auto-detected",
+            "alignment": 0
+          }
+        },
+        "gateMapping": {
+          "contextRecall": "Gate B (Evidence Hit)",
+          "contextPrecision": "Gate D (Diversity)",
+          "answerFaithfulness": "Gate G (Compliance)",
+          "answerRelevance": "Gate E (Explanation)"
+        }
+      },
+      "gateReport": {
+        "timestamp": "2025-10-11T04:22:09.622Z",
+        "queryId": "q3",
+        "gates": {
+          "B": {
+            "gate": "B",
+            "name": "Evidence Hit",
+            "score": 0.18181818181818182,
+            "threshold": 0.7,
+            "passed": false,
+            "timestamp": 1760156529622,
+            "metadata": {
+              "retrievedContexts": 6,
+              "coverage": 0.18181818181818182
+            }
+          },
+          "D": {
+            "gate": "D",
+            "name": "Faithfulness",
+            "score": 0,
+            "threshold": 0.75,
+            "passed": false,
+            "timestamp": 1760156529622,
+            "metadata": {
+              "relevantContexts": 0,
+              "irrelevantContexts": 6
+            }
+          },
+          "E": {
+            "gate": "E",
+            "name": "Utility",
+            "score": 0,
+            "threshold": 0.85,
+            "passed": false,
+            "timestamp": 1760156529622,
+            "metadata": {
+              "alignment": 0
+            }
+          },
+          "F": {
+            "gate": "F",
+            "name": "Throughput",
+            "score": 6520,
+            "threshold": 8000,
+            "passed": true,
+            "timestamp": 1760156529622,
+            "metadata": {
+              "totalTokens": 6520,
+              "costUSD": 0.066340017100171,
+              "finalK": 6,
+              "iterations": 5
+            }
+          },
+          "G": {
+            "gate": "G",
+            "name": "Groundedness",
+            "score": 1,
+            "threshold": 0.8,
+            "passed": true,
+            "timestamp": 1760156529622,
+            "metadata": {
+              "groundedStatements": 1,
+              "ungroundedStatements": 0,
+              "hallucinationRisk": "low"
+            }
+          }
+        },
+        "summary": {
+          "totalPassed": 2,
+          "totalFailed": 3,
+          "overallStatus": "FAIL"
+        }
+      }
+    },
+    {
+      "query": {
+        "id": "q4",
+        "query": "아이돌봄 서비스 이용 자격은 무엇인가?",
+        "groundTruth": "만 12세 이하 아동을 둔 맞벌이 가정이 주요 대상입니다."
+      },
+      "ragResult": {
+        "answer": "# 제3장 아이돌봄서비스 이용 및 연계\n\n제3장 아이돌봄서비스 이용 및 연계\n\n3",
+        "context": [
+          {
+            "id": "section-7-7",
+            "content": "# 제3장 아이돌봄서비스 이용 및 연계\n\n제3장 아이돌봄서비스 이용 및 연계\n\n3",
+            "score": 31.798634,
+            "metadata": {
+              "page": 7,
+              "sectionTitle": "제3장 아이돌봄서비스 이용 및 연계",
+              "sectionLevel": 1,
+              "startChar": 0,
+              "endChar": 45,
+              "enriched": true,
+              "enrichmentType": "section",
+              "enrichmentLevel": "full",
+              "childCount": 0
+            }
+          },
+          {
+            "id": "table-5-0",
+            "content": "**주요 변경 내용**\n\n\n| 구분 | 2023년도 | 2024년도 | 비고 |\n| 서비스\n이용요금 | ○ 서비스 이용요금과 돌봄수당\n- (영아종일제) 11,080원\n- (시간제) 기본형 11,080원\n 종합형 14,400원\n- (질병감염아동) 13,290원\n- (기관연계) 18,480원 | ○ 서비스 이용요금과 돌봄수당\n- (영아종일제) 11,630원\n- (시간제) 기본형 11,630원\n 종합형 15,110원\n- (질병감염아동) 13,950원\n- (기관연계) 18,600원 |  |\n| 정부지원 | - | ○ ('가~다'형)2자녀 이상 다자녀 가구\n 본인부담금의 10% 추가 지원\n○ 중위소득 150% 이하 청소년부모,\n 청소년한부모 0~1세 자녀 가정\n 정부지원비율 90% 지원 | 정부지원 확대 |\n| 부모급여 중\n복지원 금지 | - | ○ 부모급여와 영아종일제 아이돌봄\n 서비스 정부지원금 간 차액 발생 시\n 차액 지급 |  |\n| 장애아동\n범위 | ○「장애인복지법」에 따른 장애의\n 정도가 심하지 않은 장애인에\n 해당 | ○「장애인복지법」에 따른 장애의\n 정도가 심하지 않은 장애인(장애\n소견 의사진단, 특수교육대상자\n진단아동 포함)에 해당 | 장애아동 인정범위\n확대 |\n| 양육공백\n인정\n구비서류 | ○ 자영업자\n- 부가가치세신고서\n\n○ 기타양육부담가정\n(장기부재·입원 등)\n- 추가 | ○ 자영업자\n- 부가가치세신고서\n* 신규사업자의 경우 소득확인이 가능한\n 서류(매출장부, 매출전표 등)\n\n○ 기타양육부담가정(장기부재·입원 등)\n- 출입국사실확인증명서(해외 장기\n 체류 시(90일 이상) | 제도 보완\n\n양육공백 인정 사유\n추가 |",
+            "score": 6.971908,
+            "metadata": {
+              "page": 5,
+              "tableInfo": {
+                "caption": "주요 변경 내용",
+                "rows": 6,
+                "cols": 3
+              },
+              "startChar": 0,
+              "endChar": 0
+            }
+          }
+        ],
+        "finalK": 2,
+        "iterations": 1,
+        "confidence": 0.9,
+        "cost": {
+          "totalTokens": 6917,
+          "retrievalTokens": 6841,
+          "generationTokens": 76,
+          "costUSD": 0.070690022800228
+        },
+        "performance": {
+          "totalTimeMs": 17.826042000000143,
+          "retrievalTimeMs": 17.71383300000025,
+          "generationTimeMs": 0.0030839999999443535,
+          "confidenceCheckTimeMs": 0
+        },
+        "trace": [
+          {
+            "iteration": 1,
+            "k": 2,
+            "contextsRetrieved": 2,
+            "confidence": 0.9,
+            "action": "generate_answer",
+            "timestamp": 1760156529640
+          }
+        ]
+      },
+      "ragasResult": {
+        "input": {
+          "question": "아이돌봄 서비스 이용 자격은 무엇인가?",
+          "answer": "# 제3장 아이돌봄서비스 이용 및 연계\n\n제3장 아이돌봄서비스 이용 및 연계\n\n3",
+          "contexts": [
+            "# 제3장 아이돌봄서비스 이용 및 연계\n\n제3장 아이돌봄서비스 이용 및 연계\n\n3",
+            "**주요 변경 내용**\n\n\n| 구분 | 2023년도 | 2024년도 | 비고 |\n| 서비스\n이용요금 | ○ 서비스 이용요금과 돌봄수당\n- (영아종일제) 11,080원\n- (시간제) 기본형 11,080원\n 종합형 14,400원\n- (질병감염아동) 13,290원\n- (기관연계) 18,480원 | ○ 서비스 이용요금과 돌봄수당\n- (영아종일제) 11,630원\n- (시간제) 기본형 11,630원\n 종합형 15,110원\n- (질병감염아동) 13,950원\n- (기관연계) 18,600원 |  |\n| 정부지원 | - | ○ ('가~다'형)2자녀 이상 다자녀 가구\n 본인부담금의 10% 추가 지원\n○ 중위소득 150% 이하 청소년부모,\n 청소년한부모 0~1세 자녀 가정\n 정부지원비율 90% 지원 | 정부지원 확대 |\n| 부모급여 중\n복지원 금지 | - | ○ 부모급여와 영아종일제 아이돌봄\n 서비스 정부지원금 간 차액 발생 시\n 차액 지급 |  |\n| 장애아동\n범위 | ○「장애인복지법」에 따른 장애의\n 정도가 심하지 않은 장애인에\n 해당 | ○「장애인복지법」에 따른 장애의\n 정도가 심하지 않은 장애인(장애\n소견 의사진단, 특수교육대상자\n진단아동 포함)에 해당 | 장애아동 인정범위\n확대 |\n| 양육공백\n인정\n구비서류 | ○ 자영업자\n- 부가가치세신고서\n\n○ 기타양육부담가정\n(장기부재·입원 등)\n- 추가 | ○ 자영업자\n- 부가가치세신고서\n* 신규사업자의 경우 소득확인이 가능한\n 서류(매출장부, 매출전표 등)\n\n○ 기타양육부담가정(장기부재·입원 등)\n- 출입국사실확인증명서(해외 장기\n 체류 시(90일 이상) | 제도 보완\n\n양육공백 인정 사유\n추가 |"
+          ],
+          "groundTruth": "만 12세 이하 아동을 둔 맞벌이 가정이 주요 대상입니다."
+        },
+        "metrics": {
+          "contextRecall": 0.2857142857142857,
+          "contextPrecision": 0.30000000000000004,
+          "answerFaithfulness": 1,
+          "answerRelevance": 0.2,
+          "overall": 0.31168831168831174
+        },
+        "details": {
+          "contextRecall": {
+            "score": 0.2857142857142857,
+            "coverage": 0.2857142857142857,
+            "missingConcepts": []
+          },
+          "contextPrecision": {
+            "score": 0.30000000000000004,
+            "relevantContexts": 1,
+            "irrelevantContexts": 1
+          },
+          "answerFaithfulness": {
+            "score": 1,
+            "groundedStatements": 1,
+            "ungroundedStatements": 0,
+            "hallucinationRisk": "low"
+          },
+          "answerRelevance": {
+            "score": 0.2,
+            "questionIntent": "auto-detected",
+            "answerIntent": "auto-detected",
+            "alignment": 0.2
+          }
+        },
+        "gateMapping": {
+          "contextRecall": "Gate B (Evidence Hit)",
+          "contextPrecision": "Gate D (Diversity)",
+          "answerFaithfulness": "Gate G (Compliance)",
+          "answerRelevance": "Gate E (Explanation)"
+        }
+      },
+      "gateReport": {
+        "timestamp": "2025-10-11T04:22:09.640Z",
+        "queryId": "q4",
+        "gates": {
+          "B": {
+            "gate": "B",
+            "name": "Evidence Hit",
+            "score": 0.2857142857142857,
+            "threshold": 0.7,
+            "passed": false,
+            "timestamp": 1760156529640,
+            "metadata": {
+              "retrievedContexts": 2,
+              "coverage": 0.2857142857142857
+            }
+          },
+          "D": {
+            "gate": "D",
+            "name": "Faithfulness",
+            "score": 0.30000000000000004,
+            "threshold": 0.75,
+            "passed": false,
+            "timestamp": 1760156529640,
+            "metadata": {
+              "relevantContexts": 1,
+              "irrelevantContexts": 1
+            }
+          },
+          "E": {
+            "gate": "E",
+            "name": "Utility",
+            "score": 0.2,
+            "threshold": 0.85,
+            "passed": false,
+            "timestamp": 1760156529640,
+            "metadata": {
+              "alignment": 0.2
+            }
+          },
+          "F": {
+            "gate": "F",
+            "name": "Throughput",
+            "score": 6917,
+            "threshold": 8000,
+            "passed": true,
+            "timestamp": 1760156529640,
+            "metadata": {
+              "totalTokens": 6917,
+              "costUSD": 0.070690022800228,
+              "finalK": 2,
+              "iterations": 1
+            }
+          },
+          "G": {
+            "gate": "G",
+            "name": "Groundedness",
+            "score": 1,
+            "threshold": 0.8,
+            "passed": true,
+            "timestamp": 1760156529640,
+            "metadata": {
+              "groundedStatements": 1,
+              "ungroundedStatements": 0,
+              "hallucinationRisk": "low"
+            }
+          }
+        },
+        "summary": {
+          "totalPassed": 2,
+          "totalFailed": 3,
+          "overallStatus": "FAIL"
+        }
+      }
+    },
+    {
+      "query": {
+        "id": "q5",
+        "query": "정부 지원금은 소득 수준에 따라 어떻게 다른가?",
+        "groundTruth": "소득 수준에 따라 가형, 나형, 다형으로 구분되며 지원 비율이 달라집니다."
+      },
+      "ragResult": {
+        "answer": "**주요 변경 내용**\n\n\n| 구분 | 2023년도 | 2024년도 | 비고 |\n| 서비스\n이용요금 | ○ 서비스 이용요금과 돌봄수당\n- (영아종일제) 11,080원\n- (시간제) 기본형 11,080원\n 종합형 14,400원\n- (질병감염아동) 13,290원\n- (기관연계) 18,480원 | ○ 서비스 이용요금과 돌봄수당\n- (영아종일제) 11,630원\n- (시간제) 기본형 11,630원\n 종합형 15,110원\n- (질병감염아동) 13,950원\n- (기관연계) 18,600원 |  |\n| 정부지원 | - | ○ ('가~다'형)2자녀 이상 다자녀 가구\n 본인부담금의 10% 추가 지원\n○ 중위소득 150% 이하 청소년부모,\n 청소년한부모 0~1세 자녀 가정\n 정부지원비율 90% 지원 | 정부지원 확대 |\n| 부모급여 중\n복지원 금지 | - | ○ 부모급여와 영아종일제 아이돌봄\n 서비스 정부지원금 간 차액 발생 시\n 차액 지급 |  |\n| 장애아동\n범위 | ○「장애인복지법」에 따른 장애의\n...",
+        "context": [
+          {
+            "id": "table-5-0",
+            "content": "**주요 변경 내용**\n\n\n| 구분 | 2023년도 | 2024년도 | 비고 |\n| 서비스\n이용요금 | ○ 서비스 이용요금과 돌봄수당\n- (영아종일제) 11,080원\n- (시간제) 기본형 11,080원\n 종합형 14,400원\n- (질병감염아동) 13,290원\n- (기관연계) 18,480원 | ○ 서비스 이용요금과 돌봄수당\n- (영아종일제) 11,630원\n- (시간제) 기본형 11,630원\n 종합형 15,110원\n- (질병감염아동) 13,950원\n- (기관연계) 18,600원 |  |\n| 정부지원 | - | ○ ('가~다'형)2자녀 이상 다자녀 가구\n 본인부담금의 10% 추가 지원\n○ 중위소득 150% 이하 청소년부모,\n 청소년한부모 0~1세 자녀 가정\n 정부지원비율 90% 지원 | 정부지원 확대 |\n| 부모급여 중\n복지원 금지 | - | ○ 부모급여와 영아종일제 아이돌봄\n 서비스 정부지원금 간 차액 발생 시\n 차액 지급 |  |\n| 장애아동\n범위 | ○「장애인복지법」에 따른 장애의\n 정도가 심하지 않은 장애인에\n 해당 | ○「장애인복지법」에 따른 장애의\n 정도가 심하지 않은 장애인(장애\n소견 의사진단, 특수교육대상자\n진단아동 포함)에 해당 | 장애아동 인정범위\n확대 |\n| 양육공백\n인정\n구비서류 | ○ 자영업자\n- 부가가치세신고서\n\n○ 기타양육부담가정\n(장기부재·입원 등)\n- 추가 | ○ 자영업자\n- 부가가치세신고서\n* 신규사업자의 경우 소득확인이 가능한\n 서류(매출장부, 매출전표 등)\n\n○ 기타양육부담가정(장기부재·입원 등)\n- 출입국사실확인증명서(해외 장기\n 체류 시(90일 이상) | 제도 보완\n\n양육공백 인정 사유\n추가 |",
+            "score": 9.4733305,
+            "metadata": {
+              "page": 5,
+              "tableInfo": {
+                "caption": "주요 변경 내용",
+                "rows": 6,
+                "cols": 3
+              },
+              "startChar": 0,
+              "endChar": 0
+            }
+          },
+          {
+            "id": "section-5-3",
+            "content": "## 제2장 정부지원 신청 및 결정\n\n제2장 정부지원 신청 및 결정",
+            "score": 9.181783,
+            "metadata": {
+              "page": 5,
+              "sectionTitle": "제2장 정부지원 신청 및 결정",
+              "sectionLevel": 2,
+              "startChar": 0,
+              "endChar": 37
+            }
+          }
+        ],
+        "finalK": 2,
+        "iterations": 1,
+        "confidence": 0.7,
+        "cost": {
+          "totalTokens": 7474,
+          "retrievalTokens": 7215,
+          "generationTokens": 259,
+          "costUSD": 0.07992007770077701
+        },
+        "performance": {
+          "totalTimeMs": 26.497208000000228,
+          "retrievalTimeMs": 26.371541999999863,
+          "generationTimeMs": 0.016125000000101863,
+          "confidenceCheckTimeMs": 0
+        },
+        "trace": [
+          {
+            "iteration": 1,
+            "k": 2,
+            "contextsRetrieved": 2,
+            "confidence": 0.7,
+            "action": "generate_answer",
+            "timestamp": 1760156529667
+          }
+        ]
+      },
+      "ragasResult": {
+        "input": {
+          "question": "정부 지원금은 소득 수준에 따라 어떻게 다른가?",
+          "answer": "**주요 변경 내용**\n\n\n| 구분 | 2023년도 | 2024년도 | 비고 |\n| 서비스\n이용요금 | ○ 서비스 이용요금과 돌봄수당\n- (영아종일제) 11,080원\n- (시간제) 기본형 11,080원\n 종합형 14,400원\n- (질병감염아동) 13,290원\n- (기관연계) 18,480원 | ○ 서비스 이용요금과 돌봄수당\n- (영아종일제) 11,630원\n- (시간제) 기본형 11,630원\n 종합형 15,110원\n- (질병감염아동) 13,950원\n- (기관연계) 18,600원 |  |\n| 정부지원 | - | ○ ('가~다'형)2자녀 이상 다자녀 가구\n 본인부담금의 10% 추가 지원\n○ 중위소득 150% 이하 청소년부모,\n 청소년한부모 0~1세 자녀 가정\n 정부지원비율 90% 지원 | 정부지원 확대 |\n| 부모급여 중\n복지원 금지 | - | ○ 부모급여와 영아종일제 아이돌봄\n 서비스 정부지원금 간 차액 발생 시\n 차액 지급 |  |\n| 장애아동\n범위 | ○「장애인복지법」에 따른 장애의\n...",
+          "contexts": [
+            "**주요 변경 내용**\n\n\n| 구분 | 2023년도 | 2024년도 | 비고 |\n| 서비스\n이용요금 | ○ 서비스 이용요금과 돌봄수당\n- (영아종일제) 11,080원\n- (시간제) 기본형 11,080원\n 종합형 14,400원\n- (질병감염아동) 13,290원\n- (기관연계) 18,480원 | ○ 서비스 이용요금과 돌봄수당\n- (영아종일제) 11,630원\n- (시간제) 기본형 11,630원\n 종합형 15,110원\n- (질병감염아동) 13,950원\n- (기관연계) 18,600원 |  |\n| 정부지원 | - | ○ ('가~다'형)2자녀 이상 다자녀 가구\n 본인부담금의 10% 추가 지원\n○ 중위소득 150% 이하 청소년부모,\n 청소년한부모 0~1세 자녀 가정\n 정부지원비율 90% 지원 | 정부지원 확대 |\n| 부모급여 중\n복지원 금지 | - | ○ 부모급여와 영아종일제 아이돌봄\n 서비스 정부지원금 간 차액 발생 시\n 차액 지급 |  |\n| 장애아동\n범위 | ○「장애인복지법」에 따른 장애의\n 정도가 심하지 않은 장애인에\n 해당 | ○「장애인복지법」에 따른 장애의\n 정도가 심하지 않은 장애인(장애\n소견 의사진단, 특수교육대상자\n진단아동 포함)에 해당 | 장애아동 인정범위\n확대 |\n| 양육공백\n인정\n구비서류 | ○ 자영업자\n- 부가가치세신고서\n\n○ 기타양육부담가정\n(장기부재·입원 등)\n- 추가 | ○ 자영업자\n- 부가가치세신고서\n* 신규사업자의 경우 소득확인이 가능한\n 서류(매출장부, 매출전표 등)\n\n○ 기타양육부담가정(장기부재·입원 등)\n- 출입국사실확인증명서(해외 장기\n 체류 시(90일 이상) | 제도 보완\n\n양육공백 인정 사유\n추가 |",
+            "## 제2장 정부지원 신청 및 결정\n\n제2장 정부지원 신청 및 결정"
+          ],
+          "groundTruth": "소득 수준에 따라 가형, 나형, 다형으로 구분되며 지원 비율이 달라집니다."
+        },
+        "metrics": {
+          "contextRecall": 0.2,
+          "contextPrecision": 0,
+          "answerFaithfulness": 1,
+          "answerRelevance": 0,
+          "overall": 0.00019994001799460162
+        },
+        "details": {
+          "contextRecall": {
+            "score": 0.2,
+            "coverage": 0.2,
+            "missingConcepts": []
+          },
+          "contextPrecision": {
+            "score": 0,
+            "relevantContexts": 0,
+            "irrelevantContexts": 2
+          },
+          "answerFaithfulness": {
+            "score": 1,
+            "groundedStatements": 1,
+            "ungroundedStatements": 0,
+            "hallucinationRisk": "low"
+          },
+          "answerRelevance": {
+            "score": 0,
+            "questionIntent": "auto-detected",
+            "answerIntent": "auto-detected",
+            "alignment": 0
+          }
+        },
+        "gateMapping": {
+          "contextRecall": "Gate B (Evidence Hit)",
+          "contextPrecision": "Gate D (Diversity)",
+          "answerFaithfulness": "Gate G (Compliance)",
+          "answerRelevance": "Gate E (Explanation)"
+        }
+      },
+      "gateReport": {
+        "timestamp": "2025-10-11T04:22:09.667Z",
+        "queryId": "q5",
+        "gates": {
+          "B": {
+            "gate": "B",
+            "name": "Evidence Hit",
+            "score": 0.2,
+            "threshold": 0.7,
+            "passed": false,
+            "timestamp": 1760156529667,
+            "metadata": {
+              "retrievedContexts": 2,
+              "coverage": 0.2
+            }
+          },
+          "D": {
+            "gate": "D",
+            "name": "Faithfulness",
+            "score": 0,
+            "threshold": 0.75,
+            "passed": false,
+            "timestamp": 1760156529667,
+            "metadata": {
+              "relevantContexts": 0,
+              "irrelevantContexts": 2
+            }
+          },
+          "E": {
+            "gate": "E",
+            "name": "Utility",
+            "score": 0,
+            "threshold": 0.85,
+            "passed": false,
+            "timestamp": 1760156529667,
+            "metadata": {
+              "alignment": 0
+            }
+          },
+          "F": {
+            "gate": "F",
+            "name": "Throughput",
+            "score": 7474,
+            "threshold": 8000,
+            "passed": true,
+            "timestamp": 1760156529667,
+            "metadata": {
+              "totalTokens": 7474,
+              "costUSD": 0.07992007770077701,
+              "finalK": 2,
+              "iterations": 1
+            }
+          },
+          "G": {
+            "gate": "G",
+            "name": "Groundedness",
+            "score": 1,
+            "threshold": 0.8,
+            "passed": true,
+            "timestamp": 1760156529667,
+            "metadata": {
+              "groundedStatements": 1,
+              "ungroundedStatements": 0,
+              "hallucinationRisk": "low"
+            }
+          }
+        },
+        "summary": {
+          "totalPassed": 2,
+          "totalFailed": 3,
+          "overallStatus": "FAIL"
+        }
+      }
+    }
+  ]
+}

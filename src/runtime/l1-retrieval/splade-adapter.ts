@@ -12,7 +12,6 @@
  * @see RFC 2025-17, Section 1.2
  */
 
-// @ts-expect-error - @xenova/transformers not installed yet
 import { pipeline } from '@xenova/transformers';
 
 /**

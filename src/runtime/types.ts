@@ -187,11 +187,12 @@ export interface Action {
  * Bandit context
  */
 export interface Context {
-  tenantId: string;
+  tenantId?: string;
   domain: string;
-  docType: string;
-  budget: number;
-  sla: number; // Latency SLA in ms
+  docType?: string;
+  budget?: number;
+  sla?: number; // Latency SLA in ms
+  complexity?: 'low' | 'medium' | 'high'; // Query complexity level
 }
 
 /**
